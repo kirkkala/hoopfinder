@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { CourtDetails } from "@/components/court/CourtDetails";
 import { getBasketballCourt } from "@/lib/catalog";
 
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 export async function generateMetadata({
   params,

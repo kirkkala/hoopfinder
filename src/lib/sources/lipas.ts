@@ -1,10 +1,10 @@
 import { z } from "zod";
+import { COURT_DATA_REVALIDATE } from "@/lib/constants";
 import type { Court } from "@/lib/courts";
 
 const LIPAS_API = process.env.LIPAS_API_BASE ?? "https://api.lipas.fi/v2";
 const BASKETBALL_TYPE_CODE = 1310;
 const PAGE_SIZE = 100;
-const REVALIDATE = 60 * 60;
 
 const LipasListSchema = z.object({
   items: z.array(z.unknown()),
@@ -71,7 +71,7 @@ async function fetchPage(page: number) {
 
   const response = await fetch(url, {
     cache: "force-cache",
-    next: { revalidate: REVALIDATE },
+    next: { revalidate: COURT_DATA_REVALIDATE },
   });
   if (!response.ok) {
     throw new Error(`LIPAS list request failed with ${response.status}`);

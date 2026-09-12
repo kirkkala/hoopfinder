@@ -1,7 +1,7 @@
 import { CourtExplorer } from "@/components/explorer/CourtExplorer";
 import { getBasketballCourts } from "@/lib/catalog";
 
-export const revalidate = 3600;
+export const revalidate = 86400;
 
 export default async function HomePage() {
   const courts = await getBasketballCourts();
