@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { LngLatBounds, type GeoJSONSource } from "maplibre-gl";
+import { LngLatBounds, setWorkerUrl, type GeoJSONSource } from "maplibre-gl";
 import Map, {
   Layer,
   Marker,
@@ -21,6 +21,8 @@ import {
   formatDistance,
   type Coordinates,
 } from "@/lib/geo";
+
+setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
 
 export function CourtMap({
   courts,
