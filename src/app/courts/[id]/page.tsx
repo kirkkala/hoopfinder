@@ -10,9 +10,9 @@ export async function generateMetadata({
 }: {
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
-  const court = await courtFromParams(params);
+  const result = await courtFromParams(params);
   return {
-    title: court?.name ?? "Court not found",
+    title: result?.court.name ?? "Court not found",
   };
 }
 
@@ -21,9 +21,9 @@ export default async function CourtPage({
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const court = await courtFromParams(params);
-  if (!court) notFound();
-  return <CourtDetails court={court} />;
+  const result = await courtFromParams(params);
+  if (!result) notFound();
+  return <CourtDetails court={result.court} fetchedAt={result.fetchedAt} />;
 }
 
 async function courtFromParams(params: Promise<{ id: string }>) {

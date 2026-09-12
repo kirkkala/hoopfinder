@@ -23,7 +23,13 @@ const CourtMap = dynamic(
   { ssr: false },
 );
 
-export function CourtExplorer({ courts }: { courts: Court[] }) {
+export function CourtExplorer({
+  courts,
+  fetchedAt,
+}: {
+  courts: Court[];
+  fetchedAt: string | null;
+}) {
   const [query, setQuery] = useState("");
   const [distanceKm, setDistanceKm] = useState<DistanceFilter>("any");
   const [origin, setOrigin] = useState<Coordinates | null>(null);
@@ -58,7 +64,7 @@ export function CourtExplorer({ courts }: { courts: Court[] }) {
 
   return (
     <div className="flex h-dvh flex-col bg-asphalt">
-      <AppHeader />
+      <AppHeader fetchedAt={fetchedAt} />
 
       <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
         <aside className="flex max-h-[48vh] min-h-0 w-full flex-col border-b border-white/10 bg-panel lg:max-h-none lg:w-[26rem] lg:border-r lg:border-b-0">

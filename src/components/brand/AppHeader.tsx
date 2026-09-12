@@ -3,7 +3,13 @@ import { basketball } from "@lucide/lab";
 import { ArrowLeft, Icon } from "lucide-react";
 import { APP_NAME, APP_TAGLINE } from "@/lib/constants";
 
-export function AppHeader({ backHref }: { backHref?: string }) {
+export function AppHeader({
+  backHref,
+  fetchedAt,
+}: {
+  backHref?: string;
+  fetchedAt?: string | null;
+}) {
   return (
     <header className="relative overflow-hidden border-b border-white/10 bg-asphalt">
       <div className="court-arc pointer-events-none absolute inset-0 opacity-40" />
@@ -31,7 +37,27 @@ export function AppHeader({ backHref }: { backHref?: string }) {
             <p className="mt-0.5 truncate text-sm text-cream/70">{APP_TAGLINE}</p>
           </div>
         </div>
+        {fetchedAt ? (
+          <p className="ml-auto shrink-0 text-right text-xs text-ink-muted">
+            Data from
+            <time dateTime={fetchedAt} className="mt-0.5 block text-cream/70">
+              {formatFetchedAt(fetchedAt)}
+            </time>
+          </p>
+        ) : null}
       </div>
     </header>
   );
+}
+
+function formatFetchedAt(iso: string): string {
+  return new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Europe/Helsinki",
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false,
+  }).format(new Date(iso));
 }
