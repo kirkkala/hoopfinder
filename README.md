@@ -36,6 +36,12 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000). Copy `.env.example` if you need to point `LIPAS_API_BASE` at another host. LIPAS itself is public and does not need an API key.
 
+## License
+
+Hoop Finder is licensed under the [GNU Affero General Public License v3.0](LICENSE).
+
+You can use, study, and change the code. If you distribute it or run a modified version as a public service, you must share your source under the same license. The license covers this codebase, not the idea of finding basketball courts.
+
 ## Next sources (server-side keys only)
 
 - Finnish Meteorological Institute — weather and playability
