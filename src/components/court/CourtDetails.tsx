@@ -44,7 +44,7 @@ export function CourtDetails({ court }: { court: Court }) {
     court.neighborhood,
     [court.postalCode, court.city].filter(Boolean).join(" ") || null,
   ]);
-  const osmUrl = `https://www.openstreetmap.org/?mlat=${court.lat}&mlon=${court.lon}#map=17/${court.lat}/${court.lon}`;
+  const mapsUrl = `https://www.google.com/maps?q=${court.lat},${court.lon}`;
   const source = courtSource(court.source);
   const listingUrl = sourceListingUrl(court.source, court.id);
   const { amenities } = court;
@@ -86,15 +86,15 @@ export function CourtDetails({ court }: { court: Court }) {
             />
             <Fact
               icon={Compass}
-              label="Coordinates"
+              label="Google Maps"
               value={
                 <a
-                  href={osmUrl}
+                  href={mapsUrl}
                   className="inline-flex items-center gap-1 text-gold hover:text-white"
                   target="_blank"
                   rel="noreferrer"
                 >
-                  {formatCoordinates(court.lat, court.lon)}
+                  maps.google.com
                   <ExternalLink className="size-3.5 shrink-0" aria-hidden />
                 </a>
               }
