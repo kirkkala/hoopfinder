@@ -1,10 +1,12 @@
 import Link from "next/link";
 import { basketball } from "@lucide/lab";
 import { ArrowLeft, Icon } from "lucide-react";
+import { AppFooter } from "@/components/brand/AppFooter";
 
 export default function CourtNotFound() {
   return (
-    <main className="mx-auto flex min-h-dvh max-w-lg flex-col items-center justify-center gap-3 px-6 text-center">
+    <div className="flex min-h-dvh flex-col bg-asphalt">
+      <main className="mx-auto flex max-w-lg flex-1 flex-col items-center justify-center gap-3 px-6 text-center">
       <Icon iconNode={basketball} className="size-10 text-gold" aria-hidden />
       <h1 className="font-display text-4xl tracking-wide text-white">Airball</h1>
       <p className="text-sm text-ink-muted">
@@ -17,6 +19,8 @@ export default function CourtNotFound() {
         <ArrowLeft className="size-4" aria-hidden />
         Back to hoops
       </Link>
-    </main>
+      </main>
+      <AppFooter />
+    </div>
   );
 }

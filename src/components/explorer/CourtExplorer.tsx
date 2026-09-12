@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { basketball } from "@lucide/lab";
 import { Icon } from "lucide-react";
 import { AppHeader } from "@/components/brand/AppHeader";
+import { AppFooter } from "@/components/brand/AppFooter";
 import { CourtList } from "@/components/explorer/CourtList";
 import {
   SearchFilters,
@@ -97,6 +98,8 @@ export function CourtExplorer({ courts }: { courts: Court[] }) {
           </div>
         </section>
       </div>
+
+      <AppFooter />
     </div>
   );
 }

@@ -2,6 +2,7 @@
 
 import { useEffect } from "react";
 import { CircleAlert, RotateCcw } from "lucide-react";
+import { AppFooter } from "@/components/brand/AppFooter";
 
 export default function ErrorPage({
   error,
@@ -15,7 +16,8 @@ export default function ErrorPage({
   }, [error]);
 
   return (
-    <main className="mx-auto flex min-h-dvh max-w-lg flex-col items-center justify-center gap-3 px-6 text-center">
+    <div className="flex min-h-dvh flex-col bg-asphalt">
+      <main className="mx-auto flex max-w-lg flex-1 flex-col items-center justify-center gap-3 px-6 text-center">
       <CircleAlert className="size-10 text-gold" aria-hidden />
       <h1 className="font-display text-4xl tracking-wide text-white">Timeout</h1>
       <p className="text-sm text-ink-muted">
@@ -29,6 +31,8 @@ export default function ErrorPage({
         <RotateCcw className="size-4" aria-hidden />
         Try again
       </button>
-    </main>
+      </main>
+      <AppFooter />
+    </div>
   );
 }
