@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, X } from "lucide-react";
 import { LngLatBounds, setWorkerUrl, type GeoJSONSource } from "maplibre-gl";
 import Map, {
   Layer,
@@ -16,29 +16,67 @@ import Map, {
 import { MAP_STYLE } from "@/lib/constants";
 import type { CourtWithDistance } from "@/lib/courts";
 import {
+  DEFAULT_MAP_CENTER,
   DEFAULT_MAP_ZOOM,
-  FINLAND_CENTER,
   formatDistance,
   type Coordinates,
 } from "@/lib/geo";
 
 setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
 
+const MAP_VIEW_KEY = "hoopfinder-map-view";
+
+function readSavedView(): { latitude: number; longitude: number; zoom: number } {
+  try {
+    const saved = JSON.parse(localStorage.getItem(MAP_VIEW_KEY) ?? "");
+    if (
+      Number.isFinite(saved.lat) &&
+      Number.isFinite(saved.lon) &&
+      Number.isFinite(saved.zoom)
+    ) {
+      return { latitude: saved.lat, longitude: saved.lon, zoom: saved.zoom };
+    }
+  } catch {
+    // First visit, private mode, or a bad value — use the Helsinki default.
+  }
+  return {
+    latitude: DEFAULT_MAP_CENTER.lat,
+    longitude: DEFAULT_MAP_CENTER.lon,
+    zoom: DEFAULT_MAP_ZOOM,
+  };
+}
+
+function saveView(latitude: number, longitude: number, zoom: number) {
+  try {
+    localStorage.setItem(
+      MAP_VIEW_KEY,
+      JSON.stringify({ lat: latitude, lon: longitude, zoom }),
+    );
+  } catch {
+    // Ignore quota / private-mode failures.
+  }
+}
+
 export function CourtMap({
   courts,
   selectedId,
   origin,
   followUser,
+  keepCamera,
   onSelect,
+  onClose,
 }: {
   courts: CourtWithDistance[];
   selectedId: string | null;
   origin: Coordinates | null;
   followUser: boolean;
+  keepCamera: boolean;
   onSelect: (id: string) => void;
+  onClose: () => void;
 }) {
   const mapRef = useRef<MapRef>(null);
   const [mapReady, setMapReady] = useState(false);
+  const [initialView] = useState(readSavedView);
   const selected = courts.find((court) => court.id === selectedId) ?? null;
 
   const data = useMemo(
@@ -78,6 +116,10 @@ export function CourtMap({
       return;
     }
 
+    if (!origin) {
+      return;
+    }
+
     if (courts.length === 0) {
       return;
     }
@@ -102,7 +144,7 @@ export function CourtMap({
   }, [courts, followUser, mapReady, origin, selected]);
 
   useEffect(() => {
-    if (!selected) {
+    if (!selected || keepCamera) {
       return;
     }
     mapRef.current?.flyTo({
@@ -110,7 +152,7 @@ export function CourtMap({
       zoom: Math.max(mapRef.current.getZoom(), 14),
       duration: 700,
     });
-  }, [selected]);
+  }, [keepCamera, selected]);
 
   function handleClick(event: MapLayerMouseEvent) {
     const feature = event.features?.[0];
@@ -150,14 +192,14 @@ export function CourtMap({
     <Map
       ref={mapRef}
       mapStyle={MAP_STYLE}
-      initialViewState={{
-        latitude: FINLAND_CENTER.lat,
-        longitude: FINLAND_CENTER.lon,
-        zoom: DEFAULT_MAP_ZOOM,
-      }}
+      initialViewState={initialView}
       style={{ width: "100%", height: "100%" }}
       interactiveLayerIds={["clusters", "court-points"]}
       onLoad={() => setMapReady(true)}
+      onMoveEnd={(event) => {
+        const { latitude, longitude, zoom } = event.viewState;
+        saveView(latitude, longitude, zoom);
+      }}
       onClick={handleClick}
       attributionControl={{ compact: true }}
     >
@@ -235,8 +277,17 @@ export function CourtMap({
           offset={16}
           closeButton={false}
           closeOnClick={false}
+          onClose={onClose}
         >
-          <div className="min-w-48 p-3">
+          <div className="relative min-w-48 p-3 pr-8">
+            <button
+              type="button"
+              onClick={onClose}
+              className="absolute top-2 right-2 rounded-full p-1 text-ink-muted hover:bg-white/10 hover:text-white"
+              aria-label="Close"
+            >
+              <X className="size-4" aria-hidden />
+            </button>
             <p className="font-semibold text-white">{selected.name}</p>
             {selected.distanceKm !== null ? (
               <p className="mt-1 text-xs text-ink-muted">

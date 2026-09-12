@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useMemo, useState, useSyncExternalStore } from "react";
 import dynamic from "next/dynamic";
 import { basketball } from "@lucide/lab";
 import { Icon } from "lucide-react";
@@ -23,6 +23,36 @@ const CourtMap = dynamic(
   { ssr: false },
 );
 
+const SELECTED_COURT_KEY = "hoopfinder-selected-court";
+
+function readSelectedCourt(): string | null {
+  try {
+    return localStorage.getItem(SELECTED_COURT_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function writeSelectedCourt(id: string) {
+  try {
+    localStorage.setItem(SELECTED_COURT_KEY, id);
+  } catch {
+    // Ignore quota / private-mode failures.
+  }
+}
+
+function clearSelectedCourt() {
+  try {
+    localStorage.removeItem(SELECTED_COURT_KEY);
+  } catch {
+    // Ignore quota / private-mode failures.
+  }
+}
+
+function subscribeSelectedCourt() {
+  return () => {};
+}
+
 export function CourtExplorer({
   courts,
   fetchedAt,
@@ -34,13 +64,32 @@ export function CourtExplorer({
   const [distanceKm, setDistanceKm] = useState<DistanceFilter>("any");
   const [origin, setOrigin] = useState<Coordinates | null>(null);
   const [locationStatus, setLocationStatus] = useState<LocationStatus>("idle");
-  const [selectedId, setSelectedId] = useState<string | null>(null);
+  const [pickedId, setPickedId] = useState<string | null | undefined>(undefined);
+  const savedId = useSyncExternalStore(
+    subscribeSelectedCourt,
+    readSelectedCourt,
+    () => null,
+  );
+  const restoredId =
+    savedId && courts.some((court) => court.id === savedId) ? savedId : null;
+  const selectedId = pickedId === undefined ? restoredId : pickedId;
+  const keepCamera = pickedId === undefined && restoredId !== null;
 
   const nearMe = locationStatus === "granted";
   const visibleCourts = useMemo(
     () => filterCourts(courts, query, distanceKm, origin),
     [courts, query, distanceKm, origin],
   );
+
+  function selectCourt(id: string) {
+    setPickedId(id);
+    writeSelectedCourt(id);
+  }
+
+  function clearCourt() {
+    setPickedId(null);
+    clearSelectedCourt();
+  }
 
   function requestLocation() {
     if (!navigator.geolocation) {
@@ -87,7 +136,7 @@ export function CourtExplorer({
             <CourtList
               courts={visibleCourts}
               selectedId={selectedId}
-              onSelect={setSelectedId}
+              onSelect={selectCourt}
             />
           </div>
         </aside>
@@ -99,7 +148,9 @@ export function CourtExplorer({
               selectedId={selectedId}
               origin={origin}
               followUser={nearMe && distanceKm === "any"}
-              onSelect={setSelectedId}
+              keepCamera={keepCamera}
+              onSelect={selectCourt}
+              onClose={clearCourt}
             />
           </div>
         </section>
