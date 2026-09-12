@@ -35,7 +35,6 @@ import {
   formatSurface,
   type Court,
 } from "@/lib/courts";
-import { formatCoordinates } from "@/lib/geo";
 import { courtSource, sourceListingUrl } from "@/lib/sources";
 
 export function CourtDetails({ court }: { court: Court }) {

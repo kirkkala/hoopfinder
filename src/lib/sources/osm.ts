@@ -1,9 +1,9 @@
 import { z } from "zod";
+import { COURT_DATA_REVALIDATE } from "@/lib/constants";
 import { emptyAmenities, type Court } from "@/lib/courts";
 
 const OVERPASS_API =
   process.env.OVERPASS_API_BASE ?? "https://overpass-api.de/api/interpreter";
-const REVALIDATE = 60 * 60;
 
 const QUERY = `[out:json][timeout:90];
 area["ISO3166-1"="FI"][admin_level=2]->.fi;
@@ -38,7 +38,7 @@ export async function getOsmCourts(): Promise<Court[]> {
     },
     body: new URLSearchParams({ data: QUERY }).toString(),
     cache: "force-cache",
-    next: { revalidate: REVALIDATE },
+    next: { revalidate: COURT_DATA_REVALIDATE },
   });
   if (!response.ok) {
     throw new Error(`Overpass request failed with ${response.status}`);

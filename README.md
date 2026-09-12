@@ -12,7 +12,7 @@ The UI is English for now. Localization is added once the product shape is stabl
 - Search by name, address, city, or neighborhood
 - Distance filter from your location after you share it
 - Court page with the fields LIPAS or OpenStreetMap actually provide
-- Server-side LIPAS and Overpass fetches (cached for an hour)
+- Server-side LIPAS and Overpass fetches (cached for a day, shared by all visitors)
 - Error, empty, and not-found states
 
 Weather, Linked Events, route finder, and cycling directions might come later. Or any other good feasible idea.
@@ -47,7 +47,7 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). Copy `.env.example` if you need to point `LIPAS_API_BASE` or `OVERPASS_API_BASE` at another host. Neither API needs a key. The first Overpass fetch can take a while; later loads use the one-hour cache. If Overpass is down, the map still shows LIPAS courts.
+Open [http://localhost:3000](http://localhost:3000). Copy `.env.example` if you need to point `LIPAS_API_BASE` or `OVERPASS_API_BASE` at another host. Neither API needs a key. The first Overpass fetch can take a while; in production later loads reuse the one-day server cache for every visitor. If Overpass is down, the map still shows LIPAS courts. `next dev` always renders on demand, so local refreshes may hit the APIs again.
 
 ## License
 
