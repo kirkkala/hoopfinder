@@ -1,0 +1,9 @@
+import { CourtExplorer } from "@/components/explorer/CourtExplorer";
+import { getBasketballCourts } from "@/lib/lipas";
+
+export const revalidate = 3600;
+
+export default async function HomePage() {
+  const courts = await getBasketballCourts();
+  return <CourtExplorer courts={courts} />;
+}
