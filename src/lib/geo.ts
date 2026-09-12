@@ -3,13 +3,13 @@ export type Coordinates = {
   lon: number;
 };
 
-/** Rough geographic center of Finland — used only as the first map camera. */
-export const FINLAND_CENTER: Coordinates = {
-  lat: 64.2,
-  lon: 26.0,
+/** Helsinki metro — first map camera, with Espoo and Vantaa in view. */
+export const DEFAULT_MAP_CENTER: Coordinates = {
+  lat: 60.21,
+  lon: 24.89,
 };
 
-export const DEFAULT_MAP_ZOOM = 5.3;
+export const DEFAULT_MAP_ZOOM = 10.5;
 
 const EARTH_RADIUS_KM = 6371;
 
