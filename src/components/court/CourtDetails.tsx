@@ -37,7 +37,13 @@ import {
 } from "@/lib/courts";
 import { courtSource, sourceListingUrl } from "@/lib/sources";
 
-export function CourtDetails({ court }: { court: Court }) {
+export function CourtDetails({
+  court,
+  fetchedAt,
+}: {
+  court: Court;
+  fetchedAt: string | null;
+}) {
   const address = formatAddress([
     court.address,
     court.neighborhood,
@@ -54,7 +60,7 @@ export function CourtDetails({ court }: { court: Court }) {
 
   return (
     <div className="flex min-h-dvh flex-col bg-asphalt">
-      <AppHeader backHref="/" />
+      <AppHeader backHref="/" fetchedAt={fetchedAt} />
 
       <main className="mx-auto grid w-full max-w-5xl flex-1 gap-6 px-4 py-8 lg:grid-cols-[1.1fr_0.9fr]">
         <section className="space-y-5">

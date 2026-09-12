@@ -1,10 +1,10 @@
 # Hoop Finder
 
-Find outdoor basketball courts across Finland. Built for junior players.
+Find outdoor basketball courts across Finland. Helping basketballers to find courts to go out and play.
 
 The first version is a map of outdoor basketball courts from LIPAS type **1310** and OpenStreetMap, with search, distance filtering, and a court detail page.
 
-The UI is English for now. Localization is added once the product shape is stable.
+The UI is English for now. Localization might be added once the product shape is more stable.
 
 ## What is in this MVP
 
@@ -13,6 +13,7 @@ The UI is English for now. Localization is added once the product shape is stabl
 - Distance filter from your location after you share it
 - Court page with the fields LIPAS or OpenStreetMap actually provide
 - Server-side LIPAS and Overpass fetches (cached for a day, shared by all visitors)
+- Last good court data is kept if a later fetch fails; the header shows when it was last fetched
 - Error, empty, and not-found states
 
 Weather, Linked Events, route finder, and cycling directions might come later. Or any other good feasible idea.
@@ -47,7 +48,7 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). Copy `.env.example` if you need to point `LIPAS_API_BASE` or `OVERPASS_API_BASE` at another host. Neither API needs a key. The first Overpass fetch can take a while; in production later loads reuse the one-day server cache for every visitor. If Overpass is down, the map still shows LIPAS courts. `next dev` always renders on demand, so local refreshes may hit the APIs again.
+Open [http://localhost:3000](http://localhost:3000). Copy `.env.example` if you need to point `LIPAS_API_BASE` or `OVERPASS_API_BASE` at another host. Neither API needs a key. Overpass is a public shared API and often returns 504; the app then keeps the last good OpenStreetMap courts. Saved court data lives in `.hoopfinder-cache/` (gitignored) for a day so `next dev` does not refetch on every start. If a source has never succeeded, it is skipped until it does.
 
 ## License
 

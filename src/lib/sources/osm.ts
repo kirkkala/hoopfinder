@@ -5,7 +5,7 @@ import { emptyAmenities, type Court } from "@/lib/courts";
 const OVERPASS_API =
   process.env.OVERPASS_API_BASE ?? "https://overpass-api.de/api/interpreter";
 
-const QUERY = `[out:json][timeout:90];
+const QUERY = `[out:json][timeout:25];
 area["ISO3166-1"="FI"][admin_level=2]->.fi;
 nwr["leisure"="pitch"]["sport"~"basketball"]["indoor"!="yes"]["location"!="indoor"](area.fi);
 out center tags;`;
