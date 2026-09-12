@@ -26,6 +26,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 import { AppHeader } from "@/components/brand/AppHeader";
+import { AppFooter } from "@/components/brand/AppFooter";
 import { CourtMiniMap } from "@/components/court/CourtMiniMap";
 import {
   formatAddress,
@@ -50,10 +51,10 @@ export function CourtDetails({ court }: { court: Court }) {
       : null;
 
   return (
-    <div className="min-h-dvh bg-asphalt">
+    <div className="flex min-h-dvh flex-col bg-asphalt">
       <AppHeader backHref="/" />
 
-      <main className="mx-auto grid max-w-5xl gap-6 px-4 py-8 lg:grid-cols-[1.1fr_0.9fr]">
+      <main className="mx-auto grid w-full max-w-5xl flex-1 gap-6 px-4 py-8 lg:grid-cols-[1.1fr_0.9fr]">
         <section className="space-y-5">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">
@@ -243,6 +244,8 @@ export function CourtDetails({ court }: { court: Court }) {
           <CourtMiniMap court={court} />
         </aside>
       </main>
+
+      <AppFooter />
     </div>
   );
 }
