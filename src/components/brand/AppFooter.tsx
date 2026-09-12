@@ -1,4 +1,5 @@
 import { Heart } from "lucide-react";
+import { COURT_SOURCES } from "@/lib/sources";
 
 export function AppFooter() {
   return (
@@ -20,6 +21,22 @@ export function AppFooter() {
         </a>
       </p>
       <p>
+        Court data from{" "}
+        {COURT_SOURCES.map((source, index) => (
+          <span key={source.id}>
+            {sourceSeparator(index, COURT_SOURCES.length)}
+            <a
+              href={source.href}
+              className="text-gold hover:text-white"
+              target="_blank"
+              rel="noreferrer"
+            >
+              {source.label}
+            </a>
+          </span>
+        ))}
+      </p>
+      <p>
         Source code published on{" "}
         <a
           href="https://github.com/kirkkala/hoopfinder"
@@ -32,4 +49,10 @@ export function AppFooter() {
       </p>
     </footer>
   );
+}
+
+function sourceSeparator(index: number, total: number): string {
+  if (index === 0) return "";
+  if (index === total - 1) return " and ";
+  return ", ";
 }

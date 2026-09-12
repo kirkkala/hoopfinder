@@ -1,8 +1,10 @@
 import type { Coordinates } from "@/lib/geo";
 import { haversineKm } from "@/lib/geo";
+import type { CourtSourceId } from "@/lib/sources";
 
 export type Court = {
-  id: number;
+  id: string;
+  source: CourtSourceId;
   name: string;
   nameFi: string;
   status: string;
@@ -43,6 +45,49 @@ export type DistanceFilter = (typeof DISTANCE_OPTIONS)[number] | "any";
 export type CourtWithDistance = Court & {
   distanceKm: number | null;
 };
+
+export function emptyAmenities(): Court["amenities"] {
+  return {
+    lighting: null,
+    lightingInfo: null,
+    freeUse: null,
+    schoolUse: null,
+    fieldType: null,
+    surfaceMaterial: [],
+    surfaceMaterialInfo: null,
+    lengthM: null,
+    widthM: null,
+    areaM2: null,
+    toilet: null,
+    heightAdjustable: null,
+    waterPoint: null,
+    matchClock: null,
+    scoreboard: null,
+  };
+}
+
+const DUPLICATE_KM = 0.08;
+
+export function mergeCourts(batches: Court[][]): Court[] {
+  const merged: Court[] = [];
+  for (const batch of batches) {
+    for (const candidate of batch) {
+      if (!merged.some((existing) => isNearDuplicate(existing, candidate))) {
+        merged.push(candidate);
+      }
+    }
+  }
+  return merged;
+}
+
+function isNearDuplicate(existing: Court, candidate: Court): boolean {
+  return (
+    haversineKm(
+      { lat: existing.lat, lon: existing.lon },
+      { lat: candidate.lat, lon: candidate.lon },
+    ) < DUPLICATE_KM
+  );
+}
 
 const SURFACE_LABELS: Record<string, string> = {
   asphalt: "Asphalt",
@@ -87,13 +132,13 @@ export function filterCourts(
     })
     .sort((a, b) => {
       if (a.distanceKm !== null && b.distanceKm !== null) {
-        return a.distanceKm - b.distanceKm || a.id - b.id;
+        return a.distanceKm - b.distanceKm || a.id.localeCompare(b.id);
       }
       const city = compareText(a.city ?? "", b.city ?? "");
       if (city !== 0) return city;
       const name = compareText(a.name, b.name);
       if (name !== 0) return name;
-      return a.id - b.id;
+      return a.id.localeCompare(b.id);
     });
 }
 

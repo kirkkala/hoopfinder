@@ -32,10 +32,10 @@ export function CourtMap({
   onSelect,
 }: {
   courts: CourtWithDistance[];
-  selectedId: number | null;
+  selectedId: string | null;
   origin: Coordinates | null;
   followUser: boolean;
-  onSelect: (id: number) => void;
+  onSelect: (id: string) => void;
 }) {
   const mapRef = useRef<MapRef>(null);
   const [mapReady, setMapReady] = useState(false);
@@ -140,9 +140,9 @@ export function CourtMap({
       return;
     }
 
-    const id = Number(feature.properties?.id);
-    if (Number.isFinite(id)) {
-      onSelect(id);
+    const id = feature.properties?.id;
+    if (id != null && String(id)) {
+      onSelect(String(id));
     }
   }
 

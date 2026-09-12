@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { CourtDetails } from "@/components/court/CourtDetails";
-import { getBasketballCourt } from "@/lib/lipas";
+import { getBasketballCourt } from "@/lib/catalog";
 
 export const revalidate = 3600;
 
@@ -27,8 +27,7 @@ export default async function CourtPage({
 }
 
 async function courtFromParams(params: Promise<{ id: string }>) {
-  const { id: rawId } = await params;
-  const id = Number(rawId);
-  if (!Number.isInteger(id) || id <= 0) return null;
+  const { id } = await params;
+  if (!id) return null;
   return getBasketballCourt(id);
 }

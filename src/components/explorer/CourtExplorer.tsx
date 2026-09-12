@@ -28,7 +28,7 @@ export function CourtExplorer({ courts }: { courts: Court[] }) {
   const [distanceKm, setDistanceKm] = useState<DistanceFilter>("any");
   const [origin, setOrigin] = useState<Coordinates | null>(null);
   const [locationStatus, setLocationStatus] = useState<LocationStatus>("idle");
-  const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [selectedId, setSelectedId] = useState<string | null>(null);
 
   const nearMe = locationStatus === "granted";
   const visibleCourts = useMemo(
