@@ -2,7 +2,7 @@
 
 Find outdoor basketball courts across Finland. Built for junior players.
 
-The first version is a map of LIPAS type **1310 (Basketball court)** with search, distance filtering, and a court detail page.
+The first version is a map of outdoor basketball courts from LIPAS type **1310** and OpenStreetMap, with search, distance filtering, and a court detail page.
 
 The UI is English for now. Localization is added once the product shape is stable.
 
@@ -11,8 +11,8 @@ The UI is English for now. Localization is added once the product shape is stabl
 - Interactive MapLibre map with the user’s location and clustered courts nationwide
 - Search by name, address, city, or neighborhood
 - Distance filter from your location after you share it
-- Court page with the fields LIPAS actually provides
-- Server-side LIPAS fetch (cached for an hour)
+- Court page with the fields LIPAS or OpenStreetMap actually provide
+- Server-side LIPAS and Overpass fetches (cached for an hour)
 - Error, empty, and not-found states
 
 Weather, Linked Events, route finder, and cycling directions might come later. Or any other good feasible idea.
@@ -27,6 +27,19 @@ Checked against `GET /v2/sports-site-categories` and live `1310` payloads:
 
 The app never invents values for missing fields.
 
+OpenStreetMap pitches tagged `leisure=pitch` and `sport=basketball` are merged in when they are more than 80 m from a LIPAS court.
+
+## Data sources
+
+Each court API is its own module. Pages only talk to the catalog:
+
+- [`src/lib/sources/lipas.ts`](src/lib/sources/lipas.ts) — LIPAS type 1310
+- [`src/lib/sources/osm.ts`](src/lib/sources/osm.ts) — OpenStreetMap Overpass
+- [`src/lib/sources/index.ts`](src/lib/sources/index.ts) — source labels, attribution, listing links
+- [`src/lib/catalog.ts`](src/lib/catalog.ts) — fetch every source, merge without duplicates, look up by id
+
+To drop OpenStreetMap, remove it from `COURT_SOURCES` and `FETCHERS`, then delete `src/lib/sources/osm.ts`. To add a source, add a mapper module and one entry in those two lists. Earlier sources win when two courts are within 80 m.
+
 ## Develop
 
 ```bash
@@ -34,7 +47,7 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). Copy `.env.example` if you need to point `LIPAS_API_BASE` at another host. LIPAS itself is public and does not need an API key.
+Open [http://localhost:3000](http://localhost:3000). Copy `.env.example` if you need to point `LIPAS_API_BASE` or `OVERPASS_API_BASE` at another host. Neither API needs a key. The first Overpass fetch can take a while; later loads use the one-hour cache. If Overpass is down, the map still shows LIPAS courts.
 
 ## License
 

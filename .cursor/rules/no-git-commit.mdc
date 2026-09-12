@@ -1,0 +1,12 @@
+---
+description: Never create git commits; the maintainer commits locally.
+alwaysApply: true
+---
+
+# Git commits
+
+Never create a git commit. Do not run `git commit`, `git commit --amend`, or any other command that writes a commit.
+
+The maintainer commits locally and wants that control. Do not offer to commit, and do not commit even if asked in chat.
+
+Read-only git commands (`status`, `diff`, `log`) are fine when they help the task. Do not `git push` unless the user explicitly asks.

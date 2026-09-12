@@ -1,9 +1,8 @@
-import { cache } from "react";
 import { z } from "zod";
-import { BASKETBALL_TYPE_CODE } from "@/lib/constants";
 import type { Court } from "@/lib/courts";
 
 const LIPAS_API = process.env.LIPAS_API_BASE ?? "https://api.lipas.fi/v2";
+const BASKETBALL_TYPE_CODE = 1310;
 const PAGE_SIZE = 100;
 const REVALIDATE = 60 * 60;
 
@@ -43,7 +42,7 @@ const LipasSiteSchema = z.looseObject({
   }),
 });
 
-export const getBasketballCourts = cache(async (): Promise<Court[]> => {
+export async function getLipasCourts(): Promise<Court[]> {
   const first = await fetchPage(1);
   const rest = await Promise.all(
     Array.from({ length: Math.max(first.pagination["total-pages"] - 1, 0) }, (_, i) =>
@@ -61,11 +60,6 @@ export const getBasketballCourts = cache(async (): Promise<Court[]> => {
     }
   }
   return courts;
-});
-
-export async function getBasketballCourt(id: number): Promise<Court | null> {
-  const courts = await getBasketballCourts();
-  return courts.find((court) => court.id === id) ?? null;
 }
 
 async function fetchPage(page: number) {
@@ -75,7 +69,10 @@ async function fetchPage(page: number) {
   url.searchParams.set("page-size", String(PAGE_SIZE));
   url.searchParams.set("page", String(page));
 
-  const response = await fetch(url, { next: { revalidate: REVALIDATE } });
+  const response = await fetch(url, {
+    cache: "force-cache",
+    next: { revalidate: REVALIDATE },
+  });
   if (!response.ok) {
     throw new Error(`LIPAS list request failed with ${response.status}`);
   }
@@ -100,7 +97,8 @@ function toCourt(site: z.infer<typeof LipasSiteSchema>): Court | null {
 
   const properties = site.properties ?? {};
   return {
-    id: site["lipas-id"],
+    id: String(site["lipas-id"]),
+    source: "lipas",
     name: site["name-localized"]?.en?.trim() || site.name,
     nameFi: site.name,
     status: site.status ?? "unknown",

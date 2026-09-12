@@ -36,6 +36,7 @@ import {
   type Court,
 } from "@/lib/courts";
 import { formatCoordinates } from "@/lib/geo";
+import { courtSource, sourceListingUrl } from "@/lib/sources";
 
 export function CourtDetails({ court }: { court: Court }) {
   const address = formatAddress([
@@ -44,6 +45,8 @@ export function CourtDetails({ court }: { court: Court }) {
     [court.postalCode, court.city].filter(Boolean).join(" ") || null,
   ]);
   const osmUrl = `https://www.openstreetmap.org/?mlat=${court.lat}&mlon=${court.lon}#map=17/${court.lat}/${court.lon}`;
+  const source = courtSource(court.source);
+  const listingUrl = sourceListingUrl(court.source, court.id);
   const { amenities } = court;
   const dimensions =
     amenities.lengthM && amenities.widthM
@@ -58,7 +61,9 @@ export function CourtDetails({ court }: { court: Court }) {
         <section className="space-y-5">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">
-              Basketball court
+              {source && !source.required
+                ? `Basketball court · ${source.label}`
+                : "Basketball court"}
             </p>
             <h1 className="mt-1 font-display text-4xl tracking-wide text-white md:text-5xl">
               {court.name}
@@ -94,6 +99,23 @@ export function CourtDetails({ court }: { court: Court }) {
                 </a>
               }
             />
+            {listingUrl ? (
+              <Fact
+                icon={Globe}
+                label={source?.label ?? "Listing"}
+                value={
+                  <a
+                    href={listingUrl}
+                    className="inline-flex items-center gap-1 text-gold hover:text-white"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    View listing
+                    <ExternalLink className="size-3.5 shrink-0" aria-hidden />
+                  </a>
+                }
+              />
+            ) : null}
             {court.phone ? (
               <Fact icon={Phone} label="Phone" value={court.phone} />
             ) : null}
@@ -231,7 +253,7 @@ export function CourtDetails({ court }: { court: Court }) {
             <section className="rounded-3xl border border-white/10 bg-panel p-5">
               <h2 className="flex items-center gap-2 font-display text-2xl tracking-wide text-white">
                 <StickyNote className="size-5 text-gold" aria-hidden />
-                Notes from LIPAS
+                Notes from {source?.label ?? "the listing"}
               </h2>
               <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-ink-muted">
                 {court.comment}

@@ -1,5 +1,5 @@
 import { CourtExplorer } from "@/components/explorer/CourtExplorer";
-import { getBasketballCourts } from "@/lib/lipas";
+import { getBasketballCourts } from "@/lib/catalog";
 
 export const revalidate = 3600;
 

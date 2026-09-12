@@ -5,6 +5,7 @@ import Link from "next/link";
 import { basketball } from "@lucide/lab";
 import { ArrowRight, Icon, Lightbulb, Unlock } from "lucide-react";
 import { formatAddress, formatStatus, type CourtWithDistance } from "@/lib/courts";
+import { courtSource } from "@/lib/sources";
 import { formatDistance } from "@/lib/geo";
 
 export function CourtList({
@@ -13,8 +14,8 @@ export function CourtList({
   onSelect,
 }: {
   courts: CourtWithDistance[];
-  selectedId: number | null;
-  onSelect: (id: number) => void;
+  selectedId: string | null;
+  onSelect: (id: string) => void;
 }) {
   useEffect(() => {
     if (selectedId === null) {
@@ -42,6 +43,7 @@ export function CourtList({
     <ul className="space-y-2 py-3">
       {courts.map((court) => {
         const selected = court.id === selectedId;
+        const source = courtSource(court.source);
         return (
           <li key={court.id} id={`court-${court.id}`}>
             <div
@@ -86,6 +88,11 @@ export function CourtList({
                   <span className="inline-flex items-center gap-1 rounded-full bg-white/10 px-2 py-1 text-cream/80">
                     <Unlock className="size-3" aria-hidden />
                     Free use
+                  </span>
+                ) : null}
+                {source && !source.required ? (
+                  <span className="rounded-full bg-white/10 px-2 py-1 text-cream/80">
+                    {source.shortLabel}
                   </span>
                 ) : null}
                 <Link
