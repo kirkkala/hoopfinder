@@ -1,4 +1,30 @@
 import type { ReactNode } from "react";
+import {
+  Bath,
+  Building2,
+  Calendar,
+  CircleCheck,
+  CirclePause,
+  ClipboardList,
+  Compass,
+  Droplets,
+  ExternalLink,
+  Globe,
+  Layers,
+  LayoutGrid,
+  Lightbulb,
+  MapPin,
+  MoveVertical,
+  Phone,
+  Ruler,
+  School,
+  Square,
+  StickyNote,
+  Timer,
+  Unlock,
+  UserCog,
+  type LucideIcon,
+} from "lucide-react";
 import { AppHeader } from "@/components/brand/AppHeader";
 import { CourtMiniMap } from "@/components/court/CourtMiniMap";
 import {
@@ -42,41 +68,63 @@ export function CourtDetails({ court }: { court: Court }) {
           </div>
 
           <dl className="grid gap-3 rounded-3xl border border-white/10 bg-panel p-5">
-            <Fact label="Status" value={formatStatus(court.status)} />
-            <Fact label="Address" value={address || "Not reported"} />
             <Fact
+              icon={court.status === "active" ? CircleCheck : CirclePause}
+              label="Status"
+              value={formatStatus(court.status)}
+            />
+            <Fact
+              icon={MapPin}
+              label="Address"
+              value={address || "Not reported"}
+            />
+            <Fact
+              icon={Compass}
               label="Coordinates"
               value={
                 <a
                   href={osmUrl}
-                  className="text-gold hover:text-white"
+                  className="inline-flex items-center gap-1 text-gold hover:text-white"
                   target="_blank"
                   rel="noreferrer"
                 >
                   {formatCoordinates(court.lat, court.lon)}
+                  <ExternalLink className="size-3.5 shrink-0" aria-hidden />
                 </a>
               }
             />
-            {court.phone ? <Fact label="Phone" value={court.phone} /> : null}
+            {court.phone ? (
+              <Fact icon={Phone} label="Phone" value={court.phone} />
+            ) : null}
             {court.website ? (
               <Fact
+                icon={Globe}
                 label="Website"
                 value={
                   <a
                     href={court.website}
-                    className="break-all text-gold hover:text-white"
+                    className="inline-flex items-center gap-1 break-all text-gold hover:text-white"
                     target="_blank"
                     rel="noreferrer"
                   >
                     {court.website}
+                    <ExternalLink className="size-3.5 shrink-0" aria-hidden />
                   </a>
                 }
               />
             ) : null}
-            {court.admin ? <Fact label="Administrator" value={court.admin} /> : null}
-            {court.owner ? <Fact label="Owner" value={court.owner} /> : null}
+            {court.admin ? (
+              <Fact icon={UserCog} label="Administrator" value={court.admin} />
+            ) : null}
+            {court.owner ? (
+              <Fact icon={Building2} label="Owner" value={court.owner} />
+            ) : null}
             {court.constructionYear ? (
-              <Fact label="Built" value={String(court.constructionYear)} />
+              <Fact
+                icon={Calendar}
+                label="Built"
+                value={String(court.constructionYear)}
+              />
             ) : null}
           </dl>
 
@@ -85,56 +133,92 @@ export function CourtDetails({ court }: { court: Court }) {
               Court scouting
             </h2>
             <dl className="mt-4 grid gap-3 sm:grid-cols-2">
-              <Fact label="Lights" value={formatReportedBoolean(amenities.lighting)} />
-              <Fact label="Free run" value={formatReportedBoolean(amenities.freeUse)} />
+              <Fact
+                icon={Lightbulb}
+                label="Lights"
+                value={formatReportedBoolean(amenities.lighting)}
+              />
+              <Fact
+                icon={Unlock}
+                label="Free use"
+                value={formatReportedBoolean(amenities.freeUse)}
+              />
               {amenities.schoolUse !== null ? (
                 <Fact
+                  icon={School}
                   label="School use"
                   value={formatReportedBoolean(amenities.schoolUse)}
                 />
               ) : null}
               {amenities.fieldType ? (
-                <Fact label="Field type" value={amenities.fieldType} />
+                <Fact
+                  icon={LayoutGrid}
+                  label="Field type"
+                  value={amenities.fieldType}
+                />
               ) : null}
               {amenities.surfaceMaterial.length ? (
                 <Fact
+                  icon={Layers}
                   label="Surface"
                   value={amenities.surfaceMaterial.map(formatSurface).join(", ")}
                 />
               ) : null}
               {amenities.surfaceMaterialInfo ? (
-                <Fact label="Surface notes" value={amenities.surfaceMaterialInfo} />
+                <Fact
+                  icon={StickyNote}
+                  label="Surface notes"
+                  value={amenities.surfaceMaterialInfo}
+                />
               ) : null}
-              {dimensions ? <Fact label="Dimensions" value={dimensions} /> : null}
+              {dimensions ? (
+                <Fact icon={Ruler} label="Dimensions" value={dimensions} />
+              ) : null}
               {amenities.areaM2 ? (
-                <Fact label="Area" value={`${amenities.areaM2} m²`} />
+                <Fact
+                  icon={Square}
+                  label="Area"
+                  value={`${amenities.areaM2} m²`}
+                />
               ) : null}
               {amenities.toilet !== null ? (
                 <Fact
+                  icon={Bath}
                   label="Toilet"
                   value={formatReportedBoolean(amenities.toilet)}
                 />
               ) : null}
               {amenities.heightAdjustable !== null ? (
                 <Fact
+                  icon={MoveVertical}
                   label="Adjustable rim"
                   value={formatReportedBoolean(amenities.heightAdjustable)}
                 />
               ) : null}
               {amenities.lightingInfo ? (
-                <Fact label="Lighting notes" value={amenities.lightingInfo} />
+                <Fact
+                  icon={Lightbulb}
+                  label="Lighting notes"
+                  value={amenities.lightingInfo}
+                />
               ) : null}
               {amenities.waterPoint ? (
-                <Fact label="Water point" value={amenities.waterPoint} />
+                <Fact
+                  icon={Droplets}
+                  label="Water point"
+                  value={amenities.waterPoint}
+                />
               ) : null}
               {amenities.matchClock !== null ? (
                 <Fact
+                  icon={Timer}
                   label="Match clock"
                   value={formatReportedBoolean(amenities.matchClock)}
                 />
               ) : null}
               {amenities.scoreboard !== null ? (
                 <Fact
+                  icon={ClipboardList}
                   label="Scoreboard"
                   value={formatReportedBoolean(amenities.scoreboard)}
                 />
@@ -144,7 +228,8 @@ export function CourtDetails({ court }: { court: Court }) {
 
           {court.comment ? (
             <section className="rounded-3xl border border-white/10 bg-panel p-5">
-              <h2 className="font-display text-2xl tracking-wide text-white">
+              <h2 className="flex items-center gap-2 font-display text-2xl tracking-wide text-white">
+                <StickyNote className="size-5 text-gold" aria-hidden />
                 Notes from LIPAS
               </h2>
               <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-ink-muted">
@@ -163,15 +248,18 @@ export function CourtDetails({ court }: { court: Court }) {
 }
 
 function Fact({
+  icon: FactIcon,
   label,
   value,
 }: {
+  icon: LucideIcon;
   label: string;
   value: ReactNode;
 }) {
   return (
     <div>
-      <dt className="text-xs font-bold uppercase tracking-wide text-gold/80">
+      <dt className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-gold/80">
+        <FactIcon className="size-3.5 shrink-0" aria-hidden />
         {label}
       </dt>
       <dd className="mt-1 text-sm text-cream">{value}</dd>

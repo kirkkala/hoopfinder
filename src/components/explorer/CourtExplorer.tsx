@@ -2,6 +2,8 @@
 
 import { useMemo, useState } from "react";
 import dynamic from "next/dynamic";
+import { basketball } from "@lucide/lab";
+import { Icon } from "lucide-react";
 import { AppHeader } from "@/components/brand/AppHeader";
 import { CourtList } from "@/components/explorer/CourtList";
 import {
@@ -68,7 +70,8 @@ export function CourtExplorer({ courts }: { courts: Court[] }) {
               locationStatus={locationStatus}
               onUseLocation={requestLocation}
             />
-            <p className="mt-3 font-display text-lg tracking-wide text-gold">
+            <p className="mt-3 flex items-center gap-2 font-display text-lg tracking-wide text-gold">
+              <Icon iconNode={basketball} className="size-5 shrink-0" aria-hidden />
               {`${visibleCourts.length} hoop${visibleCourts.length === 1 ? "" : "s"}${nearMe && distanceKm !== "any" ? " nearby" : " in Finland"}`}
             </p>
           </div>
