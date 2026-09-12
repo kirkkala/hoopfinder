@@ -1,4 +1,4 @@
-# Hoop Run
+# Hoop Finder
 
 Find outdoor basketball courts across Finland. Built for junior players.
 
