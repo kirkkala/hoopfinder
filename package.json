@@ -1,5 +1,5 @@
 {
-  "name": "hoop-run",
+  "name": "hoopfinder",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -11,7 +11,7 @@
   "dependencies": {
     "@lucide/lab": "^0.7.0",
     "lucide-react": "^1.45.0",
-    "maplibre-gl": "^5.24.0",
+    "maplibre-gl": "^6.9.0",
     "next": "16.3.5",
     "react": "19.2.8",
     "react-dom": "19.2.8",
