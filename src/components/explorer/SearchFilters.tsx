@@ -1,5 +1,12 @@
 "use client";
 
+import {
+  LoaderCircle,
+  Locate,
+  LocateFixed,
+  LocateOff,
+  Search,
+} from "lucide-react";
 import { DISTANCE_OPTIONS, type DistanceFilter } from "@/lib/courts";
 
 export type LocationStatus =
@@ -8,6 +15,22 @@ export type LocationStatus =
   | "granted"
   | "denied"
   | "unavailable";
+
+const LOCATION_LABEL = {
+  idle: "Near me",
+  pending: "Locating…",
+  granted: "Near you",
+  denied: "Location blocked",
+  unavailable: "No GPS",
+} as const;
+
+const LOCATION_ICON = {
+  idle: Locate,
+  pending: LoaderCircle,
+  granted: LocateFixed,
+  denied: LocateOff,
+  unavailable: LocateOff,
+} as const;
 
 export function SearchFilters({
   query,
@@ -25,24 +48,22 @@ export function SearchFilters({
   onUseLocation: () => void;
 }) {
   const nearMe = locationStatus === "granted";
-  const locationLabel = {
-    idle: "Near me",
-    pending: "Locating…",
-    granted: "Using you",
-    denied: "Location blocked",
-    unavailable: "No GPS",
-  }[locationStatus];
+  const LocationIcon = LOCATION_ICON[locationStatus];
 
   return (
     <div className="space-y-3">
-      <label className="block">
+      <label className="relative block">
         <span className="sr-only">Search hoops</span>
+        <Search
+          aria-hidden
+          className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-white/35"
+        />
         <input
           type="search"
           value={query}
           onChange={(event) => onQueryChange(event.target.value)}
           placeholder="Search a court, city, or street"
-          className="w-full rounded-2xl border border-white/10 bg-asphalt px-4 py-3 text-sm text-white outline-none ring-hnmky-red/40 placeholder:text-white/35 focus:ring-4"
+          className="w-full rounded-2xl border border-white/10 bg-asphalt py-3 pr-4 pl-11 text-sm text-white outline-none ring-hnmky-red/40 placeholder:text-white/35 focus:ring-4"
         />
       </label>
 
@@ -77,9 +98,13 @@ export function SearchFilters({
           type="button"
           onClick={onUseLocation}
           disabled={locationStatus === "pending" || locationStatus === "granted"}
-          className="rounded-full bg-hnmky-blue px-3 py-1.5 text-xs font-bold text-white hover:bg-[#1d3480] disabled:cursor-default disabled:opacity-70"
+          className="inline-flex items-center gap-1.5 rounded-full bg-hnmky-blue px-3 py-1.5 text-xs font-bold text-white hover:bg-[#1d3480] disabled:cursor-default disabled:opacity-70"
         >
-          {locationLabel}
+          <LocationIcon
+            aria-hidden
+            className={`size-3.5 ${locationStatus === "pending" ? "animate-spin" : ""}`}
+          />
+          {LOCATION_LABEL[locationStatus]}
         </button>
       </div>
 

@@ -1,5 +1,6 @@
 import Link from "next/link";
-import { BallIcon } from "@/components/brand/BallIcon";
+import { basketball } from "@lucide/lab";
+import { ArrowLeft, Icon } from "lucide-react";
 import { APP_NAME, APP_TAGLINE } from "@/lib/constants";
 
 export function AppHeader({ backHref }: { backHref?: string }) {
@@ -11,12 +12,17 @@ export function AppHeader({ backHref }: { backHref?: string }) {
           {backHref ? (
             <Link
               href={backHref}
-              className="shrink-0 text-sm font-medium text-gold hover:text-white"
+              className="inline-flex shrink-0 items-center gap-1 text-sm font-medium text-gold hover:text-white"
             >
-              ← Hoops
+              <ArrowLeft className="size-4" aria-hidden />
+              Hoops
             </Link>
           ) : (
-            <BallIcon className="h-10 w-10 shrink-0 drop-shadow-lg" />
+            <Icon
+              iconNode={basketball}
+              className="size-10 shrink-0 text-orange-500 drop-shadow-lg"
+              aria-hidden
+            />
           )}
           <div className="min-w-0">
             <p className="font-display text-2xl leading-none tracking-wide text-white">

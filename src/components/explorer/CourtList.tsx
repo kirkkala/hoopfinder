@@ -2,7 +2,8 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import { BallIcon } from "@/components/brand/BallIcon";
+import { basketball } from "@lucide/lab";
+import { ArrowRight, Icon, Lightbulb, Unlock } from "lucide-react";
 import { formatAddress, formatStatus, type CourtWithDistance } from "@/lib/courts";
 import { formatDistance } from "@/lib/geo";
 
@@ -28,7 +29,7 @@ export function CourtList({
   if (courts.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center gap-2 px-6 py-12 text-center">
-        <BallIcon className="h-10 w-10 opacity-70" />
+        <Icon iconNode={basketball} className="size-10 text-gold/70" aria-hidden />
         <p className="font-display text-2xl tracking-wide text-white">Airball</p>
         <p className="max-w-sm text-sm text-ink-muted">
           No hoops match. Try a wider range or another city.
@@ -76,20 +77,23 @@ export function CourtList({
               <div className="flex flex-wrap items-center gap-2 text-xs">
                 <StatusBadge statusLabel={formatStatus(court.status)} />
                 {court.amenities.lighting === true ? (
-                  <span className="rounded-full bg-white/10 px-2 py-1 text-cream/80">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-white/10 px-2 py-1 text-cream/80">
+                    <Lightbulb className="size-3" aria-hidden />
                     Lights
                   </span>
                 ) : null}
                 {court.amenities.freeUse === true ? (
-                  <span className="rounded-full bg-white/10 px-2 py-1 text-cream/80">
-                    Free run
+                  <span className="inline-flex items-center gap-1 rounded-full bg-white/10 px-2 py-1 text-cream/80">
+                    <Unlock className="size-3" aria-hidden />
+                    Free use
                   </span>
                 ) : null}
                 <Link
                   href={`/courts/${court.id}`}
-                  className="ml-auto font-bold text-gold hover:text-white"
+                  className="ml-auto inline-flex items-center gap-1 font-bold text-gold hover:text-white"
                 >
                   Let&apos;s go
+                  <ArrowRight className="size-3.5" aria-hidden />
                 </Link>
               </div>
             </div>

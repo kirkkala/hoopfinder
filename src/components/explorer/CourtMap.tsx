@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
+import { ArrowRight } from "lucide-react";
 import { LngLatBounds, type GeoJSONSource } from "maplibre-gl";
 import Map, {
   Layer,
@@ -242,9 +243,10 @@ export function CourtMap({
             ) : null}
             <Link
               href={`/courts/${selected.id}`}
-              className="mt-2 inline-block text-sm font-bold text-gold hover:text-white"
+              className="mt-2 inline-flex items-center gap-1 text-sm font-bold text-gold hover:text-white"
             >
               Let&apos;s go
+              <ArrowRight className="size-3.5" aria-hidden />
             </Link>
           </div>
         </Popup>
