@@ -10,7 +10,6 @@ import {
   CircleCheck,
   CirclePause,
   ClipboardList,
-  Compass,
   Droplets,
   ExternalLink,
   Globe,
@@ -19,6 +18,7 @@ import {
   Lightbulb,
   Map,
   MapPin,
+  MapPinned,
   MoveVertical,
   Ruler,
   School,
@@ -104,66 +104,21 @@ export function CourtDetails({
               label={copy.address}
               value={address || copy.notReported}
             />
-            <Fact
-              icon={Compass}
-              label="Google Maps"
-              value={
-                <a
-                  href={mapsUrl}
-                  className="inline-flex items-center gap-1 text-gold hover:text-white"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  maps.google.com
-                  <ExternalLink className="size-3.5 shrink-0" aria-hidden />
-                </a>
-              }
-            />
-            {listingUrl ? (
-              <Fact
-                icon={Globe}
-                label={source?.label ?? copy.listing}
-                value={
-                  <a
-                    href={listingUrl}
-                    className="inline-flex items-center gap-1 text-gold hover:text-white"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    {copy.viewListing}
-                    <ExternalLink className="size-3.5 shrink-0" aria-hidden />
-                  </a>
-                }
-              />
-            ) : null}
             {court.website ? (
               <Fact
                 icon={Globe}
                 label={copy.website}
                 value={
                   <a
-                    href={court.website}
+                    href={websiteHref(court.website)}
                     className="inline-flex items-center gap-1 break-all text-gold hover:text-white"
                     target="_blank"
                     rel="noreferrer"
                   >
-                    {court.website}
+                    {websiteLabel(court.website)}
                     <ExternalLink className="size-3.5 shrink-0" aria-hidden />
                   </a>
                 }
-              />
-            ) : null}
-            {court.admin ? (
-              <Fact icon={UserCog} label={copy.administrator} value={court.admin} />
-            ) : null}
-            {court.owner ? (
-              <Fact icon={Building2} label={copy.owner} value={court.owner} />
-            ) : null}
-            {court.constructionYear ? (
-              <Fact
-                icon={Calendar}
-                label={copy.built}
-                value={String(court.constructionYear)}
               />
             ) : null}
           </dl>
@@ -194,7 +149,7 @@ export function CourtDetails({
                 <Fact
                   icon={LayoutGrid}
                   label={copy.fieldType}
-                  value={amenities.fieldType}
+                  value={amenities.fieldType[0].toUpperCase() + amenities.fieldType.slice(1)}
                 />
               ) : null}
               {amenities.surfaceMaterial.length ? (
@@ -265,6 +220,13 @@ export function CourtDetails({
                   value={formatReportedBoolean(amenities.scoreboard, copy)}
                 />
               ) : null}
+              {court.constructionYear ? (
+                <Fact
+                  icon={Calendar}
+                  label={copy.built}
+                  value={court.constructionYear ? String(court.constructionYear) : copy.notReported}
+                />
+              ) : null}
             </dl>
           </section>
 
@@ -283,21 +245,71 @@ export function CourtDetails({
           ) : null}
         </section>
 
-        <aside className="h-80 overflow-hidden rounded-3xl border border-white/10 bg-panel">
+        <aside className="overflow-hidden rounded-3xl border border-white/10 bg-panel">
           <Link
             href={`/?court=${encodeURIComponent(court.id)}`}
-            className="inline-flex shrink-0 items-center gap-1 text-md font-medium text-gold py-4 px-3 hover:text-white"
+            className="inline-flex shrink-0 items-center gap-1 px-3 py-4 text-md font-medium text-gold hover:text-white"
           >
             <Map /><ArrowLeft className="size-6" aria-hidden />
               {copy.backToMap}
             </Link>
-          <CourtMiniMap court={court} />
+          <div className="h-80">
+            <CourtMiniMap court={court} />
+          </div>
+          <dl className="grid gap-3 border-t border-white/10 p-5">
+            <Fact
+              icon={MapPinned}
+              label={copy.mapLinks}
+              value={
+                <ul className="space-y-2">
+                  <li>
+                    <a
+                      href={mapsUrl}
+                      className="inline-flex items-center gap-1 text-gold hover:text-white"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {copy.googleMaps}
+                      <ExternalLink className="size-3.5 shrink-0" aria-hidden />
+                    </a>
+                  </li>
+                  {listingUrl ? (
+                    <li>
+                      <a
+                        href={listingUrl}
+                        className="inline-flex items-center gap-1 text-gold hover:text-white"
+                        target="_blank"
+                        rel="noreferrer"
+                      >
+                        {copy.viewListingOSM}
+                        <ExternalLink className="size-3.5 shrink-0" aria-hidden />
+                      </a>
+                    </li>
+                  ) : null}
+                </ul>
+              }
+            />
+            {court.admin ? (
+              <Fact icon={UserCog} label={copy.administrator} value={court.admin} />
+            ) : null}
+            {court.owner ? (
+              <Fact icon={Building2} label={copy.owner} value={court.owner} />
+            ) : null}
+          </dl>
         </aside>
       </main>
 
       <AppFooter />
     </div>
   );
+}
+
+function websiteHref(url: string) {
+  return /^https?:\/\//i.test(url) ? url : `https://${url}`;
+}
+
+function websiteLabel(url: string) {
+  return url.replace(/^https?:\/\//i, "");
 }
 
 function Fact({
