@@ -36,12 +36,32 @@ const messages = {
     en: "Type a city, neighborhood, or address.",
   },
   introLocate: {
-    fi: "Tai paina Paikanna, niin kartta siirtyy lähellesi.",
+    fi: "Tai paina Paikanna, niin kartta tietää missä olet.",
     en: "Or tap Near me to jump to where you are.",
   },
   introMap: {
     fi: "Liikuta karttaa — lista näyttää kentät näkyvissä.",
     en: "Move the map — the list shows the hoops in view.",
+  },
+  introSeeCourt: {
+    fi: "Klikkaa kohdetta kartalla ja katso kentän tiedot.",
+    en: "Click a dot on the map and see the court details.",
+  },
+  introCreatedByTitle: {
+    fi: "Kuka tämän teki ja miksi",
+    en: "Who built this and why"
+  },
+  introCreatedBy1: {
+    fi: "koodaili sivuston harrasteprojektina käyttäen Lipas ja OpenStreetMaps avoimia rajapintoja.",
+    en: "built this site as a side project using the open APIs of Lipas and OpenStreetMaps.",
+  },
+  introCreatedBy2: {
+    fi: "Motivaationa saada isot ja pienet ihmiset liikkumaan koripallon kanssa.",
+    en: "With a motivation to get big and small humans to move more with a basketball." 
+  },
+  introCreatedBySourceCode: {
+    fi: "Lähdekoodi löytyy Githubista",
+    en: "Source code is on Github"
   },
   introCta: { fi: "Selvä, pelataan", en: "Got it, let's play" },
   madeWith: { fi: 'Made with', en: "Made with" },
