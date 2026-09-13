@@ -25,6 +25,7 @@ const messages = {
     en: "Early beta preview, functionalities might change and new features are coming, might be buggy.",
   },
   language: { fi: "Kieli", en: "Language" },
+  menu: { fi: "Valikko", en: "Menu" },
   info: { fi: "Info", en: "Info" },
   introTitle: { fi: "Ota pallo mukaan", en: "Bring a ball along" },
   introLead: {
@@ -40,12 +41,12 @@ const messages = {
     en: "Or tap Near me to jump to where you are.",
   },
   introMap: {
-    fi: "Liikuta karttaa — lista näyttää kentät näkyvissä.",
-    en: "Move the map — the list shows the hoops in view.",
+    fi: "Liikuta karttaa ja tutustu kenttien sijaintiin.",
+    en: "Move the map and explore the locations.",
   },
   introSeeCourt: {
-    fi: "Klikkaa kohdetta kartalla ja katso kentän tiedot.",
-    en: "Click a dot on the map and see the court details.",
+    fi: "Klikkaa kohdetta kartalla ja siirry katsomaan tarkempia tietoja kentästä.",
+    en: "Click a dot on the map and see the court information.",
   },
   introCreatedByTitle: {
     fi: "Kuka tämän teki ja miksi",
@@ -101,6 +102,7 @@ const messages = {
   freeUse: { fi: "Ilmainen käyttö", en: "Free use" },
   letsGo: { fi: "Mennään tänne", en: "Let's go" },
   close: { fi: "Sulje", en: "Close" },
+  scrollForMore: { fi: "Vieritä alas", en: "Scroll for more" },
   distanceAway: {
     fi: (formatted: string) => `${formatted} päässä`,
     en: (formatted: string) => `${formatted} away`,

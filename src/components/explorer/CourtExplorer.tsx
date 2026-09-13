@@ -15,8 +15,10 @@ import { useCopy } from "@/components/brand/LocaleProvider";
 import {
   withDistance,
   type Court,
+  type CourtWithDistance,
 } from "@/lib/courts";
 import { isInBounds, type Coordinates, type MapBounds } from "@/lib/geo";
+import { mq, split, useMinWidth } from "@/lib/layout";
 
 const CourtMap = dynamic(
   () => import("@/components/explorer/CourtMap").then((mod) => mod.CourtMap),
@@ -24,6 +26,17 @@ const CourtMap = dynamic(
 );
 
 const SELECTED_COURT_KEY = "hoopfinder-selected-court";
+const EMPTY_COURTS: CourtWithDistance[] = [];
+
+function isInCurrentView(
+  court: CourtWithDistance,
+  searching: boolean,
+  placeBounds: MapBounds | null,
+  mapBounds: MapBounds | null,
+) {
+  if (searching) return placeBounds !== null && isInBounds(court, placeBounds);
+  return mapBounds === null || isInBounds(court, mapBounds);
+}
 
 function readSelectedCourt(): string | null {
   try {
@@ -70,6 +83,7 @@ export function CourtExplorer({
   const [pickedId, setPickedId] = useState<string | null | undefined>(undefined);
   const [mapBounds, setMapBounds] = useState<MapBounds | null>(null);
   const [placeBounds, setPlaceBounds] = useState<MapBounds | null>(null);
+  const showList = useMinWidth(mq.split);
   const savedId = useSyncExternalStore(
     subscribeSelectedCourt,
     readSelectedCourt,
@@ -92,13 +106,19 @@ export function CourtExplorer({
     [courts, origin],
   );
   const courtsInView = useMemo(() => {
-    if (searching) {
-      if (!placeBounds) return [];
-      return visibleCourts.filter((court) => isInBounds(court, placeBounds));
+    if (!showList) return EMPTY_COURTS;
+    return visibleCourts.filter((court) =>
+      isInCurrentView(court, searching, placeBounds, mapBounds),
+    );
+  }, [mapBounds, placeBounds, searching, showList, visibleCourts]);
+  const courtCount = useMemo(() => {
+    if (showList) return courtsInView.length;
+    let count = 0;
+    for (const court of visibleCourts) {
+      if (isInCurrentView(court, searching, placeBounds, mapBounds)) count += 1;
     }
-    if (!mapBounds) return visibleCourts;
-    return visibleCourts.filter((court) => isInBounds(court, mapBounds));
-  }, [mapBounds, placeBounds, searching, visibleCourts]);
+    return count;
+  }, [courtsInView, mapBounds, placeBounds, searching, showList, visibleCourts]);
 
   useEffect(() => {
     const needle = query.trim();
@@ -177,9 +197,9 @@ export function CourtExplorer({
     <div className="flex h-dvh flex-col bg-asphalt">
       <AppHeader fetchedAt={fetchedAt} />
 
-      <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
-        <aside className="flex max-h-[48vh] min-h-0 w-full flex-col border-b border-white/10 bg-panel lg:max-h-none lg:w-[26rem] lg:border-r lg:border-b-0">
-          <div className="border-b border-white/10 p-4">
+      <div className={`flex min-h-0 flex-1 flex-col ${split.row}`}>
+        <aside className={`flex w-full shrink-0 flex-col border-b border-white/10 bg-panel ${split.aside}`}>
+          <div className={`p-3 sm:p-4 ${split.paneBorder}`}>
             <SearchFilters
               query={query}
               onQueryChange={(value) => {
@@ -191,20 +211,22 @@ export function CourtExplorer({
             />
             <p className="mt-3 flex items-center gap-2 font-display text-lg tracking-wide text-gold">
               <Icon iconNode={basketball} className="size-5 shrink-0" aria-hidden />
-              {copy.courtCount(courtsInView.length)}
+              {copy.courtCount(courtCount)}
             </p>
           </div>
 
-          <div className="min-h-0 flex-1 overflow-y-auto px-3">
-            <CourtList
-              courts={courtsInView}
-              selectedId={selectedId}
-              onSelect={selectCourt}
-            />
-          </div>
+          {showList ? (
+            <div className="min-h-0 flex-1 overflow-y-auto px-3">
+              <CourtList
+                courts={courtsInView}
+                selectedId={selectedId}
+                onSelect={selectCourt}
+              />
+            </div>
+          ) : null}
         </aside>
 
-        <section className="relative min-h-[52vh] flex-1 bg-asphalt">
+        <section className="relative min-h-0 flex-1 bg-asphalt">
           <div className="absolute inset-0">
             <CourtMap
               courts={visibleCourts}

@@ -12,11 +12,8 @@ const FETCHERS = {
   osm: getOsmCourts,
 } satisfies Record<CourtSourceId, () => Promise<Court[]>>;
 
-const SNAPSHOT_PATH = join(process.cwd(), ".hoopfinder-cache/courts.json");
-const LEGACY_SNAPSHOT_PATH = join(
-  process.cwd(),
-  ".next/cache/hoopfinder-courts.json",
-);
+const CACHE_DIR = join(process.cwd(), ".hoopfinder-cache");
+const SNAPSHOT_PATH = join(CACHE_DIR, "courts.json");
 
 type SourceSnapshot = {
   fetchedAt: string;
@@ -106,13 +103,13 @@ function errorMessage(error: unknown): string {
 async function readSnapshot(): Promise<Snapshot> {
   if (snapshotMemory) return { ...snapshotMemory };
 
-  for (const path of [SNAPSHOT_PATH, LEGACY_SNAPSHOT_PATH]) {
+  if (process.env.NODE_ENV === "development") {
     try {
-      const parsed: unknown = JSON.parse(await readFile(path, "utf8"));
+      const parsed: unknown = JSON.parse(await readFile(SNAPSHOT_PATH, "utf8"));
       snapshotMemory = asSnapshot(parsed);
       return { ...snapshotMemory };
     } catch {
-      continue;
+      // First run, or the cache file is missing/unreadable.
     }
   }
 
@@ -122,8 +119,10 @@ async function readSnapshot(): Promise<Snapshot> {
 
 async function writeSnapshot(snapshot: Snapshot) {
   snapshotMemory = snapshot;
+  if (process.env.NODE_ENV !== "development") return;
+
   try {
-    await mkdir(join(process.cwd(), ".hoopfinder-cache"), { recursive: true });
+    await mkdir(CACHE_DIR, { recursive: true });
     await writeFile(SNAPSHOT_PATH, JSON.stringify(snapshot));
   } catch (error) {
     console.warn("Could not persist court snapshot:", errorMessage(error));

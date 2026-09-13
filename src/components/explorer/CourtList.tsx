@@ -52,7 +52,7 @@ export function CourtList({
             <div
               className={`flex flex-col gap-2 rounded-2xl px-3 py-3 ${
                 selected
-                  ? "bg-hnmky-red/15 ring-1 ring-hnmky-red"
+                  ? "bg-emerald-400/15 ring-1 ring-emerald-400"
                   : "bg-white/5 hover:bg-white/10"
               }`}
             >
@@ -79,22 +79,22 @@ export function CourtList({
                   </span>
                 ) : null}
               </button>
-              <div className="flex flex-wrap items-center gap-2 text-xs">
+              <div className="flex flex-wrap items-center gap-2 text-sm">
                 <StatusBadge status={court.status} copy={copy} />
                 {court.amenities.lighting === true ? (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-white/10 px-2 py-1 text-cream/80">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-white/10 px-2 py-1 text-ink/80">
                     <Lightbulb className="size-3" aria-hidden />
                     {copy.lights}
                   </span>
                 ) : null}
                 {court.amenities.freeUse === true ? (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-white/10 px-2 py-1 text-cream/80">
+                  <span className="inline-flex items-center gap-1 rounded-full bg-white/10 px-2 py-1 text-ink/80">
                     <Unlock className="size-3" aria-hidden />
                     {copy.freeUse}
                   </span>
                 ) : null}
                 {source && !source.required ? (
-                  <span className="rounded-full bg-white/10 px-2 py-1 text-cream/80">
+                  <span className="rounded-full bg-white/10 px-2 py-1 text-ink/80">
                     {source.shortLabel}
                   </span>
                 ) : null}
