@@ -93,8 +93,8 @@ export function IntroDialog({
           >
             {copy.introTitle}
           </h2>
-          <p className="mt-3 text-sm leading-6 text-ink/80">{copy.introLead}</p>
-          <ul className="mt-5 space-y-3 text-sm text-ink/85">
+          <p className="mt-3 text-base leading-6 text-ink/80">{copy.introLead}</p>
+          <ul className="mt-5 space-y-3 text-base text-ink/85">
             <IntroStep icon={Search}>{copy.introSearch}</IntroStep>
             <IntroStep icon={Locate}>{copy.introLocate}</IntroStep>
             <IntroStep icon={Map}>{copy.introMap}</IntroStep>
@@ -103,7 +103,7 @@ export function IntroDialog({
           <h2 className="mt-6 font-display text-2xl tracking-wide text-white">
             {copy.introCreatedByTitle}
           </h2>
-          <p className="mt-2 block text-sm text-ink/85">
+          <p className="mt-2 block text-base text-ink/85">
             <a
               href="https://kirkkala.com"
               target="_blank"
@@ -114,26 +114,26 @@ export function IntroDialog({
             </a>{" "}
             {copy.introCreatedBy1}
           </p>
-          <p className="mt-2 block text-sm text-ink/85">{copy.introCreatedBy2}</p>
+          <p className="mt-2 block text-base text-ink/85">{copy.introCreatedBy2}</p>
           <a
             href="https://github.com/kirkkala/hoopfinder"
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-2 inline-flex items-center gap-2 text-sm text-ink/85 underline hover:text-gold"
+            className="mt-2 inline-flex items-center gap-2 text-base text-ink/85 underline hover:text-gold"
           >
             {copy.introCreatedBySourceCode}
           </a>
           <button
             type="button"
             onClick={onClose}
-            className="mt-6 w-full rounded-full bg-gold px-4 py-3 text-sm font-bold text-asphalt hover:bg-[#ffe0a3]"
+            className="mt-6 w-full rounded-full bg-gold px-4 py-3 text-base font-bold text-asphalt hover:bg-[#ffe0a3]"
           >
             {copy.introCta}
           </button>
         </div>
       </div>
       {showScrollHint ? (
-        <p className="pointer-events-none fixed bottom-4 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 rounded-full bg-panel/95 px-3 py-1.5 text-[11px] font-bold tracking-wide text-gold uppercase shadow-[0_8px_24px_rgb(0_0_0_/_0.45)]">
+        <p className="pointer-events-none fixed bottom-4 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 rounded-full bg-panel/95 px-3 py-1.5 text-xs font-bold tracking-wide text-gold uppercase shadow-[0_8px_24px_rgb(0_0_0_/_0.45)]">
           <ChevronDown className="size-3.5" aria-hidden />
           {copy.scrollForMore}
         </p>

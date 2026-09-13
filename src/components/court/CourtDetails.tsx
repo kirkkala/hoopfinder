@@ -309,11 +309,11 @@ function Fact({
 }) {
   return (
     <div>
-      <dt className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-gold/80">
+      <dt className="flex items-center gap-1.5 text-sm font-bold uppercase tracking-wide text-gold/80">
         <FactIcon className="size-3.5 shrink-0" aria-hidden />
         {label}
       </dt>
-      <dd className="mt-1 text-sm text-ink">{value}</dd>
+      <dd className="mt-1 text-base text-ink">{value}</dd>
     </div>
   );
 }

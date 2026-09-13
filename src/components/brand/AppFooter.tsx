@@ -9,11 +9,11 @@ export function AppFooter() {
   const copy = useCopy();
 
   return (
-    <footer className="border-t border-white/10 bg-asphalt px-3 py-2 text-center text-[11px] leading-4 text-ink-muted sm:px-4 sm:py-3 sm:text-xs sm:leading-5">
+    <footer className="border-t border-white/10 bg-asphalt px-3 py-2.5 text-center text-xs leading-5 text-ink-muted sm:px-4 sm:py-3 sm:text-sm sm:leading-6">
       <p>
         {copy.madeWith}{" "}
         <Heart
-          className="inline size-3.5 fill-red-500 text-red-500 align-text-bottom"
+          className="inline size-4 fill-red-500 text-red-500 align-text-bottom"
           aria-hidden
         />
         <span className="sr-only"> {copy.love}</span>{" "}by{" "}
