@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { COURT_DATA_REVALIDATE } from "@/lib/constants";
 import type { Court } from "@/lib/courts";
 
 const LIPAS_API = process.env.LIPAS_API_BASE ?? "https://api.lipas.fi/v2";
@@ -68,10 +67,7 @@ async function fetchPage(page: number) {
   url.searchParams.set("page-size", String(PAGE_SIZE));
   url.searchParams.set("page", String(page));
 
-  const response = await fetch(url, {
-    cache: "force-cache",
-    next: { revalidate: COURT_DATA_REVALIDATE },
-  });
+  const response = await fetch(url, { cache: "no-store" });
   if (!response.ok) {
     throw new Error(`LIPAS list request failed with ${response.status}`);
   }
