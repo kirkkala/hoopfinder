@@ -18,6 +18,7 @@ import {
   type CourtWithDistance,
 } from "@/lib/courts";
 import { isInBounds, type Coordinates, type MapBounds } from "@/lib/geo";
+import { mq, split, useMinWidth } from "@/lib/layout";
 
 const CourtMap = dynamic(
   () => import("@/components/explorer/CourtMap").then((mod) => mod.CourtMap),
@@ -25,18 +26,7 @@ const CourtMap = dynamic(
 );
 
 const SELECTED_COURT_KEY = "hoopfinder-selected-court";
-const LIST_QUERY = "(min-width: 1024px)";
 const EMPTY_COURTS: CourtWithDistance[] = [];
-
-function subscribeListLayout(onChange: () => void) {
-  const media = window.matchMedia(LIST_QUERY);
-  media.addEventListener("change", onChange);
-  return () => media.removeEventListener("change", onChange);
-}
-
-function listLayoutMatches() {
-  return window.matchMedia(LIST_QUERY).matches;
-}
 
 function isInCurrentView(
   court: CourtWithDistance,
@@ -93,11 +83,7 @@ export function CourtExplorer({
   const [pickedId, setPickedId] = useState<string | null | undefined>(undefined);
   const [mapBounds, setMapBounds] = useState<MapBounds | null>(null);
   const [placeBounds, setPlaceBounds] = useState<MapBounds | null>(null);
-  const showList = useSyncExternalStore(
-    subscribeListLayout,
-    listLayoutMatches,
-    () => false,
-  );
+  const showList = useMinWidth(mq.split);
   const savedId = useSyncExternalStore(
     subscribeSelectedCourt,
     readSelectedCourt,
@@ -211,9 +197,9 @@ export function CourtExplorer({
     <div className="flex h-dvh flex-col bg-asphalt">
       <AppHeader fetchedAt={fetchedAt} />
 
-      <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
-        <aside className="flex w-full shrink-0 flex-col border-b border-white/10 bg-panel lg:min-h-0 lg:w-[26rem] lg:border-r lg:border-b-0">
-          <div className="p-3 sm:p-4 lg:border-b lg:border-white/10">
+      <div className={`flex min-h-0 flex-1 flex-col ${split.row}`}>
+        <aside className={`flex w-full shrink-0 flex-col border-b border-white/10 bg-panel ${split.aside}`}>
+          <div className={`p-3 sm:p-4 ${split.paneBorder}`}>
             <SearchFilters
               query={query}
               onQueryChange={(value) => {
