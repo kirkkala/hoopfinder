@@ -44,3 +44,9 @@ body {
   overflow: hidden;
   box-shadow: 0 10px 24px rgb(0 0 0 / 0.18);
 }
+
+.intro-dialog[open] {
+  align-items: safe center;
+  justify-items: center;
+  scroll-padding-bottom: 3.5rem;
+}

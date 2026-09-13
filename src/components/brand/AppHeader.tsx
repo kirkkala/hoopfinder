@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import Link from "next/link";
 import { basketball } from "@lucide/lab";
 import { Icon } from "lucide-react";
@@ -42,48 +42,56 @@ export function AppHeader({
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="court-arc absolute inset-0 opacity-40" />
       </div>
-      <div className="relative flex items-center gap-3 px-4 py-3 lg:px-6">
-        <div className="flex min-w-0 items-center gap-3">
+      <div className="relative flex items-center gap-3 px-3 py-2 sm:px-4 sm:py-3 lg:px-6">
+        <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
           <Link
             href="/"
-            className="group flex min-w-0 items-center gap-3 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
+            className="group flex min-w-0 items-center gap-2 rounded-sm outline-none sm:gap-3 focus-visible:ring-2 focus-visible:ring-gold/60"
           >
             <Icon
               iconNode={basketball}
-              className="size-10 shrink-0 origin-center text-orange-500 drop-shadow-lg transition-transform duration-300 ease-out group-hover:rotate-[18deg] group-focus-visible:rotate-[18deg]"
+              className="size-8 shrink-0 origin-center text-orange-500 drop-shadow-lg transition-transform duration-300 ease-out sm:size-10 group-hover:rotate-[18deg] group-focus-visible:rotate-[18deg]"
               aria-hidden
             />
             <span className="min-w-0">
-              <span className="font-display text-2xl leading-none tracking-wide text-white">
+              <span className="block font-display text-xl leading-none tracking-wide whitespace-nowrap text-white sm:text-2xl">
                 {APP_NAME}
               </span>
-              <span className="mt-0.5 block truncate text-sm text-cream/70">
+              <span className="mt-0.5 hidden text-sm text-cream/70 sm:block">
                 {copy.tagline}
               </span>
             </span>
           </Link>
           <BetaBadge />
-          <nav className="flex shrink-0 items-center gap-1.5" aria-label={copy.info}>
+          <nav
+            className="hidden shrink-0 items-center gap-1.5 sm:flex"
+            aria-label={copy.info}
+          >
             <LanguageToggle />
             <button
               type="button"
               onClick={() => setIntroOpen(true)}
               aria-haspopup="dialog"
               aria-expanded={introOpen}
-              className="rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-bold tracking-wide text-cream/80 uppercase hover:bg-white/15 hover:text-white"
+              className="rounded-full bg-white/10 px-2.5 py-1.5 text-[11px] font-bold tracking-wide text-cream/80 uppercase hover:bg-white/15 hover:text-white"
             >
               {copy.info}
             </button>
           </nav>
         </div>
         {fetchedAt ? (
-          <p className="ml-auto shrink-0 text-right text-xs text-ink-muted">
+          <p className="hidden shrink-0 text-right text-xs text-ink-muted md:block">
             {copy.dataFrom}
             <time dateTime={fetchedAt} className="mt-0.5 block text-cream/70">
               {formatFetchedAt(fetchedAt, copy.locale)}
             </time>
           </p>
         ) : null}
+        <HeaderMenu
+          fetchedAt={fetchedAt}
+          introOpen={introOpen}
+          onOpenInfo={() => setIntroOpen(true)}
+        />
       </div>
       <IntroDialog open={introOpen} onClose={closeIntro} />
     </header>
@@ -111,6 +119,151 @@ function formatFetchedAt(iso: string, locale: Locale): string {
   return `${Number(parts.day)}.${Number(parts.month)}.${parts.year} klo ${parts.hour}.${parts.minute}`;
 }
 
+function HeaderMenu({
+  fetchedAt,
+  introOpen,
+  onOpenInfo,
+}: {
+  fetchedAt?: string | null;
+  introOpen: boolean;
+  onOpenInfo: () => void;
+}) {
+  const copy = useCopy();
+  const menuId = useId();
+  const rootRef = useRef<HTMLDivElement>(null);
+  const [open, setOpen] = useState(false);
+
+  useEffect(() => {
+    if (introOpen) setOpen(false);
+  }, [introOpen]);
+
+  useEffect(() => {
+    const media = window.matchMedia("(min-width: 640px)");
+    function closeIfDesktop() {
+      if (media.matches) setOpen(false);
+    }
+    media.addEventListener("change", closeIfDesktop);
+    return () => media.removeEventListener("change", closeIfDesktop);
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+
+    function onPointerDown(event: PointerEvent) {
+      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
+    }
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key === "Escape") setOpen(false);
+    }
+
+    document.addEventListener("pointerdown", onPointerDown);
+    document.addEventListener("keydown", onKeyDown);
+    return () => {
+      document.removeEventListener("pointerdown", onPointerDown);
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
+
+  return (
+    <div ref={rootRef} className="relative sm:hidden">
+      <button
+        type="button"
+        aria-expanded={open}
+        aria-controls={menuId}
+        aria-haspopup="true"
+        aria-label={open ? copy.close : copy.menu}
+        onClick={() => setOpen((value) => !value)}
+        className={`grid size-10 shrink-0 place-items-center rounded-full outline-none transition-colors duration-200 hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-gold/60 ${
+          open ? "bg-white/10 text-gold" : "text-cream"
+        }`}
+      >
+        <HamburgerIcon open={open} />
+      </button>
+      <nav
+        id={menuId}
+        aria-label={copy.menu}
+        aria-hidden={!open}
+        inert={!open}
+        className={`absolute top-[calc(100%+0.4rem)] right-0 z-50 w-52 origin-top-right rounded-2xl border border-white/10 bg-panel/95 p-2.5 shadow-[0_18px_40px_rgb(0_0_0_/_0.5)] backdrop-blur-md transition duration-200 ease-[cubic-bezier(.22,1,.36,1)] ${
+          open
+            ? "visible scale-100 opacity-100"
+            : "pointer-events-none invisible scale-95 opacity-0"
+        }`}
+      >
+        <p className="px-1 pb-1.5 text-[10px] font-bold tracking-[0.16em] text-gold/80 uppercase">
+          {copy.language}
+        </p>
+        <LanguageToggle stretch />
+        <button
+          type="button"
+          onClick={() => {
+            setOpen(false);
+            onOpenInfo();
+          }}
+          aria-haspopup="dialog"
+          aria-expanded={introOpen}
+          className="mt-2 w-full rounded-xl px-3 py-2.5 text-center text-xs font-bold tracking-wide text-cream/90 uppercase hover:bg-white/10 hover:text-white"
+        >
+          {copy.info}
+        </button>
+        {fetchedAt ? (
+          <p className="mt-2 border-t border-white/10 px-1 pt-2 text-center text-[11px] text-ink-muted">
+            {copy.dataFrom}
+            <time dateTime={fetchedAt} className="mt-0.5 block text-cream/70">
+              {formatFetchedAt(fetchedAt, copy.locale)}
+            </time>
+          </p>
+        ) : null}
+      </nav>
+    </div>
+  );
+}
+
+function HamburgerIcon({ open }: { open: boolean }) {
+  const bar = {
+    position: "absolute" as const,
+    left: 0,
+    height: 2,
+    width: "100%",
+    borderRadius: 999,
+    background: "currentColor",
+    transformOrigin: "center",
+    transition:
+      "transform 300ms cubic-bezier(.22, 1, .36, 1), opacity 200ms ease",
+  };
+
+  return (
+    <span className="relative block h-3.5 w-5" aria-hidden>
+      <span
+        style={{
+          ...bar,
+          top: 0,
+          transform: open
+            ? "translateY(6px) rotate(45deg)"
+            : "translateY(0) rotate(0deg)",
+        }}
+      />
+      <span
+        style={{
+          ...bar,
+          top: 6,
+          opacity: open ? 0 : 1,
+          transform: open ? "scaleX(0)" : "scaleX(1)",
+        }}
+      />
+      <span
+        style={{
+          ...bar,
+          top: 12,
+          transform: open
+            ? "translateY(-6px) rotate(-45deg)"
+            : "translateY(0) rotate(0deg)",
+        }}
+      />
+    </span>
+  );
+}
+
 function BetaBadge() {
   const copy = useCopy();
 
@@ -124,7 +277,7 @@ function BetaBadge() {
       <span
         id="beta-tooltip"
         role="tooltip"
-        className="pointer-events-none absolute top-[calc(100%+10px)] left-1/2 z-50 w-56 -translate-x-1/2 rounded-xl border border-white/10 bg-panel px-3 py-2.5 text-left text-xs font-normal normal-case leading-5 tracking-normal text-cream/90 opacity-0 shadow-[0_12px_32px_rgb(0_0_0_/_0.5)] transition-opacity duration-150 group-hover:opacity-100 group-focus:opacity-100"
+        className="pointer-events-none absolute top-[calc(100%+10px)] left-0 z-50 w-56 max-w-[calc(100vw-2rem)] rounded-xl border border-white/10 bg-panel px-3 py-2.5 text-left text-xs font-normal normal-case leading-5 tracking-normal text-cream/90 opacity-0 shadow-[0_12px_32px_rgb(0_0_0_/_0.5)] transition-opacity duration-150 sm:left-1/2 sm:-translate-x-1/2 group-hover:opacity-100 group-focus:opacity-100"
       >
         <span className="absolute -top-1 left-1/2 size-2 -translate-x-1/2 rotate-45 border-t border-l border-white/10 bg-panel" />
         <span className="block font-bold text-white">{APP_VERSION}</span>

@@ -179,7 +179,7 @@ export function CourtExplorer({
 
       <div className="flex min-h-0 flex-1 flex-col lg:flex-row">
         <aside className="flex max-h-[48vh] min-h-0 w-full flex-col border-b border-white/10 bg-panel lg:max-h-none lg:w-[26rem] lg:border-r lg:border-b-0">
-          <div className="border-b border-white/10 p-4">
+          <div className="border-b border-white/10 p-3 sm:p-4">
             <SearchFilters
               query={query}
               onQueryChange={(value) => {

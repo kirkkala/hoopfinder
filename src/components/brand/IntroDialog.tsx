@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { basketball } from "@lucide/lab";
-import { Icon, Eye, Locate, Map, Search, X } from "lucide-react";
+import { ChevronDown, Icon, Eye, Locate, Map, Search, X } from "lucide-react";
 import { LanguageToggle } from "@/components/brand/LanguageToggle";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { APP_NAME } from "@/lib/constants";
@@ -16,12 +16,39 @@ export function IntroDialog({
 }) {
   const copy = useCopy();
   const ref = useRef<HTMLDialogElement>(null);
+  const [showScrollHint, setShowScrollHint] = useState(false);
 
   useEffect(() => {
     const dialog = ref.current;
     if (!dialog) return;
-    if (open && !dialog.open) dialog.showModal();
+    if (open && !dialog.open) {
+      dialog.showModal();
+      dialog.scrollTop = 0;
+    }
     if (!open && dialog.open) dialog.close();
+  }, [open]);
+
+  useEffect(() => {
+    const dialog = ref.current;
+    if (!open || !dialog) {
+      setShowScrollHint(false);
+      return;
+    }
+
+    function update() {
+      const remaining =
+        dialog.scrollHeight - dialog.scrollTop - dialog.clientHeight;
+      setShowScrollHint(remaining > 24);
+    }
+
+    update();
+    dialog.addEventListener("scroll", update, { passive: true });
+    const observer = new ResizeObserver(update);
+    observer.observe(dialog);
+    return () => {
+      dialog.removeEventListener("scroll", update);
+      observer.disconnect();
+    };
   }, [open]);
 
   return (
@@ -35,19 +62,19 @@ export function IntroDialog({
         if (event.target === event.currentTarget) onClose();
       }}
       aria-labelledby="intro-title"
-      className="m-auto w-[min(26rem,calc(100%-2rem))] max-h-[calc(100vh-2rem)] overflow-y-auto rounded-3xl border border-white/10 bg-panel p-0 text-ink shadow-[0_24px_64px_rgb(0_0_0_/_0.55)] backdrop:bg-black/70"
+      className="intro-dialog m-0 max-h-dvh w-full max-w-none overflow-y-auto overscroll-contain bg-transparent p-4 text-ink open:grid open:h-dvh backdrop:bg-black/70"
     >
-      <div className="relative overflow-hidden px-6 pt-6 pb-5">
-        <div className="court-arc pointer-events-none absolute inset-0 opacity-40" />
+      <div className="relative w-full max-w-md rounded-3xl border border-white/10 bg-panel shadow-[0_24px_64px_rgb(0_0_0_/_0.55)] sm:max-w-lg">
+        <div className="court-arc pointer-events-none absolute inset-0 rounded-3xl opacity-40" />
         <button
           type="button"
           onClick={onClose}
-          className="absolute top-3 right-3 z-10 rounded-full p-1.5 text-ink-muted hover:bg-white/10 hover:text-white"
+          className="absolute top-3 right-3 z-10 rounded-full bg-panel/80 p-1.5 text-ink-muted hover:bg-white/10 hover:text-white"
           aria-label={copy.close}
         >
           <X className="size-4" aria-hidden />
         </button>
-        <div className="relative">
+        <div className="relative px-6 pt-6 pb-5">
           <Icon
             iconNode={basketball}
             className="size-10 text-orange-500 drop-shadow-lg"
@@ -72,7 +99,9 @@ export function IntroDialog({
             <IntroStep icon={Map}>{copy.introMap}</IntroStep>
             <IntroStep icon={Eye}>{copy.introSeeCourt}</IntroStep>
           </ul>
-          <h2 className="mt-6 font-display text-2xl tracking-wide text-white">{copy.introCreatedByTitle}</h2>
+          <h2 className="mt-6 font-display text-2xl tracking-wide text-white">
+            {copy.introCreatedByTitle}
+          </h2>
           <p className="mt-2 block text-sm text-cream/85">
             <a
               href="https://kirkkala.com"
@@ -89,7 +118,7 @@ export function IntroDialog({
             href="https://github.com/kirkkala/hoopfinder"
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-2 inline-flex items-center gap-2 text-sm text-cream/85 hover:text-gold underline"
+            className="mt-2 inline-flex items-center gap-2 text-sm text-cream/85 underline hover:text-gold"
           >
             {copy.introCreatedBySourceCode}
           </a>
@@ -102,6 +131,12 @@ export function IntroDialog({
           </button>
         </div>
       </div>
+      {showScrollHint ? (
+        <p className="pointer-events-none fixed bottom-4 left-1/2 z-10 flex -translate-x-1/2 items-center gap-1 rounded-full bg-panel/95 px-3 py-1.5 text-[11px] font-bold tracking-wide text-gold uppercase shadow-[0_8px_24px_rgb(0_0_0_/_0.45)]">
+          <ChevronDown className="size-3.5" aria-hidden />
+          {copy.scrollForMore}
+        </p>
+      ) : null}
     </dialog>
   );
 }

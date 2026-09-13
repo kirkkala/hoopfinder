@@ -40,7 +40,9 @@ export function SearchFilters({
 
   return (
     <div className="space-y-3">
-      <p className="text-xs text-ink-muted">{copy.searchInstructions}</p>
+      <p className="hidden text-xs text-ink-muted sm:block">
+        {copy.searchInstructions}
+      </p>
       <label className="relative block">
         <span className="sr-only">{copy.searchLabel}</span>
         <Search
