@@ -43,6 +43,7 @@ import {
   type Court,
 } from "@/lib/courts";
 import { courtSource, sourceListingUrl } from "@/lib/sources";
+import { split } from "@/lib/layout";
 
 export function CourtDetails({
   court,
@@ -72,8 +73,9 @@ export function CourtDetails({
     <div className="flex min-h-dvh flex-col bg-asphalt">
       <AppHeader fetchedAt={fetchedAt} courtCount={courtCount} />
 
-      <main className="mx-auto grid w-full max-w-5xl flex-1 gap-6 px-4 py-8 lg:grid-cols-[1.1fr_0.9fr]">
+      <main className="mx-auto grid w-full max-w-5xl flex-1 gap-6 px-4 py-8 split:grid-cols-[1.1fr_0.9fr]">
         <section className="space-y-5">
+          <BackToMap courtId={court.id} className={split.hidden} />
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">
               {source ? copy.courtKindFrom(source.label) : copy.courtKind}
@@ -246,13 +248,7 @@ export function CourtDetails({
         </section>
 
         <aside className="overflow-hidden rounded-3xl border border-white/10 bg-panel">
-          <Link
-            href={`/?court=${encodeURIComponent(court.id)}`}
-            className="inline-flex shrink-0 items-center gap-1 px-3 py-4 text-md font-medium text-gold hover:text-white"
-          >
-            <Map /><ArrowLeft className="size-6" aria-hidden />
-              {copy.backToMap}
-            </Link>
+          <BackToMap courtId={court.id} className="px-3 py-4" />
           <div className="h-80">
             <CourtMiniMap court={court} />
           </div>
@@ -301,6 +297,26 @@ export function CourtDetails({
 
       <AppFooter />
     </div>
+  );
+}
+
+function BackToMap({
+  courtId,
+  className,
+}: {
+  courtId: string;
+  className?: string;
+}) {
+  const copy = useCopy();
+  return (
+    <Link
+      href={`/?court=${encodeURIComponent(courtId)}`}
+      className={`inline-flex shrink-0 items-center gap-1 text-md font-medium text-gold hover:text-white ${className ?? ""}`}
+    >
+      <Map aria-hidden />
+      <ArrowLeft className="size-6" aria-hidden />
+      {copy.backToMap}
+    </Link>
   );
 }
 

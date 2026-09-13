@@ -32,6 +32,7 @@ export const wide = {
 
 /** Classes paired with `BREAKPOINTS.split` (Tailwind `split:`). */
 export const split = {
+  hidden: "split:hidden",
   row: "split:flex-row",
   aside: "split:min-h-0 split:w-[26rem] split:border-r split:border-b-0",
   paneBorder: "split:border-b split:border-white/10",
