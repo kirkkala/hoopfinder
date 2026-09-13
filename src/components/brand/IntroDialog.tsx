@@ -10,9 +10,11 @@ import { APP_NAME } from "@/lib/constants";
 export function IntroDialog({
   open,
   onClose,
+  courtCount,
 }: {
   open: boolean;
   onClose: () => void;
+  courtCount: number;
 }) {
   const copy = useCopy();
   const ref = useRef<HTMLDialogElement>(null);
@@ -93,7 +95,9 @@ export function IntroDialog({
           >
             {copy.introTitle}
           </h2>
-          <p className="mt-3 text-base leading-6 text-ink/80">{copy.introLead}</p>
+          <p className="mt-3 text-base leading-6 text-ink/80">
+            {copy.introLead(courtCount)}
+          </p>
           <ul className="mt-5 space-y-3 text-base text-ink/85">
             <IntroStep icon={Search}>{copy.introSearch}</IntroStep>
             <IntroStep icon={Locate}>{copy.introLocate}</IntroStep>

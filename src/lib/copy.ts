@@ -29,12 +29,14 @@ const messages = {
   info: { fi: "Info", en: "Info" },
   introTitle: { fi: "Ota pallo mukaan", en: "Bring a ball along" },
   introLead: {
-    fi: "Hoop Finder näyttää ulkokoripallokentät ympäri Suomea. Reissulla, mökillä tai uudessa kaupungissa — täältä löydät paikan heittää.",
-    en: "Hoop Finder shows outdoor basketball courts across Finland. On a trip, at the cottage, or in a new city — find a place to hoop.",
+    fi: (count: number) =>
+      `Hoop Finder näyttää kaikki Suomen ${count} ulkokoripallokenttää. Olit sitten reissulla, mökillä tai sukulaisten luona — täältä löydät paikan heittää.`,
+    en: (count: number) =>
+      `Hoop Finder shows all of Finland's ${count} outdoor basketball courts. Whether you're on a trip, at the cottage, or visiting relatives — find a place to hoop.`,
   },
   introSearch: {
-    fi: "Kirjoita kaupunki, alue tai osoite.",
-    en: "Type a city, neighborhood, or address.",
+    fi: "Etsi kaupunkia, aluetta tai osoitteella.",
+    en: "Search by city, neighborhood, or address.",
   },
   introLocate: {
     fi: "Tai paina Paikanna, niin kartta tietää missä olet.",
@@ -45,8 +47,8 @@ const messages = {
     en: "Move the map and explore the locations.",
   },
   introSeeCourt: {
-    fi: "Klikkaa kohdetta kartalla ja siirry katsomaan tarkempia tietoja kentästä.",
-    en: "Click a dot on the map and see the court information.",
+    fi: "Klikkaa pisteitä kartalla ja siirry katsomaan tarkempia tietoja kentästä.",
+    en: "Click the dots on the map and see the court information.",
   },
   introCreatedByTitle: {
     fi: "Kuka tämän teki ja miksi",
