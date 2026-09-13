@@ -12,7 +12,7 @@ export function AppFooter() {
       <p>
         {copy.madeWith}{" "}
         <Heart
-          className="inline size-3.5 fill-hnmky-red text-hnmky-red align-text-bottom"
+          className="inline size-3.5 fill-red-500 text-red-500 align-text-bottom"
           aria-hidden
         />
         <span className="sr-only"> {copy.love}</span>{" "}by{" "}
