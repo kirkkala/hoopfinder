@@ -30,9 +30,9 @@ const messages = {
   introTitle: { fi: "Ota pallo mukaan", en: "Bring a ball along" },
   introLead: {
     fi: (count: number) =>
-      `Hoop Finder näyttää kaikki Suomen ${count} ulkokoripallokenttää. Olit sitten reissulla, mökillä tai sukulaisten luona — täältä löydät paikan heittää.`,
+      `Hoop Finderissa on listattuna ${count} ulkokoripallokenttää Suomesta. Olit sitten reissussa, mökillä, sukulaisten luona tai haluat löytää kodin läheltä uuden paikan pelailla — täältä löydät paikan heittää.`,
     en: (count: number) =>
-      `Hoop Finder shows all of Finland's ${count} outdoor basketball courts. Whether you're on a trip, at the cottage, or visiting relatives — find a place to hoop.`,
+      `Hoop Finder lists ${count} outdoor basketball courts in Finland. Whether you're on a trip, at the cottage, visiting relatives or want to find a new place to play at home — here you can find a place to hoop.`,
   },
   introSearch: {
     fi: "Etsi kaupunkia, aluetta tai osoitteella.",
