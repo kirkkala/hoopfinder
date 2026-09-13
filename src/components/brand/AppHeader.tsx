@@ -6,8 +6,10 @@ import { basketball } from "@lucide/lab";
 import { Icon } from "lucide-react";
 import { IntroDialog } from "@/components/brand/IntroDialog";
 import { LanguageToggle } from "@/components/brand/LanguageToggle";
+import { SourceCredits } from "@/components/brand/AppFooter";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { APP_NAME, APP_VERSION } from "@/lib/constants";
+import { mq, useMinWidth, wide } from "@/lib/layout";
 import type { Locale } from "@/lib/copy";
 
 const INTRO_KEY = "hoopfinder-intro";
@@ -64,7 +66,7 @@ export function AppHeader({
           </Link>
           <BetaBadge />
           <nav
-            className="hidden shrink-0 items-center gap-1.5 sm:flex"
+            className={`${wide.flex} shrink-0 items-center gap-1.5`}
             aria-label={copy.info}
           >
             <LanguageToggle />
@@ -80,7 +82,7 @@ export function AppHeader({
           </nav>
         </div>
         {fetchedAt ? (
-          <p className="hidden shrink-0 text-right text-xs text-ink-muted md:block">
+          <p className={`${wide.block} shrink-0 text-right text-xs text-ink-muted`}>
             {copy.dataFrom}
             <time dateTime={fetchedAt} className="mt-0.5 block text-ink/70">
               {formatFetchedAt(fetchedAt, copy.locale)}
@@ -133,18 +135,15 @@ function HeaderMenu({
   const rootRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
 
+  const isWide = useMinWidth(mq.wide);
+
   useEffect(() => {
     if (introOpen) setOpen(false);
   }, [introOpen]);
 
   useEffect(() => {
-    const media = window.matchMedia("(min-width: 640px)");
-    function closeIfDesktop() {
-      if (media.matches) setOpen(false);
-    }
-    media.addEventListener("change", closeIfDesktop);
-    return () => media.removeEventListener("change", closeIfDesktop);
-  }, []);
+    if (isWide) setOpen(false);
+  }, [isWide]);
 
   useEffect(() => {
     if (!open) return;
@@ -165,7 +164,7 @@ function HeaderMenu({
   }, [open]);
 
   return (
-    <div ref={rootRef} className="relative sm:hidden">
+    <div ref={rootRef} className={`relative ${wide.hidden}`}>
       <button
         type="button"
         aria-expanded={open}
@@ -184,7 +183,7 @@ function HeaderMenu({
         aria-label={copy.menu}
         aria-hidden={!open}
         inert={!open}
-        className={`absolute top-[calc(100%+0.4rem)] right-0 z-50 w-52 origin-top-right rounded-2xl border border-white/10 bg-panel/95 p-2.5 shadow-[0_18px_40px_rgb(0_0_0_/_0.5)] backdrop-blur-md transition duration-200 ease-[cubic-bezier(.22,1,.36,1)] ${
+        className={`absolute top-[calc(100%+0.4rem)] right-0 z-50 w-56 origin-top-right rounded-2xl border border-white/10 bg-panel/95 p-2.5 shadow-[0_18px_40px_rgb(0_0_0_/_0.5)] backdrop-blur-md transition duration-200 ease-[cubic-bezier(.22,1,.36,1)] ${
           open
             ? "visible scale-100 opacity-100"
             : "pointer-events-none invisible scale-95 opacity-0"
@@ -206,14 +205,17 @@ function HeaderMenu({
         >
           {copy.info}
         </button>
-        {fetchedAt ? (
-          <p className="mt-2 border-t border-white/10 px-1 pt-2 text-center text-[11px] text-ink-muted">
-            {copy.dataFrom}
-            <time dateTime={fetchedAt} className="mt-0.5 block text-ink/70">
-              {formatFetchedAt(fetchedAt, copy.locale)}
-            </time>
-          </p>
-        ) : null}
+        <div className="mt-2 space-y-1 border-t border-white/10 px-1 pt-2 text-center text-[11px] leading-4 text-ink-muted">
+          {fetchedAt ? (
+            <p>
+              {copy.dataFrom}
+              <time dateTime={fetchedAt} className="mt-0.5 block text-ink/70">
+                {formatFetchedAt(fetchedAt, copy.locale)}
+              </time>
+            </p>
+          ) : null}
+          <SourceCredits />
+        </div>
       </nav>
     </div>
   );

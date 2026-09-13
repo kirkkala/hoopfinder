@@ -3,6 +3,7 @@
 import { Heart } from "lucide-react";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { COURT_SOURCES } from "@/lib/sources";
+import { wide } from "@/lib/layout";
 
 export function AppFooter() {
   const copy = useCopy();
@@ -25,6 +26,18 @@ export function AppFooter() {
           Timo Kirkkala
         </a>
       </p>
+      <div className={wide.block}>
+        <SourceCredits />
+      </div>
+    </footer>
+  );
+}
+
+export function SourceCredits() {
+  const copy = useCopy();
+
+  return (
+    <>
       <p>
         {copy.courtDataFrom}{" "}
         {COURT_SOURCES.map((source, index) => (
@@ -52,7 +65,7 @@ export function AppFooter() {
           GitHub
         </a>
       </p>
-    </footer>
+    </>
   );
 }
 

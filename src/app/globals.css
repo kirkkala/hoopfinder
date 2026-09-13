@@ -9,6 +9,9 @@
   --color-ink: #f5f2ed;
   --color-ink-muted: #b8b2a8;
   --color-gold: #ffd482;
+  /* Keep in sync with BREAKPOINTS in src/lib/layout.ts (px / 16 = rem) */
+  --breakpoint-wide: 40rem;
+  --breakpoint-split: 64rem;
 }
 
 html,
