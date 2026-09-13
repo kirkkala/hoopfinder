@@ -47,9 +47,11 @@ import { courtSource, sourceListingUrl } from "@/lib/sources";
 export function CourtDetails({
   court,
   fetchedAt,
+  courtCount,
 }: {
   court: Court;
   fetchedAt: string | null;
+  courtCount: number;
 }) {
   const copy = useCopy();
   const address = formatAddress([
@@ -68,7 +70,7 @@ export function CourtDetails({
 
   return (
     <div className="flex min-h-dvh flex-col bg-asphalt">
-      <AppHeader fetchedAt={fetchedAt} />
+      <AppHeader fetchedAt={fetchedAt} courtCount={courtCount} />
 
       <main className="mx-auto grid w-full max-w-5xl flex-1 gap-6 px-4 py-8 lg:grid-cols-[1.1fr_0.9fr]">
         <section className="space-y-5">

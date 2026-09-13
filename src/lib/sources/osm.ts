@@ -1,5 +1,4 @@
 import { z } from "zod";
-import { COURT_DATA_REVALIDATE } from "@/lib/constants";
 import { getCopy } from "@/lib/copy";
 import { emptyAmenities, isGenericCourtName, type Court } from "@/lib/courts";
 
@@ -7,11 +6,12 @@ const OVERPASS_API =
   process.env.OVERPASS_API_BASE ?? "https://overpass-api.de/api/interpreter";
 
 const QUERY = `[out:json][timeout:25];
-area["ISO3166-1"="FI"][admin_level=2]->.fi;
+area(3600054200)->.fi;
 nwr["leisure"="pitch"]["sport"~"basketball"]["indoor"!="yes"]["location"!="indoor"](area.fi);
 out center tags;`;
 
 const OsmSchema = z.object({
+  remark: z.string().optional(),
   elements: z.array(
     z.looseObject({
       type: z.enum(["node", "way", "relation"]),
@@ -38,8 +38,8 @@ export async function getOsmCourts(): Promise<Court[]> {
       "User-Agent": "HoopFinder/0.1 (https://github.com/kirkkala/hoopfinder)",
     },
     body: new URLSearchParams({ data: QUERY }).toString(),
-    cache: "force-cache",
-    next: { revalidate: COURT_DATA_REVALIDATE },
+    cache: "no-store",
+    signal: AbortSignal.timeout(30_000),
   });
   if (!response.ok) {
     throw new Error(`Overpass request failed with ${response.status}`);
@@ -49,11 +49,17 @@ export async function getOsmCourts(): Promise<Court[]> {
   if (!parsed.success) {
     throw new Error("Overpass payload failed validation");
   }
+  if (parsed.data.remark) {
+    throw new Error(`Overpass error: ${parsed.data.remark}`);
+  }
 
   const courts: Court[] = [];
   for (const element of parsed.data.elements) {
     const court = toCourt(element);
     if (court) courts.push(court);
+  }
+  if (courts.length === 0) {
+    throw new Error("Overpass returned no courts");
   }
   return courts;
 }
