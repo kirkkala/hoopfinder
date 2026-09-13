@@ -79,7 +79,7 @@ export function CourtList({
                   </span>
                 ) : null}
               </button>
-              <div className="flex flex-wrap items-center gap-2 text-xs">
+              <div className="flex flex-wrap items-center gap-2 text-sm">
                 <StatusBadge status={court.status} copy={copy} />
                 {court.amenities.lighting === true ? (
                   <span className="inline-flex items-center gap-1 rounded-full bg-white/10 px-2 py-1 text-ink/80">

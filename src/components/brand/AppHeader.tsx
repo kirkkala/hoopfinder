@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef, useState } from "react";
+import { useEffect, useId, useState } from "react";
 import Link from "next/link";
 import { basketball } from "@lucide/lab";
 import { Icon } from "lucide-react";
@@ -75,14 +75,14 @@ export function AppHeader({
               onClick={() => setIntroOpen(true)}
               aria-haspopup="dialog"
               aria-expanded={introOpen}
-              className="rounded-full bg-white/10 px-2.5 py-1.5 text-[11px] font-bold tracking-wide text-ink/80 uppercase hover:bg-white/15 hover:text-white"
+              className="rounded-full bg-white/10 px-2.5 py-1.5 text-xs font-bold tracking-wide text-ink/80 uppercase hover:bg-white/15 hover:text-white"
             >
               {copy.info}
             </button>
           </nav>
         </div>
         {fetchedAt ? (
-          <p className={`${wide.block} shrink-0 text-right text-xs text-ink-muted`}>
+          <p className={`${wide.block} shrink-0 text-right text-sm text-ink-muted`}>
             {copy.dataFrom}
             <time dateTime={fetchedAt} className="mt-0.5 block text-ink/70">
               {formatFetchedAt(fetchedAt, copy.locale)}
@@ -132,7 +132,6 @@ function HeaderMenu({
 }) {
   const copy = useCopy();
   const menuId = useId();
-  const rootRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
 
   const isWide = useMinWidth(mq.wide);
@@ -148,23 +147,21 @@ function HeaderMenu({
   useEffect(() => {
     if (!open) return;
 
-    function onPointerDown(event: PointerEvent) {
-      if (!rootRef.current?.contains(event.target as Node)) setOpen(false);
-    }
     function onKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") setOpen(false);
     }
 
-    document.addEventListener("pointerdown", onPointerDown);
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
     document.addEventListener("keydown", onKeyDown);
     return () => {
-      document.removeEventListener("pointerdown", onPointerDown);
+      document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", onKeyDown);
     };
   }, [open]);
 
   return (
-    <div ref={rootRef} className={`relative ${wide.hidden}`}>
+    <div className={`relative ${wide.hidden}`}>
       <button
         type="button"
         aria-expanded={open}
@@ -172,51 +169,71 @@ function HeaderMenu({
         aria-haspopup="true"
         aria-label={open ? copy.close : copy.menu}
         onClick={() => setOpen((value) => !value)}
-        className={`grid size-10 shrink-0 place-items-center rounded-full outline-none transition-colors duration-200 hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-gold/60 ${
+        className={`relative z-30 grid size-10 shrink-0 place-items-center rounded-full outline-none transition-colors duration-200 hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-gold/60 ${
           open ? "bg-white/10 text-gold" : "text-ink"
         }`}
       >
         <HamburgerIcon open={open} />
       </button>
-      <nav
-        id={menuId}
-        aria-label={copy.menu}
-        aria-hidden={!open}
-        inert={!open}
-        className={`absolute top-[calc(100%+0.4rem)] right-0 z-50 w-56 origin-top-right rounded-2xl border border-white/10 bg-panel/95 p-2.5 shadow-[0_18px_40px_rgb(0_0_0_/_0.5)] backdrop-blur-md transition duration-200 ease-[cubic-bezier(.22,1,.36,1)] ${
-          open
-            ? "visible scale-100 opacity-100"
-            : "pointer-events-none invisible scale-95 opacity-0"
+      <div
+        className={`fixed inset-x-0 bottom-0 top-14 z-20 overflow-hidden ${
+          open ? "" : "pointer-events-none"
         }`}
       >
-        <p className="px-1 pb-1.5 text-[10px] font-bold tracking-[0.16em] text-gold/80 uppercase">
-          {copy.language}
-        </p>
-        <LanguageToggle stretch />
-        <button
-          type="button"
-          onClick={() => {
-            setOpen(false);
-            onOpenInfo();
-          }}
-          aria-haspopup="dialog"
-          aria-expanded={introOpen}
-          className="mt-2 w-full rounded-xl px-3 py-2.5 text-center text-xs font-bold tracking-wide text-ink/90 uppercase hover:bg-white/10 hover:text-white"
+        <div
+          aria-hidden
+          className={`absolute inset-0 bg-black/55 transition-opacity duration-300 ease-[cubic-bezier(.22,1,.36,1)] ${
+            open ? "opacity-100" : "opacity-0"
+          }`}
+          onClick={() => setOpen(false)}
+        />
+        <nav
+          id={menuId}
+          aria-label={copy.menu}
+          aria-hidden={!open}
+          inert={!open}
+          className={`absolute inset-y-0 right-0 flex w-[min(19.5rem,88vw)] flex-col border-l border-white/10 bg-panel shadow-[-18px_0_40px_rgb(0_0_0_/_0.45)] transition-transform duration-300 ease-[cubic-bezier(.22,1,.36,1)] ${
+            open ? "translate-x-0" : "translate-x-full"
+          }`}
         >
-          {copy.info}
-        </button>
-        <div className="mt-2 space-y-1 border-t border-white/10 px-1 pt-2 text-center text-[11px] leading-4 text-ink-muted">
-          {fetchedAt ? (
-            <p>
-              {copy.dataFrom}
-              <time dateTime={fetchedAt} className="mt-0.5 block text-ink/70">
-                {formatFetchedAt(fetchedAt, copy.locale)}
-              </time>
-            </p>
-          ) : null}
-          <SourceCredits />
-        </div>
-      </nav>
+          <div className="pointer-events-none absolute inset-0 overflow-hidden opacity-30">
+            <div className="court-arc absolute inset-0" />
+          </div>
+          <div className="relative flex min-h-0 flex-1 flex-col">
+            <div className="px-4 pt-5 pr-[max(1rem,env(safe-area-inset-right))]">
+              <p className="pb-2 text-xs font-bold tracking-[0.16em] text-gold/80 uppercase">
+                {copy.language}
+              </p>
+              <LanguageToggle stretch />
+              <button
+                type="button"
+                onClick={() => {
+                  setOpen(false);
+                  onOpenInfo();
+                }}
+                aria-haspopup="dialog"
+                aria-expanded={introOpen}
+                className="mt-3 w-full rounded-xl px-3 py-3 text-left text-sm font-bold tracking-wide text-ink/90 uppercase hover:bg-white/10 hover:text-white"
+              >
+                {copy.info}
+              </button>
+              {fetchedAt ? (
+                <p className="mt-5 border-t border-white/10 pt-4 text-sm leading-5 text-ink-muted">
+                  {copy.dataFrom}
+                  <time dateTime={fetchedAt} className="mt-0.5 block text-ink/80">
+                    {formatFetchedAt(fetchedAt, copy.locale)}
+                  </time>
+                </p>
+              ) : null}
+            </div>
+            <div className="mt-auto border-t border-white/10 bg-black/30 px-4 pt-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] pr-[max(1rem,env(safe-area-inset-right))] text-sm leading-5 text-ink-muted">
+              <div className="space-y-1.5">
+                <SourceCredits />
+              </div>
+            </div>
+          </div>
+        </nav>
+      </div>
     </div>
   );
 }
@@ -272,7 +289,7 @@ function BetaBadge() {
   return (
     <button
       type="button"
-      className="group relative inline-flex rounded-full bg-gold/20 px-2 py-0.5 font-sans text-[10px] font-bold uppercase tracking-[0.14em] text-gold outline-none hover:bg-gold/30 focus-visible:ring-2 focus-visible:ring-gold/60"
+      className="group relative inline-flex rounded-full bg-gold/20 px-2 py-0.5 font-sans text-[11px] font-bold uppercase tracking-[0.14em] text-gold outline-none hover:bg-gold/30 focus-visible:ring-2 focus-visible:ring-gold/60"
       aria-describedby="beta-tooltip"
     >
       {copy.beta}

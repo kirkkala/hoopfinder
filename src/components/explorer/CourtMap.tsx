@@ -302,12 +302,12 @@ export function CourtMap({
               {courtName(selected, copy)}
             </p>
             {selected.distanceKm !== null ? (
-              <p className="mt-1 text-xs text-ink-muted">
+              <p className="mt-1 text-sm text-ink-muted">
                 {copy.distanceAway(formatDistance(selected.distanceKm))}
               </p>
             ) : null}
             {source ? (
-              <span className="mt-2 w-fit rounded-full bg-white/10 px-2 py-0.5 text-[11px] font-bold tracking-wide text-ink/80">
+              <span className="mt-2 w-fit rounded-full bg-white/10 px-2 py-0.5 text-xs font-bold tracking-wide text-ink/80">
                 {source.shortLabel}
               </span>
             ) : null}

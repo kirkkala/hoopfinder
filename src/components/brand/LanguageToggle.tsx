@@ -9,7 +9,7 @@ export function LanguageToggle({ stretch = false }: { stretch?: boolean }) {
 
   return (
     <div
-      className={`flex shrink-0 rounded-full bg-white/10 p-0.5 text-[11px] font-bold tracking-wide ${
+      className={`flex shrink-0 rounded-full bg-white/10 p-0.5 text-xs font-bold tracking-wide ${
         stretch ? "w-full" : ""
       }`}
       role="group"

@@ -40,7 +40,7 @@ export function SearchFilters({
 
   return (
     <div className="space-y-3">
-      <p className="hidden text-xs text-ink-muted sm:block">
+      <p className="hidden text-sm text-ink-muted sm:block">
         {copy.searchInstructions}
       </p>
       <label className="relative block">
@@ -62,7 +62,7 @@ export function SearchFilters({
         type="button"
         onClick={onUseLocation}
         disabled={locationStatus === "pending"}
-        className="inline-flex items-center gap-1.5 rounded-full bg-blue-800 px-3 py-1.5 text-xs font-bold text-white hover:bg-blue-900 disabled:cursor-default disabled:opacity-70"
+        className="inline-flex items-center gap-1.5 rounded-full bg-blue-800 px-3 py-1.5 text-sm font-bold text-white hover:bg-blue-900 disabled:cursor-default disabled:opacity-70"
       >
         <LocationIcon
           aria-hidden
