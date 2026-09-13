@@ -130,15 +130,13 @@ const messages = {
     gravel: { fi: "Sora", en: "Gravel" },
   } satisfies Record<string, Pair<string>>,
   courtCount: {
-    fi: (count: number, nearby: boolean) => {
-      const noun = count === 1 ? "kori" : "koria";
-      const where = nearby ? "lähistöllä" : "Suomessa";
-      return `${count} ${noun} ${where}`;
+    fi: (count: number) => {
+      const noun = count === 1 ? "kenttä" : "kenttää";
+      return `${count} ${noun} alueella`;
     },
-    en: (count: number, nearby: boolean) => {
+    en: (count: number) => {
       const noun = count === 1 ? "hoop" : "hoops";
-      const where = nearby ? "nearby" : "in Finland";
-      return `${count} ${noun} ${where}`;
+      return `${count} ${noun} in view`;
     },
   },
   errorTitle: { fi: "Aikalisä", en: "Timeout" },

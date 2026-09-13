@@ -21,6 +21,7 @@ import {
   DEFAULT_MAP_ZOOM,
   formatDistance,
   type Coordinates,
+  type MapBounds,
 } from "@/lib/geo";
 
 setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
@@ -47,6 +48,18 @@ function readSavedView(): { latitude: number; longitude: number; zoom: number } 
   };
 }
 
+function boundsFromMap(map: { getBounds: () => LngLatBounds }): MapBounds {
+  const bounds = map.getBounds();
+  const southWest = bounds.getSouthWest();
+  const northEast = bounds.getNorthEast();
+  return {
+    west: southWest.lng,
+    south: southWest.lat,
+    east: northEast.lng,
+    north: northEast.lat,
+  };
+}
+
 function saveView(latitude: number, longitude: number, zoom: number) {
   try {
     localStorage.setItem(
@@ -66,6 +79,7 @@ export function CourtMap({
   keepCamera,
   onSelect,
   onClose,
+  onBoundsChange,
 }: {
   courts: CourtWithDistance[];
   selectedId: string | null;
@@ -74,6 +88,7 @@ export function CourtMap({
   keepCamera: boolean;
   onSelect: (id: string) => void;
   onClose: () => void;
+  onBoundsChange: (bounds: MapBounds) => void;
 }) {
   const copy = useCopy();
   const mapRef = useRef<MapRef>(null);
@@ -197,10 +212,14 @@ export function CourtMap({
       initialViewState={initialView}
       style={{ width: "100%", height: "100%" }}
       interactiveLayerIds={["clusters", "court-points"]}
-      onLoad={() => setMapReady(true)}
+      onLoad={(event) => {
+        setMapReady(true);
+        onBoundsChange(boundsFromMap(event.target));
+      }}
       onMoveEnd={(event) => {
         const { latitude, longitude, zoom } = event.viewState;
         saveView(latitude, longitude, zoom);
+        onBoundsChange(boundsFromMap(event.target));
       }}
       onClick={handleClick}
       attributionControl={{ compact: true }}

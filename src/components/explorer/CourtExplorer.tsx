@@ -17,7 +17,7 @@ import {
   type Court,
   type DistanceFilter,
 } from "@/lib/courts";
-import type { Coordinates } from "@/lib/geo";
+import { isInBounds, type Coordinates, type MapBounds } from "@/lib/geo";
 
 const CourtMap = dynamic(
   () => import("@/components/explorer/CourtMap").then((mod) => mod.CourtMap),
@@ -67,6 +67,7 @@ export function CourtExplorer({
   const [origin, setOrigin] = useState<Coordinates | null>(null);
   const [locationStatus, setLocationStatus] = useState<LocationStatus>("idle");
   const [pickedId, setPickedId] = useState<string | null | undefined>(undefined);
+  const [mapBounds, setMapBounds] = useState<MapBounds | null>(null);
   const savedId = useSyncExternalStore(
     subscribeSelectedCourt,
     readSelectedCourt,
@@ -82,6 +83,10 @@ export function CourtExplorer({
     () => filterCourts(courts, query, distanceKm, origin),
     [courts, query, distanceKm, origin],
   );
+  const courtsInView = useMemo(() => {
+    if (!mapBounds) return visibleCourts;
+    return visibleCourts.filter((court) => isInBounds(court, mapBounds));
+  }, [mapBounds, visibleCourts]);
 
   function selectCourt(id: string) {
     setPickedId(id);
@@ -130,16 +135,13 @@ export function CourtExplorer({
             />
             <p className="mt-3 flex items-center gap-2 font-display text-lg tracking-wide text-gold">
               <Icon iconNode={basketball} className="size-5 shrink-0" aria-hidden />
-              {copy.courtCount(
-                visibleCourts.length,
-                nearMe && distanceKm !== "any",
-              )}
+              {copy.courtCount(courtsInView.length)}
             </p>
           </div>
 
           <div className="min-h-0 flex-1 overflow-y-auto px-3">
             <CourtList
-              courts={visibleCourts}
+              courts={courtsInView}
               selectedId={selectedId}
               onSelect={selectCourt}
             />
@@ -156,6 +158,7 @@ export function CourtExplorer({
               keepCamera={keepCamera}
               onSelect={selectCourt}
               onClose={clearCourt}
+              onBoundsChange={setMapBounds}
             />
           </div>
         </section>
