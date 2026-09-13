@@ -104,6 +104,7 @@ function toCourt(site: z.infer<typeof LipasSiteSchema>): Court | null {
     address: text(site.location.address),
     postalCode: text(site.location["postal-code"]),
     city: text(site.location["postal-office"]),
+    // LIPAS "neighborhood" is a planning district (peruspiiri), not kaupunginosa.
     neighborhood: text(site.location.city?.neighborhood),
     lat,
     lon,
