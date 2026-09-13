@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { basketball } from "@lucide/lab";
-import { ArrowLeft, Icon } from "lucide-react";
+import { Icon } from "lucide-react";
 import { IntroDialog } from "@/components/brand/IntroDialog";
 import { LanguageToggle } from "@/components/brand/LanguageToggle";
 import { useCopy } from "@/components/brand/LocaleProvider";
@@ -13,10 +13,8 @@ import type { Locale } from "@/lib/copy";
 const INTRO_KEY = "hoopfinder-intro";
 
 export function AppHeader({
-  backHref,
   fetchedAt,
 }: {
-  backHref?: string;
   fetchedAt?: string | null;
 }) {
   const copy = useCopy();
@@ -46,28 +44,25 @@ export function AppHeader({
       </div>
       <div className="relative flex items-center gap-3 px-4 py-3 lg:px-6">
         <div className="flex min-w-0 items-center gap-3">
-          {backHref ? (
-            <Link
-              href={backHref}
-              className="inline-flex w-20 shrink-0 items-center gap-1 text-sm font-medium text-gold hover:text-white"
-            >
-              <ArrowLeft className="size-6" aria-hidden />
-              {copy.backToMap}
-            </Link>
-          ) : (
+          <Link
+            href="/"
+            className="group flex min-w-0 items-center gap-3 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-gold/60"
+          >
             <Icon
               iconNode={basketball}
-              className="size-10 w-22 shrink-0 text-orange-500 drop-shadow-lg"
+              className="size-10 shrink-0 origin-center text-orange-500 drop-shadow-lg transition-transform duration-300 ease-out group-hover:rotate-[18deg] group-focus-visible:rotate-[18deg]"
               aria-hidden
             />
-          )}
-          <div className="min-w-0">
-            <div className="flex items-baseline gap-2 font-display text-2xl leading-none tracking-wide text-white">
-              {APP_NAME}
-              <BetaBadge />
-            </div>
-            <p className="mt-0.5 truncate text-sm text-cream/70">{copy.tagline}</p>
-          </div>
+            <span className="min-w-0">
+              <span className="font-display text-2xl leading-none tracking-wide text-white">
+                {APP_NAME}
+              </span>
+              <span className="mt-0.5 block truncate text-sm text-cream/70">
+                {copy.tagline}
+              </span>
+            </span>
+          </Link>
+          <BetaBadge />
           <nav className="flex shrink-0 items-center gap-1.5" aria-label={copy.info}>
             <LanguageToggle />
             <button

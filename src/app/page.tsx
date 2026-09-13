@@ -3,7 +3,15 @@ import { getCourtCatalog } from "@/lib/catalog";
 
 export const revalidate = 86400;
 
-export default async function HomePage() {
+export default async function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ court?: string | string[] }>;
+}) {
   const { courts, fetchedAt } = await getCourtCatalog();
-  return <CourtExplorer courts={courts} fetchedAt={fetchedAt} />;
+  const { court } = await searchParams;
+  const focusId = typeof court === "string" ? court : null;
+  return (
+    <CourtExplorer courts={courts} fetchedAt={fetchedAt} focusId={focusId} />
+  );
 }

@@ -56,9 +56,11 @@ function subscribeSelectedCourt() {
 export function CourtExplorer({
   courts,
   fetchedAt,
+  focusId,
 }: {
   courts: Court[];
   fetchedAt: string | null;
+  focusId: string | null;
 }) {
   const copy = useCopy();
   const [query, setQuery] = useState("");
@@ -75,8 +77,14 @@ export function CourtExplorer({
   );
   const restoredId =
     savedId && courts.some((court) => court.id === savedId) ? savedId : null;
-  const selectedId = pickedId === undefined ? restoredId : pickedId;
-  const keepCamera = pickedId === undefined && restoredId !== null;
+  const focusedId =
+    focusId && courts.some((court) => court.id === focusId) ? focusId : null;
+  const selectedId = pickedId === undefined ? (focusedId ?? restoredId) : pickedId;
+  const keepCamera = pickedId === undefined && restoredId !== null && !focusedId;
+
+  useEffect(() => {
+    if (focusedId) writeSelectedCourt(focusedId);
+  }, [focusedId]);
 
   const searching = query.trim().length >= 2;
   const visibleCourts = useMemo(

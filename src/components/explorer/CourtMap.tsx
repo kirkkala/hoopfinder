@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, X } from "lucide-react";
+import { ArrowRight, MapPin, X } from "lucide-react";
 import { LngLatBounds, setWorkerUrl, type GeoJSONSource } from "maplibre-gl";
 import Map, {
   Layer,
@@ -16,6 +16,7 @@ import Map, {
 import { MAP_STYLE } from "@/lib/constants";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { courtName, type CourtWithDistance } from "@/lib/courts";
+import { courtSource } from "@/lib/sources";
 import {
   DEFAULT_MAP_CENTER,
   DEFAULT_MAP_ZOOM,
@@ -98,6 +99,7 @@ export function CourtMap({
   const [mapReady, setMapReady] = useState(false);
   const [initialView] = useState(readSavedView);
   const selected = courts.find((court) => court.id === selectedId) ?? null;
+  const source = selected ? courtSource(selected.source) : null;
 
   const data = useMemo(
     () => ({
@@ -144,15 +146,15 @@ export function CourtMap({
   }, [focusBounds, mapReady, selected]);
 
   useEffect(() => {
-    if (!selected || keepCamera) {
+    if (!mapReady || !selected || keepCamera) {
       return;
     }
     mapRef.current?.flyTo({
       center: [selected.lon, selected.lat],
-      zoom: Math.max(mapRef.current.getZoom(), 14),
+      zoom: Math.max(mapRef.current.getZoom(), 15),
       duration: 700,
     });
-  }, [keepCamera, selected]);
+  }, [keepCamera, mapReady, selected]);
 
   function handleClick(event: MapLayerMouseEvent) {
     const feature = event.features?.[0];
@@ -283,7 +285,7 @@ export function CourtMap({
           closeOnClick={false}
           onClose={onClose}
         >
-          <div className="relative min-w-48 p-3 pr-8">
+          <div className="relative flex min-h-24 min-w-52 flex-col p-3 pr-8">
             <button
               type="button"
               onClick={onClose}
@@ -292,15 +294,26 @@ export function CourtMap({
             >
               <X className="size-4" aria-hidden />
             </button>
-            <p className="font-semibold text-white">{courtName(selected, copy)}</p>
+            <p className="pr-2 text-base leading-snug font-semibold text-white">
+              <MapPin
+                className="mr-1.5 inline size-[1em] shrink-0 align-[-0.15em]"
+                aria-hidden
+              />
+              {courtName(selected, copy)}
+            </p>
             {selected.distanceKm !== null ? (
               <p className="mt-1 text-xs text-ink-muted">
                 {copy.distanceAway(formatDistance(selected.distanceKm))}
               </p>
             ) : null}
+            {source ? (
+              <span className="mt-2 w-fit rounded-full bg-white/10 px-2 py-0.5 text-[11px] font-bold tracking-wide text-cream/80">
+                {source.shortLabel}
+              </span>
+            ) : null}
             <Link
               href={`/courts/${selected.id}`}
-              className="mt-2 inline-flex items-center gap-1 text-sm font-bold text-gold hover:text-white"
+              className="mt-auto inline-flex items-center gap-1 pt-2 text-sm font-bold text-gold hover:text-white"
             >
               {copy.letsGo}
               <ArrowRight className="size-3.5" aria-hidden />
