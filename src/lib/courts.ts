@@ -39,9 +39,6 @@ export type Court = {
   };
 };
 
-export const DISTANCE_OPTIONS = [1, 2, 5, 10, 25, 50] as const;
-export type DistanceFilter = (typeof DISTANCE_OPTIONS)[number] | "any";
-
 export type CourtWithDistance = Court & {
   distanceKm: number | null;
 };
@@ -111,14 +108,10 @@ export function isGenericCourtName(name: string): boolean {
   );
 }
 
-export function filterCourts(
+export function withDistance(
   courts: Court[],
-  query: string,
-  distanceKm: DistanceFilter,
   origin: Coordinates | null,
 ): CourtWithDistance[] {
-  const needle = query.trim().toLowerCase();
-
   return courts
     .map((court) => ({
       ...court,
@@ -126,20 +119,6 @@ export function filterCourts(
         ? haversineKm(origin, { lat: court.lat, lon: court.lon })
         : null,
     }))
-    .filter((court) => {
-      if (
-        origin &&
-        distanceKm !== "any" &&
-        court.distanceKm !== null &&
-        court.distanceKm > distanceKm
-      ) {
-        return false;
-      }
-      if (!needle) {
-        return true;
-      }
-      return courtHaystack(court).includes(needle);
-    })
     .sort((a, b) => {
       if (a.distanceKm !== null && b.distanceKm !== null) {
         return a.distanceKm - b.distanceKm || a.id.localeCompare(b.id);
@@ -177,21 +156,6 @@ export function formatAddress(
   parts: Array<string | null | undefined>,
 ): string {
   return parts.filter((part): part is string => Boolean(part)).join(", ");
-}
-
-function courtHaystack(court: Court): string {
-  return [
-    court.name,
-    court.nameFi,
-    court.address,
-    court.city,
-    court.neighborhood,
-    court.postalCode,
-    court.amenities.fieldType,
-  ]
-    .filter(Boolean)
-    .join(" ")
-    .toLowerCase();
 }
 
 function compareText(a: string, b: string) {

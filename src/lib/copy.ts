@@ -33,31 +33,26 @@ const messages = {
   },
   sourceListAnd: { fi: " ja ", en: " and " },
   sourceCodeOn: { fi: "Lähdekoodi", en: "Source code" },
-  searchLabel: { fi: "Etsi kenttää", en: "Search hoops" },
+  searchLabel: { fi: "Etsi kaupunkia tai aluetta", en: "Search a city or neighborhood" },
   searchPlaceholder: {
-    fi: "Etsi kenttää, kaupunkia tai katua",
-    en: "Search a court, city, or street",
+    fi: "Kaupunki, alue tai osoite",
+    en: "City, neighborhood or address",
   },
-  distanceAll: { fi: "Kaikki", en: "All" },
-  distancesFromYou: {
-    fi: "Etäisyydet ovat nykyisestä sijainnistasi.",
-    en: "Distances are from where you are now.",
-  },
-  tapNearMe: {
-    fi: "Ulkokentät ympäri Suomen. Paina Lähellä, niin näet lähimmät ensin.",
-    en: "Showing outdoor courts across Finland. Tap Near me to sort and filter by distance.",
+  searchInstructions: {
+    fi: "Etsi hakusanalla tai paina 'Paikanna' löytääkseen kentät lähistöllä.",
+    en: "Use the search or tap 'Near me' to find hoops nearby.",
   },
   nearMe: {
-    idle: { fi: "Lähellä", en: "Near me" },
+    idle: { fi: "Paikanna", en: "Near me" },
     pending: { fi: "Paikannetaan…", en: "Locating…" },
-    granted: { fi: "Lähelläsi", en: "Near you" },
+    granted: { fi: "Sijaintisi", en: "Near you" },
     denied: { fi: "Sijainti estetty", en: "Location blocked" },
     unavailable: { fi: "Ei GPS:ää", en: "No GPS" },
   },
-  emptyTitle: { fi: "Huti", en: "Airball" },
+  emptyTitle: { fi: "Airball", en: "Airball" },
   emptyHint: {
-    fi: "Ei osumia. Kokeile laajempaa sädettä tai toista kaupunkia.",
-    en: "No hoops match. Try a wider range or another city.",
+    fi: "Ei osumia. Kokeile toista hakusanaa.",
+    en: "No hoops match. Try another search term.",
   },
   addressMissing: {
     fi: "Osoitetta ei ilmoitettu",
@@ -132,11 +127,11 @@ const messages = {
   courtCount: {
     fi: (count: number) => {
       const noun = count === 1 ? "kenttä" : "kenttää";
-      return `${count} ${noun} alueella`;
+      return `${count} ${noun} kartalla`;
     },
     en: (count: number) => {
       const noun = count === 1 ? "hoop" : "hoops";
-      return `${count} ${noun} in view`;
+      return `${count} ${noun} on the map`;
     },
   },
   errorTitle: { fi: "Aikalisä", en: "Timeout" },

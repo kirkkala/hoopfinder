@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useSyncExternalStore } from "react";
+import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
 import dynamic from "next/dynamic";
 import { basketball } from "@lucide/lab";
 import { Icon } from "lucide-react";
@@ -13,9 +13,8 @@ import {
 } from "@/components/explorer/SearchFilters";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import {
-  filterCourts,
+  withDistance,
   type Court,
-  type DistanceFilter,
 } from "@/lib/courts";
 import { isInBounds, type Coordinates, type MapBounds } from "@/lib/geo";
 
@@ -63,11 +62,12 @@ export function CourtExplorer({
 }) {
   const copy = useCopy();
   const [query, setQuery] = useState("");
-  const [distanceKm, setDistanceKm] = useState<DistanceFilter>("any");
   const [origin, setOrigin] = useState<Coordinates | null>(null);
+  const [locateSeq, setLocateSeq] = useState(0);
   const [locationStatus, setLocationStatus] = useState<LocationStatus>("idle");
   const [pickedId, setPickedId] = useState<string | null | undefined>(undefined);
   const [mapBounds, setMapBounds] = useState<MapBounds | null>(null);
+  const [placeBounds, setPlaceBounds] = useState<MapBounds | null>(null);
   const savedId = useSyncExternalStore(
     subscribeSelectedCourt,
     readSelectedCourt,
@@ -78,15 +78,52 @@ export function CourtExplorer({
   const selectedId = pickedId === undefined ? restoredId : pickedId;
   const keepCamera = pickedId === undefined && restoredId !== null;
 
-  const nearMe = locationStatus === "granted";
+  const searching = query.trim().length >= 2;
   const visibleCourts = useMemo(
-    () => filterCourts(courts, query, distanceKm, origin),
-    [courts, query, distanceKm, origin],
+    () => withDistance(courts, origin),
+    [courts, origin],
   );
   const courtsInView = useMemo(() => {
+    if (searching) {
+      if (!placeBounds) return [];
+      return visibleCourts.filter((court) => isInBounds(court, placeBounds));
+    }
     if (!mapBounds) return visibleCourts;
     return visibleCourts.filter((court) => isInBounds(court, mapBounds));
-  }, [mapBounds, visibleCourts]);
+  }, [mapBounds, placeBounds, searching, visibleCourts]);
+
+  useEffect(() => {
+    const needle = query.trim();
+    if (needle.length < 2) {
+      setPlaceBounds(null);
+      return;
+    }
+
+    setPlaceBounds(null);
+    const controller = new AbortController();
+    const timer = window.setTimeout(() => {
+      void fetch(`/api/places?q=${encodeURIComponent(needle)}`, {
+        signal: controller.signal,
+      })
+        .then((response) => {
+          if (!response.ok) throw new Error("place lookup failed");
+          return response.json() as Promise<MapBounds | null>;
+        })
+        .then((bounds) => {
+          if (!controller.signal.aborted) setPlaceBounds(bounds);
+        })
+        .catch((error: unknown) => {
+          if (controller.signal.aborted) return;
+          if (error instanceof DOMException && error.name === "AbortError") return;
+          setPlaceBounds(null);
+        });
+    }, 400);
+
+    return () => {
+      window.clearTimeout(timer);
+      controller.abort();
+    };
+  }, [query]);
 
   function selectCourt(id: string) {
     setPickedId(id);
@@ -99,6 +136,15 @@ export function CourtExplorer({
   }
 
   function requestLocation() {
+    setQuery("");
+    setPlaceBounds(null);
+    clearCourt();
+
+    if (origin && locationStatus === "granted") {
+      setLocateSeq((n) => n + 1);
+      return;
+    }
+
     if (!navigator.geolocation) {
       setLocationStatus("unavailable");
       return;
@@ -112,6 +158,7 @@ export function CourtExplorer({
           lon: position.coords.longitude,
         });
         setLocationStatus("granted");
+        setLocateSeq((n) => n + 1);
       },
       () => setLocationStatus("denied"),
       { enableHighAccuracy: true, timeout: 10_000 },
@@ -127,9 +174,10 @@ export function CourtExplorer({
           <div className="border-b border-white/10 p-4">
             <SearchFilters
               query={query}
-              onQueryChange={setQuery}
-              distanceKm={distanceKm}
-              onDistanceChange={setDistanceKm}
+              onQueryChange={(value) => {
+                setQuery(value);
+                clearCourt();
+              }}
               locationStatus={locationStatus}
               onUseLocation={requestLocation}
             />
@@ -154,7 +202,8 @@ export function CourtExplorer({
               courts={visibleCourts}
               selectedId={selectedId}
               origin={origin}
-              followUser={nearMe && distanceKm === "any"}
+              locateSeq={locateSeq}
+              focusBounds={placeBounds}
               keepCamera={keepCamera}
               onSelect={selectCourt}
               onClose={clearCourt}

@@ -2,15 +2,14 @@
 
 Find outdoor basketball courts across Finland. Helping basketballers to find courts to go out and play.
 
-The first version is a map of outdoor basketball courts from LIPAS type **1310** and OpenStreetMap, with search, distance filtering, and a court detail page.
+The first version is a map of outdoor basketball courts from LIPAS type **1310** and OpenStreetMap, with search and a court detail page.
 
 The UI defaults to Finnish, English is available. UI texts live in [`src/lib/copy.ts`](src/lib/copy.ts). The chosen language is stored in the browser. Court names come as LIPAS and OpenStreetMap provide them.
 
 ## What is in this MVP
 
 - Interactive MapLibre map with the user’s location and clustered courts nationwide
-- Search by name, address, city, or neighborhood
-- Distance filter from your location after you share it
+- Search a city, neighborhood, or address, or zoom the map to your location
 - Court page with the fields LIPAS or OpenStreetMap actually provide
 - Server-side LIPAS and Overpass fetches (cached for a day, shared by all visitors)
 - Last good court data is kept if a later fetch fails; the header shows when it was last fetched

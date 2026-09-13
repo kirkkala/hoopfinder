@@ -19,6 +19,7 @@ import { courtName, type CourtWithDistance } from "@/lib/courts";
 import {
   DEFAULT_MAP_CENTER,
   DEFAULT_MAP_ZOOM,
+  NEAR_ME_ZOOM,
   formatDistance,
   type Coordinates,
   type MapBounds,
@@ -75,7 +76,8 @@ export function CourtMap({
   courts,
   selectedId,
   origin,
-  followUser,
+  locateSeq,
+  focusBounds,
   keepCamera,
   onSelect,
   onClose,
@@ -84,7 +86,8 @@ export function CourtMap({
   courts: CourtWithDistance[];
   selectedId: string | null;
   origin: Coordinates | null;
-  followUser: boolean;
+  locateSeq: number;
+  focusBounds: MapBounds | null;
   keepCamera: boolean;
   onSelect: (id: string) => void;
   onClose: () => void;
@@ -115,50 +118,30 @@ export function CourtMap({
   );
 
   useEffect(() => {
-    if (!mapReady || selected) {
+    if (!mapReady || locateSeq === 0 || !origin) {
       return;
     }
 
-    const map = mapRef.current;
-    if (!map) {
+    mapRef.current?.flyTo({
+      center: [origin.lon, origin.lat],
+      zoom: NEAR_ME_ZOOM,
+      duration: 700,
+    });
+  }, [locateSeq, mapReady, origin]);
+
+  useEffect(() => {
+    if (!mapReady || selected || !focusBounds) {
       return;
     }
 
-    if (followUser && origin) {
-      map.flyTo({
-        center: [origin.lon, origin.lat],
-        zoom: 11,
-        duration: 700,
-      });
-      return;
-    }
-
-    if (!origin) {
-      return;
-    }
-
-    if (courts.length === 0) {
-      return;
-    }
-
-    if (courts.length === 1) {
-      map.flyTo({
-        center: [courts[0].lon, courts[0].lat],
-        zoom: 14,
-        duration: 700,
-      });
-      return;
-    }
-
-    const bounds = courts.reduce(
-      (nextBounds, court) => nextBounds.extend([court.lon, court.lat]),
-      new LngLatBounds(
-        [courts[0].lon, courts[0].lat],
-        [courts[0].lon, courts[0].lat],
-      ),
+    mapRef.current?.fitBounds(
+      [
+        [focusBounds.west, focusBounds.south],
+        [focusBounds.east, focusBounds.north],
+      ],
+      { padding: 48, maxZoom: 15, duration: 700 },
     );
-    map.fitBounds(bounds, { padding: 72, maxZoom: 13, duration: 700 });
-  }, [courts, followUser, mapReady, origin, selected]);
+  }, [focusBounds, mapReady, selected]);
 
   useEffect(() => {
     if (!selected || keepCamera) {

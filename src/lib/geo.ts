@@ -11,6 +11,9 @@ export const DEFAULT_MAP_CENTER: Coordinates = {
 
 export const DEFAULT_MAP_ZOOM = 10.5;
 
+/** Nearby starting view after the user shares their location. */
+export const NEAR_ME_ZOOM = 13;
+
 const EARTH_RADIUS_KM = 6371;
 
 export function haversineKm(
@@ -57,6 +60,24 @@ export function isInBounds(
     return point.lon >= bounds.west && point.lon <= bounds.east;
   }
   return point.lon >= bounds.west || point.lon <= bounds.east;
+}
+
+/** Keep a neighborhood-sized view when Nominatim returns a point. */
+export function expandTinyBounds(bounds: MapBounds): MapBounds {
+  const minSpan = 0.015;
+  const latSpan = bounds.north - bounds.south;
+  const lonSpan = bounds.east - bounds.west;
+  if (latSpan >= minSpan && lonSpan >= minSpan) return bounds;
+  const latMid = (bounds.north + bounds.south) / 2;
+  const lonMid = (bounds.east + bounds.west) / 2;
+  const dLat = Math.max(latSpan, minSpan) / 2;
+  const dLon = Math.max(lonSpan, minSpan) / 2;
+  return {
+    south: latMid - dLat,
+    north: latMid + dLat,
+    west: lonMid - dLon,
+    east: lonMid + dLon,
+  };
 }
 
 function toRadians(degrees: number): number {
