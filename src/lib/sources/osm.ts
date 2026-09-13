@@ -5,7 +5,7 @@ import { emptyAmenities, isGenericCourtName, type Court } from "@/lib/courts";
 const OVERPASS_API =
   process.env.OVERPASS_API_BASE ?? "https://overpass-api.de/api/interpreter";
 
-const QUERY = `[out:json][timeout:25];
+const QUERY = `[out:json][timeout:90];
 area(3600054200)->.fi;
 nwr["leisure"="pitch"]["sport"~"basketball"]["indoor"!="yes"]["location"!="indoor"](area.fi);
 out center tags;`;
@@ -39,7 +39,7 @@ export async function getOsmCourts(): Promise<Court[]> {
     },
     body: new URLSearchParams({ data: QUERY }).toString(),
     cache: "no-store",
-    signal: AbortSignal.timeout(30_000),
+    signal: AbortSignal.timeout(120_000),
   });
   if (!response.ok) {
     throw new Error(`Overpass request failed with ${response.status}`);

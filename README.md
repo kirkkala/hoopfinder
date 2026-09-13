@@ -11,8 +11,7 @@ The UI defaults to Finnish, English is available. UI texts live in [`src/lib/cop
 - Interactive MapLibre map with the user’s location and clustered courts nationwide
 - Search a city, neighborhood, or address, or zoom the map to your location
 - Court page with the fields LIPAS or OpenStreetMap actually provide
-- Server-side LIPAS and Overpass fetches (cached for a day, shared by all visitors)
-- Last good court data is kept if a later fetch fails; the header shows when it was last fetched
+- Court list shipped in [`data/courts.json`](data/courts.json); the header shows when that snapshot was fetched
 - Error, empty, and not-found states
 
 Weather, Linked Events, route finder, and cycling directions might come later. Or any other good feasible idea.
@@ -31,14 +30,23 @@ OpenStreetMap pitches tagged `leisure=pitch` and `sport=basketball` are merged i
 
 ## Data sources
 
-Each court API is its own module. Pages only talk to the catalog:
+Each court API is its own module. Pages only talk to the catalog, which reads the committed snapshot:
 
+- [`data/courts.json`](data/courts.json) — last successful LIPAS + Overpass dump
+- [`src/lib/catalog.ts`](src/lib/catalog.ts) — load the snapshot, merge without duplicates, look up by id
 - [`src/lib/sources/lipas.ts`](src/lib/sources/lipas.ts) — LIPAS type 1310
 - [`src/lib/sources/osm.ts`](src/lib/sources/osm.ts) — OpenStreetMap Overpass
 - [`src/lib/sources/index.ts`](src/lib/sources/index.ts) — source labels, attribution, listing links
-- [`src/lib/catalog.ts`](src/lib/catalog.ts) — fetch every source, merge without duplicates, look up by id
 
-To drop OpenStreetMap, remove it from `COURT_SOURCES` and `FETCHERS`, then delete `src/lib/sources/osm.ts`. To add a source, add a mapper module and one entry in those two lists. Earlier sources win when two courts are within 80 m.
+Overpass is too slow and unreliable to call from Vercel on each request, so production never fetches courts live. A GitHub Action runs `npm run refresh-courts` every Monday, commits [`data/courts.json`](data/courts.json) if it changed, and Vercel deploys that. You can also run the same job from the Actions tab, or locally:
+
+```bash
+npm run refresh-courts
+```
+
+If Overpass is down, the script keeps the previous OSM courts and still updates LIPAS. The header “data updated” date comes from the snapshot.
+
+To drop OpenStreetMap, remove it from `COURT_SOURCES`, then delete `src/lib/sources/osm.ts`. To add a source, add a mapper module, one entry in `COURT_SOURCES`, and include it in `npm run refresh-courts`. Earlier sources win when two courts are within 80 m.
 
 ## Develop
 
