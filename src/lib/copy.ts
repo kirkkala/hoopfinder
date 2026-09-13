@@ -41,12 +41,12 @@ const messages = {
     en: "Or tap Near me to jump to where you are.",
   },
   introMap: {
-    fi: "Liikuta karttaa — lista näyttää kentät näkyvissä.",
-    en: "Move the map — the list shows the hoops in view.",
+    fi: "Liikuta karttaa ja tutustu kenttien sijaintiin.",
+    en: "Move the map and explore the locations.",
   },
   introSeeCourt: {
-    fi: "Klikkaa kohdetta kartalla ja katso kentän tiedot.",
-    en: "Click a dot on the map and see the court details.",
+    fi: "Klikkaa kohdetta kartalla ja siirry katsomaan tarkempia tietoja kentästä.",
+    en: "Click a dot on the map and see the court information.",
   },
   introCreatedByTitle: {
     fi: "Kuka tämän teki ja miksi",
