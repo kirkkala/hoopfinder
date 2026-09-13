@@ -1,7 +1,7 @@
 import { CourtExplorer } from "@/components/explorer/CourtExplorer";
 import { getCourtCatalog } from "@/lib/catalog";
 
-export const revalidate = 86400;
+export const dynamic = "force-dynamic";
 
 export default async function HomePage({
   searchParams,

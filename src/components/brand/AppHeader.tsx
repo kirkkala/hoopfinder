@@ -16,8 +16,10 @@ const INTRO_KEY = "hoopfinder-intro";
 
 export function AppHeader({
   fetchedAt,
+  courtCount,
 }: {
   fetchedAt?: string | null;
+  courtCount: number;
 }) {
   const copy = useCopy();
   const [introOpen, setIntroOpen] = useState(false);
@@ -95,7 +97,11 @@ export function AppHeader({
           onOpenInfo={() => setIntroOpen(true)}
         />
       </div>
-      <IntroDialog open={introOpen} onClose={closeIntro} />
+      <IntroDialog
+        open={introOpen}
+        onClose={closeIntro}
+        courtCount={courtCount}
+      />
     </header>
   );
 }

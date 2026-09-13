@@ -14,6 +14,7 @@ const FETCHERS = {
 
 const CACHE_DIR = join(process.cwd(), ".hoopfinder-cache");
 const SNAPSHOT_PATH = join(CACHE_DIR, "courts.json");
+const FETCH_COOLDOWN_MS = 2 * 60 * 1000;
 
 type SourceSnapshot = {
   fetchedAt: string;
@@ -28,6 +29,9 @@ export type CourtCatalog = {
 };
 
 let snapshotMemory: Snapshot | null = null;
+let catalogMemory: CourtCatalog | null = null;
+let catalogKey = "";
+const fetchFailedAt: Partial<Record<CourtSourceId, number>> = {};
 
 export const getCourtCatalog = cache(async (): Promise<CourtCatalog> => {
   const snapshot = await readSnapshot();
@@ -37,20 +41,33 @@ export const getCourtCatalog = cache(async (): Promise<CourtCatalog> => {
   const batches = await Promise.all(
     COURT_SOURCES.map(async (source) => {
       const previous = snapshot[source.id];
-      if (previous && isFresh(previous.fetchedAt)) {
+      if (previous && previous.courts.length > 0 && isFresh(previous.fetchedAt)) {
         loaded.push(previous);
         return previous.courts;
       }
 
+      if (isCoolingDown(source.id) && previous && previous.courts.length > 0) {
+        loaded.push(previous);
+        return previous.courts;
+      }
+      if (isCoolingDown(source.id)) {
+        return [] as Court[];
+      }
+
       try {
         const courts = await FETCHERS[source.id]();
+        if (courts.length === 0) {
+          throw new Error(`${source.label} returned no courts`);
+        }
+        delete fetchFailedAt[source.id];
         const entry = { fetchedAt: new Date().toISOString(), courts };
         snapshot[source.id] = entry;
         snapshotChanged = true;
         loaded.push(entry);
         return courts;
       } catch (error) {
-        if (previous) {
+        fetchFailedAt[source.id] = Date.now();
+        if (previous && previous.courts.length > 0) {
           console.warn(
             `${source.label} fetch failed (${errorMessage(error)}); using saved courts from ${previous.fetchedAt}`,
           );
@@ -67,10 +84,18 @@ export const getCourtCatalog = cache(async (): Promise<CourtCatalog> => {
   );
 
   if (snapshotChanged) await writeSnapshot(snapshot);
-  return {
+
+  const nextKey = loaded
+    .map((entry) => `${entry.fetchedAt}:${entry.courts.length}`)
+    .join("|");
+  if (catalogMemory && catalogKey === nextKey) return catalogMemory;
+
+  catalogMemory = {
     courts: mergeCourts(batches),
     fetchedAt: oldestFetchedAt(loaded),
   };
+  catalogKey = nextKey;
+  return catalogMemory;
 });
 
 export async function getBasketballCourt(
@@ -88,6 +113,11 @@ function isFresh(fetchedAt: string): boolean {
   return Date.now() - fetchedMs < COURT_DATA_REVALIDATE * 1000;
 }
 
+function isCoolingDown(source: CourtSourceId): boolean {
+  const failedAt = fetchFailedAt[source];
+  return failedAt !== undefined && Date.now() - failedAt < FETCH_COOLDOWN_MS;
+}
+
 function oldestFetchedAt(entries: SourceSnapshot[]): string | null {
   if (entries.length === 0) return null;
   return entries.reduce(
@@ -101,24 +131,48 @@ function errorMessage(error: unknown): string {
 }
 
 async function readSnapshot(): Promise<Snapshot> {
-  if (snapshotMemory) return { ...snapshotMemory };
+  const disk = await readDiskSnapshot();
+  snapshotMemory = combineSnapshots(snapshotMemory, disk);
+  return { ...snapshotMemory };
+}
 
-  if (process.env.NODE_ENV === "development") {
-    try {
-      const parsed: unknown = JSON.parse(await readFile(SNAPSHOT_PATH, "utf8"));
-      snapshotMemory = asSnapshot(parsed);
-      return { ...snapshotMemory };
-    } catch {
-      // First run, or the cache file is missing/unreadable.
-    }
+async function readDiskSnapshot(): Promise<Snapshot> {
+  if (process.env.NODE_ENV !== "development") return {};
+
+  try {
+    return asSnapshot(JSON.parse(await readFile(SNAPSHOT_PATH, "utf8")));
+  } catch {
+    return {};
   }
+}
 
-  snapshotMemory = {};
-  return {};
+function combineSnapshots(memory: Snapshot | null, disk: Snapshot): Snapshot {
+  const combined: Snapshot = {};
+  for (const source of COURT_SOURCES) {
+    const picked = pickSnapshot(memory?.[source.id], disk[source.id]);
+    if (picked) combined[source.id] = picked;
+  }
+  return combined;
+}
+
+function pickSnapshot(
+  memory: SourceSnapshot | undefined,
+  disk: SourceSnapshot | undefined,
+): SourceSnapshot | undefined {
+  const memoryOk = memory && memory.courts.length > 0;
+  const diskOk = disk && disk.courts.length > 0;
+  if (memoryOk && diskOk) {
+    return memory.fetchedAt >= disk.fetchedAt ? memory : disk;
+  }
+  if (diskOk) return disk;
+  if (memoryOk) return memory;
+  return memory ?? disk;
 }
 
 async function writeSnapshot(snapshot: Snapshot) {
   snapshotMemory = snapshot;
+  catalogMemory = null;
+  catalogKey = "";
   if (process.env.NODE_ENV !== "development") return;
 
   try {

@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { CourtDetails } from "@/components/court/CourtDetails";
-import { getBasketballCourt } from "@/lib/catalog";
+import { getBasketballCourt, getCourtCatalog } from "@/lib/catalog";
 import { getCopy } from "@/lib/copy";
 import { courtName } from "@/lib/courts";
 
-export const revalidate = 86400;
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
@@ -26,7 +26,14 @@ export default async function CourtPage({
 }) {
   const result = await courtFromParams(params);
   if (!result) notFound();
-  return <CourtDetails court={result.court} fetchedAt={result.fetchedAt} />;
+  const { courts } = await getCourtCatalog();
+  return (
+    <CourtDetails
+      court={result.court}
+      fetchedAt={result.fetchedAt}
+      courtCount={courts.length}
+    />
+  );
 }
 
 async function courtFromParams(params: Promise<{ id: string }>) {
