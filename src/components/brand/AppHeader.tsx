@@ -7,7 +7,7 @@ import { Icon } from "lucide-react";
 import { IntroDialog } from "@/components/brand/IntroDialog";
 import { LanguageToggle } from "@/components/brand/LanguageToggle";
 import { useCopy } from "@/components/brand/LocaleProvider";
-import { APP_NAME } from "@/lib/constants";
+import { APP_NAME, APP_VERSION } from "@/lib/constants";
 import type { Locale } from "@/lib/copy";
 
 const INTRO_KEY = "hoopfinder-intro";
@@ -127,7 +127,8 @@ function BetaBadge() {
         className="pointer-events-none absolute top-[calc(100%+10px)] left-1/2 z-50 w-56 -translate-x-1/2 rounded-xl border border-white/10 bg-panel px-3 py-2.5 text-left text-xs font-normal normal-case leading-5 tracking-normal text-cream/90 opacity-0 shadow-[0_12px_32px_rgb(0_0_0_/_0.5)] transition-opacity duration-150 group-hover:opacity-100 group-focus:opacity-100"
       >
         <span className="absolute -top-1 left-1/2 size-2 -translate-x-1/2 rotate-45 border-t border-l border-white/10 bg-panel" />
-        {copy.betaTooltip}
+        <span className="block font-bold text-white">{APP_VERSION}</span>
+        <span className="mt-1 block">{copy.betaTooltip}</span>
       </span>
     </button>
   );
