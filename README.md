@@ -47,17 +47,10 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). Copy `.env.example` if you need to point `LIPAS_API_BASE` or `OVERPASS_API_BASE` at another host. Neither API needs a key. Overpass is a public shared API and often returns 504; the app then keeps the last good OpenStreetMap courts. Saved court data lives in `.hoopfinder-cache/` (gitignored) for a day so `next dev` does not refetch on every start. If a source has never succeeded, it is skipped until it does.
+Open [http://localhost:3000](http://localhost:3000).
+
+If needed, copy `.env.example` and update API URLs. API keys are not required.
 
 ## License
 
 Hoop Finder is licensed under the [GNU Affero General Public License v3.0](LICENSE).
-
-You can use, study, and change the code. If you distribute it or run a modified version as a public service, you must share your source under the same license. The license covers this codebase, not the idea of finding basketball courts.
-
-## Next sources (server-side keys only)
-
-- Finnish Meteorological Institute — weather and playability
-- Helsinki Linked Events — nearby basketball events
-- Digitransit GraphQL — HSL routes
-- OpenStreetMap + a routing service — cycling directions

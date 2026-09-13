@@ -29,12 +29,14 @@ const messages = {
   info: { fi: "Info", en: "Info" },
   introTitle: { fi: "Ota pallo mukaan", en: "Bring a ball along" },
   introLead: {
-    fi: "Hoop Finder näyttää ulkokoripallokentät ympäri Suomea. Reissulla, mökillä tai uudessa kaupungissa — täältä löydät paikan heittää.",
-    en: "Hoop Finder shows outdoor basketball courts across Finland. On a trip, at the cottage, or in a new city — find a place to hoop.",
+    fi: (count: number) =>
+      `Hoop Finderissa on listattuna ${count} ulkokoripallokenttää Suomesta. Olit sitten reissussa, mökillä, sukulaisten luona tai haluat löytää kodin läheltä uuden paikan pelailla — täältä löydät paikan heittää.`,
+    en: (count: number) =>
+      `Hoop Finder lists ${count} outdoor basketball courts in Finland. Whether you're on a trip, at the cottage, visiting relatives or want to find a new place to play at home — here you can find a place to hoop.`,
   },
   introSearch: {
-    fi: "Kirjoita kaupunki, alue tai osoite.",
-    en: "Type a city, neighborhood, or address.",
+    fi: "Etsi kaupunkia, aluetta tai osoitteella.",
+    en: "Search by city, neighborhood, or address.",
   },
   introLocate: {
     fi: "Tai paina Paikanna, niin kartta tietää missä olet.",
@@ -45,8 +47,8 @@ const messages = {
     en: "Move the map and explore the locations.",
   },
   introSeeCourt: {
-    fi: "Klikkaa kohdetta kartalla ja siirry katsomaan tarkempia tietoja kentästä.",
-    en: "Click a dot on the map and see the court information.",
+    fi: "Klikkaa pisteitä kartalla ja siirry katsomaan tarkempia tietoja kentästä.",
+    en: "Click the dots on the map and see the court information.",
   },
   introCreatedByTitle: {
     fi: "Kuka tämän teki ja miksi",
@@ -115,8 +117,10 @@ const messages = {
   status: { fi: "Tila", en: "Status" },
   address: { fi: "Osoite", en: "Address" },
   listing: { fi: "Kohde", en: "Listing" },
-  viewListing: { fi: "Näytä kohde", en: "View listing" },
+  viewListingOSM: { fi: "openstreetmap.org", en: "openstreetmap.org" },
   website: { fi: "Verkkosivu", en: "Website" },
+  mapLinks: { fi: "Karttalinkit", en: "Map links" },
+  googleMaps: { fi: "maps.google.com", en: "maps.google.com" },
   administrator: { fi: "Ylläpitäjä", en: "Administrator" },
   owner: { fi: "Omistaja", en: "Owner" },
   built: { fi: "Rakennettu", en: "Built" },
@@ -164,6 +168,7 @@ const messages = {
     stone: { fi: "Kivi", en: "Stone" },
     "rock-dust": { fi: "Kivituhka", en: "Rock dust" },
     gravel: { fi: "Sora", en: "Gravel" },
+    fine_gravel: { fi: "Hieno sora", en: "Fine gravel" },
   } satisfies Record<string, Pair<string>>,
   courtCount: {
     fi: (count: number) => {
