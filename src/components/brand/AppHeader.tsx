@@ -1,11 +1,16 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { basketball } from "@lucide/lab";
 import { ArrowLeft, Icon } from "lucide-react";
-import { useCopy, useLocale } from "@/components/brand/LocaleProvider";
+import { IntroDialog } from "@/components/brand/IntroDialog";
+import { LanguageToggle } from "@/components/brand/LanguageToggle";
+import { useCopy } from "@/components/brand/LocaleProvider";
 import { APP_NAME } from "@/lib/constants";
-import { LOCALES, type Locale } from "@/lib/copy";
+import type { Locale } from "@/lib/copy";
+
+const INTRO_KEY = "hoopfinder-intro";
 
 export function AppHeader({
   backHref,
@@ -15,6 +20,24 @@ export function AppHeader({
   fetchedAt?: string | null;
 }) {
   const copy = useCopy();
+  const [introOpen, setIntroOpen] = useState(false);
+
+  useEffect(() => {
+    try {
+      if (!localStorage.getItem(INTRO_KEY)) setIntroOpen(true);
+    } catch {
+      // Private mode — skip the first-visit prompt.
+    }
+  }, []);
+
+  function closeIntro() {
+    try {
+      localStorage.setItem(INTRO_KEY, "1");
+    } catch {
+      // Ignore quota / private-mode failures.
+    }
+    setIntroOpen(false);
+  }
 
   return (
     <header className="relative z-20 border-b border-white/10 bg-asphalt">
@@ -26,7 +49,7 @@ export function AppHeader({
           {backHref ? (
             <Link
               href={backHref}
-              className="inline-flex shrink-0 w-20 items-center gap-1 text-sm font-medium text-gold hover:text-white"
+              className="inline-flex w-20 shrink-0 items-center gap-1 text-sm font-medium text-gold hover:text-white"
             >
               <ArrowLeft className="size-6" aria-hidden />
               {copy.backToMap}
@@ -34,7 +57,7 @@ export function AppHeader({
           ) : (
             <Icon
               iconNode={basketball}
-              className="size-10 shrink-0 w-22 text-orange-500 drop-shadow-lg"
+              className="size-10 w-22 shrink-0 text-orange-500 drop-shadow-lg"
               aria-hidden
             />
           )}
@@ -45,7 +68,18 @@ export function AppHeader({
             </div>
             <p className="mt-0.5 truncate text-sm text-cream/70">{copy.tagline}</p>
           </div>
-          <LanguageToggle />
+          <nav className="flex shrink-0 items-center gap-1.5" aria-label={copy.info}>
+            <LanguageToggle />
+            <button
+              type="button"
+              onClick={() => setIntroOpen(true)}
+              aria-haspopup="dialog"
+              aria-expanded={introOpen}
+              className="rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-bold tracking-wide text-cream/80 uppercase hover:bg-white/15 hover:text-white"
+            >
+              {copy.info}
+            </button>
+          </nav>
         </div>
         {fetchedAt ? (
           <p className="ml-auto shrink-0 text-right text-xs text-ink-muted">
@@ -56,6 +90,7 @@ export function AppHeader({
           </p>
         ) : null}
       </div>
+      <IntroDialog open={introOpen} onClose={closeIntro} />
     </header>
   );
 }
@@ -79,35 +114,6 @@ function formatFetchedAt(iso: string, locale: Locale): string {
     return `${Number(parts.day)} ${parts.month} ${parts.year}, ${parts.hour}:${parts.minute}`;
   }
   return `${Number(parts.day)}.${Number(parts.month)}.${parts.year} klo ${parts.hour}.${parts.minute}`;
-}
-
-function LanguageToggle() {
-  const copy = useCopy();
-  const { locale, setLocale } = useLocale();
-
-  return (
-    <div
-      className="flex shrink-0 rounded-full bg-white/10 p-0.5 text-[11px] font-bold tracking-wide"
-      role="group"
-      aria-label={copy.language}
-    >
-      {LOCALES.map((option) => (
-        <button
-          key={option}
-          type="button"
-          onClick={() => setLocale(option)}
-          aria-pressed={locale === option}
-          className={`rounded-full px-2 py-1 uppercase ${
-            locale === option
-              ? "bg-gold text-asphalt"
-              : "text-cream/70 hover:text-white"
-          }`}
-        >
-          {option}
-        </button>
-      ))}
-    </div>
-  );
 }
 
 function BetaBadge() {
