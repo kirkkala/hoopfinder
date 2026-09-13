@@ -39,8 +39,24 @@ export function formatDistance(km: number): string {
   return `${Math.round(km)} km`;
 }
 
-export function formatCoordinates(lat: number, lon: number): string {
-  return `${lat.toFixed(5)}, ${lon.toFixed(5)}`;
+export type MapBounds = {
+  west: number;
+  south: number;
+  east: number;
+  north: number;
+};
+
+export function isInBounds(
+  point: Coordinates,
+  bounds: MapBounds,
+): boolean {
+  if (point.lat < bounds.south || point.lat > bounds.north) {
+    return false;
+  }
+  if (bounds.west <= bounds.east) {
+    return point.lon >= bounds.west && point.lon <= bounds.east;
+  }
+  return point.lon >= bounds.west || point.lon <= bounds.east;
 }
 
 function toRadians(degrees: number): number {
