@@ -25,6 +25,25 @@ const messages = {
     en: "Early beta preview, functionalities might change and new features are coming, might be buggy.",
   },
   language: { fi: "Kieli", en: "Language" },
+  info: { fi: "Info", en: "Info" },
+  introTitle: { fi: "Ota pallo mukaan", en: "Bring a ball along" },
+  introLead: {
+    fi: "Hoop Finder näyttää ulkokoripallokentät ympäri Suomea. Reissulla, mökillä tai uudessa kaupungissa — täältä löydät paikan heittää.",
+    en: "Hoop Finder shows outdoor basketball courts across Finland. On a trip, at the cottage, or in a new city — find a place to hoop.",
+  },
+  introSearch: {
+    fi: "Kirjoita kaupunki, alue tai osoite.",
+    en: "Type a city, neighborhood, or address.",
+  },
+  introLocate: {
+    fi: "Tai paina Paikanna, niin kartta siirtyy lähellesi.",
+    en: "Or tap Near me to jump to where you are.",
+  },
+  introMap: {
+    fi: "Liikuta karttaa — lista näyttää kentät näkyvissä.",
+    en: "Move the map — the list shows the hoops in view.",
+  },
+  introCta: { fi: "Selvä, pelataan", en: "Got it, let's play" },
   madeWith: { fi: 'Made with', en: "Made with" },
   love: { fi: "love", en: "love" },
   courtDataFrom: {
