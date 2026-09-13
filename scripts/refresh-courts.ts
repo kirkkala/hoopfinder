@@ -19,8 +19,15 @@ async function main() {
     throw new Error("Need a LIPAS and OSM snapshot. Fix the failing fetch or keep data/courts.json.");
   }
 
+  const nextRaw = JSON.stringify({ lipas, osm });
+  const previousRaw = previous ? JSON.stringify({ lipas: previous.lipas, osm: previous.osm }) : "";
+  if (nextRaw === previousRaw) {
+    console.log("No court data changes");
+    return;
+  }
+
   await mkdir(dirname(outFile), { recursive: true });
-  await writeFile(outFile, JSON.stringify({ lipas, osm }));
+  await writeFile(outFile, nextRaw);
   console.log(`Wrote ${outFile}`);
 }
 
@@ -33,6 +40,10 @@ async function fetchOrKeep(
     console.log(`Fetching ${label}…`);
     const courts = await fetchCourts();
     if (courts.length === 0) throw new Error("no courts");
+    if (previous && JSON.stringify(previous.courts) === JSON.stringify(courts)) {
+      console.log(`${label} ${courts.length} (unchanged)`);
+      return previous;
+    }
     console.log(`${label} ${courts.length}`);
     return { fetchedAt: new Date().toISOString(), courts };
   } catch (error) {
