@@ -35,18 +35,19 @@ export function IntroDialog({
       return;
     }
 
+    const node = dialog;
     function update() {
       const remaining =
-        dialog.scrollHeight - dialog.scrollTop - dialog.clientHeight;
+        node.scrollHeight - node.scrollTop - node.clientHeight;
       setShowScrollHint(remaining > 24);
     }
 
     update();
-    dialog.addEventListener("scroll", update, { passive: true });
+    node.addEventListener("scroll", update, { passive: true });
     const observer = new ResizeObserver(update);
-    observer.observe(dialog);
+    observer.observe(node);
     return () => {
-      dialog.removeEventListener("scroll", update);
+      node.removeEventListener("scroll", update);
       observer.disconnect();
     };
   }, [open]);
