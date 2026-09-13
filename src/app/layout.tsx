@@ -1,7 +1,9 @@
 import "./globals.css";
 import { Bebas_Neue, Outfit } from "next/font/google";
 import type { Metadata } from "next";
-import { APP_NAME, APP_TAGLINE } from "@/lib/constants";
+import { LocaleProvider } from "@/components/brand/LocaleProvider";
+import { APP_NAME } from "@/lib/constants";
+import { getCopy } from "@/lib/copy";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -14,19 +16,21 @@ const bebas = Bebas_Neue({
   variable: "--font-bebas",
 });
 
+const finnish = getCopy("fi");
+
 export const metadata: Metadata = {
   title: {
     default: APP_NAME,
     template: `%s · ${APP_NAME}`,
   },
-  description: `${APP_TAGLINE} Outdoor basketball courts in Finland, built for junior players.`,
+  description: `${finnish.tagline} ${finnish.metaDescription}`,
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
-    <html lang="en" className={`${outfit.variable} ${bebas.variable}`}>
+    <html lang="fi" className={`${outfit.variable} ${bebas.variable}`}>
       <body className="min-h-dvh bg-asphalt font-sans text-ink antialiased">
-        {children}
+        <LocaleProvider>{children}</LocaleProvider>
       </body>
     </html>
   );

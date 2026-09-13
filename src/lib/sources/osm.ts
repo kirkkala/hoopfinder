@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { COURT_DATA_REVALIDATE } from "@/lib/constants";
-import { emptyAmenities, type Court } from "@/lib/courts";
+import { getCopy } from "@/lib/copy";
+import { emptyAmenities, isGenericCourtName, type Court } from "@/lib/courts";
 
 const OVERPASS_API =
   process.env.OVERPASS_API_BASE ?? "https://overpass-api.de/api/interpreter";
@@ -67,8 +68,14 @@ function toCourt(
   const tags = element.tags ?? {};
   if (tags.location === "indoor") return null;
 
-  const name = text(tags["name:en"]) || text(tags.name) || "Basketball court";
-  const nameFi = text(tags["name:fi"]) || text(tags.name) || name;
+  const taggedName = text(tags["name:fi"]) || text(tags.name);
+  const nameFi =
+    taggedName && !isGenericCourtName(taggedName)
+      ? taggedName
+      : getCopy("fi").unnamedCourt;
+  const taggedEn = text(tags["name:en"]);
+  const name =
+    taggedEn && !isGenericCourtName(taggedEn) ? taggedEn : nameFi;
   const hoops = text(tags.hoops);
 
   return {
@@ -87,7 +94,6 @@ function toCourt(
     lon,
     comment: text(tags.description) || text(tags.note),
     website: text(tags.website) || text(tags.url),
-    phone: text(tags.phone),
     constructionYear: null,
     owner: text(tags.operator) || text(tags.owner),
     admin: null,

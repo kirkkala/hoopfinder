@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { CourtDetails } from "@/components/court/CourtDetails";
 import { getBasketballCourt } from "@/lib/catalog";
+import { getCopy } from "@/lib/copy";
+import { courtName } from "@/lib/courts";
 
 export const revalidate = 86400;
 
@@ -11,8 +13,9 @@ export async function generateMetadata({
   params: Promise<{ id: string }>;
 }): Promise<Metadata> {
   const result = await courtFromParams(params);
+  const finnish = getCopy("fi");
   return {
-    title: result?.court.name ?? "Court not found",
+    title: result ? courtName(result.court, finnish) : finnish.courtNotFound,
   };
 }
 

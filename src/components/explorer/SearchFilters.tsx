@@ -7,6 +7,7 @@ import {
   LocateOff,
   Search,
 } from "lucide-react";
+import { useCopy } from "@/components/brand/LocaleProvider";
 import { DISTANCE_OPTIONS, type DistanceFilter } from "@/lib/courts";
 
 export type LocationStatus =
@@ -15,14 +16,6 @@ export type LocationStatus =
   | "granted"
   | "denied"
   | "unavailable";
-
-const LOCATION_LABEL = {
-  idle: "Near me",
-  pending: "Locating…",
-  granted: "Near you",
-  denied: "Location blocked",
-  unavailable: "No GPS",
-} as const;
 
 const LOCATION_ICON = {
   idle: Locate,
@@ -47,13 +40,14 @@ export function SearchFilters({
   locationStatus: LocationStatus;
   onUseLocation: () => void;
 }) {
+  const copy = useCopy();
   const nearMe = locationStatus === "granted";
   const LocationIcon = LOCATION_ICON[locationStatus];
 
   return (
     <div className="space-y-3">
       <label className="relative block">
-        <span className="sr-only">Search hoops</span>
+        <span className="sr-only">{copy.searchLabel}</span>
         <Search
           aria-hidden
           className="pointer-events-none absolute top-1/2 left-3.5 size-4 -translate-y-1/2 text-white/35"
@@ -62,7 +56,7 @@ export function SearchFilters({
           type="search"
           value={query}
           onChange={(event) => onQueryChange(event.target.value)}
-          placeholder="Search a court, city, or street"
+          placeholder={copy.searchPlaceholder}
           className="w-full rounded-2xl border border-white/10 bg-asphalt py-3 pr-4 pl-11 text-sm text-white outline-none ring-hnmky-red/40 placeholder:text-white/35 focus:ring-4"
         />
       </label>
@@ -92,7 +86,7 @@ export function SearchFilters({
               : "bg-white/10 text-cream/80 hover:bg-white/15"
           }`}
         >
-          All
+          {copy.distanceAll}
         </button>
         <button
           type="button"
@@ -104,14 +98,12 @@ export function SearchFilters({
             aria-hidden
             className={`size-3.5 ${locationStatus === "pending" ? "animate-spin" : ""}`}
           />
-          {LOCATION_LABEL[locationStatus]}
+          {copy.nearMe[locationStatus]}
         </button>
       </div>
 
       <p className="text-xs text-ink-muted">
-        {nearMe
-          ? "Distances are from where you are now."
-          : "Showing outdoor courts across Finland. Tap Near me to sort and filter by distance."}
+        {nearMe ? copy.distancesFromYou : copy.tapNearMe}
       </p>
     </div>
   );

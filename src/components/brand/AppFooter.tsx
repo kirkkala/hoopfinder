@@ -1,16 +1,21 @@
+"use client";
+
 import { Heart } from "lucide-react";
+import { useCopy } from "@/components/brand/LocaleProvider";
 import { COURT_SOURCES } from "@/lib/sources";
 
 export function AppFooter() {
+  const copy = useCopy();
+
   return (
     <footer className="border-t border-white/10 bg-asphalt px-4 py-3 text-center text-xs text-ink-muted">
       <p>
-        Made with{" "}
+        {copy.madeWith}{" "}
         <Heart
           className="inline size-3.5 fill-hnmky-red text-hnmky-red align-text-bottom"
           aria-hidden
         />
-        <span className="sr-only">love</span> by{" "}
+        <span className="sr-only"> {copy.love}</span>{" "}
         <a
           href="https://kirkkala.com"
           className="text-gold hover:text-white"
@@ -21,10 +26,10 @@ export function AppFooter() {
         </a>
       </p>
       <p>
-        Court data from{" "}
+        {copy.courtDataFrom}{" "}
         {COURT_SOURCES.map((source, index) => (
           <span key={source.id}>
-            {sourceSeparator(index, COURT_SOURCES.length)}
+            {sourceSeparator(index, COURT_SOURCES.length, copy.sourceListAnd)}
             <a
               href={source.href}
               className="text-gold hover:text-white"
@@ -37,7 +42,7 @@ export function AppFooter() {
         ))}
       </p>
       <p>
-        Source code published on{" "}
+        {copy.sourceCodeOn}{" "}
         <a
           href="https://github.com/kirkkala/hoopfinder"
           className="text-gold hover:text-white"
@@ -51,8 +56,8 @@ export function AppFooter() {
   );
 }
 
-function sourceSeparator(index: number, total: number): string {
+function sourceSeparator(index: number, total: number, andWord: string): string {
   if (index === 0) return "";
-  if (index === total - 1) return " and ";
+  if (index === total - 1) return andWord;
   return ", ";
 }

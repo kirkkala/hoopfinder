@@ -14,7 +14,8 @@ import Map, {
   type MapRef,
 } from "react-map-gl/maplibre";
 import { MAP_STYLE } from "@/lib/constants";
-import type { CourtWithDistance } from "@/lib/courts";
+import { useCopy } from "@/components/brand/LocaleProvider";
+import { courtName, type CourtWithDistance } from "@/lib/courts";
 import {
   DEFAULT_MAP_CENTER,
   DEFAULT_MAP_ZOOM,
@@ -74,6 +75,7 @@ export function CourtMap({
   onSelect: (id: string) => void;
   onClose: () => void;
 }) {
+  const copy = useCopy();
   const mapRef = useRef<MapRef>(null);
   const [mapReady, setMapReady] = useState(false);
   const [initialView] = useState(readSavedView);
@@ -90,11 +92,11 @@ export function CourtMap({
         },
         properties: {
           id: court.id,
-          name: court.name,
+          name: courtName(court, copy),
         },
       })),
     }),
-    [courts],
+    [courts, copy],
   );
 
   useEffect(() => {
@@ -284,21 +286,21 @@ export function CourtMap({
               type="button"
               onClick={onClose}
               className="absolute top-2 right-2 rounded-full p-1 text-ink-muted hover:bg-white/10 hover:text-white"
-              aria-label="Close"
+              aria-label={copy.close}
             >
               <X className="size-4" aria-hidden />
             </button>
-            <p className="font-semibold text-white">{selected.name}</p>
+            <p className="font-semibold text-white">{courtName(selected, copy)}</p>
             {selected.distanceKm !== null ? (
               <p className="mt-1 text-xs text-ink-muted">
-                {formatDistance(selected.distanceKm)} out
+                {copy.distanceAway(formatDistance(selected.distanceKm))}
               </p>
             ) : null}
             <Link
               href={`/courts/${selected.id}`}
               className="mt-2 inline-flex items-center gap-1 text-sm font-bold text-gold hover:text-white"
             >
-              Let&apos;s go
+              {copy.letsGo}
               <ArrowRight className="size-3.5" aria-hidden />
             </Link>
           </div>
