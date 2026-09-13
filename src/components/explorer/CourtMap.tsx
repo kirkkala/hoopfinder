@@ -226,7 +226,7 @@ export function CourtMap({
               10,
               "#ff4339",
               30,
-              "#264298",
+              "#8299e0",
             ],
             "circle-radius": [
               "step",
