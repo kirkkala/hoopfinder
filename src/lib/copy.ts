@@ -25,6 +25,7 @@ const messages = {
     en: "Early beta preview, functionalities might change and new features are coming, might be buggy.",
   },
   language: { fi: "Kieli", en: "Language" },
+  menu: { fi: "Valikko", en: "Menu" },
   info: { fi: "Info", en: "Info" },
   introTitle: { fi: "Ota pallo mukaan", en: "Bring a ball along" },
   introLead: {
@@ -101,6 +102,7 @@ const messages = {
   freeUse: { fi: "Ilmainen käyttö", en: "Free use" },
   letsGo: { fi: "Mennään tänne", en: "Let's go" },
   close: { fi: "Sulje", en: "Close" },
+  scrollForMore: { fi: "Vieritä alas", en: "Scroll for more" },
   distanceAway: {
     fi: (formatted: string) => `${formatted} päässä`,
     en: (formatted: string) => `${formatted} away`,

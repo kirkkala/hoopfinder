@@ -8,7 +8,7 @@ export function AppFooter() {
   const copy = useCopy();
 
   return (
-    <footer className="border-t border-white/10 bg-asphalt px-4 py-3 text-center text-xs text-ink-muted">
+    <footer className="border-t border-white/10 bg-asphalt px-3 py-2 text-center text-[11px] leading-4 text-ink-muted sm:px-4 sm:py-3 sm:text-xs sm:leading-5">
       <p>
         {copy.madeWith}{" "}
         <Heart
