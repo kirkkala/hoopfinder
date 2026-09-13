@@ -57,7 +57,7 @@ export function AppHeader({
               <span className="block font-display text-xl leading-none tracking-wide whitespace-nowrap text-white sm:text-2xl">
                 {APP_NAME}
               </span>
-              <span className="mt-0.5 hidden text-sm text-cream/70 sm:block">
+              <span className="mt-0.5 hidden text-sm text-ink/70 sm:block">
                 {copy.tagline}
               </span>
             </span>
@@ -73,7 +73,7 @@ export function AppHeader({
               onClick={() => setIntroOpen(true)}
               aria-haspopup="dialog"
               aria-expanded={introOpen}
-              className="rounded-full bg-white/10 px-2.5 py-1.5 text-[11px] font-bold tracking-wide text-cream/80 uppercase hover:bg-white/15 hover:text-white"
+              className="rounded-full bg-white/10 px-2.5 py-1.5 text-[11px] font-bold tracking-wide text-ink/80 uppercase hover:bg-white/15 hover:text-white"
             >
               {copy.info}
             </button>
@@ -82,7 +82,7 @@ export function AppHeader({
         {fetchedAt ? (
           <p className="hidden shrink-0 text-right text-xs text-ink-muted md:block">
             {copy.dataFrom}
-            <time dateTime={fetchedAt} className="mt-0.5 block text-cream/70">
+            <time dateTime={fetchedAt} className="mt-0.5 block text-ink/70">
               {formatFetchedAt(fetchedAt, copy.locale)}
             </time>
           </p>
@@ -174,7 +174,7 @@ function HeaderMenu({
         aria-label={open ? copy.close : copy.menu}
         onClick={() => setOpen((value) => !value)}
         className={`grid size-10 shrink-0 place-items-center rounded-full outline-none transition-colors duration-200 hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-gold/60 ${
-          open ? "bg-white/10 text-gold" : "text-cream"
+          open ? "bg-white/10 text-gold" : "text-ink"
         }`}
       >
         <HamburgerIcon open={open} />
@@ -202,14 +202,14 @@ function HeaderMenu({
           }}
           aria-haspopup="dialog"
           aria-expanded={introOpen}
-          className="mt-2 w-full rounded-xl px-3 py-2.5 text-center text-xs font-bold tracking-wide text-cream/90 uppercase hover:bg-white/10 hover:text-white"
+          className="mt-2 w-full rounded-xl px-3 py-2.5 text-center text-xs font-bold tracking-wide text-ink/90 uppercase hover:bg-white/10 hover:text-white"
         >
           {copy.info}
         </button>
         {fetchedAt ? (
           <p className="mt-2 border-t border-white/10 px-1 pt-2 text-center text-[11px] text-ink-muted">
             {copy.dataFrom}
-            <time dateTime={fetchedAt} className="mt-0.5 block text-cream/70">
+            <time dateTime={fetchedAt} className="mt-0.5 block text-ink/70">
               {formatFetchedAt(fetchedAt, copy.locale)}
             </time>
           </p>
@@ -277,7 +277,7 @@ function BetaBadge() {
       <span
         id="beta-tooltip"
         role="tooltip"
-        className="pointer-events-none absolute top-[calc(100%+10px)] left-0 z-50 w-56 max-w-[calc(100vw-2rem)] rounded-xl border border-white/10 bg-panel px-3 py-2.5 text-left text-xs font-normal normal-case leading-5 tracking-normal text-cream/90 opacity-0 shadow-[0_12px_32px_rgb(0_0_0_/_0.5)] transition-opacity duration-150 sm:left-1/2 sm:-translate-x-1/2 group-hover:opacity-100 group-focus:opacity-100"
+        className="pointer-events-none absolute top-[calc(100%+10px)] left-0 z-50 w-56 max-w-[calc(100vw-2rem)] rounded-xl border border-white/10 bg-panel px-3 py-2.5 text-left text-xs font-normal normal-case leading-5 tracking-normal text-ink/90 opacity-0 shadow-[0_12px_32px_rgb(0_0_0_/_0.5)] transition-opacity duration-150 sm:left-1/2 sm:-translate-x-1/2 group-hover:opacity-100 group-focus:opacity-100"
       >
         <span className="absolute -top-1 left-1/2 size-2 -translate-x-1/2 rotate-45 border-t border-l border-white/10 bg-panel" />
         <span className="block font-bold text-white">{APP_VERSION}</span>

@@ -271,7 +271,7 @@ export function CourtMap({
 
       {origin ? (
         <Marker latitude={origin.lat} longitude={origin.lon} anchor="center">
-          <span className="block h-3.5 w-3.5 rounded-full bg-hnmky-blue ring-4 ring-hnmky-blue/40" />
+          <span className="block h-3.5 w-3.5 rounded-full bg-blue-800 ring-4 ring-blue-800/40" />
         </Marker>
       ) : null}
 
@@ -307,7 +307,7 @@ export function CourtMap({
               </p>
             ) : null}
             {source ? (
-              <span className="mt-2 w-fit rounded-full bg-white/10 px-2 py-0.5 text-[11px] font-bold tracking-wide text-cream/80">
+              <span className="mt-2 w-fit rounded-full bg-white/10 px-2 py-0.5 text-[11px] font-bold tracking-wide text-ink/80">
                 {source.shortLabel}
               </span>
             ) : null}

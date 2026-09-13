@@ -26,7 +26,7 @@ export function LanguageToggle({ stretch = false }: { stretch?: boolean }) {
           } ${
             locale === option
               ? "bg-gold text-asphalt"
-              : "text-cream/70 hover:text-white"
+              : "text-ink/70 hover:text-white"
           }`}
         >
           {option}

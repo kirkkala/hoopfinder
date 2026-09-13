@@ -313,7 +313,7 @@ function Fact({
         <FactIcon className="size-3.5 shrink-0" aria-hidden />
         {label}
       </dt>
-      <dd className="mt-1 text-sm text-cream">{value}</dd>
+      <dd className="mt-1 text-sm text-ink">{value}</dd>
     </div>
   );
 }

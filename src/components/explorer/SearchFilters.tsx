@@ -54,7 +54,7 @@ export function SearchFilters({
           value={query}
           onChange={(event) => onQueryChange(event.target.value)}
           placeholder={copy.searchPlaceholder}
-          className="w-full rounded-2xl border border-white/10 bg-asphalt py-3 pr-4 pl-11 text-sm text-white outline-none ring-hnmky-red/40 placeholder:text-white/35 focus:ring-4"
+          className="w-full rounded-2xl border border-white/10 bg-asphalt py-3 pr-4 pl-11 text-sm text-white outline-none placeholder:text-white/35 focus:ring-4"
         />
       </label>
 
@@ -62,7 +62,7 @@ export function SearchFilters({
         type="button"
         onClick={onUseLocation}
         disabled={locationStatus === "pending"}
-        className="inline-flex items-center gap-1.5 rounded-full bg-hnmky-blue px-3 py-1.5 text-xs font-bold text-white hover:bg-[#1d3480] disabled:cursor-default disabled:opacity-70"
+        className="inline-flex items-center gap-1.5 rounded-full bg-blue-800 px-3 py-1.5 text-xs font-bold text-white hover:bg-blue-900 disabled:cursor-default disabled:opacity-70"
       >
         <LocationIcon
           aria-hidden

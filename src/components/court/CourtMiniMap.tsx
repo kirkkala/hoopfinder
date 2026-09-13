@@ -21,7 +21,7 @@ export function CourtMiniMap({ court }: { court: Court }) {
       interactive={false}
     >
       <Marker latitude={court.lat} longitude={court.lon} anchor="center">
-        <span className="block h-4 w-4 rounded-full bg-hnmky-red ring-4 ring-gold/80" />
+        <span className="block h-4 w-4 rounded-full bg-red-500 ring-4 ring-gold/80" />
       </Marker>
     </Map>
   );

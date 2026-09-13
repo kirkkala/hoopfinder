@@ -92,8 +92,8 @@ export function IntroDialog({
           >
             {copy.introTitle}
           </h2>
-          <p className="mt-3 text-sm leading-6 text-cream/80">{copy.introLead}</p>
-          <ul className="mt-5 space-y-3 text-sm text-cream/85">
+          <p className="mt-3 text-sm leading-6 text-ink/80">{copy.introLead}</p>
+          <ul className="mt-5 space-y-3 text-sm text-ink/85">
             <IntroStep icon={Search}>{copy.introSearch}</IntroStep>
             <IntroStep icon={Locate}>{copy.introLocate}</IntroStep>
             <IntroStep icon={Map}>{copy.introMap}</IntroStep>
@@ -102,7 +102,7 @@ export function IntroDialog({
           <h2 className="mt-6 font-display text-2xl tracking-wide text-white">
             {copy.introCreatedByTitle}
           </h2>
-          <p className="mt-2 block text-sm text-cream/85">
+          <p className="mt-2 block text-sm text-ink/85">
             <a
               href="https://kirkkala.com"
               target="_blank"
@@ -113,12 +113,12 @@ export function IntroDialog({
             </a>{" "}
             {copy.introCreatedBy1}
           </p>
-          <p className="mt-2 block text-sm text-cream/85">{copy.introCreatedBy2}</p>
+          <p className="mt-2 block text-sm text-ink/85">{copy.introCreatedBy2}</p>
           <a
             href="https://github.com/kirkkala/hoopfinder"
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-2 inline-flex items-center gap-2 text-sm text-cream/85 underline hover:text-gold"
+            className="mt-2 inline-flex items-center gap-2 text-sm text-ink/85 underline hover:text-gold"
           >
             {copy.introCreatedBySourceCode}
           </a>
