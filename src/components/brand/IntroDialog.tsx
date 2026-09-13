@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { basketball } from "@lucide/lab";
-import { Icon, Locate, Map, Search, X } from "lucide-react";
+import { Icon, Eye, Locate, Map, Search, X } from "lucide-react";
 import { LanguageToggle } from "@/components/brand/LanguageToggle";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { APP_NAME } from "@/lib/constants";
@@ -70,7 +70,29 @@ export function IntroDialog({
             <IntroStep icon={Search}>{copy.introSearch}</IntroStep>
             <IntroStep icon={Locate}>{copy.introLocate}</IntroStep>
             <IntroStep icon={Map}>{copy.introMap}</IntroStep>
+            <IntroStep icon={Eye}>{copy.introSeeCourt}</IntroStep>
           </ul>
+          <h2 className="mt-6 font-display text-2xl tracking-wide text-white">{copy.introCreatedByTitle}</h2>
+          <p className="mt-2 block text-sm text-cream/85">
+            <a
+              href="https://kirkkala.com"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="underline hover:text-gold"
+            >
+              Timo Kirkkala
+            </a>{" "}
+            {copy.introCreatedBy1}
+          </p>
+          <p className="mt-2 block text-sm text-cream/85">{copy.introCreatedBy2}</p>
+          <a
+            href="https://github.com/kirkkala/hoopfinder"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-2 inline-flex items-center gap-2 text-sm text-cream/85 hover:text-gold underline"
+          >
+            {copy.introCreatedBySourceCode}
+          </a>
           <button
             type="button"
             onClick={onClose}
@@ -93,7 +115,7 @@ function IntroStep({
 }) {
   return (
     <li className="flex gap-3">
-      <span className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full bg-white/10 text-gold">
+      <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-white/10 text-gold">
         <StepIcon className="size-3.5" aria-hidden />
       </span>
       {children}
