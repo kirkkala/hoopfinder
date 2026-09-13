@@ -8,10 +8,10 @@
   --color-panel: #14141a;
   --color-ink: #f5f2ed;
   --color-ink-muted: #b8b2a8;
-  --color-cream: #f5f2ed;
   --color-gold: #ffd482;
-  --color-hnmky-red: #ff4339;
-  --color-hnmky-blue: #264298;
+  /* Keep in sync with BREAKPOINTS in src/lib/layout.ts (px / 16 = rem) */
+  --breakpoint-wide: 40rem;
+  --breakpoint-split: 64rem;
 }
 
 html,
@@ -43,4 +43,10 @@ body {
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 10px 24px rgb(0 0 0 / 0.18);
+}
+
+.intro-dialog[open] {
+  align-items: safe center;
+  justify-items: center;
+  scroll-padding-bottom: 3.5rem;
 }

@@ -3,16 +3,17 @@
 import { Heart } from "lucide-react";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { COURT_SOURCES } from "@/lib/sources";
+import { wide } from "@/lib/layout";
 
 export function AppFooter() {
   const copy = useCopy();
 
   return (
-    <footer className="border-t border-white/10 bg-asphalt px-4 py-3 text-center text-xs text-ink-muted">
+    <footer className="border-t border-white/10 bg-asphalt px-3 py-2.5 text-center text-xs leading-5 text-ink-muted sm:px-4 sm:py-3 sm:text-sm sm:leading-6">
       <p>
         {copy.madeWith}{" "}
         <Heart
-          className="inline size-3.5 fill-hnmky-red text-hnmky-red align-text-bottom"
+          className="inline size-4 fill-red-500 text-red-500 align-text-bottom"
           aria-hidden
         />
         <span className="sr-only"> {copy.love}</span>{" "}by{" "}
@@ -25,6 +26,18 @@ export function AppFooter() {
           Timo Kirkkala
         </a>
       </p>
+      <div className={wide.block}>
+        <SourceCredits />
+      </div>
+    </footer>
+  );
+}
+
+export function SourceCredits() {
+  const copy = useCopy();
+
+  return (
+    <>
       <p>
         {copy.courtDataFrom}{" "}
         {COURT_SOURCES.map((source, index) => (
@@ -52,7 +65,7 @@ export function AppFooter() {
           GitHub
         </a>
       </p>
-    </footer>
+    </>
   );
 }
 

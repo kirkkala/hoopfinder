@@ -18,7 +18,7 @@ export default function CourtNotFound() {
       </p>
       <Link
         href="/"
-        className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-hnmky-red px-4 py-2 text-sm font-bold text-white"
+        className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-red-500 px-4 py-2 text-sm font-bold text-white"
       >
         <ArrowLeft className="size-4" aria-hidden />
         {copy.backToHoops}
