@@ -4,7 +4,9 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { basketball } from "@lucide/lab";
 import { ArrowRight, Icon, Lightbulb, Unlock } from "lucide-react";
-import { formatAddress, formatStatus, type CourtWithDistance } from "@/lib/courts";
+import { useCopy } from "@/components/brand/LocaleProvider";
+import type { Copy } from "@/lib/copy";
+import { formatAddress, formatStatus, type CourtWithDistance, courtName } from "@/lib/courts";
 import { courtSource } from "@/lib/sources";
 import { formatDistance } from "@/lib/geo";
 
@@ -17,6 +19,7 @@ export function CourtList({
   selectedId: string | null;
   onSelect: (id: string) => void;
 }) {
+  const copy = useCopy();
   useEffect(() => {
     if (selectedId === null) {
       return;
@@ -31,9 +34,9 @@ export function CourtList({
     return (
       <div className="flex flex-col items-center justify-center gap-2 px-6 py-12 text-center">
         <Icon iconNode={basketball} className="size-10 text-gold/70" aria-hidden />
-        <p className="font-display text-2xl tracking-wide text-white">Airball</p>
+        <p className="font-display text-2xl tracking-wide text-white">{copy.emptyTitle}</p>
         <p className="max-w-sm text-sm text-ink-muted">
-          No hoops match. Try a wider range or another city.
+          {copy.emptyHint}
         </p>
       </div>
     );
@@ -60,14 +63,14 @@ export function CourtList({
               >
                 <span>
                   <span className="block font-semibold text-white">
-                    {court.name}
+                    {courtName(court, copy)}
                   </span>
                   <span className="mt-1 block text-sm text-ink-muted">
                     {formatAddress([
                       court.address,
                       court.neighborhood,
                       court.city,
-                    ]) || "Address not reported"}
+                    ]) || copy.addressMissing}
                   </span>
                 </span>
                 {court.distanceKm !== null ? (
@@ -77,17 +80,17 @@ export function CourtList({
                 ) : null}
               </button>
               <div className="flex flex-wrap items-center gap-2 text-xs">
-                <StatusBadge statusLabel={formatStatus(court.status)} />
+                <StatusBadge status={court.status} copy={copy} />
                 {court.amenities.lighting === true ? (
                   <span className="inline-flex items-center gap-1 rounded-full bg-white/10 px-2 py-1 text-cream/80">
                     <Lightbulb className="size-3" aria-hidden />
-                    Lights
+                    {copy.lights}
                   </span>
                 ) : null}
                 {court.amenities.freeUse === true ? (
                   <span className="inline-flex items-center gap-1 rounded-full bg-white/10 px-2 py-1 text-cream/80">
                     <Unlock className="size-3" aria-hidden />
-                    Free use
+                    {copy.freeUse}
                   </span>
                 ) : null}
                 {source && !source.required ? (
@@ -99,7 +102,7 @@ export function CourtList({
                   href={`/courts/${court.id}`}
                   className="ml-auto inline-flex items-center gap-1 font-bold text-gold hover:text-white"
                 >
-                  Let&apos;s go
+                  {copy.letsGo}
                   <ArrowRight className="size-3.5" aria-hidden />
                 </Link>
               </div>
@@ -111,8 +114,8 @@ export function CourtList({
   );
 }
 
-function StatusBadge({ statusLabel }: { statusLabel: string }) {
-  const closed = statusLabel !== "Open";
+function StatusBadge({ status, copy }: { status: string; copy: Copy }) {
+  const closed = status !== "active";
   return (
     <span
       className={`rounded-full px-2 py-1 font-bold ${
@@ -121,7 +124,7 @@ function StatusBadge({ statusLabel }: { statusLabel: string }) {
           : "bg-emerald-400/15 text-emerald-300"
       }`}
     >
-      {statusLabel}
+      {formatStatus(status, copy)}
     </span>
   );
 }

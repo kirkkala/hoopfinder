@@ -11,6 +11,7 @@ import {
   SearchFilters,
   type LocationStatus,
 } from "@/components/explorer/SearchFilters";
+import { useCopy } from "@/components/brand/LocaleProvider";
 import {
   filterCourts,
   type Court,
@@ -60,6 +61,7 @@ export function CourtExplorer({
   courts: Court[];
   fetchedAt: string | null;
 }) {
+  const copy = useCopy();
   const [query, setQuery] = useState("");
   const [distanceKm, setDistanceKm] = useState<DistanceFilter>("any");
   const [origin, setOrigin] = useState<Coordinates | null>(null);
@@ -128,7 +130,10 @@ export function CourtExplorer({
             />
             <p className="mt-3 flex items-center gap-2 font-display text-lg tracking-wide text-gold">
               <Icon iconNode={basketball} className="size-5 shrink-0" aria-hidden />
-              {`${visibleCourts.length} hoop${visibleCourts.length === 1 ? "" : "s"}${nearMe && distanceKm !== "any" ? " nearby" : " in Finland"}`}
+              {copy.courtCount(
+                visibleCourts.length,
+                nearMe && distanceKm !== "any",
+              )}
             </p>
           </div>
 

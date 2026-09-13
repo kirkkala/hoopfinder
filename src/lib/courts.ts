@@ -1,3 +1,4 @@
+import { getCopy, type Copy } from "@/lib/copy";
 import type { Coordinates } from "@/lib/geo";
 import { haversineKm } from "@/lib/geo";
 import type { CourtSourceId } from "@/lib/sources";
@@ -16,7 +17,6 @@ export type Court = {
   lon: number;
   comment: string | null;
   website: string | null;
-  phone: string | null;
   constructionYear: number | null;
   owner: string | null;
   admin: string | null;
@@ -89,17 +89,27 @@ function isNearDuplicate(existing: Court, candidate: Court): boolean {
   );
 }
 
-const SURFACE_LABELS: Record<string, string> = {
-  asphalt: "Asphalt",
-  concrete: "Concrete",
-  synthetic: "Synthetic",
-  "artificial-turf": "Artificial turf",
-  "sand-infilled-artificial-turf": "Sand-infilled turf",
-  sand: "Sand",
-  stone: "Stone",
-  "rock-dust": "Rock dust",
-  gravel: "Gravel",
-};
+export function courtName(
+  court: Pick<Court, "name" | "nameFi">,
+  copy: Copy = getCopy(),
+): string {
+  const title =
+    copy.locale === "en"
+      ? court.name || court.nameFi
+      : court.nameFi || court.name;
+  if (isGenericCourtName(title)) return copy.unnamedCourt;
+  return title;
+}
+
+export function isGenericCourtName(name: string): boolean {
+  const normalized = name.trim().toLowerCase();
+  return (
+    normalized === "basketball court" ||
+    normalized === "basketball" ||
+    normalized === "basketball pitch" ||
+    normalized === "koripallokenttä"
+  );
+}
 
 export function filterCourts(
   courts: Court[],
@@ -136,27 +146,31 @@ export function filterCourts(
       }
       const city = compareText(a.city ?? "", b.city ?? "");
       if (city !== 0) return city;
-      const name = compareText(a.name, b.name);
+      const name = compareText(a.nameFi || a.name, b.nameFi || b.name);
       if (name !== 0) return name;
       return a.id.localeCompare(b.id);
     });
 }
 
-export function formatSurface(code: string): string {
-  return SURFACE_LABELS[code] ?? titleCase(code.replaceAll("-", " "));
+export function formatSurface(code: string, copy: Copy = getCopy()): string {
+  const labels = copy.surfaces as Record<string, string>;
+  return labels[code] ?? titleCase(code.replaceAll("-", " "));
 }
 
-export function formatReportedBoolean(value: boolean | null): string {
-  if (value === true) return "Yes";
-  if (value === false) return "No";
-  return "Not reported";
+export function formatReportedBoolean(
+  value: boolean | null,
+  copy: Copy = getCopy(),
+): string {
+  if (value === true) return copy.yes;
+  if (value === false) return copy.no;
+  return copy.notReported;
 }
 
-export function formatStatus(status: string): string {
-  if (status === "active") return "Open";
-  if (status === "out-of-service-temporarily") return "Temporarily closed";
-  if (status === "out-of-service-permanently") return "Permanently closed";
-  return "Unknown";
+export function formatStatus(status: string, copy: Copy = getCopy()): string {
+  if (status === "active") return copy.statusOpen;
+  if (status === "out-of-service-temporarily") return copy.statusTemporarilyClosed;
+  if (status === "out-of-service-permanently") return copy.statusPermanentlyClosed;
+  return copy.statusUnknown;
 }
 
 export function formatAddress(

@@ -1,3 +1,5 @@
+"use client";
+
 import type { ReactNode } from "react";
 import {
   Bath,
@@ -15,7 +17,6 @@ import {
   Lightbulb,
   MapPin,
   MoveVertical,
-  Phone,
   Ruler,
   School,
   Square,
@@ -27,12 +28,15 @@ import {
 } from "lucide-react";
 import { AppHeader } from "@/components/brand/AppHeader";
 import { AppFooter } from "@/components/brand/AppFooter";
+import { useCopy } from "@/components/brand/LocaleProvider";
 import { CourtMiniMap } from "@/components/court/CourtMiniMap";
 import {
+  courtName,
   formatAddress,
   formatReportedBoolean,
   formatStatus,
   formatSurface,
+  isGenericCourtName,
   type Court,
 } from "@/lib/courts";
 import { courtSource, sourceListingUrl } from "@/lib/sources";
@@ -44,6 +48,7 @@ export function CourtDetails({
   court: Court;
   fetchedAt: string | null;
 }) {
+  const copy = useCopy();
   const address = formatAddress([
     court.address,
     court.neighborhood,
@@ -67,27 +72,34 @@ export function CourtDetails({
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">
               {source && !source.required
-                ? `Basketball court · ${source.label}`
-                : "Basketball court"}
+                ? copy.courtKindFrom(source.label)
+                : copy.courtKind}
             </p>
             <h1 className="mt-1 font-display text-4xl tracking-wide text-white md:text-5xl">
-              {court.name}
+              {courtName(court, copy)}
             </h1>
-            {court.nameFi !== court.name ? (
+            {copy.locale === "en" &&
+            court.nameFi &&
+            court.nameFi !== courtName(court, copy) &&
+            !isGenericCourtName(court.nameFi) ? (
               <p className="mt-1 text-ink-muted">{court.nameFi}</p>
+            ) : copy.locale === "fi" &&
+              court.name !== courtName(court, copy) &&
+              !isGenericCourtName(court.name) ? (
+              <p className="mt-1 text-ink-muted">{court.name}</p>
             ) : null}
           </div>
 
           <dl className="grid gap-3 rounded-3xl border border-white/10 bg-panel p-5">
             <Fact
               icon={court.status === "active" ? CircleCheck : CirclePause}
-              label="Status"
-              value={formatStatus(court.status)}
+              label={copy.status}
+              value={formatStatus(court.status, copy)}
             />
             <Fact
               icon={MapPin}
-              label="Address"
-              value={address || "Not reported"}
+              label={copy.address}
+              value={address || copy.notReported}
             />
             <Fact
               icon={Compass}
@@ -107,7 +119,7 @@ export function CourtDetails({
             {listingUrl ? (
               <Fact
                 icon={Globe}
-                label={source?.label ?? "Listing"}
+                label={source?.label ?? copy.listing}
                 value={
                   <a
                     href={listingUrl}
@@ -115,19 +127,16 @@ export function CourtDetails({
                     target="_blank"
                     rel="noreferrer"
                   >
-                    View listing
+                    {copy.viewListing}
                     <ExternalLink className="size-3.5 shrink-0" aria-hidden />
                   </a>
                 }
               />
             ) : null}
-            {court.phone ? (
-              <Fact icon={Phone} label="Phone" value={court.phone} />
-            ) : null}
             {court.website ? (
               <Fact
                 icon={Globe}
-                label="Website"
+                label={copy.website}
                 value={
                   <a
                     href={court.website}
@@ -142,15 +151,15 @@ export function CourtDetails({
               />
             ) : null}
             {court.admin ? (
-              <Fact icon={UserCog} label="Administrator" value={court.admin} />
+              <Fact icon={UserCog} label={copy.administrator} value={court.admin} />
             ) : null}
             {court.owner ? (
-              <Fact icon={Building2} label="Owner" value={court.owner} />
+              <Fact icon={Building2} label={copy.owner} value={court.owner} />
             ) : null}
             {court.constructionYear ? (
               <Fact
                 icon={Calendar}
-                label="Built"
+                label={copy.built}
                 value={String(court.constructionYear)}
               />
             ) : null}
@@ -158,97 +167,99 @@ export function CourtDetails({
 
           <section className="rounded-3xl border border-white/10 bg-panel p-5">
             <h2 className="font-display text-2xl tracking-wide text-white">
-              Court scouting
+              {copy.courtFacts}
             </h2>
             <dl className="mt-4 grid gap-3 sm:grid-cols-2">
               <Fact
                 icon={Lightbulb}
-                label="Lights"
-                value={formatReportedBoolean(amenities.lighting)}
+                label={copy.lights}
+                value={formatReportedBoolean(amenities.lighting, copy)}
               />
               <Fact
                 icon={Unlock}
-                label="Free use"
-                value={formatReportedBoolean(amenities.freeUse)}
+                label={copy.freeUse}
+                value={formatReportedBoolean(amenities.freeUse, copy)}
               />
               {amenities.schoolUse !== null ? (
                 <Fact
                   icon={School}
-                  label="School use"
-                  value={formatReportedBoolean(amenities.schoolUse)}
+                  label={copy.schoolUse}
+                  value={formatReportedBoolean(amenities.schoolUse, copy)}
                 />
               ) : null}
               {amenities.fieldType ? (
                 <Fact
                   icon={LayoutGrid}
-                  label="Field type"
+                  label={copy.fieldType}
                   value={amenities.fieldType}
                 />
               ) : null}
               {amenities.surfaceMaterial.length ? (
                 <Fact
                   icon={Layers}
-                  label="Surface"
-                  value={amenities.surfaceMaterial.map(formatSurface).join(", ")}
+                  label={copy.surface}
+                  value={amenities.surfaceMaterial
+                    .map((code) => formatSurface(code, copy))
+                    .join(", ")}
                 />
               ) : null}
               {amenities.surfaceMaterialInfo ? (
                 <Fact
                   icon={StickyNote}
-                  label="Surface notes"
+                  label={copy.surfaceNotes}
                   value={amenities.surfaceMaterialInfo}
                 />
               ) : null}
               {dimensions ? (
-                <Fact icon={Ruler} label="Dimensions" value={dimensions} />
+                <Fact icon={Ruler} label={copy.dimensions} value={dimensions} />
               ) : null}
               {amenities.areaM2 ? (
                 <Fact
                   icon={Square}
-                  label="Area"
+                  label={copy.area}
                   value={`${amenities.areaM2} m²`}
                 />
               ) : null}
               {amenities.toilet !== null ? (
                 <Fact
                   icon={Bath}
-                  label="Toilet"
-                  value={formatReportedBoolean(amenities.toilet)}
+                  label={copy.toilet}
+                  value={formatReportedBoolean(amenities.toilet, copy)}
                 />
               ) : null}
               {amenities.heightAdjustable !== null ? (
                 <Fact
                   icon={MoveVertical}
-                  label="Adjustable rim"
-                  value={formatReportedBoolean(amenities.heightAdjustable)}
+                  label={copy.adjustableRim}
+                  value={formatReportedBoolean(amenities.heightAdjustable, copy)}
                 />
               ) : null}
               {amenities.lightingInfo ? (
                 <Fact
                   icon={Lightbulb}
-                  label="Lighting notes"
+                  label={copy.lightingNotes}
                   value={amenities.lightingInfo}
                 />
               ) : null}
               {amenities.waterPoint ? (
                 <Fact
                   icon={Droplets}
-                  label="Water point"
+                  label={copy.waterPoint}
                   value={amenities.waterPoint}
                 />
               ) : null}
               {amenities.matchClock !== null ? (
                 <Fact
                   icon={Timer}
-                  label="Match clock"
-                  value={formatReportedBoolean(amenities.matchClock)}
+                  label={copy.matchClock}
+                  value={formatReportedBoolean(amenities.matchClock, copy)}
                 />
               ) : null}
               {amenities.scoreboard !== null ? (
                 <Fact
                   icon={ClipboardList}
-                  label="Scoreboard"
-                  value={formatReportedBoolean(amenities.scoreboard)}
+                  label={copy.scoreboard}
+                  value={formatReportedBoolean(amenities.scoreboard, copy)}
                 />
               ) : null}
             </dl>
@@ -258,7 +269,9 @@ export function CourtDetails({
             <section className="rounded-3xl border border-white/10 bg-panel p-5">
               <h2 className="flex items-center gap-2 font-display text-2xl tracking-wide text-white">
                 <StickyNote className="size-5 text-gold" aria-hidden />
-                Notes from {source?.label ?? "the listing"}
+                {source?.label
+                  ? copy.notesFrom(source.label)
+                  : copy.notesFromListing}
               </h2>
               <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-ink-muted">
                 {court.comment}
