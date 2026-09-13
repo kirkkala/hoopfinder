@@ -166,6 +166,7 @@ const messages = {
     stone: { fi: "Kivi", en: "Stone" },
     "rock-dust": { fi: "Kivituhka", en: "Rock dust" },
     gravel: { fi: "Sora", en: "Gravel" },
+    fine_gravel: { fi: "Hieno sora", en: "Fine gravel" },
   } satisfies Record<string, Pair<string>>,
   courtCount: {
     fi: (count: number) => {
