@@ -1,7 +1,9 @@
 "use client";
 
 import type { ReactNode } from "react";
+import Link from "next/link";
 import {
+  ArrowLeft,
   Bath,
   Building2,
   Calendar,
@@ -15,6 +17,7 @@ import {
   Layers,
   LayoutGrid,
   Lightbulb,
+  Map,
   MapPin,
   MoveVertical,
   Ruler,
@@ -65,15 +68,13 @@ export function CourtDetails({
 
   return (
     <div className="flex min-h-dvh flex-col bg-asphalt">
-      <AppHeader backHref="/" fetchedAt={fetchedAt} />
+      <AppHeader fetchedAt={fetchedAt} />
 
       <main className="mx-auto grid w-full max-w-5xl flex-1 gap-6 px-4 py-8 lg:grid-cols-[1.1fr_0.9fr]">
         <section className="space-y-5">
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">
-              {source && !source.required
-                ? copy.courtKindFrom(source.label)
-                : copy.courtKind}
+              {source ? copy.courtKindFrom(source.label) : copy.courtKind}
             </p>
             <h1 className="mt-1 font-display text-4xl tracking-wide text-white md:text-5xl">
               {courtName(court, copy)}
@@ -281,6 +282,13 @@ export function CourtDetails({
         </section>
 
         <aside className="h-80 overflow-hidden rounded-3xl border border-white/10 bg-panel">
+          <Link
+            href={`/?court=${encodeURIComponent(court.id)}`}
+            className="inline-flex shrink-0 items-center gap-1 text-md font-medium text-gold py-4 px-3 hover:text-white"
+          >
+            <Map /><ArrowLeft className="size-6" aria-hidden />
+              {copy.backToMap}
+            </Link>
           <CourtMiniMap court={court} />
         </aside>
       </main>

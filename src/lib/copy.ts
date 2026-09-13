@@ -79,7 +79,7 @@ const messages = {
   },
   lights: { fi: "Valot", en: "Lights" },
   freeUse: { fi: "Ilmainen käyttö", en: "Free use" },
-  letsGo: { fi: "Mennään", en: "Let's go" },
+  letsGo: { fi: "Mennään tänne", en: "Let's go" },
   close: { fi: "Sulje", en: "Close" },
   distanceAway: {
     fi: (formatted: string) => `${formatted} päässä`,

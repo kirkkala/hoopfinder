@@ -15,7 +15,7 @@ export function AppFooter() {
           className="inline size-3.5 fill-hnmky-red text-hnmky-red align-text-bottom"
           aria-hidden
         />
-        <span className="sr-only"> {copy.love}</span>{" "}
+        <span className="sr-only"> {copy.love}</span>{" "}by{" "}
         <a
           href="https://kirkkala.com"
           className="text-gold hover:text-white"
