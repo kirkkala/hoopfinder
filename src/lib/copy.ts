@@ -40,7 +40,7 @@ const messages = {
   },
   introLocate: {
     fi: "Tai paina Paikanna, niin kartta tietää missä olet.",
-    en: "Or tap Near me to jump to where you are.",
+    en: "Or tap Locate me to jump to where you are.",
   },
   introMap: {
     fi: "Liikuta karttaa ja tutustu kenttien sijaintiin.",
@@ -82,10 +82,10 @@ const messages = {
   },
   searchInstructions: {
     fi: "Etsi hakusanalla tai paina 'Paikanna' löytääkseen kentät lähistöllä.",
-    en: "Use the search or tap 'Near me' to find hoops nearby.",
+    en: "Use the search or tap 'Locate me' to find hoops nearby.",
   },
   nearMe: {
-    idle: { fi: "Paikanna", en: "Near me" },
+    idle: { fi: "Paikanna", en: "Locate me" },
     pending: { fi: "Paikannetaan…", en: "Locating…" },
     granted: { fi: "Sijaintisi", en: "Near you" },
     denied: { fi: "Sijainti estetty", en: "Location blocked" },
@@ -99,6 +99,11 @@ const messages = {
   addressMissing: {
     fi: "Osoitetta ei ilmoitettu",
     en: "Address not reported",
+  },
+  distanceAway: { fi: "Etäisyys", en: "Distance" },
+  locateToSeeDistance: {
+    fi: "Salli selaimen paikannus niin näet etäisyyden kentälle.",
+    en: "Allow geolocation to see the distance to the hoop.",
   },
   lights: { fi: "Valot", en: "Lights" },
   freeUse: { fi: "Ilmainen käyttö", en: "Free use" },

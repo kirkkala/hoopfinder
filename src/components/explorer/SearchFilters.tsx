@@ -8,13 +8,7 @@ import {
   Search,
 } from "lucide-react";
 import { useCopy } from "@/components/brand/LocaleProvider";
-
-export type LocationStatus =
-  | "idle"
-  | "pending"
-  | "granted"
-  | "denied"
-  | "unavailable";
+import type { LocationStatus } from "@/lib/origin";
 
 const LOCATION_ICON = {
   idle: Locate,
