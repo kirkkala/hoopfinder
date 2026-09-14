@@ -29,7 +29,8 @@ import {
 setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
 
 const MAP_VIEW_KEY = "hoopfinder-map-view";
-const CLICKABLE_LAYERS = ["clusters", "cluster-count", "court-points"];
+const CLICKABLE_LAYERS = ["clusters", "cluster-count", "court-points", "court-labels"];
+const HOVER = ["boolean", ["feature-state", "hover"], false] as const;
 
 function readSavedView(): { latitude: number; longitude: number; zoom: number } {
   try {
@@ -99,6 +100,10 @@ export function CourtMap({
   const mapRef = useRef<MapRef>(null);
   const [mapReady, setMapReady] = useState(false);
   const [initialView] = useState(readSavedView);
+  const pointerId = useRef<string | null>(null);
+  const paintedIds = useRef(new Set<string>());
+  const selectedRef = useRef(selectedId);
+  selectedRef.current = selectedId;
   const selected = courts.find((court) => court.id === selectedId) ?? null;
   const source = selected ? courtSource(selected.source) : null;
 
@@ -157,9 +162,40 @@ export function CourtMap({
     });
   }, [keepCamera, mapReady, selected]);
 
+  function paintHover() {
+    const map = mapRef.current;
+    if (!map) return;
+    const next = new Set<string>();
+    if (pointerId.current) next.add(pointerId.current);
+    if (selectedRef.current) next.add(selectedRef.current);
+    for (const id of paintedIds.current) {
+      if (!next.has(id)) {
+        map.setFeatureState({ source: "courts", id }, { hover: false });
+      }
+    }
+    for (const id of next) {
+      if (!paintedIds.current.has(id)) {
+        map.setFeatureState({ source: "courts", id }, { hover: true });
+      }
+    }
+    paintedIds.current = next;
+  }
+
+  useEffect(() => {
+    if (mapReady) paintHover();
+  }, [mapReady, selectedId]);
+
   function setCursor(cursor: string) {
     const canvas = mapRef.current?.getCanvas();
     if (canvas) canvas.style.cursor = cursor;
+  }
+
+  function handleMouseMove(event: MapLayerMouseEvent) {
+    const feature = event.features?.[0];
+    setCursor(feature ? "pointer" : "");
+    const id = feature && !feature.properties?.cluster ? String(feature.properties?.id ?? "") : "";
+    pointerId.current = id || null;
+    paintHover();
   }
 
   function handleClick(event: MapLayerMouseEvent) {
@@ -187,6 +223,9 @@ export function CourtMap({
 
     const id = feature.properties?.id;
     if (id != null && String(id)) {
+      selectedRef.current = String(id);
+      pointerId.current = String(id);
+      paintHover();
       onSelect(String(id));
     }
   }
@@ -207,8 +246,12 @@ export function CourtMap({
         saveView(latitude, longitude, zoom);
         onBoundsChange(boundsFromMap(event.target));
       }}
-      onMouseMove={(event) => setCursor(event.features?.length ? "pointer" : "")}
-      onMouseLeave={() => setCursor("")}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={() => {
+        setCursor("");
+        pointerId.current = null;
+        paintHover();
+      }}
       onClick={handleClick}
       attributionControl={{ compact: true }}
     >
@@ -217,6 +260,7 @@ export function CourtMap({
         id="courts"
         type="geojson"
         data={data}
+        promoteId="id"
         cluster
         clusterMaxZoom={14}
         clusterRadius={48}
@@ -265,9 +309,31 @@ export function CourtMap({
           filter={["!", ["has", "point_count"]]}
           paint={{
             "circle-color": "#ff4339",
-            "circle-radius": 8,
-            "circle-stroke-width": 2,
+            "circle-radius": ["case", HOVER, 9, 8],
+            "circle-stroke-width": ["case", HOVER, 2.5, 2],
             "circle-stroke-color": "#ffffff",
+          }}
+        />
+        <Layer
+          id="court-labels"
+          type="symbol"
+          minzoom={12}
+          filter={["!", ["has", "point_count"]]}
+          layout={{
+            "text-field": ["get", "name"],
+            "text-font": ["Noto Sans Regular"],
+            "text-size": 12,
+            "text-variable-anchor": ["left", "right", "top", "bottom"],
+            "text-radial-offset": 1,
+            "text-max-width": 8,
+            "text-optional": true,
+            "text-padding": 4,
+          }}
+          paint={{
+            "text-color": ["case", HOVER, "#111111", "#1a1a1a"],
+            "text-halo-color": "#ffffff",
+            "text-halo-width": ["case", HOVER, 2.5, 1.25],
+            "text-halo-blur": ["case", HOVER, 0.8, 0],
           }}
         />
       </Source>
