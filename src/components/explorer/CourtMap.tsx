@@ -2,8 +2,13 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, MapPin, X } from "lucide-react";
-import { LngLatBounds, setWorkerUrl, type GeoJSONSource } from "maplibre-gl";
+import { ArrowRight, X } from "lucide-react";
+import {
+  LngLatBounds,
+  setWorkerUrl,
+  type ExpressionSpecification,
+  type GeoJSONSource,
+} from "maplibre-gl";
 import Map, {
   Layer,
   Marker,
@@ -15,13 +20,13 @@ import Map, {
 } from "react-map-gl/maplibre";
 import { MAP_STYLE } from "@/lib/constants";
 import { useCopy } from "@/components/brand/LocaleProvider";
+import { CourtBadges } from "@/components/explorer/CourtBadges";
+import { CourtHeading } from "@/components/explorer/CourtHeading";
 import { courtName, type CourtWithDistance } from "@/lib/courts";
-import { courtSource } from "@/lib/sources";
 import {
   DEFAULT_MAP_CENTER,
   DEFAULT_MAP_ZOOM,
   NEAR_ME_ZOOM,
-  formatDistance,
   type Coordinates,
   type MapBounds,
 } from "@/lib/geo";
@@ -29,6 +34,12 @@ import {
 setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
 
 const MAP_VIEW_KEY = "hoopfinder-map-view";
+const CLICKABLE_LAYERS = ["clusters", "cluster-count", "court-points", "court-labels"];
+const HOVER: ExpressionSpecification = [
+  "boolean",
+  ["feature-state", "hover"],
+  false,
+];
 
 function readSavedView(): { latitude: number; longitude: number; zoom: number } {
   try {
@@ -98,8 +109,13 @@ export function CourtMap({
   const mapRef = useRef<MapRef>(null);
   const [mapReady, setMapReady] = useState(false);
   const [initialView] = useState(readSavedView);
+  const pointerId = useRef<string | null>(null);
+  const paintedIds = useRef(new Set<string>());
+  const selectedRef = useRef(selectedId);
+  selectedRef.current = selectedId;
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
   const selected = courts.find((court) => court.id === selectedId) ?? null;
-  const source = selected ? courtSource(selected.source) : null;
 
   const data = useMemo(
     () => ({
@@ -156,22 +172,83 @@ export function CourtMap({
     });
   }, [keepCamera, mapReady, selected]);
 
+  function paintHover() {
+    const map = mapRef.current;
+    if (!map) return;
+    const next = new Set<string>();
+    if (pointerId.current) next.add(pointerId.current);
+    if (selectedRef.current) next.add(selectedRef.current);
+    for (const id of paintedIds.current) {
+      if (!next.has(id)) {
+        map.setFeatureState({ source: "courts", id }, { hover: false });
+      }
+    }
+    for (const id of next) {
+      if (!paintedIds.current.has(id)) {
+        map.setFeatureState({ source: "courts", id }, { hover: true });
+      }
+    }
+    paintedIds.current = next;
+  }
+
+  useEffect(() => {
+    if (mapReady) paintHover();
+  }, [mapReady, selectedId]);
+
+  useEffect(() => {
+    if (!selectedId) return;
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      onCloseRef.current();
+    }
+
+    function onPointerDown(event: PointerEvent) {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      if (target.closest(".maplibregl-popup")) return;
+      if (target.closest(".maplibregl-canvas-container")) return;
+      if (target.closest(".maplibregl-ctrl")) return;
+      onCloseRef.current();
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("pointerdown", onPointerDown);
+    };
+  }, [selectedId]);
+
+  function setCursor(cursor: string) {
+    const canvas = mapRef.current?.getCanvas();
+    if (canvas) canvas.style.cursor = cursor;
+  }
+
+  function handleMouseMove(event: MapLayerMouseEvent) {
+    const feature = event.features?.[0];
+    setCursor(feature ? "pointer" : "");
+    const id = feature && !feature.properties?.cluster ? String(feature.properties?.id ?? "") : "";
+    pointerId.current = id || null;
+    paintHover();
+  }
+
   function handleClick(event: MapLayerMouseEvent) {
     const feature = event.features?.[0];
     if (!feature || feature.geometry.type !== "Point") {
+      if (selectedRef.current) onClose();
       return;
     }
 
     const coordinates = feature.geometry.coordinates as [number, number];
 
-    if (feature.layer?.id === "clusters") {
+    if (feature.properties?.cluster) {
+      if (selectedRef.current) onClose();
       const map = mapRef.current;
-      if (!map) {
-        return;
-      }
-      const clusterId = Number(feature.properties?.cluster_id);
-      const source = map.getSource("courts");
-      if (Number.isFinite(clusterId) && source) {
+      const clusterId = Number(feature.properties.cluster_id);
+      const source = map?.getSource("courts");
+      if (map && Number.isFinite(clusterId) && source) {
         void (source as GeoJSONSource)
           .getClusterExpansionZoom(clusterId)
           .then((zoom) => {
@@ -186,6 +263,9 @@ export function CourtMap({
 
     const id = feature.properties?.id;
     if (id != null && String(id)) {
+      selectedRef.current = String(id);
+      pointerId.current = String(id);
+      paintHover();
       onSelect(String(id));
     }
   }
@@ -196,7 +276,7 @@ export function CourtMap({
       mapStyle={MAP_STYLE}
       initialViewState={initialView}
       style={{ width: "100%", height: "100%" }}
-      interactiveLayerIds={["clusters", "court-points"]}
+      interactiveLayerIds={CLICKABLE_LAYERS}
       onLoad={(event) => {
         setMapReady(true);
         onBoundsChange(boundsFromMap(event.target));
@@ -206,6 +286,12 @@ export function CourtMap({
         saveView(latitude, longitude, zoom);
         onBoundsChange(boundsFromMap(event.target));
       }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={() => {
+        setCursor("");
+        pointerId.current = null;
+        paintHover();
+      }}
       onClick={handleClick}
       attributionControl={{ compact: true }}
     >
@@ -214,6 +300,7 @@ export function CourtMap({
         id="courts"
         type="geojson"
         data={data}
+        promoteId="id"
         cluster
         clusterMaxZoom={14}
         clusterRadius={48}
@@ -262,9 +349,31 @@ export function CourtMap({
           filter={["!", ["has", "point_count"]]}
           paint={{
             "circle-color": "#ff4339",
-            "circle-radius": 7,
-            "circle-stroke-width": 2,
+            "circle-radius": ["case", HOVER, 9, 8],
+            "circle-stroke-width": ["case", HOVER, 2.5, 2],
             "circle-stroke-color": "#ffffff",
+          }}
+        />
+        <Layer
+          id="court-labels"
+          type="symbol"
+          minzoom={12}
+          filter={["!", ["has", "point_count"]]}
+          layout={{
+            "text-field": ["get", "name"],
+            "text-font": ["Noto Sans Regular"],
+            "text-size": 12,
+            "text-variable-anchor": ["left", "right", "top", "bottom"],
+            "text-radial-offset": 1,
+            "text-max-width": 8,
+            "text-optional": true,
+            "text-padding": 4,
+          }}
+          paint={{
+            "text-color": ["case", HOVER, "#111111", "#1a1a1a"],
+            "text-halo-color": "#ffffff",
+            "text-halo-width": ["case", HOVER, 2.5, 1.25],
+            "text-halo-blur": ["case", HOVER, 0.8, 0],
           }}
         />
       </Source>
@@ -283,9 +392,10 @@ export function CourtMap({
           offset={16}
           closeButton={false}
           closeOnClick={false}
+          maxWidth="18rem"
           onClose={onClose}
         >
-          <div className="relative flex min-h-24 min-w-52 flex-col p-3 pr-8">
+          <div className="relative flex min-w-64 flex-col gap-2 p-3">
             <button
               type="button"
               onClick={onClose}
@@ -294,26 +404,13 @@ export function CourtMap({
             >
               <X className="size-4" aria-hidden />
             </button>
-            <p className="pr-2 text-base leading-snug font-semibold text-white">
-              <MapPin
-                className="mr-1.5 inline size-[1em] shrink-0 align-[-0.15em]"
-                aria-hidden
-              />
-              {courtName(selected, copy)}
-            </p>
-            {selected.distanceKm !== null ? (
-              <p className="mt-1 text-sm text-ink-muted">
-                {copy.distanceAway(formatDistance(selected.distanceKm))}
-              </p>
-            ) : null}
-            {source ? (
-              <span className="mt-2 w-fit rounded-full bg-white/10 px-2 py-0.5 text-xs font-bold tracking-wide text-ink/80">
-                {source.shortLabel}
-              </span>
-            ) : null}
+            <CourtHeading court={selected} pin className="pr-6" />
+            <div className="flex flex-wrap items-center gap-1.5 text-xs">
+              <CourtBadges court={selected} />
+            </div>
             <Link
               href={`/courts/${selected.id}`}
-              className="mt-auto inline-flex items-center gap-1 pt-2 text-sm font-bold text-gold hover:text-white"
+              className="inline-flex items-center gap-1 self-end pt-2 pb-1 text-sm font-bold text-gold hover:text-white"
             >
               {copy.letsGo}
               <ArrowRight className="size-3.5" aria-hidden />

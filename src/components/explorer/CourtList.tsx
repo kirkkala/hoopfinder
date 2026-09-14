@@ -3,12 +3,11 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { basketball } from "@lucide/lab";
-import { ArrowRight, Icon, Lightbulb, Unlock } from "lucide-react";
+import { ArrowRight, Icon } from "lucide-react";
 import { useCopy } from "@/components/brand/LocaleProvider";
-import type { Copy } from "@/lib/copy";
-import { formatAddress, formatStatus, type CourtWithDistance, courtName } from "@/lib/courts";
-import { courtSource } from "@/lib/sources";
-import { formatDistance } from "@/lib/geo";
+import { CourtBadges } from "@/components/explorer/CourtBadges";
+import { CourtHeading } from "@/components/explorer/CourtHeading";
+import { type CourtWithDistance } from "@/lib/courts";
 
 export function CourtList({
   courts,
@@ -46,7 +45,6 @@ export function CourtList({
     <ul className="space-y-2 py-3">
       {courts.map((court) => {
         const selected = court.id === selectedId;
-        const source = courtSource(court.source);
         return (
           <li key={court.id} id={`court-${court.id}`}>
             <div
@@ -59,45 +57,12 @@ export function CourtList({
               <button
                 type="button"
                 onClick={() => onSelect(court.id)}
-                className="flex w-full items-start justify-between gap-3 text-left"
+                className="w-full text-left"
               >
-                <span>
-                  <span className="block font-semibold text-white">
-                    {courtName(court, copy)}
-                  </span>
-                  <span className="mt-1 block text-sm text-ink-muted">
-                    {formatAddress([
-                      court.address,
-                      court.neighborhood,
-                      court.city,
-                    ]) || copy.addressMissing}
-                  </span>
-                </span>
-                {court.distanceKm !== null ? (
-                  <span className="shrink-0 font-display text-lg leading-none text-gold">
-                    {formatDistance(court.distanceKm)}
-                  </span>
-                ) : null}
+                <CourtHeading court={court} />
               </button>
               <div className="flex flex-wrap items-center gap-2 text-sm">
-                <StatusBadge status={court.status} copy={copy} />
-                {court.amenities.lighting === true ? (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-white/10 px-2 py-1 text-ink/80">
-                    <Lightbulb className="size-3" aria-hidden />
-                    {copy.lights}
-                  </span>
-                ) : null}
-                {court.amenities.freeUse === true ? (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-white/10 px-2 py-1 text-ink/80">
-                    <Unlock className="size-3" aria-hidden />
-                    {copy.freeUse}
-                  </span>
-                ) : null}
-                {source && !source.required ? (
-                  <span className="rounded-full bg-white/10 px-2 py-1 text-ink/80">
-                    {source.shortLabel}
-                  </span>
-                ) : null}
+                <CourtBadges court={court} />
                 <Link
                   href={`/courts/${court.id}`}
                   className="ml-auto inline-flex items-center gap-1 font-bold text-gold hover:text-white"
@@ -111,20 +76,5 @@ export function CourtList({
         );
       })}
     </ul>
-  );
-}
-
-function StatusBadge({ status, copy }: { status: string; copy: Copy }) {
-  const closed = status !== "active";
-  return (
-    <span
-      className={`rounded-full px-2 py-1 font-bold ${
-        closed
-          ? "bg-gold/20 text-gold"
-          : "bg-emerald-400/15 text-emerald-300"
-      }`}
-    >
-      {formatStatus(status, copy)}
-    </span>
   );
 }

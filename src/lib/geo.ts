@@ -32,14 +32,14 @@ export function haversineKm(
   return EARTH_RADIUS_KM * c;
 }
 
-export function formatDistance(km: number): string {
+export function formatDistanceParts(km: number): { value: string; unit: "m" | "km" } {
   if (km < 1) {
-    return `${Math.round(km * 1000)} m`;
+    return { value: String(Math.round(km * 1000)), unit: "m" };
   }
   if (km < 10) {
-    return `${km.toFixed(1)} km`;
+    return { value: km.toFixed(1), unit: "km" };
   }
-  return `${Math.round(km)} km`;
+  return { value: String(Math.round(km)), unit: "km" };
 }
 
 export type MapBounds = {
