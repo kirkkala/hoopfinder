@@ -29,6 +29,7 @@ import {
 setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
 
 const MAP_VIEW_KEY = "hoopfinder-map-view";
+const CLICKABLE_LAYERS = ["clusters", "cluster-count", "court-points"];
 
 function readSavedView(): { latitude: number; longitude: number; zoom: number } {
   try {
@@ -156,22 +157,22 @@ export function CourtMap({
     });
   }, [keepCamera, mapReady, selected]);
 
+  function setCursor(cursor: string) {
+    const canvas = mapRef.current?.getCanvas();
+    if (canvas) canvas.style.cursor = cursor;
+  }
+
   function handleClick(event: MapLayerMouseEvent) {
     const feature = event.features?.[0];
-    if (!feature || feature.geometry.type !== "Point") {
-      return;
-    }
+    if (!feature || feature.geometry.type !== "Point") return;
 
     const coordinates = feature.geometry.coordinates as [number, number];
 
-    if (feature.layer?.id === "clusters") {
+    if (feature.properties?.cluster) {
       const map = mapRef.current;
-      if (!map) {
-        return;
-      }
-      const clusterId = Number(feature.properties?.cluster_id);
-      const source = map.getSource("courts");
-      if (Number.isFinite(clusterId) && source) {
+      const clusterId = Number(feature.properties.cluster_id);
+      const source = map?.getSource("courts");
+      if (map && Number.isFinite(clusterId) && source) {
         void (source as GeoJSONSource)
           .getClusterExpansionZoom(clusterId)
           .then((zoom) => {
@@ -196,7 +197,7 @@ export function CourtMap({
       mapStyle={MAP_STYLE}
       initialViewState={initialView}
       style={{ width: "100%", height: "100%" }}
-      interactiveLayerIds={["clusters", "court-points"]}
+      interactiveLayerIds={CLICKABLE_LAYERS}
       onLoad={(event) => {
         setMapReady(true);
         onBoundsChange(boundsFromMap(event.target));
@@ -206,6 +207,8 @@ export function CourtMap({
         saveView(latitude, longitude, zoom);
         onBoundsChange(boundsFromMap(event.target));
       }}
+      onMouseMove={(event) => setCursor(event.features?.length ? "pointer" : "")}
+      onMouseLeave={() => setCursor("")}
       onClick={handleClick}
       attributionControl={{ compact: true }}
     >
@@ -262,7 +265,7 @@ export function CourtMap({
           filter={["!", ["has", "point_count"]]}
           paint={{
             "circle-color": "#ff4339",
-            "circle-radius": 7,
+            "circle-radius": 8,
             "circle-stroke-width": 2,
             "circle-stroke-color": "#ffffff",
           }}
