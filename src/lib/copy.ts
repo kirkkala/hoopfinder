@@ -21,10 +21,10 @@ const messages = {
   dataFrom: { fi: "Tiedot haettu", en: "Data updated" },
   beta: { fi: "Beta", en: "Beta" },
   betaTooltip: {
-    fi: "Varhainen beta-versio, ei vielä valmis, tulee muuttumaan ja saattaa bugittaa.",
-    en: "Early beta preview, functionalities might change and new features are coming, might be buggy.",
+    fi: "Varhainen beta-versio. Ei valmis, saattaa sisältää bugeja.",
+    en: "Early beta preview. Not ready yet, might contain bugs.",
   },
-  language: { fi: "Kieli", en: "Language" },
+  language: { fi: "Language", en: "Language" },
   menu: { fi: "Valikko", en: "Menu" },
   info: { fi: "Info", en: "Info" },
   introTitle: { fi: "Ota pallo mukaan", en: "Bring a ball along" },
@@ -40,7 +40,7 @@ const messages = {
   },
   introLocate: {
     fi: "Tai paina Paikanna, niin kartta tietää missä olet.",
-    en: "Or tap Near me to jump to where you are.",
+    en: "Or tap Locate me to jump to where you are.",
   },
   introMap: {
     fi: "Liikuta karttaa ja tutustu kenttien sijaintiin.",
@@ -81,11 +81,11 @@ const messages = {
     en: "City, neighborhood or address",
   },
   searchInstructions: {
-    fi: "Etsi hakusanalla tai paina 'Paikanna' löytääkseen kentät lähistöllä.",
-    en: "Use the search or tap 'Near me' to find hoops nearby.",
+    fi: "Etsi hakusanalla tai käytä paikannusta löytääkseen kentät lähellä sinua.",
+    en: "Search or use geolocation to find hoops near you.",
   },
   nearMe: {
-    idle: { fi: "Paikanna", en: "Near me" },
+    idle: { fi: "Paikanna", en: "Locate me" },
     pending: { fi: "Paikannetaan…", en: "Locating…" },
     granted: { fi: "Sijaintisi", en: "Near you" },
     denied: { fi: "Sijainti estetty", en: "Location blocked" },
@@ -100,15 +100,20 @@ const messages = {
     fi: "Osoitetta ei ilmoitettu",
     en: "Address not reported",
   },
+  distanceAway: { fi: "Etäisyys", en: "Distance" },
+  locateToSeeDistance: {
+    fi: "Salli selaimen paikannus niin näet etäisyyden kentälle.",
+    en: "Allow geolocation to see the distance to the hoop.",
+  },
+  locationBlockedHelp: {
+    fi: "Sijainti on estetty. Salli se selaimen asetuksista tälle sivustolle.",
+    en: "Location is blocked. Allow it for this site in your browser settings.",
+  },
   lights: { fi: "Valot", en: "Lights" },
   freeUse: { fi: "Ilmainen käyttö", en: "Free use" },
-  letsGo: { fi: "Mennään tänne", en: "Let's go" },
+  letsGo: { fi: "Katso kentän tiedot", en: "See court info" },
   close: { fi: "Sulje", en: "Close" },
   scrollForMore: { fi: "Vieritä alas", en: "Scroll for more" },
-  distanceAway: {
-    fi: (formatted: string) => `${formatted} päässä`,
-    en: (formatted: string) => `${formatted} away`,
-  },
   courtKind: { fi: "Koripallokenttä", en: "Basketball court" },
   courtKindFrom: {
     fi: (source: string) => `Koripallokenttä · ${source}`,

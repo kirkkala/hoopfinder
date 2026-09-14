@@ -7,18 +7,16 @@ import { Icon } from "lucide-react";
 import { AppHeader } from "@/components/brand/AppHeader";
 import { AppFooter } from "@/components/brand/AppFooter";
 import { CourtList } from "@/components/explorer/CourtList";
-import {
-  SearchFilters,
-  type LocationStatus,
-} from "@/components/explorer/SearchFilters";
+import { SearchFilters } from "@/components/explorer/SearchFilters";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import {
   withDistance,
   type Court,
   type CourtWithDistance,
 } from "@/lib/courts";
-import { isInBounds, type Coordinates, type MapBounds } from "@/lib/geo";
+import { isInBounds, type MapBounds } from "@/lib/geo";
 import { mq, split, useMinWidth } from "@/lib/layout";
+import { requestOrigin, useOrigin, type LocationStatus } from "@/lib/origin";
 
 const CourtMap = dynamic(
   () => import("@/components/explorer/CourtMap").then((mod) => mod.CourtMap),
@@ -66,6 +64,16 @@ function subscribeSelectedCourt() {
   return () => {};
 }
 
+function syncCourtUrl(id: string | null) {
+  const url = new URL(window.location.href);
+  if (id) {
+    url.searchParams.set("court", id);
+  } else {
+    url.searchParams.delete("court");
+  }
+  if (url.href !== window.location.href) window.history.replaceState(null, "", url);
+}
+
 export function CourtExplorer({
   courts,
   fetchedAt,
@@ -77,7 +85,7 @@ export function CourtExplorer({
 }) {
   const copy = useCopy();
   const [query, setQuery] = useState("");
-  const [origin, setOrigin] = useState<Coordinates | null>(null);
+  const origin = useOrigin();
   const [locateSeq, setLocateSeq] = useState(0);
   const [locationStatus, setLocationStatus] = useState<LocationStatus>("idle");
   const [pickedId, setPickedId] = useState<string | null | undefined>(undefined);
@@ -89,6 +97,8 @@ export function CourtExplorer({
     readSelectedCourt,
     () => null,
   );
+  const locationGranted =
+    locationStatus === "idle" && origin ? "granted" : locationStatus;
   const restoredId =
     savedId && courts.some((court) => court.id === savedId) ? savedId : null;
   const focusedId =
@@ -156,11 +166,13 @@ export function CourtExplorer({
   function selectCourt(id: string) {
     setPickedId(id);
     writeSelectedCourt(id);
+    syncCourtUrl(id);
   }
 
   function clearCourt() {
     setPickedId(null);
     clearSelectedCourt();
+    syncCourtUrl(null);
   }
 
   function requestLocation() {
@@ -168,29 +180,15 @@ export function CourtExplorer({
     setPlaceBounds(null);
     clearCourt();
 
-    if (origin && locationStatus === "granted") {
+    if (origin && locationGranted === "granted") {
       setLocateSeq((n) => n + 1);
       return;
     }
 
-    if (!navigator.geolocation) {
-      setLocationStatus("unavailable");
-      return;
-    }
-
-    setLocationStatus("pending");
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        setOrigin({
-          lat: position.coords.latitude,
-          lon: position.coords.longitude,
-        });
-        setLocationStatus("granted");
-        setLocateSeq((n) => n + 1);
-      },
-      () => setLocationStatus("denied"),
-      { enableHighAccuracy: true, timeout: 10_000 },
-    );
+    requestOrigin((status) => {
+      setLocationStatus(status);
+      if (status === "granted") setLocateSeq((n) => n + 1);
+    });
   }
 
   return (
@@ -206,7 +204,7 @@ export function CourtExplorer({
                 setQuery(value);
                 clearCourt();
               }}
-              locationStatus={locationStatus}
+              locationStatus={locationGranted}
               onUseLocation={requestLocation}
             />
             <p className="mt-3 flex items-center gap-2 font-display text-lg tracking-wide text-gold">
