@@ -344,7 +344,11 @@ function CourtDistanceBlock({ court }: { court: Court }) {
         />
         {copy.nearMe[status]}
       </button>
-      <p className="text-sm text-ink-muted">{copy.locateToSeeDistance}</p>
+      <p className="text-sm text-ink-muted">
+        {status === "denied"
+          ? copy.locationBlockedHelp
+          : copy.locateToSeeDistance}
+      </p>
     </div>
   );
 }
