@@ -21,10 +21,10 @@ const messages = {
   dataFrom: { fi: "Tiedot haettu", en: "Data updated" },
   beta: { fi: "Beta", en: "Beta" },
   betaTooltip: {
-    fi: "Varhainen beta-versio, ei vielä valmis, tulee muuttumaan ja saattaa bugittaa.",
-    en: "Early beta preview, functionalities might change and new features are coming, might be buggy.",
+    fi: "Varhainen beta-versio. Ei valmis, saattaa sisältää bugeja.",
+    en: "Early beta preview. Not ready yet, might contain bugs.",
   },
-  language: { fi: "Kieli", en: "Language" },
+  language: { fi: "Language", en: "Language" },
   menu: { fi: "Valikko", en: "Menu" },
   info: { fi: "Info", en: "Info" },
   introTitle: { fi: "Ota pallo mukaan", en: "Bring a ball along" },

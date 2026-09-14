@@ -198,19 +198,25 @@ function HeaderMenu({
           aria-label={copy.menu}
           aria-hidden={!open}
           inert={!open}
-          className={`absolute inset-y-0 right-0 flex w-[min(19.5rem,88vw)] flex-col border-l border-white/10 bg-panel shadow-[-18px_0_40px_rgb(0_0_0_/_0.45)] transition-transform duration-300 ease-[cubic-bezier(.22,1,.36,1)] ${
+          className={`absolute inset-y-0 right-0 flex w-[min(19.5rem,88vw)] min-w-0 flex-col overflow-hidden border-l border-white/10 bg-panel shadow-[-18px_0_40px_rgb(0_0_0_/_0.45)] transition-transform duration-300 ease-[cubic-bezier(.22,1,.36,1)] ${
             open ? "translate-x-0" : "translate-x-full"
           }`}
         >
           <div className="pointer-events-none absolute inset-0 overflow-hidden opacity-30">
             <div className="court-arc absolute inset-0" />
           </div>
-          <div className="relative flex min-h-0 flex-1 flex-col">
-            <div className="px-4 pt-5 pr-[max(1rem,env(safe-area-inset-right))]">
-              <p className="pb-2 text-xs font-bold tracking-[0.16em] text-gold/80 uppercase">
-                {copy.language}
+          <div className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto">
+            <div className="min-w-0 px-4 pt-5 pr-[max(1rem,env(safe-area-inset-right))]">
+              <p className="text-sm font-bold text-white">{APP_VERSION}</p>
+              <p className="mt-1 text-sm leading-5 text-ink-muted">
+                {copy.betaTooltip}
               </p>
-              <LanguageToggle stretch />
+              <div className="mt-5 flex items-center justify-between gap-3 border-t border-white/10 pt-4">
+                <p className="text-xs font-bold tracking-[0.16em] text-gold/80 uppercase">
+                  {copy.language}
+                </p>
+                <LanguageToggle />
+              </div>
               <button
                 type="button"
                 onClick={() => {
@@ -219,7 +225,7 @@ function HeaderMenu({
                 }}
                 aria-haspopup="dialog"
                 aria-expanded={introOpen}
-                className="mt-3 w-full rounded-xl px-3 py-3 text-left text-sm font-bold tracking-wide text-ink/90 uppercase hover:bg-white/10 hover:text-white"
+                className="mt-4 text-md font-medium text-gold underline decoration-gold/50 underline-offset-4 hover:text-white hover:decoration-white"
               >
                 {copy.info}
               </button>
@@ -232,7 +238,7 @@ function HeaderMenu({
                 </p>
               ) : null}
             </div>
-            <div className="mt-auto border-t border-white/10 bg-black/30 px-4 pt-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] pr-[max(1rem,env(safe-area-inset-right))] text-sm leading-5 text-ink-muted">
+            <div className="mt-auto min-w-0 border-t border-white/10 bg-black/30 px-4 pt-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] pr-[max(1rem,env(safe-area-inset-right))] text-sm leading-5 text-ink-muted">
               <div className="space-y-1.5">
                 <SourceCredits />
               </div>
@@ -291,11 +297,18 @@ function HamburgerIcon({ open }: { open: boolean }) {
 
 function BetaBadge() {
   const copy = useCopy();
+  const showTooltip = useMinWidth(mq.wide);
+  const chip =
+    "inline-flex rounded-full bg-gold/20 px-2 py-0.5 font-sans text-[11px] font-bold uppercase tracking-[0.14em] text-gold";
+
+  if (!showTooltip) {
+    return <span className={chip}>{copy.beta}</span>;
+  }
 
   return (
     <button
       type="button"
-      className="group relative inline-flex rounded-full bg-gold/20 px-2 py-0.5 font-sans text-[11px] font-bold uppercase tracking-[0.14em] text-gold outline-none hover:bg-gold/30 focus-visible:ring-2 focus-visible:ring-gold/60"
+      className={`group relative ${chip} outline-none hover:bg-gold/30 focus-visible:ring-2 focus-visible:ring-gold/60`}
       aria-describedby="beta-tooltip"
     >
       {copy.beta}
