@@ -26,6 +26,7 @@ const CourtMap = dynamic(
 );
 
 const SELECTED_COURT_KEY = "hoopfinder-selected-court";
+const ORIGIN_KEY = "hoopfinder-origin";
 const EMPTY_COURTS: CourtWithDistance[] = [];
 
 function isInCurrentView(
@@ -66,6 +67,43 @@ function subscribeSelectedCourt() {
   return () => {};
 }
 
+let originSnapshot: { raw: string | null; value: Coordinates | null } | undefined;
+
+function readOrigin(): Coordinates | null {
+  try {
+    const raw = sessionStorage.getItem(ORIGIN_KEY);
+    if (originSnapshot && originSnapshot.raw === raw) {
+      return originSnapshot.value;
+    }
+    let value: Coordinates | null = null;
+    if (raw) {
+      const saved = JSON.parse(raw) as { lat?: unknown; lon?: unknown };
+      if (Number.isFinite(saved.lat) && Number.isFinite(saved.lon)) {
+        value = { lat: saved.lat as number, lon: saved.lon as number };
+      }
+    }
+    originSnapshot = { raw, value };
+    return value;
+  } catch {
+    // First visit, private mode, or a bad value.
+    return null;
+  }
+}
+
+function writeOrigin(coords: Coordinates) {
+  try {
+    const raw = JSON.stringify(coords);
+    sessionStorage.setItem(ORIGIN_KEY, raw);
+    originSnapshot = { raw, value: coords };
+  } catch {
+    // Ignore quota / private-mode failures.
+  }
+}
+
+function subscribeOrigin() {
+  return () => {};
+}
+
 function syncCourtUrl(id: string | null) {
   const url = new URL(window.location.href);
   if (id) {
@@ -99,6 +137,14 @@ export function CourtExplorer({
     readSelectedCourt,
     () => null,
   );
+  const savedOrigin = useSyncExternalStore(
+    subscribeOrigin,
+    readOrigin,
+    () => null,
+  );
+  const resolvedOrigin = origin ?? savedOrigin;
+  const resolvedStatus =
+    locationStatus === "idle" && savedOrigin ? "granted" : locationStatus;
   const restoredId =
     savedId && courts.some((court) => court.id === savedId) ? savedId : null;
   const focusedId =
@@ -112,8 +158,8 @@ export function CourtExplorer({
 
   const searching = query.trim().length >= 2;
   const visibleCourts = useMemo(
-    () => withDistance(courts, origin),
-    [courts, origin],
+    () => withDistance(courts, resolvedOrigin),
+    [courts, resolvedOrigin],
   );
   const courtsInView = useMemo(() => {
     if (!showList) return EMPTY_COURTS;
@@ -180,7 +226,7 @@ export function CourtExplorer({
     setPlaceBounds(null);
     clearCourt();
 
-    if (origin && locationStatus === "granted") {
+    if (resolvedOrigin && resolvedStatus === "granted") {
       setLocateSeq((n) => n + 1);
       return;
     }
@@ -193,10 +239,12 @@ export function CourtExplorer({
     setLocationStatus("pending");
     navigator.geolocation.getCurrentPosition(
       (position) => {
-        setOrigin({
+        const nextOrigin = {
           lat: position.coords.latitude,
           lon: position.coords.longitude,
-        });
+        };
+        setOrigin(nextOrigin);
+        writeOrigin(nextOrigin);
         setLocationStatus("granted");
         setLocateSeq((n) => n + 1);
       },
@@ -218,7 +266,7 @@ export function CourtExplorer({
                 setQuery(value);
                 clearCourt();
               }}
-              locationStatus={locationStatus}
+              locationStatus={resolvedStatus}
               onUseLocation={requestLocation}
             />
             <p className="mt-3 flex items-center gap-2 font-display text-lg tracking-wide text-gold">
@@ -243,7 +291,7 @@ export function CourtExplorer({
             <CourtMap
               courts={visibleCourts}
               selectedId={selectedId}
-              origin={origin}
+              origin={resolvedOrigin}
               locateSeq={locateSeq}
               focusBounds={placeBounds}
               keepCamera={keepCamera}
