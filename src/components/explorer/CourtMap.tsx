@@ -15,8 +15,8 @@ import Map, {
 } from "react-map-gl/maplibre";
 import { MAP_STYLE } from "@/lib/constants";
 import { useCopy } from "@/components/brand/LocaleProvider";
-import { courtName, type CourtWithDistance } from "@/lib/courts";
-import { courtSource } from "@/lib/sources";
+import { CourtBadges } from "@/components/explorer/CourtBadges";
+import { courtName, formatAddress, type CourtWithDistance } from "@/lib/courts";
 import {
   DEFAULT_MAP_CENTER,
   DEFAULT_MAP_ZOOM,
@@ -105,7 +105,6 @@ export function CourtMap({
   const selectedRef = useRef(selectedId);
   selectedRef.current = selectedId;
   const selected = courts.find((court) => court.id === selectedId) ?? null;
-  const source = selected ? courtSource(selected.source) : null;
 
   const data = useMemo(
     () => ({
@@ -352,9 +351,10 @@ export function CourtMap({
           offset={16}
           closeButton={false}
           closeOnClick={false}
+          maxWidth="18rem"
           onClose={onClose}
         >
-          <div className="relative flex min-h-24 min-w-52 flex-col p-3 pr-8">
+          <div className="relative flex min-w-64 flex-col gap-2 p-3">
             <button
               type="button"
               onClick={onClose}
@@ -363,26 +363,31 @@ export function CourtMap({
             >
               <X className="size-4" aria-hidden />
             </button>
-            <p className="pr-2 text-base leading-snug font-semibold text-white">
+            <p className="pr-6 text-base leading-snug font-semibold text-white">
               <MapPin
                 className="mr-1.5 inline size-[1em] shrink-0 align-[-0.15em]"
                 aria-hidden
               />
               {courtName(selected, copy)}
             </p>
+            <p className="text-sm text-ink-muted">
+              {formatAddress([
+                selected.address,
+                selected.neighborhood,
+                selected.city,
+              ]) || copy.addressMissing}
+            </p>
             {selected.distanceKm !== null ? (
-              <p className="mt-1 text-sm text-ink-muted">
+              <p className="text-sm text-ink-muted">
                 {copy.distanceAway(formatDistance(selected.distanceKm))}
               </p>
             ) : null}
-            {source ? (
-              <span className="mt-2 w-fit rounded-full bg-white/10 px-2 py-0.5 text-xs font-bold tracking-wide text-ink/80">
-                {source.shortLabel}
-              </span>
-            ) : null}
+            <div className="flex flex-wrap items-center gap-1.5 text-sm">
+              <CourtBadges court={selected} />
+            </div>
             <Link
               href={`/courts/${selected.id}`}
-              className="mt-auto inline-flex items-center gap-1 pt-2 text-sm font-bold text-gold hover:text-white"
+              className="inline-flex items-center gap-1 self-end pt-1 text-sm font-bold text-gold hover:text-white"
             >
               {copy.letsGo}
               <ArrowRight className="size-3.5" aria-hidden />
