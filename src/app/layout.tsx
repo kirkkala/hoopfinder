@@ -1,4 +1,5 @@
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next"
 import { Bebas_Neue, Outfit } from "next/font/google";
 import type { Metadata } from "next";
 import { LocaleProvider } from "@/components/brand/LocaleProvider";
@@ -31,6 +32,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="fi" className={`${outfit.variable} ${bebas.variable}`}>
       <body className="min-h-dvh bg-asphalt font-sans text-ink antialiased">
         <LocaleProvider>{children}</LocaleProvider>
+        <Analytics />
       </body>
     </html>
   );
