@@ -1,5 +1,6 @@
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next"
+import { SpeedInsights } from "@vercel/speed-insights/next"
 import { Bebas_Neue, Outfit } from "next/font/google";
 import type { Metadata } from "next";
 import { LocaleProvider } from "@/components/brand/LocaleProvider";
@@ -33,6 +34,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-dvh bg-asphalt font-sans text-ink antialiased">
         <LocaleProvider>{children}</LocaleProvider>
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );
