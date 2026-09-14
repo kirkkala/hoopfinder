@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, MapPin, X } from "lucide-react";
+import { ArrowRight, X } from "lucide-react";
 import { LngLatBounds, setWorkerUrl, type GeoJSONSource } from "maplibre-gl";
 import Map, {
   Layer,
@@ -16,12 +16,12 @@ import Map, {
 import { MAP_STYLE } from "@/lib/constants";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { CourtBadges } from "@/components/explorer/CourtBadges";
-import { courtName, formatAddress, type CourtWithDistance } from "@/lib/courts";
+import { CourtHeading } from "@/components/explorer/CourtHeading";
+import { courtName, type CourtWithDistance } from "@/lib/courts";
 import {
   DEFAULT_MAP_CENTER,
   DEFAULT_MAP_ZOOM,
   NEAR_ME_ZOOM,
-  formatDistance,
   type Coordinates,
   type MapBounds,
 } from "@/lib/geo";
@@ -395,25 +395,7 @@ export function CourtMap({
             >
               <X className="size-4" aria-hidden />
             </button>
-            <p className="pr-6 text-base leading-snug font-semibold text-white">
-              <MapPin
-                className="mr-1.5 inline size-[1em] shrink-0 align-[-0.15em]"
-                aria-hidden
-              />
-              {courtName(selected, copy)}
-            </p>
-            <p className="text-sm text-ink-muted">
-              {formatAddress([
-                selected.address,
-                selected.neighborhood,
-                selected.city,
-              ]) || copy.addressMissing}
-            </p>
-            {selected.distanceKm !== null ? (
-              <p className="text-sm text-ink-muted">
-                {copy.distanceAway(formatDistance(selected.distanceKm))}
-              </p>
-            ) : null}
+            <CourtHeading court={selected} pin className="pr-6" />
             <div className="flex flex-wrap items-center gap-1.5 text-xs">
               <CourtBadges court={selected} />
             </div>

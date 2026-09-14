@@ -105,10 +105,6 @@ const messages = {
   letsGo: { fi: "Katso kentän tiedot", en: "See court info" },
   close: { fi: "Sulje", en: "Close" },
   scrollForMore: { fi: "Vieritä alas", en: "Scroll for more" },
-  distanceAway: {
-    fi: (formatted: string) => `${formatted} päässä`,
-    en: (formatted: string) => `${formatted} away`,
-  },
   courtKind: { fi: "Koripallokenttä", en: "Basketball court" },
   courtKindFrom: {
     fi: (source: string) => `Koripallokenttä · ${source}`,

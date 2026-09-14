@@ -6,8 +6,8 @@ import { basketball } from "@lucide/lab";
 import { ArrowRight, Icon } from "lucide-react";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { CourtBadges } from "@/components/explorer/CourtBadges";
-import { formatAddress, type CourtWithDistance, courtName } from "@/lib/courts";
-import { formatDistance } from "@/lib/geo";
+import { CourtHeading } from "@/components/explorer/CourtHeading";
+import { type CourtWithDistance } from "@/lib/courts";
 
 export function CourtList({
   courts,
@@ -57,25 +57,9 @@ export function CourtList({
               <button
                 type="button"
                 onClick={() => onSelect(court.id)}
-                className="flex w-full items-start justify-between gap-3 text-left"
+                className="w-full text-left"
               >
-                <span>
-                  <span className="block font-semibold text-white">
-                    {courtName(court, copy)}
-                  </span>
-                  <span className="mt-1 block text-sm text-ink-muted">
-                    {formatAddress([
-                      court.address,
-                      court.neighborhood,
-                      court.city,
-                    ]) || copy.addressMissing}
-                  </span>
-                </span>
-                {court.distanceKm !== null ? (
-                  <span className="shrink-0 font-display text-lg leading-none text-gold">
-                    {formatDistance(court.distanceKm)}
-                  </span>
-                ) : null}
+                <CourtHeading court={court} />
               </button>
               <div className="flex flex-wrap items-center gap-2 text-sm">
                 <CourtBadges court={court} />
