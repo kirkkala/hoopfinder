@@ -3,7 +3,7 @@
 import { MapPin } from "lucide-react";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { courtName, formatAddress, type CourtWithDistance } from "@/lib/courts";
-import { formatDistanceParts } from "@/lib/geo";
+import { CourtDistance } from "@/components/CourtDistance";
 
 export function CourtHeading({
   court,
@@ -43,17 +43,5 @@ export function CourtHeading({
         <CourtDistance km={court.distanceKm} />
       ) : null}
     </div>
-  );
-}
-
-function CourtDistance({ km }: { km: number }) {
-  const { value, unit } = formatDistanceParts(km);
-  return (
-    <span className="inline-flex shrink-0 items-baseline gap-1 text-gold">
-      <span className="font-display text-lg leading-none">{value}</span>
-      <span className="font-sans text-xs font-semibold tracking-wide">
-        {unit}
-      </span>
-    </span>
   );
 }

@@ -7,18 +7,16 @@ import { Icon } from "lucide-react";
 import { AppHeader } from "@/components/brand/AppHeader";
 import { AppFooter } from "@/components/brand/AppFooter";
 import { CourtList } from "@/components/explorer/CourtList";
-import {
-  SearchFilters,
-  type LocationStatus,
-} from "@/components/explorer/SearchFilters";
+import { SearchFilters } from "@/components/explorer/SearchFilters";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import {
   withDistance,
   type Court,
   type CourtWithDistance,
 } from "@/lib/courts";
-import { isInBounds, type Coordinates, type MapBounds } from "@/lib/geo";
+import { isInBounds, type MapBounds } from "@/lib/geo";
 import { mq, split, useMinWidth } from "@/lib/layout";
+import { requestOrigin, useOrigin, type LocationStatus } from "@/lib/origin";
 
 const CourtMap = dynamic(
   () => import("@/components/explorer/CourtMap").then((mod) => mod.CourtMap),
@@ -26,7 +24,6 @@ const CourtMap = dynamic(
 );
 
 const SELECTED_COURT_KEY = "hoopfinder-selected-court";
-const ORIGIN_KEY = "hoopfinder-origin";
 const EMPTY_COURTS: CourtWithDistance[] = [];
 
 function isInCurrentView(
@@ -67,43 +64,6 @@ function subscribeSelectedCourt() {
   return () => {};
 }
 
-let originSnapshot: { raw: string | null; value: Coordinates | null } | undefined;
-
-function readOrigin(): Coordinates | null {
-  try {
-    const raw = sessionStorage.getItem(ORIGIN_KEY);
-    if (originSnapshot && originSnapshot.raw === raw) {
-      return originSnapshot.value;
-    }
-    let value: Coordinates | null = null;
-    if (raw) {
-      const saved = JSON.parse(raw) as { lat?: unknown; lon?: unknown };
-      if (Number.isFinite(saved.lat) && Number.isFinite(saved.lon)) {
-        value = { lat: saved.lat as number, lon: saved.lon as number };
-      }
-    }
-    originSnapshot = { raw, value };
-    return value;
-  } catch {
-    // First visit, private mode, or a bad value.
-    return null;
-  }
-}
-
-function writeOrigin(coords: Coordinates) {
-  try {
-    const raw = JSON.stringify(coords);
-    sessionStorage.setItem(ORIGIN_KEY, raw);
-    originSnapshot = { raw, value: coords };
-  } catch {
-    // Ignore quota / private-mode failures.
-  }
-}
-
-function subscribeOrigin() {
-  return () => {};
-}
-
 function syncCourtUrl(id: string | null) {
   const url = new URL(window.location.href);
   if (id) {
@@ -125,7 +85,7 @@ export function CourtExplorer({
 }) {
   const copy = useCopy();
   const [query, setQuery] = useState("");
-  const [origin, setOrigin] = useState<Coordinates | null>(null);
+  const origin = useOrigin();
   const [locateSeq, setLocateSeq] = useState(0);
   const [locationStatus, setLocationStatus] = useState<LocationStatus>("idle");
   const [pickedId, setPickedId] = useState<string | null | undefined>(undefined);
@@ -137,14 +97,8 @@ export function CourtExplorer({
     readSelectedCourt,
     () => null,
   );
-  const savedOrigin = useSyncExternalStore(
-    subscribeOrigin,
-    readOrigin,
-    () => null,
-  );
-  const resolvedOrigin = origin ?? savedOrigin;
-  const resolvedStatus =
-    locationStatus === "idle" && savedOrigin ? "granted" : locationStatus;
+  const locationGranted =
+    locationStatus === "idle" && origin ? "granted" : locationStatus;
   const restoredId =
     savedId && courts.some((court) => court.id === savedId) ? savedId : null;
   const focusedId =
@@ -158,8 +112,8 @@ export function CourtExplorer({
 
   const searching = query.trim().length >= 2;
   const visibleCourts = useMemo(
-    () => withDistance(courts, resolvedOrigin),
-    [courts, resolvedOrigin],
+    () => withDistance(courts, origin),
+    [courts, origin],
   );
   const courtsInView = useMemo(() => {
     if (!showList) return EMPTY_COURTS;
@@ -226,31 +180,15 @@ export function CourtExplorer({
     setPlaceBounds(null);
     clearCourt();
 
-    if (resolvedOrigin && resolvedStatus === "granted") {
+    if (origin && locationGranted === "granted") {
       setLocateSeq((n) => n + 1);
       return;
     }
 
-    if (!navigator.geolocation) {
-      setLocationStatus("unavailable");
-      return;
-    }
-
-    setLocationStatus("pending");
-    navigator.geolocation.getCurrentPosition(
-      (position) => {
-        const nextOrigin = {
-          lat: position.coords.latitude,
-          lon: position.coords.longitude,
-        };
-        setOrigin(nextOrigin);
-        writeOrigin(nextOrigin);
-        setLocationStatus("granted");
-        setLocateSeq((n) => n + 1);
-      },
-      () => setLocationStatus("denied"),
-      { enableHighAccuracy: true, timeout: 10_000 },
-    );
+    requestOrigin((status) => {
+      setLocationStatus(status);
+      if (status === "granted") setLocateSeq((n) => n + 1);
+    });
   }
 
   return (
@@ -266,7 +204,7 @@ export function CourtExplorer({
                 setQuery(value);
                 clearCourt();
               }}
-              locationStatus={resolvedStatus}
+              locationStatus={locationGranted}
               onUseLocation={requestLocation}
             />
             <p className="mt-3 flex items-center gap-2 font-display text-lg tracking-wide text-gold">
@@ -291,7 +229,7 @@ export function CourtExplorer({
             <CourtMap
               courts={visibleCourts}
               selectedId={selectedId}
-              origin={resolvedOrigin}
+              origin={origin}
               locateSeq={locateSeq}
               focusBounds={placeBounds}
               keepCamera={keepCamera}

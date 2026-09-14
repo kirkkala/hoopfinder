@@ -1,6 +1,6 @@
 "use client";
 
-import type { ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -16,6 +16,9 @@ import {
   Layers,
   LayoutGrid,
   Lightbulb,
+  LoaderCircle,
+  Locate,
+  LocateOff,
   Map,
   MapPin,
   MapPinned,
@@ -31,6 +34,7 @@ import {
 } from "lucide-react";
 import { AppHeader } from "@/components/brand/AppHeader";
 import { AppFooter } from "@/components/brand/AppFooter";
+import { CourtDistance } from "@/components/CourtDistance";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { CourtMiniMap } from "@/components/court/CourtMiniMap";
 import {
@@ -39,9 +43,14 @@ import {
   formatReportedBoolean,
   formatStatus,
   formatSurface,
-  isGenericCourtName,
   type Court,
 } from "@/lib/courts";
+import { haversineKm } from "@/lib/geo";
+import {
+  requestOrigin,
+  useOrigin,
+  type LocationStatus,
+} from "@/lib/origin";
 import { courtSource, sourceListingUrl } from "@/lib/sources";
 import { split } from "@/lib/layout";
 
@@ -83,16 +92,7 @@ export function CourtDetails({
             <h1 className="mt-1 font-display text-4xl tracking-wide text-white md:text-5xl">
               {courtName(court, copy)}
             </h1>
-            {copy.locale === "en" &&
-            court.nameFi &&
-            court.nameFi !== courtName(court, copy) &&
-            !isGenericCourtName(court.nameFi) ? (
-              <p className="mt-1 text-ink-muted">{court.nameFi}</p>
-            ) : copy.locale === "fi" &&
-              court.name !== courtName(court, copy) &&
-              !isGenericCourtName(court.name) ? (
-              <p className="mt-1 text-ink-muted">{court.name}</p>
-            ) : null}
+            <CourtDistanceBlock court={court} />
           </div>
 
           <dl className="grid gap-3 rounded-3xl border border-white/10 bg-panel p-5">
@@ -296,6 +296,55 @@ export function CourtDetails({
       </main>
 
       <AppFooter />
+    </div>
+  );
+}
+
+function CourtDistanceBlock({ court }: { court: Court }) {
+  const copy = useCopy();
+  const origin = useOrigin();
+  const [status, setStatus] = useState<LocationStatus>("idle");
+  const [ready, setReady] = useState(false);
+  const distanceKm = origin
+    ? haversineKm(origin, { lat: court.lat, lon: court.lon })
+    : null;
+
+  useEffect(() => {
+    setReady(true);
+  }, []);
+
+  if (!ready) return null;
+
+  if (distanceKm !== null) {
+    return (
+      <p className="mt-2 inline-flex items-baseline gap-1.5">
+        <span className="text-sm font-semibold text-gold">
+          {copy.distanceAway}:
+        </span>
+        <CourtDistance km={distanceKm} />
+      </p>
+    );
+  }
+
+  const pending = status === "pending";
+  const StatusIcon =
+    pending ? LoaderCircle : status === "idle" ? Locate : LocateOff;
+
+  return (
+    <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
+      <button
+        type="button"
+        onClick={() => requestOrigin(setStatus)}
+        disabled={pending}
+        className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-blue-800 px-3 py-1.5 text-sm font-bold text-white hover:bg-blue-900 disabled:cursor-default disabled:opacity-70"
+      >
+        <StatusIcon
+          aria-hidden
+          className={`size-3.5 ${pending ? "animate-spin" : ""}`}
+        />
+        {copy.nearMe[status]}
+      </button>
+      <p className="text-sm text-ink-muted">{copy.locateToSeeDistance}</p>
     </div>
   );
 }
