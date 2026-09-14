@@ -102,7 +102,7 @@ const messages = {
   },
   lights: { fi: "Valot", en: "Lights" },
   freeUse: { fi: "Ilmainen käyttö", en: "Free use" },
-  letsGo: { fi: "Mennään tänne", en: "Let's go" },
+  letsGo: { fi: "Katso kentän tiedot", en: "See court info" },
   close: { fi: "Sulje", en: "Close" },
   scrollForMore: { fi: "Vieritä alas", en: "Scroll for more" },
   distanceAway: {

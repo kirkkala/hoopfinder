@@ -382,12 +382,12 @@ export function CourtMap({
                 {copy.distanceAway(formatDistance(selected.distanceKm))}
               </p>
             ) : null}
-            <div className="flex flex-wrap items-center gap-1.5 text-sm">
+            <div className="flex flex-wrap items-center gap-1.5 text-xs">
               <CourtBadges court={selected} />
             </div>
             <Link
               href={`/courts/${selected.id}`}
-              className="inline-flex items-center gap-1 self-end pt-1 text-sm font-bold text-gold hover:text-white"
+              className="inline-flex items-center gap-1 self-end pt-2 pb-1 text-sm font-bold text-gold hover:text-white"
             >
               {copy.letsGo}
               <ArrowRight className="size-3.5" aria-hidden />
