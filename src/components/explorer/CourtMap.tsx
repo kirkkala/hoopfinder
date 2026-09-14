@@ -104,6 +104,8 @@ export function CourtMap({
   const paintedIds = useRef(new Set<string>());
   const selectedRef = useRef(selectedId);
   selectedRef.current = selectedId;
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
   const selected = courts.find((court) => court.id === selectedId) ?? null;
 
   const data = useMemo(
@@ -184,6 +186,32 @@ export function CourtMap({
     if (mapReady) paintHover();
   }, [mapReady, selectedId]);
 
+  useEffect(() => {
+    if (!selectedId) return;
+
+    function onKeyDown(event: KeyboardEvent) {
+      if (event.key !== "Escape") return;
+      event.preventDefault();
+      onCloseRef.current();
+    }
+
+    function onPointerDown(event: PointerEvent) {
+      const target = event.target;
+      if (!(target instanceof Element)) return;
+      if (target.closest(".maplibregl-popup")) return;
+      if (target.closest(".maplibregl-canvas-container")) return;
+      if (target.closest(".maplibregl-ctrl")) return;
+      onCloseRef.current();
+    }
+
+    window.addEventListener("keydown", onKeyDown);
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => {
+      window.removeEventListener("keydown", onKeyDown);
+      document.removeEventListener("pointerdown", onPointerDown);
+    };
+  }, [selectedId]);
+
   function setCursor(cursor: string) {
     const canvas = mapRef.current?.getCanvas();
     if (canvas) canvas.style.cursor = cursor;
@@ -199,11 +227,15 @@ export function CourtMap({
 
   function handleClick(event: MapLayerMouseEvent) {
     const feature = event.features?.[0];
-    if (!feature || feature.geometry.type !== "Point") return;
+    if (!feature || feature.geometry.type !== "Point") {
+      if (selectedRef.current) onClose();
+      return;
+    }
 
     const coordinates = feature.geometry.coordinates as [number, number];
 
     if (feature.properties?.cluster) {
+      if (selectedRef.current) onClose();
       const map = mapRef.current;
       const clusterId = Number(feature.properties.cluster_id);
       const source = map?.getSource("courts");
