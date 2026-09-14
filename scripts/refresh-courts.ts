@@ -19,8 +19,12 @@ async function main() {
     throw new Error("Need a LIPAS and OSM snapshot. Fix the failing fetch or keep data/courts.json.");
   }
 
-  const nextRaw = JSON.stringify({ lipas, osm });
-  const previousRaw = previous ? JSON.stringify({ lipas: previous.lipas, osm: previous.osm }) : "";
+  const next = { lipas: serialize(lipas), osm: serialize(osm) };
+  const nextRaw = formatSnapshot(next);
+  const previousRaw =
+    previous?.lipas && previous.osm
+      ? formatSnapshot({ lipas: serialize(previous.lipas), osm: serialize(previous.osm) })
+      : "";
   if (nextRaw === previousRaw) {
     console.log("No court data changes");
     return;
@@ -29,6 +33,21 @@ async function main() {
   await mkdir(dirname(outFile), { recursive: true });
   await writeFile(outFile, nextRaw);
   console.log(`Wrote ${outFile}`);
+}
+
+function serialize(snapshot: SourceSnapshot): SourceSnapshot {
+  return {
+    fetchedAt: snapshot.fetchedAt,
+    courts: sortCourts(snapshot.courts),
+  };
+}
+
+function formatSnapshot(snapshot: { lipas: SourceSnapshot; osm: SourceSnapshot }): string {
+  return `${JSON.stringify(snapshot, null, 2)}\n`;
+}
+
+function sortCourts(courts: Court[]): Court[] {
+  return [...courts].sort((a, b) => a.id.localeCompare(b.id));
 }
 
 async function fetchOrKeep(
@@ -40,7 +59,7 @@ async function fetchOrKeep(
     console.log(`Fetching ${label}…`);
     const courts = await fetchCourts();
     if (courts.length === 0) throw new Error("no courts");
-    if (previous && JSON.stringify(previous.courts) === JSON.stringify(courts)) {
+    if (previous && JSON.stringify(sortCourts(previous.courts)) === JSON.stringify(sortCourts(courts))) {
       console.log(`${label} ${courts.length} (unchanged)`);
       return previous;
     }
