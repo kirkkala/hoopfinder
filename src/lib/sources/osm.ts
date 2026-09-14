@@ -1,14 +1,26 @@
 import { z } from "zod";
 import { getCopy } from "@/lib/copy";
 import { emptyAmenities, isGenericCourtName, type Court } from "@/lib/courts";
+import { isInFinland } from "@/lib/sources/finland";
 
-const OVERPASS_API =
-  process.env.OVERPASS_API_BASE ?? "https://overpass-api.de/api/interpreter";
+const USER_AGENT = "HoopFinder/0.1 (https://github.com/kirkkala/hoopfinder)";
+const DEFAULT_DISPATCHER = "https://overpass-api.de/api/interpreter";
+const LZ4_INTERPRETER = "https://lz4.overpass-api.de/api/interpreter";
+const TILE_TIMEOUT_S = 30;
+const FETCH_TIMEOUT_MS = 45_000;
+const TILE_ATTEMPTS = 5;
+const TILE_GAP_MS = 10_000;
 
-const QUERY = `[out:json][timeout:90];
-area(3600054200)->.fi;
-nwr["leisure"="pitch"]["sport"~"basketball"]["indoor"!="yes"]["location"!="indoor"](area.fi);
-out center tags;`;
+/** Public dispatcher often 504s; follow `/api/status` and query Finland in tiles. */
+const DISPATCHER = process.env.OVERPASS_API_BASE ?? DEFAULT_DISPATCHER;
+
+type Tile = { south: number; west: number; north: number; east: number };
+
+const FINLAND_TILES: Tile[] = [
+  { south: 59.7, west: 19.3, north: 61.4, east: 28.35 },
+  { south: 61.4, west: 20.5, north: 64.8, east: 31.6 },
+  { south: 64.8, west: 20.5, north: 70.1, east: 31.2 },
+];
 
 const OsmSchema = z.object({
   remark: z.string().optional(),
@@ -29,18 +41,72 @@ const OsmSchema = z.object({
   ),
 });
 
+type OsmElement = z.infer<typeof OsmSchema>["elements"][number];
+
 export async function getOsmCourts(): Promise<Court[]> {
-  const response = await fetch(OVERPASS_API, {
+  const interpreters = await interpretersToTry();
+  const status = statusUrl(DISPATCHER);
+  const byId = new Map<string, Court>();
+
+  for (const [index, tile] of FINLAND_TILES.entries()) {
+    const label = `${index + 1}/${FINLAND_TILES.length}`;
+    const elements = await fetchTile(tile, label, interpreters, status);
+    for (const element of elements) {
+      const court = toCourt(element);
+      if (court) byId.set(court.id, court);
+    }
+    if (index < FINLAND_TILES.length - 1) {
+      console.log(`Waiting ${TILE_GAP_MS / 1000}s before the next OSM tile`);
+      await sleep(TILE_GAP_MS);
+    }
+  }
+
+  const courts = [...byId.values()];
+  if (courts.length === 0) {
+    throw new Error("Overpass returned no courts");
+  }
+  return courts;
+}
+
+async function fetchTile(
+  tile: Tile,
+  label: string,
+  interpreters: string[],
+  status: string,
+): Promise<OsmElement[]> {
+  let lastError: unknown;
+  for (let attempt = 0; attempt < TILE_ATTEMPTS; attempt++) {
+    await waitForSlot(status);
+    const interpreter = interpreters[attempt % interpreters.length];
+    try {
+      console.log(`OSM tile ${label} via ${interpreter}`);
+      return await postOverpass(interpreter, tileQuery(tile));
+    } catch (error) {
+      lastError = error;
+      const delayMs = retryDelayMs(error, attempt);
+      const message = error instanceof Error ? error.message : "unknown error";
+      console.warn(`OSM tile ${label} failed (${message}); retry in ${Math.round(delayMs / 1000)}s`);
+      await sleep(delayMs);
+    }
+  }
+  throw lastError instanceof Error ? lastError : new Error("Overpass tile failed");
+}
+
+async function postOverpass(interpreter: string, query: string): Promise<OsmElement[]> {
+  const response = await fetch(interpreter, {
     method: "POST",
     headers: {
       Accept: "application/json",
       "Content-Type": "application/x-www-form-urlencoded;charset=UTF-8",
-      "User-Agent": "HoopFinder/0.1 (https://github.com/kirkkala/hoopfinder)",
+      "User-Agent": USER_AGENT,
     },
-    body: new URLSearchParams({ data: QUERY }).toString(),
+    body: new URLSearchParams({ data: query }).toString(),
     cache: "no-store",
-    signal: AbortSignal.timeout(120_000),
+    signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
   });
+  if (response.status === 429 || response.status === 502 || response.status === 504) {
+    throw new Error(`Overpass request failed with ${response.status}`);
+  }
   if (!response.ok) {
     throw new Error(`Overpass request failed with ${response.status}`);
   }
@@ -52,24 +118,81 @@ export async function getOsmCourts(): Promise<Court[]> {
   if (parsed.data.remark) {
     throw new Error(`Overpass error: ${parsed.data.remark}`);
   }
-
-  const courts: Court[] = [];
-  for (const element of parsed.data.elements) {
-    const court = toCourt(element);
-    if (court) courts.push(court);
-  }
-  if (courts.length === 0) {
-    throw new Error("Overpass returned no courts");
-  }
-  return courts;
+  return parsed.data.elements;
 }
 
-function toCourt(
-  element: z.infer<typeof OsmSchema>["elements"][number],
-): Court | null {
+async function interpretersToTry(): Promise<string[]> {
+  const announced = await readAnnouncedInterpreter(DISPATCHER);
+  const extras = DISPATCHER === DEFAULT_DISPATCHER ? [LZ4_INTERPRETER] : [];
+  return unique([announced, DISPATCHER, ...extras].filter((url): url is string => Boolean(url)));
+}
+
+async function readAnnouncedInterpreter(interpreter: string): Promise<string | null> {
+  try {
+    const response = await fetch(statusUrl(interpreter), {
+      headers: { "User-Agent": USER_AGENT },
+      cache: "no-store",
+      signal: AbortSignal.timeout(10_000),
+    });
+    if (!response.ok) return null;
+    const match = /Announced endpoint:\s*(\S+)/.exec(await response.text());
+    if (!match) return null;
+    const host = match[1].replace(/\/+$/, "");
+    const origin = host.includes("://") ? host : `https://${host}`;
+    return `${origin}/api/interpreter`;
+  } catch {
+    return null;
+  }
+}
+
+async function waitForSlot(status: string): Promise<void> {
+  try {
+    const response = await fetch(status, {
+      headers: { "User-Agent": USER_AGENT },
+      cache: "no-store",
+      signal: AbortSignal.timeout(10_000),
+    });
+    if (!response.ok) return;
+    const text = await response.text();
+    const available = /(\d+) slots available now/.exec(text);
+    if (available && Number(available[1]) > 0) return;
+    const wait = /Slot available after:\s*(\d+)/.exec(text);
+    if (wait) await sleep((Number(wait[1]) + 1) * 1000);
+  } catch {
+    // Status is advisory; still try the query.
+  }
+}
+
+function tileQuery(tile: Tile): string {
+  return `[out:json][timeout:${TILE_TIMEOUT_S}];
+nwr["leisure"="pitch"]["sport"~"basketball"]["indoor"!="yes"]["location"!="indoor"](${tile.south},${tile.west},${tile.north},${tile.east});
+out center tags;`;
+}
+
+function statusUrl(interpreter: string): string {
+  return interpreter.replace(/\/interpreter\/?$/, "/status");
+}
+
+function retryDelayMs(error: unknown, attempt: number): number {
+  const message = error instanceof Error ? error.message : "";
+  if (message.includes("429")) return 12_000;
+  if (message.includes("504") || message.includes("502")) return 4_000;
+  return 2_000 * (attempt + 1);
+}
+
+function unique(urls: string[]): string[] {
+  return [...new Set(urls)];
+}
+
+function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+function toCourt(element: OsmElement): Court | null {
   const lat = element.lat ?? element.center?.lat;
   const lon = element.lon ?? element.center?.lon;
   if (typeof lat !== "number" || typeof lon !== "number") return null;
+  if (!isInFinland(lat, lon)) return null;
 
   const tags = element.tags ?? {};
   if (tags.location === "indoor") return null;

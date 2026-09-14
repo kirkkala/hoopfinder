@@ -26,27 +26,18 @@ Checked against `GET /v2/sports-site-categories` and live `1310` payloads:
 
 The app never invents values for missing fields.
 
-OpenStreetMap pitches tagged `leisure=pitch` and `sport=basketball` are merged in when they are more than 80 m from a LIPAS court.
-
 ## Data sources
 
-Each court API is its own module. Pages only talk to the catalog, which reads the committed snapshot:
+The app never fetches courts at request time. It reads the committed snapshot in [`data/courts.json`](data/courts.json); the header shows when that dump was fetched.
 
-- [`data/courts.json`](data/courts.json) — last successful LIPAS + Overpass dump
-- [`src/lib/catalog.ts`](src/lib/catalog.ts) — load the snapshot, merge without duplicates, look up by id
-- [`src/lib/sources/lipas.ts`](src/lib/sources/lipas.ts) — LIPAS type 1310
-- [`src/lib/sources/osm.ts`](src/lib/sources/osm.ts) — OpenStreetMap Overpass
-- [`src/lib/sources/index.ts`](src/lib/sources/index.ts) — source labels, attribution, listing links
+Refresh with `npm run refresh-courts` or the Monday GitHub Action:
 
-Overpass is too slow and unreliable to call from Vercel on each request, so production never fetches courts live. A GitHub Action runs `npm run refresh-courts` every Monday, commits [`data/courts.json`](data/courts.json) if it changed, and Vercel deploys that. You can also run the same job from the Actions tab, or locally:
+- LIPAS type **1310** outdoor basketball sites
+- OpenStreetMap `leisure=pitch` + `sport=basketball`, via Overpass (three Finland tiles, then clipped to Finland). The public Overpass dispatcher often 504s on a nationwide query.
 
-```bash
-npm run refresh-courts
-```
+LIPAS wins when an OSM pitch is within 80 m. Two courts from the same source are kept even if they sit next to each other. If Overpass fails, the previous OSM snapshot is kept and LIPAS can still update.
 
-If Overpass is down, the script keeps the previous OSM courts and still updates LIPAS. The header “data updated” date comes from the snapshot.
-
-To drop OpenStreetMap, remove it from `COURT_SOURCES`, then delete `src/lib/sources/osm.ts`. To add a source, add a mapper module, one entry in `COURT_SOURCES`, and include it in `npm run refresh-courts`. Earlier sources win when two courts are within 80 m.
+Modules: [`src/lib/catalog.ts`](src/lib/catalog.ts), [`src/lib/sources/lipas.ts`](src/lib/sources/lipas.ts), [`src/lib/sources/osm.ts`](src/lib/sources/osm.ts).
 
 ## Develop
 
