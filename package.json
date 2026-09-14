@@ -1,6 +1,6 @@
 {
   "name": "hoopfinder",
-  "version": "0.1.0-beta.5",
+  "version": "0.1.0-beta.6",
   "private": true,
   "license": "AGPL-3.0-only",
   "scripts": {
@@ -13,6 +13,8 @@
   },
   "dependencies": {
     "@lucide/lab": "^0.7.0",
+    "@vercel/analytics": "^2.0.1",
+    "@vercel/speed-insights": "^2.0.0",
     "lucide-react": "^1.45.0",
     "maplibre-gl": "^6.9.0",
     "next": "16.3.5",
@@ -31,5 +33,10 @@
     "tailwindcss": "^4",
     "tsx": "^4.23.13",
     "typescript": "^5"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true,
+    "fsevents@2.3.3": true,
+    "unrs-resolver@1.12.2": true
   }
 }
