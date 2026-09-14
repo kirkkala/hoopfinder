@@ -9,6 +9,7 @@ const LZ4_INTERPRETER = "https://lz4.overpass-api.de/api/interpreter";
 const TILE_TIMEOUT_S = 30;
 const FETCH_TIMEOUT_MS = 45_000;
 const TILE_ATTEMPTS = 5;
+const TILE_GAP_MS = 10_000;
 
 /** Public dispatcher often 504s; follow `/api/status` and query Finland in tiles. */
 const DISPATCHER = process.env.OVERPASS_API_BASE ?? DEFAULT_DISPATCHER;
@@ -53,6 +54,10 @@ export async function getOsmCourts(): Promise<Court[]> {
     for (const element of elements) {
       const court = toCourt(element);
       if (court) byId.set(court.id, court);
+    }
+    if (index < FINLAND_TILES.length - 1) {
+      console.log(`Waiting ${TILE_GAP_MS / 1000}s before the next OSM tile`);
+      await sleep(TILE_GAP_MS);
     }
   }
 
