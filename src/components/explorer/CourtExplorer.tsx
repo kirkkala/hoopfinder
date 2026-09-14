@@ -66,6 +66,16 @@ function subscribeSelectedCourt() {
   return () => {};
 }
 
+function syncCourtUrl(id: string | null) {
+  const url = new URL(window.location.href);
+  if (id) {
+    url.searchParams.set("court", id);
+  } else {
+    url.searchParams.delete("court");
+  }
+  if (url.href !== window.location.href) window.history.replaceState(null, "", url);
+}
+
 export function CourtExplorer({
   courts,
   fetchedAt,
@@ -156,11 +166,13 @@ export function CourtExplorer({
   function selectCourt(id: string) {
     setPickedId(id);
     writeSelectedCourt(id);
+    syncCourtUrl(id);
   }
 
   function clearCourt() {
     setPickedId(null);
     clearSelectedCourt();
+    syncCourtUrl(null);
   }
 
   function requestLocation() {
