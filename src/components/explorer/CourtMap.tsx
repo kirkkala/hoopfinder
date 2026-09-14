@@ -174,7 +174,7 @@ export function CourtMap({
 
   function paintHover() {
     const map = mapRef.current;
-    if (!map) return;
+    if (!map?.isStyleLoaded() || !map.getSource("courts")) return;
     const next = new Set<string>();
     if (pointerId.current) next.add(pointerId.current);
     if (selectedRef.current) next.add(selectedRef.current);
