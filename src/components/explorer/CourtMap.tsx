@@ -3,7 +3,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, X } from "lucide-react";
-import { LngLatBounds, setWorkerUrl, type GeoJSONSource } from "maplibre-gl";
+import {
+  LngLatBounds,
+  setWorkerUrl,
+  type ExpressionSpecification,
+  type GeoJSONSource,
+} from "maplibre-gl";
 import Map, {
   Layer,
   Marker,
@@ -30,7 +35,11 @@ setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
 
 const MAP_VIEW_KEY = "hoopfinder-map-view";
 const CLICKABLE_LAYERS = ["clusters", "cluster-count", "court-points", "court-labels"];
-const HOVER = ["boolean", ["feature-state", "hover"], false] as const;
+const HOVER: ExpressionSpecification = [
+  "boolean",
+  ["feature-state", "hover"],
+  false,
+];
 
 function readSavedView(): { latitude: number; longitude: number; zoom: number } {
   try {
