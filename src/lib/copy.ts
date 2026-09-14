@@ -81,8 +81,8 @@ const messages = {
     en: "City, neighborhood or address",
   },
   searchInstructions: {
-    fi: "Etsi hakusanalla tai paina 'Paikanna' löytääkseen kentät lähistöllä.",
-    en: "Use the search or tap 'Locate me' to find hoops nearby.",
+    fi: "Etsi hakusanalla tai käytä paikannusta löytääkseen kentät lähellä sinua.",
+    en: "Search or use geolocation to find hoops near you.",
   },
   nearMe: {
     idle: { fi: "Paikanna", en: "Locate me" },
@@ -104,6 +104,10 @@ const messages = {
   locateToSeeDistance: {
     fi: "Salli selaimen paikannus niin näet etäisyyden kentälle.",
     en: "Allow geolocation to see the distance to the hoop.",
+  },
+  locationBlockedHelp: {
+    fi: "Sijainti on estetty. Salli se selaimen asetuksista tälle sivustolle.",
+    en: "Location is blocked. Allow it for this site in your browser settings.",
   },
   lights: { fi: "Valot", en: "Lights" },
   freeUse: { fi: "Ilmainen käyttö", en: "Free use" },
