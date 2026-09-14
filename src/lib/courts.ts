@@ -78,6 +78,9 @@ export function mergeCourts(batches: Court[][]): Court[] {
 }
 
 function isNearDuplicate(existing: Court, candidate: Court): boolean {
+  // Distinct IDs from the same registry are separate courts, even when they
+  // sit on adjacent pads at one venue (often well under 80 m apart).
+  if (existing.source === candidate.source) return false;
   return (
     haversineKm(
       { lat: existing.lat, lon: existing.lon },
