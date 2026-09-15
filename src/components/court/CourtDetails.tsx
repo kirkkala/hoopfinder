@@ -40,6 +40,8 @@ import { CourtMiniMap } from "@/components/court/CourtMiniMap";
 import {
   courtName,
   formatAddress,
+  formatAdmin,
+  formatOwner,
   formatReportedBoolean,
   formatStatus,
   formatSurface,
@@ -286,10 +288,18 @@ export function CourtDetails({
               }
             />
             {court.admin ? (
-              <Fact icon={UserCog} label={copy.administrator} value={court.admin} />
+              <Fact
+                icon={UserCog}
+                label={copy.administrator}
+                value={formatAdmin(court.admin, copy)}
+              />
             ) : null}
             {court.owner ? (
-              <Fact icon={Building2} label={copy.owner} value={court.owner} />
+              <Fact
+                icon={Building2}
+                label={copy.owner}
+                value={formatOwner(court.owner, copy)}
+              />
             ) : null}
           </dl>
         </aside>

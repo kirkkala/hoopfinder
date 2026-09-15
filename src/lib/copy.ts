@@ -128,6 +128,46 @@ const messages = {
   googleMaps: { fi: "maps.google.com", en: "maps.google.com" },
   administrator: { fi: "Ylläpitäjä", en: "Administrator" },
   owner: { fi: "Omistaja", en: "Owner" },
+  // LIPAS search-meta.owner.name / search-meta.admin.name for the v2 codes.
+  owners: {
+    city: { fi: "Kunta", en: "Municipality" },
+    "city-main-owner": {
+      fi: "Kuntaenemmistöinen yritys",
+      en: "Municipality major owner",
+    },
+    "company-ltd": { fi: "Yritys", en: "Company ltd" },
+    foundation: { fi: "Säätiö", en: "Foundation" },
+    "municipal-consortium": { fi: "Kuntayhtymä", en: "Municipal consortium" },
+    other: { fi: "Muu", en: "Other" },
+    "registered-association": {
+      fi: "Rekisteröity yhdistys",
+      en: "Registered association",
+    },
+    state: { fi: "Valtio", en: "State" },
+    unknown: { fi: "Ei tiedossa", en: "Unknown" },
+  } satisfies Record<string, Pair<string>>,
+  admins: {
+    "city-education": {
+      fi: "Kunta / opetustoimi",
+      en: "Municipality / Education",
+    },
+    "city-other": { fi: "Kunta / muu", en: "Municipality / Other" },
+    "city-sports": { fi: "Kunta / liikuntatoimi", en: "Municipality / Sports" },
+    "city-technical-services": {
+      fi: "Kunta / tekninen toimi",
+      en: "Municipality / Technical services",
+    },
+    "municipal-consortium": { fi: "Kuntayhtymä", en: "Municipal consortium" },
+    other: { fi: "Muu", en: "Other" },
+    "private-association": {
+      fi: "Rekisteröity yhdistys",
+      en: "Private / Association",
+    },
+    "private-company": { fi: "Yritys", en: "Private / Company" },
+    "private-foundation": { fi: "Säätiö", en: "Private / Foundation" },
+    state: { fi: "Valtio", en: "State" },
+    unknown: { fi: "Ei tiedossa", en: "Unknown" },
+  } satisfies Record<string, Pair<string>>,
   built: { fi: "Rakennettu", en: "Built" },
   courtFacts: { fi: "Kentän tiedot", en: "Court scouting" },
   schoolUse: { fi: "Koulukäyttö", en: "School use" },
