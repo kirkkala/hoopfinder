@@ -26,11 +26,12 @@ export default async function CourtPage({
 }) {
   const result = await courtFromParams(params);
   if (!result) notFound();
-  const { courts } = await getCourtCatalog();
+  const { courts, fetchedAtBySource } = await getCourtCatalog();
   return (
     <CourtDetails
       court={result.court}
-      fetchedAt={result.fetchedAt}
+      fetchedAtBySource={fetchedAtBySource}
+      sourceFetchedAt={result.sourceFetchedAt}
       courtCount={courts.length}
     />
   );

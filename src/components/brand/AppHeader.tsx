@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useState } from "react";
+import { Fragment, useEffect, useId, useState } from "react";
 import Link from "next/link";
 import { basketball } from "@lucide/lab";
 import { Icon } from "lucide-react";
@@ -9,16 +9,18 @@ import { LanguageToggle } from "@/components/brand/LanguageToggle";
 import { SourceCredits } from "@/components/brand/AppFooter";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { APP_NAME, APP_VERSION } from "@/lib/constants";
+import type { FetchedAtBySource } from "@/lib/catalog";
 import { mq, useMinWidth, wide } from "@/lib/layout";
-import type { Locale } from "@/lib/copy";
+import { COURT_SOURCES } from "@/lib/sources";
+import { formatFetchedAt } from "@/lib/time";
 
 const INTRO_KEY = "hoopfinder-intro";
 
 export function AppHeader({
-  fetchedAt,
+  fetchedAtBySource,
   courtCount,
 }: {
-  fetchedAt?: string | null;
+  fetchedAtBySource?: FetchedAtBySource;
   courtCount: number;
 }) {
   const copy = useCopy();
@@ -83,16 +85,13 @@ export function AppHeader({
             </button>
           </nav>
         </div>
-        {fetchedAt ? (
-          <p className={`${wide.block} shrink-0 text-right text-sm text-ink-muted`}>
-            {copy.dataFrom}
-            <time dateTime={fetchedAt} className="mt-0.5 block text-ink/70">
-              {formatFetchedAt(fetchedAt, copy.locale)}
-            </time>
-          </p>
-        ) : null}
+        <SourceFetchedAt
+          fetchedAtBySource={fetchedAtBySource}
+          className={`${wide.block} shrink-0 text-right text-sm text-ink-muted`}
+          timeClassName="text-ink/70"
+        />
         <HeaderMenu
-          fetchedAt={fetchedAt}
+          fetchedAtBySource={fetchedAtBySource}
           introOpen={introOpen}
           onOpenInfo={() => setIntroOpen(true)}
         />
@@ -106,33 +105,51 @@ export function AppHeader({
   );
 }
 
-function formatFetchedAt(iso: string, locale: Locale): string {
-  const parts = Object.fromEntries(
-    new Intl.DateTimeFormat("en-GB", {
-      timeZone: "Europe/Helsinki",
-      day: "numeric",
-      month: locale === "en" ? "short" : "numeric",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      hour12: false,
-    })
-      .formatToParts(new Date(iso))
-      .filter((part) => part.type !== "literal")
-      .map((part) => [part.type, part.value]),
+function SourceFetchedAt({
+  fetchedAtBySource,
+  className,
+  timeClassName,
+  align = "end",
+}: {
+  fetchedAtBySource?: FetchedAtBySource;
+  className?: string;
+  timeClassName?: string;
+  align?: "start" | "end";
+}) {
+  const copy = useCopy();
+  const rows = COURT_SOURCES.flatMap((source) => {
+    const iso = fetchedAtBySource?.[source.id];
+    return iso ? [{ source, iso }] : [];
+  });
+  if (rows.length === 0) return null;
+
+  return (
+    <div className={className}>
+      {copy.dataFrom}
+      <div
+        className={`mt-0.5 text-xs grid grid-cols-[auto_auto] gap-x-2 gap-y-0.5 ${
+          align === "end" ? "justify-end" : "justify-start"
+        }`}
+      >
+        {rows.map(({ source, iso }) => (
+          <Fragment key={source.id}>
+            <span>{source.shortLabel}</span>
+            <time dateTime={iso} className={timeClassName}>
+              {formatFetchedAt(iso, true)}
+            </time>
+          </Fragment>
+        ))}
+      </div>
+    </div>
   );
-  if (locale === "en") {
-    return `${Number(parts.day)} ${parts.month} ${parts.year}, ${parts.hour}:${parts.minute}`;
-  }
-  return `${Number(parts.day)}.${Number(parts.month)}.${parts.year} klo ${parts.hour}.${parts.minute}`;
 }
 
 function HeaderMenu({
-  fetchedAt,
+  fetchedAtBySource,
   introOpen,
   onOpenInfo,
 }: {
-  fetchedAt?: string | null;
+  fetchedAtBySource?: FetchedAtBySource;
   introOpen: boolean;
   onOpenInfo: () => void;
 }) {
@@ -229,14 +246,12 @@ function HeaderMenu({
               >
                 {copy.info}
               </button>
-              {fetchedAt ? (
-                <p className="mt-5 border-t border-white/10 pt-4 text-sm leading-5 text-ink-muted">
-                  {copy.dataFrom}
-                  <time dateTime={fetchedAt} className="mt-0.5 block text-ink/80">
-                    {formatFetchedAt(fetchedAt, copy.locale)}
-                  </time>
-                </p>
-              ) : null}
+              <SourceFetchedAt
+                fetchedAtBySource={fetchedAtBySource}
+                className="mt-5 border-t border-white/10 pt-4 text-sm leading-5 text-ink-muted"
+                timeClassName="text-ink/80"
+                align="start"
+              />
             </div>
             <div className="mt-auto min-w-0 border-t border-white/10 bg-black/30 px-4 pt-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] pr-[max(1rem,env(safe-area-inset-right))] text-sm leading-5 text-ink-muted">
               <div className="space-y-1.5">
@@ -311,7 +326,7 @@ function BetaBadge() {
       className={`group relative ${chip} outline-none hover:bg-gold/30 focus-visible:ring-2 focus-visible:ring-gold/60`}
       aria-describedby="beta-tooltip"
     >
-      {copy.beta}
+      Beta
       <span
         id="beta-tooltip"
         role="tooltip"

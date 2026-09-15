@@ -17,6 +17,7 @@ import {
 import { isInBounds, type MapBounds } from "@/lib/geo";
 import { mq, split, useMinWidth } from "@/lib/layout";
 import { requestOrigin, useOrigin, type LocationStatus } from "@/lib/origin";
+import type { FetchedAtBySource } from "@/lib/catalog";
 
 const CourtMap = dynamic(
   () => import("@/components/explorer/CourtMap").then((mod) => mod.CourtMap),
@@ -76,11 +77,11 @@ function syncCourtUrl(id: string | null) {
 
 export function CourtExplorer({
   courts,
-  fetchedAt,
+  fetchedAtBySource,
   focusId,
 }: {
   courts: Court[];
-  fetchedAt: string | null;
+  fetchedAtBySource: FetchedAtBySource;
   focusId: string | null;
 }) {
   const copy = useCopy();
@@ -193,7 +194,7 @@ export function CourtExplorer({
 
   return (
     <div className="flex h-dvh flex-col bg-asphalt">
-      <AppHeader fetchedAt={fetchedAt} courtCount={courts.length} />
+      <AppHeader fetchedAtBySource={fetchedAtBySource} courtCount={courts.length} />
 
       <div className={`flex min-h-0 flex-1 flex-col ${split.row}`}>
         <aside className={`flex w-full shrink-0 flex-col border-b border-white/10 bg-panel ${split.aside}`}>
