@@ -19,6 +19,12 @@ body {
   height: 100%;
 }
 
+button:not(:disabled),
+a[href],
+[role="button"] {
+  cursor: pointer;
+}
+
 .court-arc {
   background:
     radial-gradient(circle at 50% 120%, transparent 38%, rgb(255 212 130 / 0.08) 39%, transparent 40%),
