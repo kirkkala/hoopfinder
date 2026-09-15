@@ -54,7 +54,7 @@ import {
   useOrigin,
   type LocationStatus,
 } from "@/lib/origin";
-import { courtSource } from "@/lib/sources";
+import { courtSource, sourceListingUrl } from "@/lib/sources";
 import { formatFetchedAt } from "@/lib/time";
 import { split } from "@/lib/layout";
 import type { FetchedAtBySource } from "@/lib/catalog";
@@ -78,6 +78,7 @@ export function CourtDetails({
     [court.postalCode, court.city].filter(Boolean).join(" ") || null,
   ]);
   const source = courtSource(court.source);
+  const listingUrl = sourceListingUrl(court.source, court.id);
   const { amenities } = court;
   const dimensions =
     amenities.lengthM && amenities.widthM
@@ -278,17 +279,37 @@ export function CourtDetails({
                 value={formatOwner(court.owner, copy)}
               />
             ) : null}
-            {sourceFetchedAt && source ? (
+            {source ? (
               <Fact
                 icon={Database}
                 label={copy.dataFromSource}
                 value={
-                  <>
-                    {source.label} -{" "}
-                    <time dateTime={sourceFetchedAt}>
-                      {formatFetchedAt(sourceFetchedAt)}
-                    </time>
-                  </>
+                  <div className="space-y-1">
+                    <ul>
+                      <li>{copy.source}: {source.label}</li>
+                      {listingUrl ? (
+                        <li>
+                          <a
+                            href={listingUrl}
+                            className="inline-flex items-center gap-1 text-gold hover:text-white"
+                            target="_blank"
+                            rel="noreferrer"
+                          >
+                            {copy.viewListing}
+                            <ExternalLink className="size-3.5 shrink-0" aria-hidden />
+                          </a>
+                        </li>
+                      ) : null}
+                    </ul>
+                    {sourceFetchedAt ? (
+                      <p className="text-xs text-ink-muted">
+                        {copy.dataFetchedAt}:{" "}
+                        <time dateTime={sourceFetchedAt}>
+                          {formatFetchedAt(sourceFetchedAt)}
+                        </time>
+                      </p>
+                    ) : null}
+                  </div>
                 }
               />
             ) : null}
@@ -439,7 +460,7 @@ function Fact({
 }) {
   return (
     <div>
-      <dt className="flex items-center gap-1.5 text-sm font-bold uppercase tracking-wide text-gold/80">
+      <dt className="flex items-center mt-2 gap-1.5 text-sm font-bold uppercase tracking-wide text-gold/80">
         <FactIcon className="size-3.5 shrink-0" aria-hidden />
         {label}
       </dt>
