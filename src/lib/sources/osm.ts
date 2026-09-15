@@ -9,7 +9,7 @@ const LZ4_INTERPRETER = "https://lz4.overpass-api.de/api/interpreter";
 const TILE_TIMEOUT_S = 30;
 const FETCH_TIMEOUT_MS = 45_000;
 const TILE_ATTEMPTS = 5;
-const TILE_GAP_MS = 10_000;
+const TILE_GAP_MS = 25_000;
 
 /** Public dispatcher often 504s; follow `/api/status` and query Finland in tiles. */
 const DISPATCHER = process.env.OVERPASS_API_BASE ?? DEFAULT_DISPATCHER;
@@ -45,12 +45,11 @@ type OsmElement = z.infer<typeof OsmSchema>["elements"][number];
 
 export async function getOsmCourts(): Promise<Court[]> {
   const interpreters = await interpretersToTry();
-  const status = statusUrl(DISPATCHER);
   const byId = new Map<string, Court>();
 
   for (const [index, tile] of FINLAND_TILES.entries()) {
     const label = `${index + 1}/${FINLAND_TILES.length}`;
-    const elements = await fetchTile(tile, label, interpreters, status);
+    const elements = await fetchTile(tile, label, interpreters);
     for (const element of elements) {
       const court = toCourt(element);
       if (court) byId.set(court.id, court);
@@ -72,12 +71,11 @@ async function fetchTile(
   tile: Tile,
   label: string,
   interpreters: string[],
-  status: string,
 ): Promise<OsmElement[]> {
   let lastError: unknown;
   for (let attempt = 0; attempt < TILE_ATTEMPTS; attempt++) {
-    await waitForSlot(status);
     const interpreter = interpreters[attempt % interpreters.length];
+    await waitForSlot(interpreter);
     try {
       console.log(`OSM tile ${label} via ${interpreter}`);
       return await postOverpass(interpreter, tileQuery(tile));
@@ -145,9 +143,9 @@ async function readAnnouncedInterpreter(interpreter: string): Promise<string | n
   }
 }
 
-async function waitForSlot(status: string): Promise<void> {
+async function waitForSlot(interpreter: string): Promise<void> {
   try {
-    const response = await fetch(status, {
+    const response = await fetch(statusUrl(interpreter), {
       headers: { "User-Agent": USER_AGENT },
       cache: "no-store",
       signal: AbortSignal.timeout(10_000),
@@ -157,7 +155,9 @@ async function waitForSlot(status: string): Promise<void> {
     const available = /(\d+) slots available now/.exec(text);
     if (available && Number(available[1]) > 0) return;
     const wait = /Slot available after:\s*(\d+)/.exec(text);
-    if (wait) await sleep((Number(wait[1]) + 1) * 1000);
+    const seconds = wait ? Number(wait[1]) + 2 : 20;
+    console.log(`Overpass busy (${interpreter}); waiting ${seconds}s for a slot`);
+    await sleep(seconds * 1000);
   } catch {
     // Status is advisory; still try the query.
   }
@@ -175,9 +175,9 @@ function statusUrl(interpreter: string): string {
 
 function retryDelayMs(error: unknown, attempt: number): number {
   const message = error instanceof Error ? error.message : "";
-  if (message.includes("429")) return 12_000;
-  if (message.includes("504") || message.includes("502")) return 4_000;
-  return 2_000 * (attempt + 1);
+  if (message.includes("429")) return Math.min(30_000 * 2 ** attempt, 120_000);
+  if (message.includes("504") || message.includes("502")) return 8_000 * (attempt + 1);
+  return 3_000 * (attempt + 1);
 }
 
 function unique(urls: string[]): string[] {
