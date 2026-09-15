@@ -11,7 +11,7 @@ export const COURT_SOURCES = [
     id: "osm",
     label: "OpenStreetMap",
     shortLabel: "OSM",
-    href: "https://www.openstreetmap.org/copyright",
+    href: "https://www.openstreetmap.org/about",
     required: false,
     listingUrl: (id: string) => {
       const match = /^osm-(node|way|relation)-(\d+)$/.exec(id);

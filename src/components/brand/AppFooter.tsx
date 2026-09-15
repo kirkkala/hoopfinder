@@ -55,7 +55,7 @@ export function SourceCredits() {
         ))}
       </p>
       <p>
-        {copy.sourceCodeOn}{" "}
+        {copy.sourceCodeOn}:{" "}
         <a
           href="https://github.com/kirkkala/hoopfinder"
           className="text-gold hover:text-white"
@@ -63,6 +63,14 @@ export function SourceCredits() {
           rel="noreferrer"
         >
           GitHub
+        </a> / {copy.feedback}: {" "}
+        <a
+          href={`mailto:feedback@hoopfinder.fi?subject=${copy.feedbackSubject}&body=${copy.feedbackBody}`}
+          className="text-gold hover:text-white"
+          target="_blank"
+          rel="noreferrer"
+        >
+          timo.kirkkala@gmail.com
         </a>
       </p>
     </>

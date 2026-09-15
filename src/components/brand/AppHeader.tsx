@@ -127,15 +127,8 @@ function SourceFetchedAt({
       <p className="mt-0.5 text-xs">
         {rows.map(({ source, iso }, index) => (
           <Fragment key={source.id}>
-            {index > 0 ? " / " : null}
-            <a
-              href={source.href}
-              className="text-gold hover:text-white"
-              target="_blank"
-              rel="noreferrer"
-            >
+            {index > 0 ? " , " : null}
               {source.shortLabel}
-            </a>
             {": "}
             <time dateTime={iso} className={timeClassName}>
               {formatFetchedAt(iso, true)}
