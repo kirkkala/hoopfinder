@@ -3,13 +3,13 @@ export type Coordinates = {
   lon: number;
 };
 
-/** Helsinki metro — first map camera, with Espoo and Vantaa in view. */
+/** Nationwide first camera — all courts should land in view; fitBounds refines this. */
 export const DEFAULT_MAP_CENTER: Coordinates = {
-  lat: 60.21,
-  lon: 24.89,
+  lat: 63.7,
+  lon: 25.4,
 };
 
-export const DEFAULT_MAP_ZOOM = 10.5;
+export const DEFAULT_MAP_ZOOM = 5;
 
 /** Nearby starting view after the user shares their location. */
 export const NEAR_ME_ZOOM = 13;
@@ -60,6 +60,23 @@ export function isInBounds(
     return point.lon >= bounds.west && point.lon <= bounds.east;
   }
   return point.lon >= bounds.west || point.lon <= bounds.east;
+}
+
+export function boundsFromCoordinates(
+  points: Coordinates[],
+): MapBounds | null {
+  if (points.length === 0) return null;
+  let west = Infinity;
+  let south = Infinity;
+  let east = -Infinity;
+  let north = -Infinity;
+  for (const point of points) {
+    west = Math.min(west, point.lon);
+    east = Math.max(east, point.lon);
+    south = Math.min(south, point.lat);
+    north = Math.max(north, point.lat);
+  }
+  return { west, south, east, north };
 }
 
 /** Keep a neighborhood-sized view when Nominatim returns a point. */
