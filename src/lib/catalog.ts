@@ -19,6 +19,7 @@ export type CourtCatalog = {
  * Court list is the committed snapshot in `data/courts.json`.
  * Runtime never calls Overpass (it is too slow/unreliable on Vercel).
  * Refresh with `npm run refresh-courts` or the weekly GitHub Action.
+ * LIPAS only: `npm run refresh-courts:lipas`.
  */
 export const getCourtCatalog = cache(async (): Promise<CourtCatalog> => {
   const snapshot = asSnapshot(bundled);
