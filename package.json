@@ -9,6 +9,7 @@
     "start": "next start",
     "lint": "eslint",
     "refresh-courts": "tsx scripts/refresh-courts.ts",
+    "refresh-courts:lipas": "tsx scripts/refresh-courts.ts --lipas-only",
     "postinstall": "mkdir -p public/maplibre && cp node_modules/maplibre-gl/dist/maplibre-gl-worker.mjs node_modules/maplibre-gl/dist/maplibre-gl-shared.mjs public/maplibre/"
   },
   "dependencies": {
