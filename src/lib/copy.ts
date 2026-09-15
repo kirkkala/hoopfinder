@@ -18,8 +18,11 @@ const messages = {
     en: "Basketball court",
   },
   backToMap: { fi: "Takaisin kartalle", en: "Back to the map" },
-  dataFrom: { fi: "Kenttien tiedot päivitetty", en: "Court data updated" },
-  dataFromSource: { fi: "Tiedot päivitetty", en: "Data updated" },
+  dataFrom: { fi: "Kenttädata päivitetty:", en: "Court data updated:" },
+  dataFromSource: { fi: "Kentän tietovaranto", en: "Court data source" },
+  viewListing: { fi: "Katso kohde palvelussa", en: "View listing in the service" },
+  source: { fi: "Lähde", en: "Source" },
+  dataFetchedAt: { fi: "Tiedot haettu", en: "Data fetched" },
   betaTooltip: {
     fi: "Varhainen beta-versio. Ei valmis, saattaa sisältää bugeja.",
     en: "Early beta preview. Not ready yet, might contain bugs.",

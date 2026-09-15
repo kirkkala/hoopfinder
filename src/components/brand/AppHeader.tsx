@@ -109,12 +109,10 @@ function SourceFetchedAt({
   fetchedAtBySource,
   className,
   timeClassName,
-  align = "end",
 }: {
   fetchedAtBySource?: FetchedAtBySource;
   className?: string;
   timeClassName?: string;
-  align?: "start" | "end";
 }) {
   const copy = useCopy();
   const rows = COURT_SOURCES.flatMap((source) => {
@@ -125,21 +123,26 @@ function SourceFetchedAt({
 
   return (
     <div className={className}>
-      {copy.dataFrom}
-      <div
-        className={`mt-0.5 text-xs grid grid-cols-[auto_auto] gap-x-2 gap-y-0.5 ${
-          align === "end" ? "justify-end" : "justify-start"
-        }`}
-      >
-        {rows.map(({ source, iso }) => (
+      <p>{copy.dataFrom}</p>
+      <p className="mt-0.5 text-xs">
+        {rows.map(({ source, iso }, index) => (
           <Fragment key={source.id}>
-            <span>{source.shortLabel}</span>
+            {index > 0 ? " / " : null}
+            <a
+              href={source.href}
+              className="text-gold hover:text-white"
+              target="_blank"
+              rel="noreferrer"
+            >
+              {source.shortLabel}
+            </a>
+            {": "}
             <time dateTime={iso} className={timeClassName}>
               {formatFetchedAt(iso, true)}
             </time>
           </Fragment>
         ))}
-      </div>
+      </p>
     </div>
   );
 }
@@ -250,7 +253,6 @@ function HeaderMenu({
                 fetchedAtBySource={fetchedAtBySource}
                 className="mt-5 border-t border-white/10 pt-4 text-sm leading-5 text-ink-muted"
                 timeClassName="text-ink/80"
-                align="start"
               />
             </div>
             <div className="mt-auto min-w-0 border-t border-white/10 bg-black/30 px-4 pt-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] pr-[max(1rem,env(safe-area-inset-right))] text-sm leading-5 text-ink-muted">
