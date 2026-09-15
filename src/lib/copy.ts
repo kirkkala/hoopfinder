@@ -19,8 +19,7 @@ const messages = {
   },
   backToMap: { fi: "Takaisin kartalle", en: "Back to the map" },
   dataFrom: { fi: "Kenttädata päivitetty:", en: "Court data updated:" },
-  dataFromSource: { fi: "Kentän tietovaranto", en: "Court data source" },
-  viewListing: { fi: "Katso kohde palvelussa", en: "View listing in the service" },
+  dataFromSource: { fi: "Rajapintatieto", en: "API information" },
   source: { fi: "Lähde", en: "Source" },
   dataFetchedAt: { fi: "Tiedot haettu", en: "Data fetched" },
   betaTooltip: {
@@ -78,6 +77,15 @@ const messages = {
   },
   sourceListAnd: { fi: " ja ", en: " and " },
   sourceCodeOn: { fi: "Lähdekoodi", en: "Source code" },
+  feedback: { fi: "Palaute", en: "Feedback" },
+  feedbackSubject: {
+    fi: "Palaute%20hoopfinder.fi%20-%20palvelusta",
+    en: "Feedback%20from%20hoopfinder.fi%20-%20service"
+  },
+  feedbackBody: { 
+    fi: "Kiitos%20jos%20otat%20hetken%20antaaksesi%20palautetta%20palvelusta%2C%20kiitokset%2C%20kehitysehdotukset%20ja%20bugiraportit%20on%20tervetulleita%21",
+    en: "Thank%20you%20if%20you%20take%20a%20moment%20to%20give%20feedback%2C%20suggestions%2C%20and%20bug%20reports%20are%20welcome%21"
+  },
   searchLabel: { fi: "Etsi kaupunkia tai aluetta", en: "Search a city or neighborhood" },
   searchPlaceholder: {
     fi: "Kaupunki, alue tai osoite",

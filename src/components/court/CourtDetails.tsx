@@ -291,11 +291,11 @@ export function CourtDetails({
                         <li>
                           <a
                             href={listingUrl}
-                            className="inline-flex items-center gap-1 text-gold hover:text-white"
+                            className="inline-flex items-center gap-1 break-all text-gold hover:text-white"
                             target="_blank"
                             rel="noreferrer"
                           >
-                            {copy.viewListing}
+                            {websiteLabel(listingUrl)}
                             <ExternalLink className="size-3.5 shrink-0" aria-hidden />
                           </a>
                         </li>
@@ -446,7 +446,7 @@ function websiteHref(url: string) {
 }
 
 function websiteLabel(url: string) {
-  return url.replace(/^https?:\/\//i, "");
+  return url.replace(/^https?:\/\//i, "").replace(/^www\./i, "");
 }
 
 function Fact({
