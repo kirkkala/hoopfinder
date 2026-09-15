@@ -10,6 +10,7 @@ import {
   CircleCheck,
   CirclePause,
   ClipboardList,
+  Database,
   Droplets,
   ExternalLink,
   Globe,
@@ -54,15 +55,19 @@ import {
   type LocationStatus,
 } from "@/lib/origin";
 import { courtSource, sourceListingUrl } from "@/lib/sources";
+import { formatFetchedAt } from "@/lib/time";
 import { split } from "@/lib/layout";
+import type { FetchedAtBySource } from "@/lib/catalog";
 
 export function CourtDetails({
   court,
-  fetchedAt,
+  fetchedAtBySource,
+  sourceFetchedAt,
   courtCount,
 }: {
   court: Court;
-  fetchedAt: string | null;
+  fetchedAtBySource: FetchedAtBySource;
+  sourceFetchedAt: string | null;
   courtCount: number;
 }) {
   const copy = useCopy();
@@ -82,14 +87,14 @@ export function CourtDetails({
 
   return (
     <div className="flex min-h-dvh flex-col bg-asphalt">
-      <AppHeader fetchedAt={fetchedAt} courtCount={courtCount} />
+      <AppHeader fetchedAtBySource={fetchedAtBySource} courtCount={courtCount} />
 
       <main className="mx-auto grid w-full max-w-5xl flex-1 gap-6 px-4 py-8 split:grid-cols-[1.1fr_0.9fr]">
         <section className="space-y-5">
           <BackToMap courtId={court.id} className={split.hidden} />
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">
-              {source ? copy.courtKindFrom(source.label) : copy.courtKind}
+              {copy.courtKind}
             </p>
             <h1 className="mt-1 font-display text-4xl tracking-wide text-white md:text-5xl">
               {courtName(court, copy)}
@@ -108,23 +113,6 @@ export function CourtDetails({
               label={copy.address}
               value={address || copy.notReported}
             />
-            {court.website ? (
-              <Fact
-                icon={Globe}
-                label={copy.website}
-                value={
-                  <a
-                    href={websiteHref(court.website)}
-                    className="inline-flex items-center gap-1 break-all text-gold hover:text-white"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    {websiteLabel(court.website)}
-                    <ExternalLink className="size-3.5 shrink-0" aria-hidden />
-                  </a>
-                }
-              />
-            ) : null}
           </dl>
 
           <section className="rounded-3xl border border-white/10 bg-panel p-5">
@@ -287,6 +275,23 @@ export function CourtDetails({
                 </ul>
               }
             />
+            {court.website ? (
+              <Fact
+                icon={Globe}
+                label={copy.website}
+                value={
+                  <a
+                    href={websiteHref(court.website)}
+                    className="inline-flex items-center gap-1 break-all text-gold hover:text-white"
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    {websiteLabel(court.website)}
+                    <ExternalLink className="size-3.5 shrink-0" aria-hidden />
+                  </a>
+                }
+              />
+            ) : null}
             {court.admin ? (
               <Fact
                 icon={UserCog}
@@ -299,6 +304,20 @@ export function CourtDetails({
                 icon={Building2}
                 label={copy.owner}
                 value={formatOwner(court.owner, copy)}
+              />
+            ) : null}
+            {sourceFetchedAt && source ? (
+              <Fact
+                icon={Database}
+                label={copy.dataFromSource}
+                value={
+                  <>
+                    {source.label} -{" "}
+                    <time dateTime={sourceFetchedAt}>
+                      {formatFetchedAt(sourceFetchedAt)}
+                    </time>
+                  </>
+                }
               />
             ) : null}
           </dl>

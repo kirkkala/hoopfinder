@@ -10,9 +10,11 @@ type SourceSnapshot = {
 
 type Snapshot = Partial<Record<CourtSourceId, SourceSnapshot>>;
 
+export type FetchedAtBySource = Partial<Record<CourtSourceId, string>>;
+
 export type CourtCatalog = {
   courts: Court[];
-  fetchedAt: string | null;
+  fetchedAtBySource: FetchedAtBySource;
 };
 
 /**
@@ -23,31 +25,32 @@ export type CourtCatalog = {
  */
 export const getCourtCatalog = cache(async (): Promise<CourtCatalog> => {
   const snapshot = asSnapshot(bundled);
+  const fetchedAtBySource: Partial<Record<CourtSourceId, string>> = {};
   const loaded = COURT_SOURCES.flatMap((source) => {
     const entry = snapshot[source.id];
-    return entry ? [entry] : [];
+    if (!entry) return [];
+    fetchedAtBySource[source.id] = entry.fetchedAt;
+    return [entry];
   });
   return {
     courts: mergeCourts(loaded.map((entry) => entry.courts)),
-    fetchedAt: oldestFetchedAt(loaded),
+    fetchedAtBySource,
   };
 });
 
 export async function getBasketballCourt(
   id: string,
-): Promise<{ court: Court; fetchedAt: string | null } | null> {
+): Promise<{
+  court: Court;
+  sourceFetchedAt: string | null;
+} | null> {
   const catalog = await getCourtCatalog();
   const court = catalog.courts.find((item) => item.id === id);
   if (!court) return null;
-  return { court, fetchedAt: catalog.fetchedAt };
-}
-
-function oldestFetchedAt(entries: SourceSnapshot[]): string | null {
-  if (entries.length === 0) return null;
-  return entries.reduce(
-    (oldest, entry) => (entry.fetchedAt < oldest ? entry.fetchedAt : oldest),
-    entries[0].fetchedAt,
-  );
+  return {
+    court,
+    sourceFetchedAt: catalog.fetchedAtBySource[court.source] ?? null,
+  };
 }
 
 function asSnapshot(value: unknown): Snapshot {

@@ -18,8 +18,8 @@ const messages = {
     en: "Basketball court",
   },
   backToMap: { fi: "Takaisin kartalle", en: "Back to the map" },
-  dataFrom: { fi: "Tiedot haettu", en: "Data updated" },
-  beta: { fi: "Beta", en: "Beta" },
+  dataFrom: { fi: "Kenttien tiedot päivitetty", en: "Court data updated" },
+  dataFromSource: { fi: "Tiedot päivitetty", en: "Data updated" },
   betaTooltip: {
     fi: "Varhainen beta-versio. Ei valmis, saattaa sisältää bugeja.",
     en: "Early beta preview. Not ready yet, might contain bugs.",
@@ -115,10 +115,6 @@ const messages = {
   close: { fi: "Sulje", en: "Close" },
   scrollForMore: { fi: "Vieritä alas", en: "Scroll for more" },
   courtKind: { fi: "Koripallokenttä", en: "Basketball court" },
-  courtKindFrom: {
-    fi: (source: string) => `Koripallokenttä · ${source}`,
-    en: (source: string) => `Basketball court · ${source}`,
-  },
   status: { fi: "Tila", en: "Status" },
   address: { fi: "Osoite", en: "Address" },
   listing: { fi: "Kohde", en: "Listing" },
