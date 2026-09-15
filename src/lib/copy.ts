@@ -66,7 +66,7 @@ const messages = {
     fi: "Lähdekoodi löytyy Githubista",
     en: "Source code is on Github"
   },
-  introCta: { fi: "Selvä, pelataan", en: "Got it, let's play" },
+  introCta: { fi: "ok bro", en: "ok bro" },
   madeWith: { fi: 'Made with', en: "Made with" },
   love: { fi: "love", en: "love" },
   courtDataFrom: {
