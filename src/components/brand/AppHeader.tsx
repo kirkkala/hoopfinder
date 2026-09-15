@@ -14,7 +14,7 @@ import { mq, useMinWidth, wide } from "@/lib/layout";
 import { COURT_SOURCES } from "@/lib/sources";
 import { formatFetchedAt } from "@/lib/time";
 
-const INTRO_KEY = "hoopfinder-intro";
+const INTRO_KEY = "hoopfinder-intro-seen";
 
 export function AppHeader({
   fetchedAtBySource,
