@@ -31,26 +31,20 @@ const messages = {
   info: { fi: "Info", en: "Info" },
   introTitle: { fi: "Ota pallo mukaan", en: "Bring a ball along" },
   introLead: {
-    fi: (count: number) =>
-      `Hoop Finderissa on listattuna ${count} ulkokoripallokenttää Suomesta. Olit sitten reissussa, mökillä, sukulaisten luona tai haluat löytää kodin läheltä uuden paikan pelailla — täältä löydät paikan heittää.`,
-    en: (count: number) =>
-      `Hoop Finder lists ${count} outdoor basketball courts in Finland. Whether you're on a trip, at the cottage, visiting relatives or want to find a new place to play at home — here you can find a place to hoop.`,
+    fi: "Hoop Finderista löytyy {count} ulkokoripallokenttää Suomesta. Olit sitten reissussa, mökillä, sukulaisten luona tai haluat löytää uuden kentän kodin läheltä — täältä löydät paikan heittää.",
+    en: "Hoop Finder has {count} outdoor basketball courts in Finland. Whether you're on a trip, at the cottage, visiting relatives or want to find a new court close to home — here you can find a place to hoop.",
   },
-  introSearch: {
-    fi: "Etsi kaupunkia, aluetta tai osoitteella.",
-    en: "Search by city, neighborhood, or address.",
+  introLocationBenefit: {
+    fi: "Salli sijaintisi, niin näet kuinka kaukana kukin kenttä sijaitsee.",
+    en: "Allow your location to see the distance to each court.",
   },
-  introLocate: {
-    fi: "Tai paina Paikanna, niin kartta tietää missä olet.",
-    en: "Or tap Locate me to jump to where you are.",
+  introLocationOptional: {
+    fi: "Voit toki käyttää palvelua ilman sijainnin jakamistakin.",
+    en: "You can of course use the service without sharing your location.",
   },
-  introMap: {
-    fi: "Liikuta karttaa ja tutustu kenttien sijaintiin.",
-    en: "Move the map and explore the locations.",
-  },
-  introSeeCourt: {
-    fi: "Klikkaa pisteitä kartalla ja siirry katsomaan tarkempia tietoja kentästä.",
-    en: "Click the dots on the map and see the court information.",
+  introLocationGranted: {
+    fi: "Olet sallinut sijainnin jakamisen, etäisyys kentille näytetään palvelussa.",
+    en: "You have allowed location information, distance to each court is shown for you.",
   },
   introCreatedByTitle: {
     fi: "Kuka tämän teki ja miksi",
@@ -117,8 +111,8 @@ const messages = {
     en: "Allow geolocation to see the distance to the hoop.",
   },
   locationBlockedHelp: {
-    fi: "Sijainti on estetty. Salli se selaimen asetuksista tälle sivustolle.",
-    en: "Location is blocked. Allow it for this site in your browser settings.",
+    fi: "Sijainnin jakaminen on estetty selaimen asetuksista tälle sivustolle.",
+    en: "Location sharing is blocked in your browser settings for this site.",
   },
   lights: { fi: "Valot", en: "Lights" },
   freeUse: { fi: "Ilmainen käyttö", en: "Free use" },
