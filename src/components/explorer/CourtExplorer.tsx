@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useMemo, useState, useSyncExternalStore } from "react";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import dynamic from "next/dynamic";
 import { basketball } from "@lucide/lab";
 import { Icon } from "lucide-react";
@@ -16,7 +16,7 @@ import {
 } from "@/lib/courts";
 import { isInBounds, type MapBounds } from "@/lib/geo";
 import { mq, split, useMinWidth } from "@/lib/layout";
-import { requestOrigin, useOrigin, type LocationStatus } from "@/lib/origin";
+import { useLocationStatus } from "@/lib/origin";
 import type { FetchedAtBySource } from "@/lib/catalog";
 
 const CourtMap = dynamic(
@@ -86,9 +86,9 @@ export function CourtExplorer({
 }) {
   const copy = useCopy();
   const [query, setQuery] = useState("");
-  const origin = useOrigin();
+  const { origin, status: locationStatus, request } = useLocationStatus();
   const [locateSeq, setLocateSeq] = useState(0);
-  const [locationStatus, setLocationStatus] = useState<LocationStatus>("idle");
+  const skipInitialOrigin = useRef(true);
   const [pickedId, setPickedId] = useState<string | null | undefined>(undefined);
   const [mapBounds, setMapBounds] = useState<MapBounds | null>(null);
   const [placeBounds, setPlaceBounds] = useState<MapBounds | null>(null);
@@ -98,8 +98,6 @@ export function CourtExplorer({
     readSelectedCourt,
     () => null,
   );
-  const locationGranted =
-    locationStatus === "idle" && origin ? "granted" : locationStatus;
   const restoredId =
     savedId && courts.some((court) => court.id === savedId) ? savedId : null;
   const focusedId =
@@ -110,6 +108,14 @@ export function CourtExplorer({
   useEffect(() => {
     if (focusedId) writeSelectedCourt(focusedId);
   }, [focusedId]);
+
+  useEffect(() => {
+    if (skipInitialOrigin.current) {
+      skipInitialOrigin.current = false;
+      return;
+    }
+    if (origin) setLocateSeq((n) => n + 1);
+  }, [origin]);
 
   const searching = query.trim().length >= 2;
   const visibleCourts = useMemo(
@@ -181,15 +187,12 @@ export function CourtExplorer({
     setPlaceBounds(null);
     clearCourt();
 
-    if (origin && locationGranted === "granted") {
+    if (origin && locationStatus === "granted") {
       setLocateSeq((n) => n + 1);
       return;
     }
 
-    requestOrigin((status) => {
-      setLocationStatus(status);
-      if (status === "granted") setLocateSeq((n) => n + 1);
-    });
+    request();
   }
 
   return (
@@ -205,7 +208,7 @@ export function CourtExplorer({
                 setQuery(value);
                 clearCourt();
               }}
-              locationStatus={locationGranted}
+              locationStatus={locationStatus}
               onUseLocation={requestLocation}
             />
             <p className="mt-3 flex items-center gap-2 font-display text-lg tracking-wide text-gold">
