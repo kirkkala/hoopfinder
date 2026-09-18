@@ -18,8 +18,10 @@ const messages = {
     en: "Basketball court",
   },
   backToMap: { fi: "Takaisin kartalle", en: "Back to the map" },
-  dataFrom: { fi: "Tiedot haettu", en: "Data updated" },
-  beta: { fi: "Beta", en: "Beta" },
+  dataFrom: { fi: "Kenttädata päivitetty:", en: "Court data updated:" },
+  dataFromSource: { fi: "Rajapintatieto", en: "API information" },
+  source: { fi: "Lähde", en: "Source" },
+  dataFetchedAt: { fi: "Tiedot haettu", en: "Data fetched" },
   betaTooltip: {
     fi: "Varhainen beta-versio. Ei valmis, saattaa sisältää bugeja.",
     en: "Early beta preview. Not ready yet, might contain bugs.",
@@ -66,7 +68,7 @@ const messages = {
     fi: "Lähdekoodi löytyy Githubista",
     en: "Source code is on Github"
   },
-  introCta: { fi: "Selvä, pelataan", en: "Got it, let's play" },
+  introCta: { fi: "ok bro", en: "ok bro" },
   madeWith: { fi: 'Made with', en: "Made with" },
   love: { fi: "love", en: "love" },
   courtDataFrom: {
@@ -75,6 +77,15 @@ const messages = {
   },
   sourceListAnd: { fi: " ja ", en: " and " },
   sourceCodeOn: { fi: "Lähdekoodi", en: "Source code" },
+  feedback: { fi: "Palaute", en: "Feedback" },
+  feedbackSubject: {
+    fi: "Palaute%20hoopfinder.fi%20-%20palvelusta",
+    en: "Feedback%20from%20hoopfinder.fi%20-%20service"
+  },
+  feedbackBody: { 
+    fi: "Kiitos%20jos%20otat%20hetken%20antaaksesi%20palautetta%20palvelusta%2C%20kiitokset%2C%20kehitysehdotukset%20ja%20bugiraportit%20on%20tervetulleita%21",
+    en: "Thank%20you%20if%20you%20take%20a%20moment%20to%20give%20feedback%2C%20suggestions%2C%20and%20bug%20reports%20are%20welcome%21"
+  },
   searchLabel: { fi: "Etsi kaupunkia tai aluetta", en: "Search a city or neighborhood" },
   searchPlaceholder: {
     fi: "Kaupunki, alue tai osoite",
@@ -115,19 +126,59 @@ const messages = {
   close: { fi: "Sulje", en: "Close" },
   scrollForMore: { fi: "Vieritä alas", en: "Scroll for more" },
   courtKind: { fi: "Koripallokenttä", en: "Basketball court" },
-  courtKindFrom: {
-    fi: (source: string) => `Koripallokenttä · ${source}`,
-    en: (source: string) => `Basketball court · ${source}`,
-  },
   status: { fi: "Tila", en: "Status" },
   address: { fi: "Osoite", en: "Address" },
-  listing: { fi: "Kohde", en: "Listing" },
-  viewListingOSM: { fi: "openstreetmap.org", en: "openstreetmap.org" },
+  showDirections: { fi: "Reittiohjeet (Google maps)", en: "Directions (Google maps)" },
+  travelModes: {
+    driving: { fi: "Auto", en: "Drive" },
+    walking: { fi: "Kävely", en: "Walk" },
+    bicycling: { fi: "Pyörä", en: "Bike" },
+    transit: { fi: "Joukkoliikenne", en: "Transit" },
+  },
   website: { fi: "Verkkosivu", en: "Website" },
-  mapLinks: { fi: "Karttalinkit", en: "Map links" },
-  googleMaps: { fi: "maps.google.com", en: "maps.google.com" },
+  googleMaps: { fi: "maps.google.fi", en: "maps.google.com" },
   administrator: { fi: "Ylläpitäjä", en: "Administrator" },
   owner: { fi: "Omistaja", en: "Owner" },
+  // LIPAS search-meta.owner.name / search-meta.admin.name for the v2 codes.
+  owners: {
+    city: { fi: "Kunta", en: "Municipality" },
+    "city-main-owner": {
+      fi: "Kuntaenemmistöinen yritys",
+      en: "Municipality major owner",
+    },
+    "company-ltd": { fi: "Yritys", en: "Company ltd" },
+    foundation: { fi: "Säätiö", en: "Foundation" },
+    "municipal-consortium": { fi: "Kuntayhtymä", en: "Municipal consortium" },
+    other: { fi: "Muu", en: "Other" },
+    "registered-association": {
+      fi: "Rekisteröity yhdistys",
+      en: "Registered association",
+    },
+    state: { fi: "Valtio", en: "State" },
+    unknown: { fi: "Ei tiedossa", en: "Unknown" },
+  } satisfies Record<string, Pair<string>>,
+  admins: {
+    "city-education": {
+      fi: "Kunta / opetustoimi",
+      en: "Municipality / Education",
+    },
+    "city-other": { fi: "Kunta / muu", en: "Municipality / Other" },
+    "city-sports": { fi: "Kunta / liikuntatoimi", en: "Municipality / Sports" },
+    "city-technical-services": {
+      fi: "Kunta / tekninen toimi",
+      en: "Municipality / Technical services",
+    },
+    "municipal-consortium": { fi: "Kuntayhtymä", en: "Municipal consortium" },
+    other: { fi: "Muu", en: "Other" },
+    "private-association": {
+      fi: "Rekisteröity yhdistys",
+      en: "Private / Association",
+    },
+    "private-company": { fi: "Yritys", en: "Private / Company" },
+    "private-foundation": { fi: "Säätiö", en: "Private / Foundation" },
+    state: { fi: "Valtio", en: "State" },
+    unknown: { fi: "Ei tiedossa", en: "Unknown" },
+  } satisfies Record<string, Pair<string>>,
   built: { fi: "Rakennettu", en: "Built" },
   courtFacts: { fi: "Kentän tiedot", en: "Court scouting" },
   schoolUse: { fi: "Koulukäyttö", en: "School use" },

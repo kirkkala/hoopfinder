@@ -27,6 +27,7 @@ import {
   DEFAULT_MAP_CENTER,
   DEFAULT_MAP_ZOOM,
   NEAR_ME_ZOOM,
+  boundsFromCoordinates,
   type Coordinates,
   type MapBounds,
 } from "@/lib/geo";
@@ -41,7 +42,7 @@ const HOVER: ExpressionSpecification = [
   false,
 ];
 
-function readSavedView(): { latitude: number; longitude: number; zoom: number } {
+function readSavedView(): { latitude: number; longitude: number; zoom: number } | null {
   try {
     const saved = JSON.parse(localStorage.getItem(MAP_VIEW_KEY) ?? "");
     if (
@@ -52,8 +53,12 @@ function readSavedView(): { latitude: number; longitude: number; zoom: number } 
       return { latitude: saved.lat, longitude: saved.lon, zoom: saved.zoom };
     }
   } catch {
-    // First visit, private mode, or a bad value — use the Helsinki default.
+    // First visit, private mode, or a bad value — fit all courts.
   }
+  return null;
+}
+
+function defaultView() {
   return {
     latitude: DEFAULT_MAP_CENTER.lat,
     longitude: DEFAULT_MAP_CENTER.lon,
@@ -108,7 +113,12 @@ export function CourtMap({
   const copy = useCopy();
   const mapRef = useRef<MapRef>(null);
   const [mapReady, setMapReady] = useState(false);
-  const [initialView] = useState(readSavedView);
+  const restoredView = useRef(false);
+  const [initialView] = useState(() => {
+    const saved = readSavedView();
+    restoredView.current = saved !== null;
+    return saved ?? defaultView();
+  });
   const pointerId = useRef<string | null>(null);
   const paintedIds = useRef(new Set<string>());
   const selectedRef = useRef(selectedId);
@@ -146,6 +156,19 @@ export function CourtMap({
       duration: 700,
     });
   }, [locateSeq, mapReady, origin]);
+
+  useEffect(() => {
+    if (!mapReady || restoredView.current || selectedRef.current) return;
+    const bounds = boundsFromCoordinates(courts);
+    if (!bounds) return;
+    mapRef.current?.fitBounds(
+      [
+        [bounds.west, bounds.south],
+        [bounds.east, bounds.north],
+      ],
+      { padding: 48, duration: 0 },
+    );
+  }, [mapReady]);
 
   useEffect(() => {
     if (!mapReady || selected || !focusBounds) {

@@ -135,8 +135,15 @@ export function withDistance(
 }
 
 export function formatSurface(code: string, copy: Copy = getCopy()): string {
-  const labels = copy.surfaces as Record<string, string>;
-  return labels[code] ?? titleCase(code.replaceAll("-", " "));
+  return formatCodedLabel(code, copy.surfaces as Record<string, string>);
+}
+
+export function formatOwner(value: string, copy: Copy = getCopy()): string {
+  return formatCodedLabel(value, copy.owners as Record<string, string>);
+}
+
+export function formatAdmin(value: string, copy: Copy = getCopy()): string {
+  return formatCodedLabel(value, copy.admins as Record<string, string>);
 }
 
 export function formatReportedBoolean(
@@ -167,6 +174,14 @@ function compareText(a: string, b: string) {
   if (left < right) return -1;
   if (left > right) return 1;
   return 0;
+}
+
+function formatCodedLabel(code: string, labels: Record<string, string>): string {
+  if (labels[code]) return labels[code];
+  if (/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(code)) {
+    return titleCase(code.replaceAll("-", " "));
+  }
+  return code;
 }
 
 function titleCase(value: string): string {

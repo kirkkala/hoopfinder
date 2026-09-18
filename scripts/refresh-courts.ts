@@ -9,11 +9,25 @@ type SourceSnapshot = { fetchedAt: string; courts: Court[] };
 
 const outFile = join(dirname(fileURLToPath(import.meta.url)), "..", "data", "courts.json");
 
+function parseArgs(argv: string[]) {
+  const lipasOnly = argv.includes("--lipas-only");
+  const osmOnly = argv.includes("--osm-only");
+  if (lipasOnly && osmOnly) {
+    throw new Error("Use either --lipas-only or --osm-only, not both.");
+  }
+  return { fetchLipas: !osmOnly, fetchOsm: !lipasOnly };
+}
+
 async function main() {
+  const { fetchLipas, fetchOsm } = parseArgs(process.argv.slice(2));
   const previous = await readPrevious();
 
-  const lipas = await fetchOrKeep("LIPAS", getLipasCourts, previous?.lipas);
-  const osm = await fetchOrKeep("OpenStreetMap", getOsmCourts, previous?.osm);
+  const lipas = fetchLipas
+    ? await fetchOrKeep("LIPAS", getLipasCourts, previous?.lipas)
+    : keepPrevious("LIPAS", previous?.lipas);
+  const osm = fetchOsm
+    ? await fetchOrKeep("OpenStreetMap", getOsmCourts, previous?.osm)
+    : keepPrevious("OpenStreetMap", previous?.osm);
 
   if (!lipas || !osm) {
     throw new Error("Need a LIPAS and OSM snapshot. Fix the failing fetch or keep data/courts.json.");
@@ -48,6 +62,18 @@ function formatSnapshot(snapshot: { lipas: SourceSnapshot; osm: SourceSnapshot }
 
 function sortCourts(courts: Court[]): Court[] {
   return [...courts].sort((a, b) => a.id.localeCompare(b.id));
+}
+
+function keepPrevious(
+  label: string,
+  previous: SourceSnapshot | undefined,
+): SourceSnapshot | undefined {
+  if (!previous?.courts.length) {
+    console.error(`${label} was skipped and there is no previous snapshot.`);
+    return undefined;
+  }
+  console.log(`${label} kept (${previous.courts.length} from ${previous.fetchedAt})`);
+  return previous;
 }
 
 async function fetchOrKeep(
