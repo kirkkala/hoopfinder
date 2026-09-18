@@ -6,6 +6,7 @@ import { basketball } from "@lucide/lab";
 import { Icon } from "lucide-react";
 import { IntroDialog } from "@/components/brand/IntroDialog";
 import { LanguageToggle } from "@/components/brand/LanguageToggle";
+import { BuyMeCoffeeButton } from "@/components/brand/BuyMeCoffeeButton";
 import { SourceCredits } from "@/components/brand/AppFooter";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { APP_NAME, APP_VERSION } from "@/lib/constants";
@@ -242,6 +243,9 @@ function HeaderMenu({
               >
                 {copy.info}
               </button>
+              <div className="mt-4">
+                <BuyMeCoffeeButton />
+              </div>
               <SourceFetchedAt
                 fetchedAtBySource={fetchedAtBySource}
                 className="mt-5 border-t border-white/10 pt-4 text-sm leading-5 text-ink-muted"
