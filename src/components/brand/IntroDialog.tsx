@@ -7,7 +7,7 @@ import { LanguageToggle } from "@/components/brand/LanguageToggle";
 import { BuyMeCoffeeButton } from "@/components/brand/BuyMeCoffeeButton";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { LocateMeButton } from "@/components/LocateMeButton";
-import { APP_NAME } from "@/lib/constants";
+import { AppWordmark } from "@/components/brand/AppWordmark";
 import { useLocationStatus } from "@/lib/origin";
 
 export function IntroDialog({
@@ -90,8 +90,8 @@ export function IntroDialog({
             aria-hidden
           />
           <div className="mt-3 flex items-center justify-between gap-3 pr-8">
-            <p className="text-xs font-bold tracking-[0.16em] text-gold uppercase">
-              {APP_NAME}
+            <p className="font-display text-xl leading-none tracking-wide text-gold">
+              <AppWordmark region={copy.region} />
             </p>
             <LanguageToggle />
           </div>

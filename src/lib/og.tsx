@@ -182,6 +182,48 @@ function MapCard() {
   );
 }
 
+function OgWordmark({
+  nameSize,
+  regionSize,
+}: {
+  nameSize: number;
+  regionSize: number;
+}) {
+  const region = getCopy("fi").region;
+  return (
+    <div
+      style={{
+        display: "flex",
+        alignItems: "baseline",
+        gap: Math.round(nameSize * 0.12),
+      }}
+    >
+      <div
+        style={{
+          fontFamily: "Bebas Neue",
+          fontSize: nameSize,
+          lineHeight: 0.9,
+          letterSpacing: "0.04em",
+          color: "#ffffff",
+        }}
+      >
+        {APP_NAME}
+      </div>
+      <div
+        style={{
+          fontFamily: "Bebas Neue",
+          fontSize: regionSize,
+          lineHeight: 0.9,
+          letterSpacing: "0.04em",
+          color: "rgba(255, 255, 255, 0.4)",
+        }}
+      >
+        {region}
+      </div>
+    </div>
+  );
+}
+
 export async function generateHomeOgImage() {
   const copy = getCopy("fi");
   const fonts = await loadOgFonts();
@@ -228,17 +270,8 @@ export async function generateHomeOgImage() {
               BETA
             </div>
           </div>
-          <div
-            style={{
-              marginTop: 28,
-              fontFamily: "Bebas Neue",
-              fontSize: 108,
-              lineHeight: 0.9,
-              letterSpacing: "0.04em",
-              color: "#ffffff",
-            }}
-          >
-            {APP_NAME}
+          <div style={{ display: "flex", marginTop: 28 }}>
+            <OgWordmark nameSize={108} regionSize={52} />
           </div>
           <div
             style={{
@@ -306,16 +339,7 @@ export async function generateCourtOgImage({
       >
         <div style={{ display: "flex", alignItems: "center", gap: 18 }}>
           <BasketballMark size={56} />
-          <div
-            style={{
-              fontFamily: "Bebas Neue",
-              fontSize: 42,
-              letterSpacing: "0.08em",
-              color: "#ffffff",
-            }}
-          >
-            {APP_NAME}
-          </div>
+          <OgWordmark nameSize={42} regionSize={26} />
         </div>
         <div style={{ display: "flex", flexDirection: "column", width: 980 }}>
           <div
