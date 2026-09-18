@@ -1,6 +1,6 @@
 import { getCopy } from "@/lib/copy";
 import { getBasketballCourt } from "@/lib/catalog";
-import { courtName, formatAddress } from "@/lib/courts";
+import { courtTitle, formatAddress } from "@/lib/courts";
 import {
   generateCourtOgImage,
   generateHomeOgImage,
@@ -22,7 +22,7 @@ export default async function CourtOpenGraphImage({
   const copy = getCopy("fi");
   if (!result) return generateHomeOgImage();
 
-  const name = courtName(result.court, copy);
+  const name = courtTitle(result.court, copy);
   const place =
     formatAddress([
       result.court.address,

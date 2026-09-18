@@ -101,6 +101,17 @@ export function courtName(
   return title;
 }
 
+/** Generic OSM names get a place suffix so list/SEO titles are not identical. */
+export function courtTitle(
+  court: Pick<Court, "name" | "nameFi" | "neighborhood" | "city">,
+  copy: Copy = getCopy(),
+): string {
+  const name = courtName(court, copy);
+  if (!isGenericCourtName(name)) return name;
+  const place = court.neighborhood || court.city;
+  return place ? `${name}, ${place}` : name;
+}
+
 export function isGenericCourtName(name: string): boolean {
   const normalized = name.trim().toLowerCase();
   return (

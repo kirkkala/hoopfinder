@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import type { Court } from "@/lib/courts";
 import { getLipasCourts } from "@/lib/sources/lipas";
 import { getOsmCourts } from "@/lib/sources/osm";
+import { enrichOsmPlaces } from "@/lib/sources/osm-places";
 
 type SourceSnapshot = { fetchedAt: string; courts: Court[] };
 
@@ -12,22 +13,29 @@ const outFile = join(dirname(fileURLToPath(import.meta.url)), "..", "data", "cou
 function parseArgs(argv: string[]) {
   const lipasOnly = argv.includes("--lipas-only");
   const osmOnly = argv.includes("--osm-only");
-  if (lipasOnly && osmOnly) {
-    throw new Error("Use either --lipas-only or --osm-only, not both.");
+  const osmPlaces = argv.includes("--osm-places");
+  if ([lipasOnly, osmOnly, osmPlaces].filter(Boolean).length > 1) {
+    throw new Error("Use only one of --lipas-only, --osm-only, --osm-places.");
   }
-  return { fetchLipas: !osmOnly, fetchOsm: !lipasOnly };
+  return {
+    fetchLipas: !osmOnly && !osmPlaces,
+    fetchOsm: !lipasOnly && !osmPlaces,
+    osmPlaces,
+  };
 }
 
 async function main() {
-  const { fetchLipas, fetchOsm } = parseArgs(process.argv.slice(2));
+  const { fetchLipas, fetchOsm, osmPlaces } = parseArgs(process.argv.slice(2));
   const previous = await readPrevious();
 
   const lipas = fetchLipas
     ? await fetchOrKeep("LIPAS", getLipasCourts, previous?.lipas)
     : keepPrevious("LIPAS", previous?.lipas);
-  const osm = fetchOsm
-    ? await fetchOrKeep("OpenStreetMap", getOsmCourts, previous?.osm)
-    : keepPrevious("OpenStreetMap", previous?.osm);
+  const osm = osmPlaces
+    ? await enrichExistingOsm(previous?.osm)
+    : fetchOsm
+      ? await fetchOrKeep("OpenStreetMap", getOsmCourts, previous?.osm)
+      : keepPrevious("OpenStreetMap", previous?.osm);
 
   if (!lipas || !osm) {
     throw new Error("Need a LIPAS and OSM snapshot. Fix the failing fetch or keep data/courts.json.");
@@ -102,6 +110,23 @@ async function fetchOrKeep(
     );
     return previous;
   }
+}
+
+async function enrichExistingOsm(
+  previous: SourceSnapshot | undefined,
+): Promise<SourceSnapshot | undefined> {
+  if (!previous?.courts.length) {
+    console.error("OpenStreetMap place enrich needs an existing snapshot.");
+    return undefined;
+  }
+  console.log(`Enriching ${previous.courts.length} OSM courts from Nominatim`);
+  const courts = await enrichOsmPlaces(previous.courts);
+  if (JSON.stringify(sortCourts(previous.courts)) === JSON.stringify(sortCourts(courts))) {
+    console.log("OpenStreetMap places unchanged");
+    return previous;
+  }
+  console.log(`OpenStreetMap places updated (${courts.length})`);
+  return { fetchedAt: new Date().toISOString(), courts };
 }
 
 async function readPrevious(): Promise<{
