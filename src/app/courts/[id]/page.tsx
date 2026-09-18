@@ -26,14 +26,19 @@ export async function generateMetadata({
       result.court.city,
     ]) || finnish.addressMissing;
   const description = finnish.metaCourtDescription(name, place);
+  const canonical = `/courts/${encodeURIComponent(result.court.id)}`;
 
   return {
     title: name,
     description,
+    alternates: {
+      canonical,
+    },
     openGraph: {
       title: name,
       description,
       type: "article",
+      url: canonical,
     },
     twitter: {
       card: "summary_large_image",
