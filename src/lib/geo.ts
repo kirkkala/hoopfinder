@@ -14,6 +14,9 @@ export const DEFAULT_MAP_ZOOM = 5;
 /** Nearby starting view after the user shares their location. */
 export const NEAR_ME_ZOOM = 13;
 
+/** City-center span after a place search — Finnish kuntas are often much larger. */
+export const SEARCH_CAMERA_SPAN_KM = 10;
+
 const EARTH_RADIUS_KM = 6371;
 
 export function haversineKm(
@@ -95,6 +98,41 @@ export function expandTinyBounds(bounds: MapBounds): MapBounds {
     west: lonMid - dLon,
     east: lonMid + dLon,
   };
+}
+
+/** Box of `spanKm` across, in both directions, around a point. */
+export function boundsAround(
+  center: Coordinates,
+  spanKm: number,
+): MapBounds {
+  const dLat = spanKm / 111;
+  const cosLat = Math.max(Math.cos(toRadians(center.lat)), 0.2);
+  const dLon = spanKm / (111 * cosLat);
+  return {
+    south: center.lat - dLat / 2,
+    north: center.lat + dLat / 2,
+    west: center.lon - dLon / 2,
+    east: center.lon + dLon / 2,
+  };
+}
+
+/**
+ * Fit a neighborhood as-is; for a large city/kunta, zoom to the place center
+ * instead of the whole administrative polygon.
+ */
+export function cameraBoundsForPlace(
+  center: Coordinates,
+  placeBounds: MapBounds,
+  maxSpanKm = SEARCH_CAMERA_SPAN_KM,
+): MapBounds {
+  const latKm = (placeBounds.north - placeBounds.south) * 111;
+  const cosLat = Math.max(
+    Math.cos(toRadians((placeBounds.north + placeBounds.south) / 2)),
+    0.2,
+  );
+  const lonKm = (placeBounds.east - placeBounds.west) * 111 * cosLat;
+  if (latKm <= maxSpanKm && lonKm <= maxSpanKm) return placeBounds;
+  return boundsAround(center, maxSpanKm);
 }
 
 function toRadians(degrees: number): number {
