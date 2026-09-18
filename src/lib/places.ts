@@ -1,5 +1,16 @@
 import { COURT_DATA_REVALIDATE } from "@/lib/constants";
-import { expandTinyBounds, type MapBounds } from "@/lib/geo";
+import {
+  cameraBoundsForPlace,
+  expandTinyBounds,
+  type MapBounds,
+} from "@/lib/geo";
+
+export type PlaceMatch = {
+  /** Full place area — used to filter courts. */
+  bounds: MapBounds;
+  /** Tighter camera for city/kunta searches. */
+  camera: MapBounds;
+};
 
 const NOMINATIM = "https://nominatim.openstreetmap.org/search";
 
@@ -20,6 +31,8 @@ const PLACE_RANK: Record<string, number> = {
 type NominatimHit = {
   boundingbox?: string[];
   class?: string;
+  lat?: string;
+  lon?: string;
   type?: string;
 };
 
@@ -30,7 +43,7 @@ function placeScore(hit: NominatimHit): number {
   return PLACE_RANK[hit.type ?? ""] ?? (hit.class === "place" || hit.class === "boundary" ? 1 : 0);
 }
 
-export async function lookupPlace(query: string): Promise<MapBounds | null> {
+export async function lookupPlace(query: string): Promise<PlaceMatch | null> {
   const needle = query.trim();
   if (needle.length < 2) return null;
 
@@ -62,5 +75,16 @@ export async function lookupPlace(query: string): Promise<MapBounds | null> {
   }
 
   const [south, north, west, east] = box;
-  return expandTinyBounds({ south, north, west, east });
+  const bounds = expandTinyBounds({ south, north, west, east });
+  const lat = Number(hit.lat);
+  const lon = Number(hit.lon);
+  const center =
+    Number.isFinite(lat) && Number.isFinite(lon)
+      ? { lat, lon }
+      : {
+          lat: (bounds.north + bounds.south) / 2,
+          lon: (bounds.east + bounds.west) / 2,
+        };
+
+  return { bounds, camera: cameraBoundsForPlace(center, bounds) };
 }
