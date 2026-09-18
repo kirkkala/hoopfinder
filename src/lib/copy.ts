@@ -62,6 +62,7 @@ const messages = {
     fi: "Lähdekoodi löytyy Githubista",
     en: "Source code is on Github"
   },
+  introSupport: { fi: "Tue kehittäjää", en: "Support the developer" },
   introCta: { fi: "ok bro", en: "ok bro" },
   madeWith: { fi: 'Made with', en: "Made with" },
   love: { fi: "love", en: "love" },
