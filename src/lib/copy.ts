@@ -115,8 +115,8 @@ const messages = {
   },
   emptyTitle: { fi: "Airball", en: "Airball" },
   emptyHint: {
-    fi: "Ei osumia. Kokeile toista hakusanaa.",
-    en: "No hoops match. Try another search term.",
+    fi: "Ei kenttiä näkyvissä, kokeile toista hakusanaa tai zoomaa karttaa.",
+    en: "No hoops visible. Try another search term or zoom the map.",
   },
   addressMissing: {
     fi: "Osoitetta ei ilmoitettu",
@@ -253,7 +253,7 @@ const messages = {
     en: "The app missed this shot. Try again without leaving the page.",
   },
   tryAgain: { fi: "Yritä uudelleen", en: "Try again" },
-  notFoundTitle: { fi: "Airball", en: "Airball" },
+  notFoundTitle: { fi: "Airball!", en: "Airball!" },
   notFoundHint: {
     fi: "Kenttä hukassa (404 - sivua ei löydy).",
     en: "Court is missing (404 - page not found).",
