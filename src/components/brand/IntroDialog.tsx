@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { basketball } from "@lucide/lab";
 import { ChevronDown, Icon, X } from "lucide-react";
 import { LanguageToggle } from "@/components/brand/LanguageToggle";
+import { BuyMeCoffeeButton } from "@/components/brand/BuyMeCoffeeButton";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { LocateMeButton } from "@/components/LocateMeButton";
 import { APP_NAME } from "@/lib/constants";
@@ -29,6 +30,7 @@ export function IntroDialog({
     if (open && !dialog.open) {
       dialog.showModal();
       dialog.scrollTop = 0;
+      dialog.focus();
     }
     if (!open && dialog.open) dialog.close();
   }, [open]);
@@ -60,6 +62,7 @@ export function IntroDialog({
   return (
     <dialog
       ref={ref}
+      tabIndex={-1}
       onCancel={(event) => {
         event.preventDefault();
         onClose();
@@ -68,7 +71,7 @@ export function IntroDialog({
         if (event.target === event.currentTarget) onClose();
       }}
       aria-labelledby="intro-title"
-      className="intro-dialog m-0 max-h-dvh w-full max-w-none overflow-y-auto overscroll-contain bg-transparent p-4 text-ink open:grid open:h-dvh backdrop:bg-black/70"
+      className="intro-dialog m-0 max-h-dvh w-full max-w-none overflow-y-auto overscroll-contain bg-transparent p-4 text-ink outline-none open:grid open:h-dvh backdrop:bg-black/70"
     >
       <div className="relative w-full max-w-md rounded-3xl border border-white/10 bg-panel shadow-[0_24px_64px_rgb(0_0_0_/_0.55)] sm:max-w-lg">
         <div className="court-arc pointer-events-none absolute inset-0 rounded-3xl opacity-40" />
@@ -121,6 +124,10 @@ export function IntroDialog({
             {copy.introCreatedBy1}
           </p>
           <p className="mt-2 block text-base text-ink/85">{copy.introCreatedBy2}</p>
+          <div className="mt-4 flex flex-wrap items-center gap-x-1.5">
+            <BuyMeCoffeeButton size="md" />
+            <p className="text-base text-ink/85">👈 {copy.introSupport}</p>
+          </div>
           <a
             href="https://github.com/kirkkala/hoopfinder"
             target="_blank"
