@@ -17,9 +17,6 @@ import {
   Layers,
   LayoutGrid,
   Lightbulb,
-  LoaderCircle,
-  Locate,
-  LocateOff,
   Map,
   MapPin,
   MoveVertical,
@@ -36,6 +33,7 @@ import {
 import { AppHeader } from "@/components/brand/AppHeader";
 import { AppFooter } from "@/components/brand/AppFooter";
 import { CourtDistance } from "@/components/CourtDistance";
+import { LocateMeButton, locationHint } from "@/components/LocateMeButton";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { CourtMiniMap } from "@/components/court/CourtMiniMap";
 import {
@@ -49,11 +47,7 @@ import {
   type Court,
 } from "@/lib/courts";
 import { haversineKm } from "@/lib/geo";
-import {
-  requestOrigin,
-  useOrigin,
-  type LocationStatus,
-} from "@/lib/origin";
+import { useLocationStatus } from "@/lib/origin";
 import { courtSource, sourceListingUrl } from "@/lib/sources";
 import { formatFetchedAt } from "@/lib/time";
 import { split } from "@/lib/layout";
@@ -370,12 +364,12 @@ function googleMapsDirectionsLinks(lat: number, lon: number, copy: Copy) {
 
 function CourtDistanceBlock({ court }: { court: Court }) {
   const copy = useCopy();
-  const origin = useOrigin();
-  const [status, setStatus] = useState<LocationStatus>("idle");
+  const { origin, status, request } = useLocationStatus();
   const [ready, setReady] = useState(false);
   const distanceKm = origin
     ? haversineKm(origin, { lat: court.lat, lon: court.lon })
     : null;
+  const hint = locationHint(copy, status);
 
   useEffect(() => {
     setReady(true);
@@ -394,29 +388,10 @@ function CourtDistanceBlock({ court }: { court: Court }) {
     );
   }
 
-  const pending = status === "pending";
-  const StatusIcon =
-    pending ? LoaderCircle : status === "idle" ? Locate : LocateOff;
-
   return (
     <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
-      <button
-        type="button"
-        onClick={() => requestOrigin(setStatus)}
-        disabled={pending}
-        className="inline-flex shrink-0 items-center gap-1.5 rounded-full bg-blue-800 px-3 py-1.5 text-sm font-bold text-white hover:bg-blue-900 disabled:cursor-default disabled:opacity-70"
-      >
-        <StatusIcon
-          aria-hidden
-          className={`size-3.5 ${pending ? "animate-spin" : ""}`}
-        />
-        {copy.nearMe[status]}
-      </button>
-      <p className="text-sm text-ink-muted">
-        {status === "denied"
-          ? copy.locationBlockedHelp
-          : copy.locateToSeeDistance}
-      </p>
+      <LocateMeButton status={status} onClick={request} />
+      {hint ? <p className="text-sm text-ink-muted">{hint}</p> : null}
     </div>
   );
 }

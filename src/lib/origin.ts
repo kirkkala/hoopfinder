@@ -1,6 +1,6 @@
 "use client";
 
-import { useSyncExternalStore } from "react";
+import { useCallback, useState, useSyncExternalStore } from "react";
 import type { Coordinates } from "@/lib/geo";
 
 export type LocationStatus =
@@ -80,4 +80,17 @@ export function requestOrigin(
     () => onStatus("denied"),
     { enableHighAccuracy: true, timeout: 10_000 },
   );
+}
+
+export function useLocationStatus() {
+  const origin = useOrigin();
+  const [status, setStatus] = useState<LocationStatus>("idle");
+  const resolved: LocationStatus =
+    status === "idle" && origin ? "granted" : status;
+
+  const request = useCallback(() => {
+    requestOrigin(setStatus);
+  }, []);
+
+  return { origin, status: resolved, request };
 }

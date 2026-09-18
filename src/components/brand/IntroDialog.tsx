@@ -2,10 +2,12 @@
 
 import { useEffect, useRef, useState } from "react";
 import { basketball } from "@lucide/lab";
-import { ChevronDown, Icon, Eye, Locate, Map, Search, X } from "lucide-react";
+import { ChevronDown, Icon, X } from "lucide-react";
 import { LanguageToggle } from "@/components/brand/LanguageToggle";
 import { useCopy } from "@/components/brand/LocaleProvider";
+import { LocateMeButton } from "@/components/LocateMeButton";
 import { APP_NAME } from "@/lib/constants";
+import { useLocationStatus } from "@/lib/origin";
 
 export function IntroDialog({
   open,
@@ -19,6 +21,7 @@ export function IntroDialog({
   const copy = useCopy();
   const ref = useRef<HTMLDialogElement>(null);
   const [showScrollHint, setShowScrollHint] = useState(false);
+  const [leadBefore, leadAfter] = copy.introLead.split("{count}");
 
   useEffect(() => {
     const dialog = ref.current;
@@ -96,14 +99,13 @@ export function IntroDialog({
             {copy.introTitle}
           </h2>
           <p className="mt-3 text-base leading-6 text-ink/80">
-            {copy.introLead(courtCount)}
+            {leadBefore}
+            <strong className="text-md font-bold tracking-wide text-gold">
+              {courtCount}
+            </strong>
+            {leadAfter}
           </p>
-          <ul className="mt-5 space-y-3 text-base text-ink/85">
-            <IntroStep icon={Search}>{copy.introSearch}</IntroStep>
-            <IntroStep icon={Locate}>{copy.introLocate}</IntroStep>
-            <IntroStep icon={Map}>{copy.introMap}</IntroStep>
-            <IntroStep icon={Eye}>{copy.introSeeCourt}</IntroStep>
-          </ul>
+          <IntroLocationPrompt />
           <h2 className="mt-6 font-display text-2xl tracking-wide text-white">
             {copy.introCreatedByTitle}
           </h2>
@@ -146,19 +148,39 @@ export function IntroDialog({
   );
 }
 
-function IntroStep({
-  icon: StepIcon,
-  children,
-}: {
-  icon: typeof Search;
-  children: string;
-}) {
+function IntroLocationPrompt() {
+  const copy = useCopy();
+  const { status, request } = useLocationStatus();
+  const granted = status === "granted";
+
   return (
-    <li className="flex gap-3">
-      <span className="flex size-7 shrink-0 items-center justify-center rounded-full bg-white/10 text-gold">
-        <StepIcon className="size-3.5" aria-hidden />
-      </span>
-      {children}
-    </li>
+    <div
+      className={`mt-5 rounded-2xl border px-4 py-3 ${
+        granted
+          ? "border-emerald-400/25 bg-emerald-400/10"
+          : "border-gold/20 bg-gold/5"
+      }`}
+    >
+      {granted ? (
+        <p className="text-base leading-6 text-ink/85">
+          {copy.introLocationGranted}
+        </p>
+      ) : (
+        <>
+          <p className="text-base leading-6 text-ink/85">
+            {copy.introLocationBenefit}
+          </p>
+          <p className="mt-1 text-sm text-ink-muted">
+            {copy.introLocationOptional}
+          </p>
+          <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
+            <LocateMeButton status={status} onClick={request} />
+            {status === "denied" ? (
+              <p className="text-sm text-ink-muted">{copy.locationBlockedHelp}</p>
+            ) : null}
+          </div>
+        </>
+      )}
+    </div>
   );
 }
