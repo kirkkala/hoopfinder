@@ -1,10 +1,10 @@
 import "./globals.css";
-import { Analytics } from "@vercel/analytics/next"
-import { SpeedInsights } from "@vercel/speed-insights/next"
+import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Bebas_Neue, Outfit } from "next/font/google";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { LocaleProvider } from "@/components/brand/LocaleProvider";
-import { APP_NAME } from "@/lib/constants";
+import { SITE_URL } from "@/lib/constants";
 import { getCopy } from "@/lib/copy";
 
 const outfit = Outfit({
@@ -19,13 +19,71 @@ const bebas = Bebas_Neue({
 });
 
 const finnish = getCopy("fi");
+const appName = finnish.appName;
+const description = finnish.metaDescription;
+
+export const viewport: Viewport = {
+  themeColor: "#07070a",
+  colorScheme: "dark",
+};
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: {
-    default: APP_NAME,
-    template: `%s · ${APP_NAME}`,
+    default: appName,
+    template: `%s · ${appName}`,
   },
-  description: `${finnish.tagline} ${finnish.metaDescription}`,
+  description,
+  applicationName: appName,
+  category: "sports",
+  keywords: [
+    "koripallo",
+    "ulkokoripallokenttä",
+    "basketball",
+    "outdoor court",
+    "Suomi",
+    "Finland",
+    "Hoop Finder",
+    "Hoop Finder Suomi",
+    "Hoop Finder Finland",
+  ],
+  authors: [{ name: "Timo Kirkkala", url: "https://kirkkala.com" }],
+  creator: "Timo Kirkkala",
+  publisher: appName,
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  openGraph: {
+    type: "website",
+    locale: "fi_FI",
+    alternateLocale: ["en_US"],
+    url: SITE_URL,
+    siteName: appName,
+    title: appName,
+    description,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: appName,
+    description,
+  },
+  appleWebApp: {
+    capable: true,
+    title: appName,
+    statusBarStyle: "black-translucent",
+  },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {

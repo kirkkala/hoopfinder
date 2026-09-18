@@ -5,13 +5,37 @@ export const DEFAULT_LOCALE: Locale = "fi";
 type Pair<T> = { fi: T; en: T };
 
 const messages = {
+  appName: {
+    fi: "Hoop Finder Suomi",
+    en: "Hoop Finder Finland",
+  },
+  region: {
+    fi: "Suomi",
+    en: "Finland",
+  },
   tagline: {
-    fi: "Find a hoop. Go out and play.",
-    en: "Find a hoop. Go out and play.",
+    fi: "Löydä kenttä, käy heittelemässä.",
+    en: "Find a hoop, go out and play.",
   },
   metaDescription: {
-    fi: "Ulkokoripallokentät Suomessa. Tehty nuorille pelaajille.",
-    en: "Outdoor basketball courts in Finland, built for junior players.",
+    fi: "Löydä ulkokoripallokentät Suomesta. Etsi kaupungilla, alueella tai sijainnilla ja ota pallo mukaan.",
+    en: "Find outdoor basketball courts in Finland. Search by city, neighborhood or your location — then go hoop.",
+  },
+  metaDescriptionCount: {
+    fi: (count: number) =>
+      `Löydä ulkokoripallokentät Suomesta. ${count} kenttää kartalla — etsi kaupungilla, alueella tai sijainnilla.`,
+    en: (count: number) =>
+      `Find outdoor basketball courts in Finland. ${count} hoops on the map — search by city, neighborhood or location.`,
+  },
+  metaOgImageAlt: {
+    fi: "Hoop Finder Suomi — ulkokoripallokentät Suomessa",
+    en: "Hoop Finder Finland — outdoor basketball courts in Finland",
+  },
+  metaCourtDescription: {
+    fi: (name: string, place: string) =>
+      `${name} — ${place}. Ulkokoripallokenttä Suomessa. Löydä kartalta Hoop Finderista.`,
+    en: (name: string, place: string) =>
+      `${name} — ${place}. Outdoor basketball court in Finland. Find it on the Hoop Finder map.`,
   },
   unnamedCourt: {
     fi: "Koripallokenttä",
@@ -29,10 +53,10 @@ const messages = {
   language: { fi: "Language", en: "Language" },
   menu: { fi: "Valikko", en: "Menu" },
   info: { fi: "Info", en: "Info" },
-  introTitle: { fi: "Ota pallo mukaan", en: "Bring a ball along" },
+  introTitle: { fi: "Löydä koriskenttä", en: "Find a hoop" },
   introLead: {
-    fi: "Hoop Finderista löytyy {count} ulkokoripallokenttää Suomesta. Olit sitten reissussa, mökillä, sukulaisten luona tai haluat löytää uuden kentän kodin läheltä — täältä löydät paikan heittää.",
-    en: "Hoop Finder has {count} outdoor basketball courts in Finland. Whether you're on a trip, at the cottage, visiting relatives or want to find a new court close to home — here you can find a place to hoop.",
+    fi: "Hoop Finderista löydät {count} ulkokoripallokenttää Suomesta. Olit sitten reissussa, mökillä, sukulaisten luona tai haluat löytää uuden kentän kodin läheltä — täältä löydät paikan heittää.",
+    en: "Hoop Finder finds {count} outdoor basketball courts in Finland. Whether you're on a trip, at the cottage, visiting relatives or want to find a new court close to home — here you can find a place to hoop.",
   },
   introLocationBenefit: {
     fi: "Salli sijaintisi, niin näet kuinka kaukana kukin kenttä sijaitsee.",
@@ -99,8 +123,8 @@ const messages = {
   },
   emptyTitle: { fi: "Airball", en: "Airball" },
   emptyHint: {
-    fi: "Ei osumia. Kokeile toista hakusanaa.",
-    en: "No hoops match. Try another search term.",
+    fi: "Ei kenttiä näkyvissä, kokeile toista hakusanaa tai zoomaa karttaa.",
+    en: "No hoops visible. Try another search term or zoom the map.",
   },
   addressMissing: {
     fi: "Osoitetta ei ilmoitettu",
@@ -237,12 +261,12 @@ const messages = {
     en: "The app missed this shot. Try again without leaving the page.",
   },
   tryAgain: { fi: "Yritä uudelleen", en: "Try again" },
-  notFoundTitle: { fi: "Huti", en: "Airball" },
+  notFoundTitle: { fi: "Airball!", en: "Airball!" },
   notFoundHint: {
-    fi: "Tätä kenttää ei löydy.",
-    en: "This hoop is missing, or the id is invalid.",
+    fi: "Kenttä hukassa (404 - sivua ei löydy).",
+    en: "Court is missing (404 - page not found).",
   },
-  backToHoops: { fi: "Takaisin kentille", en: "Back to hoops" },
+  backToHoops: { fi: "Takaisin kartalle", en: "Back to the hoops" },
   courtNotFound: { fi: "Kenttää ei löydy", en: "Court not found" },
 };
 
