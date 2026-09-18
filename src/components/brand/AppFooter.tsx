@@ -3,7 +3,7 @@
 import { Heart } from "lucide-react";
 import { BuyMeCoffeeButton } from "@/components/brand/BuyMeCoffeeButton";
 import { useCopy } from "@/components/brand/LocaleProvider";
-import { COURT_SOURCES } from "@/lib/sources";
+import { DATA_CREDITS } from "@/lib/sources";
 import { wide } from "@/lib/layout";
 
 export function AppFooter() {
@@ -46,9 +46,9 @@ export function SourceCredits() {
     <>
       <p>
         {copy.courtDataFrom}{" "}
-        {COURT_SOURCES.map((source, index) => (
+        {DATA_CREDITS.map((source, index) => (
           <span key={source.id}>
-            {sourceSeparator(index, COURT_SOURCES.length, copy.sourceListAnd)}
+            {sourceSeparator(index, DATA_CREDITS.length, copy.sourceListAnd)}
             <a
               href={source.href}
               className="text-gold hover:text-white"

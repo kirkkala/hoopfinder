@@ -20,6 +20,19 @@ export const COURT_SOURCES = [
   },
 ] as const;
 
+export const DATA_CREDITS = [
+  ...COURT_SOURCES.map((source) => ({
+    id: source.id,
+    label: source.label,
+    href: source.href,
+  })),
+  {
+    id: "nominatim",
+    label: "Nominatim",
+    href: "https://nominatim.org/",
+  },
+] as const;
+
 export type CourtSourceId = (typeof COURT_SOURCES)[number]["id"];
 
 export function courtSource(id: string) {
