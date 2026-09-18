@@ -4,12 +4,24 @@ import Link from "next/link";
 import { basketball } from "@lucide/lab";
 import { ArrowLeft, Icon } from "lucide-react";
 import { AppFooter } from "@/components/brand/AppFooter";
+import { AppHeader } from "@/components/brand/AppHeader";
 import { useCopy } from "@/components/brand/LocaleProvider";
+import type { FetchedAtBySource } from "@/lib/catalog";
 
-export function NotFoundView() {
+export function NotFoundView({
+  courtCount,
+  fetchedAtBySource,
+}: {
+  courtCount: number;
+  fetchedAtBySource: FetchedAtBySource;
+}) {
   const copy = useCopy();
   return (
     <div className="flex min-h-dvh flex-col bg-asphalt">
+      <AppHeader
+        fetchedAtBySource={fetchedAtBySource}
+        courtCount={courtCount}
+      />
       <main className="mx-auto flex max-w-lg flex-1 flex-col items-center justify-center gap-3 px-6 text-center">
         <Icon
           iconNode={basketball}
