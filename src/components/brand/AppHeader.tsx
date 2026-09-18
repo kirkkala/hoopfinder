@@ -312,7 +312,7 @@ function BetaBadge() {
     "inline-flex rounded-full bg-gold/20 px-2 py-0.5 font-sans text-[11px] font-bold uppercase tracking-[0.14em] text-gold";
 
   if (!showTooltip) {
-    return <span className={chip}>{copy.beta}</span>;
+    return <span className={chip}>Beta</span>;
   }
 
   return (
