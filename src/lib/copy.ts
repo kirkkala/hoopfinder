@@ -253,12 +253,12 @@ const messages = {
     en: "The app missed this shot. Try again without leaving the page.",
   },
   tryAgain: { fi: "Yritä uudelleen", en: "Try again" },
-  notFoundTitle: { fi: "Huti", en: "Airball" },
+  notFoundTitle: { fi: "Airball", en: "Airball" },
   notFoundHint: {
-    fi: "Tätä kenttää ei löydy.",
-    en: "This hoop is missing, or the id is invalid.",
+    fi: "Kenttä hukassa (404 - sivua ei löydy).",
+    en: "Court is missing (404 - page not found).",
   },
-  backToHoops: { fi: "Takaisin kentille", en: "Back to hoops" },
+  backToHoops: { fi: "Takaisin kartalle", en: "Back to the hoops" },
   courtNotFound: { fi: "Kenttää ei löydy", en: "Court not found" },
 };
 
