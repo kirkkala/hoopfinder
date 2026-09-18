@@ -22,6 +22,7 @@ export type CourtCatalog = {
  * Runtime never calls Overpass (it is too slow/unreliable on Vercel).
  * Refresh with `npm run refresh-courts` or the weekly GitHub Action.
  * LIPAS only: `npm run refresh-courts:lipas`.
+ * OSM place fields only: `npm run refresh-courts:osm-places`.
  */
 export const getCourtCatalog = cache(async (): Promise<CourtCatalog> => {
   const snapshot = asSnapshot(bundled);

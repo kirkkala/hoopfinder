@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { CourtDetails } from "@/components/court/CourtDetails";
 import { getBasketballCourt, getCourtCatalog } from "@/lib/catalog";
 import { getCopy } from "@/lib/copy";
-import { courtName, formatAddress } from "@/lib/courts";
+import { courtTitle, formatAddress } from "@/lib/courts";
 
 export const dynamic = "force-dynamic";
 
@@ -18,7 +18,7 @@ export async function generateMetadata({
     return { title: finnish.courtNotFound, robots: { index: false } };
   }
 
-  const name = courtName(result.court, finnish);
+  const name = courtTitle(result.court, finnish);
   const place =
     formatAddress([
       result.court.address,
