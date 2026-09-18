@@ -10,8 +10,24 @@ const messages = {
     en: "Find a hoop. Go out and play.",
   },
   metaDescription: {
-    fi: "Ulkokoripallokentät Suomessa. Tehty nuorille pelaajille.",
-    en: "Outdoor basketball courts in Finland, built for junior players.",
+    fi: "Löydä ulkokoripallokentät Suomesta. Etsi kaupungilla, alueella tai sijainnilla ja ota pallo mukaan.",
+    en: "Find outdoor basketball courts in Finland. Search by city, neighborhood or your location — then go hoop.",
+  },
+  metaDescriptionCount: {
+    fi: (count: number) =>
+      `Löydä ulkokoripallokentät Suomesta. ${count} kenttää kartalla — etsi kaupungilla, alueella tai sijainnilla.`,
+    en: (count: number) =>
+      `Find outdoor basketball courts in Finland. ${count} hoops on the map — search by city, neighborhood or location.`,
+  },
+  metaOgImageAlt: {
+    fi: "Hoop Finder — ulkokoripallokentät Suomessa",
+    en: "Hoop Finder — outdoor basketball courts in Finland",
+  },
+  metaCourtDescription: {
+    fi: (name: string, place: string) =>
+      `${name} — ${place}. Ulkokoripallokenttä Suomessa. Löydä kartalta Hoop Finderista.`,
+    en: (name: string, place: string) =>
+      `${name} — ${place}. Outdoor basketball court in Finland. Find it on the Hoop Finder map.`,
   },
   unnamedCourt: {
     fi: "Koripallokenttä",
