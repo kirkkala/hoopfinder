@@ -1,22 +1,9 @@
 "use client";
 
-import {
-  LoaderCircle,
-  Locate,
-  LocateFixed,
-  LocateOff,
-  Search,
-} from "lucide-react";
+import { Search } from "lucide-react";
 import { useCopy } from "@/components/brand/LocaleProvider";
+import { LocateMeButton, locationHint } from "@/components/LocateMeButton";
 import type { LocationStatus } from "@/lib/origin";
-
-const LOCATION_ICON = {
-  idle: Locate,
-  pending: LoaderCircle,
-  granted: LocateFixed,
-  denied: LocateOff,
-  unavailable: LocateOff,
-} as const;
 
 export function SearchFilters({
   query,
@@ -30,13 +17,7 @@ export function SearchFilters({
   onUseLocation: () => void;
 }) {
   const copy = useCopy();
-  const LocationIcon = LOCATION_ICON[locationStatus];
-  const locationHint =
-    locationStatus === "denied"
-      ? copy.locationBlockedHelp
-      : locationStatus === "idle" || locationStatus === "unavailable"
-        ? copy.locateToSeeDistance
-        : null;
+  const hint = locationHint(copy, locationStatus);
 
   return (
     <div className="space-y-3">
@@ -59,25 +40,15 @@ export function SearchFilters({
           />
         </label>
 
-        <button
-          type="button"
+        <LocateMeButton
+          compact
+          status={locationStatus}
           onClick={onUseLocation}
-          disabled={locationStatus === "pending"}
-          aria-label={copy.nearMe[locationStatus]}
-          className="inline-flex size-12 shrink-0 items-center justify-center rounded-full bg-blue-800 text-white hover:bg-blue-900 disabled:cursor-default disabled:opacity-70 sm:h-auto sm:w-auto sm:gap-1.5 sm:px-3 sm:py-1.5 sm:text-sm sm:font-bold"
-        >
-          <LocationIcon
-            aria-hidden
-            className={`size-5 sm:size-3.5 ${locationStatus === "pending" ? "animate-spin" : ""}`}
-          />
-          <span className="hidden sm:inline">
-            {copy.nearMe[locationStatus]}
-          </span>
-        </button>
+        />
 
-        {locationHint ? (
+        {hint ? (
           <p className="col-span-2 min-w-0 text-sm text-ink-muted sm:col-span-1">
-            {locationHint}
+            {hint}
           </p>
         ) : null}
       </div>
