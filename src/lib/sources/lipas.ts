@@ -107,8 +107,9 @@ function toCourt(site: z.infer<typeof LipasSiteSchema>): Court | null {
     comment: text(site.comment),
     website: text(site.www),
     constructionYear: site["construction-year"] ?? null,
-    owner: titleCode(site.owner),
-    admin: titleCode(site.admin),
+    // Codes such as "foundation"; UI uses LIPAS search-meta translations.
+    owner: text(site.owner),
+    admin: text(site.admin),
     amenities: {
       lighting: bool(properties["ligthing?"]),
       lightingInfo: str(properties["lighting-info"]),
@@ -134,14 +135,6 @@ function toCourt(site: z.infer<typeof LipasSiteSchema>): Court | null {
 function text(value: string | null | undefined): string | null {
   const trimmed = value?.trim();
   return trimmed ? trimmed : null;
-}
-
-function titleCode(value: string | null | undefined): string | null {
-  if (!value) return null;
-  return value
-    .split("-")
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(" ");
 }
 
 function bool(value: unknown): boolean | null {

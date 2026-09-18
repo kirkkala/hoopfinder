@@ -22,6 +22,7 @@ Checked against `GET /v2/sports-site-categories` and live `1310` payloads:
 
 - Lighting exists as `ligthing?` (API spelling) and is optional — only about 40% of courts report it
 - There is **no hoop-count field**. `basketball-field-type` is free-text Finnish (full court, mini court, one-basket, streetball, …)
+- `owner` / `admin` on the list endpoint are codes (`foundation`, `city-sports`, …). Translated names live on the site payload under `search-meta.owner.name` and `search-meta.admin.name`; the UI maps those codes
 - Other optional properties: surface, dimensions, free use, school use, toilet, adjustable height, water point, scoreboard, match clock
 
 The app never invents values for missing fields.
@@ -30,7 +31,11 @@ The app never invents values for missing fields.
 
 The app never fetches courts at request time. It reads the committed snapshot in [`data/courts.json`](data/courts.json); the header shows when that dump was fetched.
 
-Refresh with `npm run refresh-courts` or the Monday GitHub Action:
+Refresh with `npm run refresh-courts` or the Monday GitHub Action. To refetch only LIPAS and keep the existing OSM snapshot:
+
+```bash
+npm run refresh-courts:lipas
+```
 
 - LIPAS type **1310** outdoor basketball sites
 - OpenStreetMap `leisure=pitch` + `sport=basketball`, via Overpass (three Finland tiles, then clipped to Finland). The public Overpass dispatcher often 504s on a nationwide query.

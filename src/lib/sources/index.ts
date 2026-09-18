@@ -5,12 +5,13 @@ export const COURT_SOURCES = [
     shortLabel: "LIPAS",
     href: "https://www.lipas.fi",
     required: true,
+    listingUrl: (id: string) => `https://www.lipas.fi/liikuntapaikat/${id}`,
   },
   {
     id: "osm",
     label: "OpenStreetMap",
     shortLabel: "OSM",
-    href: "https://www.openstreetmap.org/copyright",
+    href: "https://www.openstreetmap.org/about",
     required: false,
     listingUrl: (id: string) => {
       const match = /^osm-(node|way|relation)-(\d+)$/.exec(id);
@@ -25,11 +26,7 @@ export function courtSource(id: string) {
   return COURT_SOURCES.find((source) => source.id === id);
 }
 
-export function sourceListingUrl(
-  sourceId: string,
-  courtId: string,
-): string | null {
+export function sourceListingUrl(sourceId: string, courtId: string): string | null {
   const source = courtSource(sourceId);
-  if (!source || !("listingUrl" in source)) return null;
-  return source.listingUrl(courtId);
+  return source?.listingUrl(courtId) ?? null;
 }

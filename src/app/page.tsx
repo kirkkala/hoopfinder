@@ -8,10 +8,14 @@ export default async function HomePage({
 }: {
   searchParams: Promise<{ court?: string | string[] }>;
 }) {
-  const { courts, fetchedAt } = await getCourtCatalog();
+  const { courts, fetchedAtBySource } = await getCourtCatalog();
   const { court } = await searchParams;
   const focusId = typeof court === "string" ? court : null;
   return (
-    <CourtExplorer courts={courts} fetchedAt={fetchedAt} focusId={focusId} />
+    <CourtExplorer
+      courts={courts}
+      fetchedAtBySource={fetchedAtBySource}
+      focusId={focusId}
+    />
   );
 }
