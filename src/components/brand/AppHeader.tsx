@@ -9,7 +9,8 @@ import { LanguageToggle } from "@/components/brand/LanguageToggle";
 import { BuyMeCoffeeButton } from "@/components/brand/BuyMeCoffeeButton";
 import { SourceCredits } from "@/components/brand/AppFooter";
 import { useCopy } from "@/components/brand/LocaleProvider";
-import { APP_NAME, APP_VERSION } from "@/lib/constants";
+import { AppWordmark } from "@/components/brand/AppWordmark";
+import { APP_VERSION } from "@/lib/constants";
 import type { FetchedAtBySource } from "@/lib/catalog";
 import { mq, useMinWidth, wide } from "@/lib/layout";
 import { COURT_SOURCES } from "@/lib/sources";
@@ -54,6 +55,7 @@ export function AppHeader({
           <Link
             href="/"
             className="group flex min-w-0 items-center gap-2 rounded-sm outline-none sm:gap-3 focus-visible:ring-2 focus-visible:ring-gold/60"
+            aria-label={copy.appName}
           >
             <Icon
               iconNode={basketball}
@@ -62,7 +64,7 @@ export function AppHeader({
             />
             <span className="min-w-0">
               <span className="block font-display text-xl leading-none tracking-wide whitespace-nowrap text-white sm:text-2xl">
-                {APP_NAME}
+                <AppWordmark region={copy.region} />
               </span>
               <span className="mt-0.5 hidden text-sm text-ink/70 sm:block">
                 {copy.tagline}

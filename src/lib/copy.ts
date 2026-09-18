@@ -5,9 +5,17 @@ export const DEFAULT_LOCALE: Locale = "fi";
 type Pair<T> = { fi: T; en: T };
 
 const messages = {
+  appName: {
+    fi: "Hoop Finder Suomi",
+    en: "Hoop Finder Finland",
+  },
+  region: {
+    fi: "Suomi",
+    en: "Finland",
+  },
   tagline: {
-    fi: "Find a hoop. Go out and play.",
-    en: "Find a hoop. Go out and play.",
+    fi: "Löydä kenttä, käy heittelemässä.",
+    en: "Find a hoop, go out and play.",
   },
   metaDescription: {
     fi: "Löydä ulkokoripallokentät Suomesta. Etsi kaupungilla, alueella tai sijainnilla ja ota pallo mukaan.",
@@ -20,8 +28,8 @@ const messages = {
       `Find outdoor basketball courts in Finland. ${count} hoops on the map — search by city, neighborhood or location.`,
   },
   metaOgImageAlt: {
-    fi: "Hoop Finder — ulkokoripallokentät Suomessa",
-    en: "Hoop Finder — outdoor basketball courts in Finland",
+    fi: "Hoop Finder Suomi — ulkokoripallokentät Suomessa",
+    en: "Hoop Finder Finland — outdoor basketball courts in Finland",
   },
   metaCourtDescription: {
     fi: (name: string, place: string) =>
@@ -45,10 +53,10 @@ const messages = {
   language: { fi: "Language", en: "Language" },
   menu: { fi: "Valikko", en: "Menu" },
   info: { fi: "Info", en: "Info" },
-  introTitle: { fi: "Ota pallo mukaan", en: "Bring a ball along" },
+  introTitle: { fi: "Löydä koriskenttä", en: "Find a hoop" },
   introLead: {
-    fi: "Hoop Finderista löytyy {count} ulkokoripallokenttää Suomesta. Olit sitten reissussa, mökillä, sukulaisten luona tai haluat löytää uuden kentän kodin läheltä — täältä löydät paikan heittää.",
-    en: "Hoop Finder has {count} outdoor basketball courts in Finland. Whether you're on a trip, at the cottage, visiting relatives or want to find a new court close to home — here you can find a place to hoop.",
+    fi: "Hoop Finderista löydät {count} ulkokoripallokenttää Suomesta. Olit sitten reissussa, mökillä, sukulaisten luona tai haluat löytää uuden kentän kodin läheltä — täältä löydät paikan heittää.",
+    en: "Hoop Finder finds {count} outdoor basketball courts in Finland. Whether you're on a trip, at the cottage, visiting relatives or want to find a new court close to home — here you can find a place to hoop.",
   },
   introLocationBenefit: {
     fi: "Salli sijaintisi, niin näet kuinka kaukana kukin kenttä sijaitsee.",
