@@ -17,6 +17,7 @@ import {
 import { isInBounds, type MapBounds } from "@/lib/geo";
 import { mq, split, useMinWidth } from "@/lib/layout";
 import { useLocationStatus } from "@/lib/origin";
+import type { PlaceMatch } from "@/lib/places";
 import type { FetchedAtBySource } from "@/lib/catalog";
 
 const CourtMap = dynamic(
@@ -91,7 +92,8 @@ export function CourtExplorer({
   const skipInitialOrigin = useRef(true);
   const [pickedId, setPickedId] = useState<string | null | undefined>(undefined);
   const [mapBounds, setMapBounds] = useState<MapBounds | null>(null);
-  const [placeBounds, setPlaceBounds] = useState<MapBounds | null>(null);
+  const [place, setPlace] = useState<PlaceMatch | null>(null);
+  const placeBounds = place?.bounds ?? null;
   const showList = useMinWidth(mq.split);
   const savedId = useSyncExternalStore(
     subscribeSelectedCourt,
@@ -140,11 +142,11 @@ export function CourtExplorer({
   useEffect(() => {
     const needle = query.trim();
     if (needle.length < 2) {
-      setPlaceBounds(null);
+      setPlace(null);
       return;
     }
 
-    setPlaceBounds(null);
+    setPlace(null);
     const controller = new AbortController();
     const timer = window.setTimeout(() => {
       void fetch(`/api/places?q=${encodeURIComponent(needle)}`, {
@@ -152,15 +154,15 @@ export function CourtExplorer({
       })
         .then((response) => {
           if (!response.ok) throw new Error("place lookup failed");
-          return response.json() as Promise<MapBounds | null>;
+          return response.json() as Promise<PlaceMatch | null>;
         })
-        .then((bounds) => {
-          if (!controller.signal.aborted) setPlaceBounds(bounds);
+        .then((match) => {
+          if (!controller.signal.aborted) setPlace(match);
         })
         .catch((error: unknown) => {
           if (controller.signal.aborted) return;
           if (error instanceof DOMException && error.name === "AbortError") return;
-          setPlaceBounds(null);
+          setPlace(null);
         });
     }, 400);
 
@@ -184,7 +186,7 @@ export function CourtExplorer({
 
   function requestLocation() {
     setQuery("");
-    setPlaceBounds(null);
+    setPlace(null);
     clearCourt();
 
     if (origin && locationStatus === "granted") {
@@ -235,7 +237,7 @@ export function CourtExplorer({
               selectedId={selectedId}
               origin={origin}
               locateSeq={locateSeq}
-              focusBounds={placeBounds}
+              focusBounds={place?.camera ?? null}
               keepCamera={keepCamera}
               onSelect={selectCourt}
               onClose={clearCourt}
