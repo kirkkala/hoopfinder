@@ -351,7 +351,7 @@ export function CourtMap({
               30,
               32,
             ],
-            "circle-stroke-width": 2,
+            "circle-stroke-width": 3,
             "circle-stroke-color": "#ffffff",
           }}
         />
@@ -361,8 +361,18 @@ export function CourtMap({
           filter={["has", "point_count"]}
           layout={{
             "text-field": ["get", "point_count_abbreviated"],
-            "text-size": 12,
+            "text-size": [
+              "step",
+              ["get", "point_count"],
+              16,
+              10,
+              15,
+              30,
+              18,
+            ],
             "text-font": ["Noto Sans Regular"],
+            "text-allow-overlap": true,
+            "text-ignore-placement": true,
           }}
           paint={{ "text-color": "#111111" }}
         />
