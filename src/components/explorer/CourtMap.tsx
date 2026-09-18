@@ -22,7 +22,7 @@ import { MAP_STYLE } from "@/lib/constants";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { CourtBadges } from "@/components/explorer/CourtBadges";
 import { CourtHeading } from "@/components/explorer/CourtHeading";
-import { courtName, type CourtWithDistance } from "@/lib/courts";
+import { courtTitle, type CourtWithDistance } from "@/lib/courts";
 import {
   DEFAULT_MAP_CENTER,
   DEFAULT_MAP_ZOOM,
@@ -138,7 +138,7 @@ export function CourtMap({
         },
         properties: {
           id: court.id,
-          name: courtName(court, copy),
+          name: courtTitle(court, copy),
         },
       })),
     }),

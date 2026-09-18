@@ -2,6 +2,7 @@ import { z } from "zod";
 import { getCopy } from "@/lib/copy";
 import { emptyAmenities, isGenericCourtName, type Court } from "@/lib/courts";
 import { isInFinland } from "@/lib/sources/finland";
+import { enrichOsmPlaces } from "@/lib/sources/osm-places";
 
 const USER_AGENT = "HoopFinder/0.1 (https://github.com/kirkkala/hoopfinder)";
 const DEFAULT_DISPATCHER = "https://overpass-api.de/api/interpreter";
@@ -64,7 +65,7 @@ export async function getOsmCourts(): Promise<Court[]> {
   if (courts.length === 0) {
     throw new Error("Overpass returned no courts");
   }
-  return courts;
+  return enrichOsmPlaces(courts);
 }
 
 async function fetchTile(
@@ -214,7 +215,7 @@ function toCourt(element: OsmElement): Court | null {
     nameFi,
     status: "active",
     address: text(tags["addr:street"])
-      ? [tags["addr:housenumber"], tags["addr:street"]].filter(Boolean).join(" ")
+      ? [tags["addr:street"], tags["addr:housenumber"]].filter(Boolean).join(" ")
       : null,
     postalCode: text(tags["addr:postcode"]),
     city: text(tags["addr:city"]) || text(tags["addr:municipality"]),

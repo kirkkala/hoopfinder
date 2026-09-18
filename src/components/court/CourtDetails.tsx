@@ -37,7 +37,7 @@ import { LocateMeButton, locationHint } from "@/components/LocateMeButton";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { CourtMiniMap } from "@/components/court/CourtMiniMap";
 import {
-  courtName,
+  courtTitle,
   formatAddress,
   formatAdmin,
   formatOwner,
@@ -91,7 +91,7 @@ export function CourtDetails({
               {copy.courtKind}
             </p>
             <h1 className="mt-1 font-display text-4xl tracking-wide text-white md:text-5xl">
-              {courtName(court, copy)}
+              {courtTitle(court, copy)}
             </h1>
             <CourtDistanceBlock court={court} />
           </div>

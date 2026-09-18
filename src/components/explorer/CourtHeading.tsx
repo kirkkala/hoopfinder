@@ -2,7 +2,7 @@
 
 import { MapPin } from "lucide-react";
 import { useCopy } from "@/components/brand/LocaleProvider";
-import { courtName, formatAddress, type CourtWithDistance } from "@/lib/courts";
+import { courtTitle, formatAddress, type CourtWithDistance } from "@/lib/courts";
 import { CourtDistance } from "@/components/CourtDistance";
 
 export function CourtHeading({
@@ -29,7 +29,7 @@ export function CourtHeading({
               aria-hidden
             />
           ) : null}
-          {courtName(court, copy)}
+          {courtTitle(court, copy)}
         </p>
         <p className="mt-1 text-sm text-ink-muted">
           {formatAddress([
