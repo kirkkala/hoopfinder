@@ -3,7 +3,7 @@ import { notFound } from "next/navigation";
 import { CourtDetails } from "@/components/court/CourtDetails";
 import { getBasketballCourt, getCourtCatalog } from "@/lib/catalog";
 import { getCopy } from "@/lib/copy";
-import { courtName } from "@/lib/courts";
+import { courtName, formatAddress } from "@/lib/courts";
 
 export const dynamic = "force-dynamic";
 
@@ -14,8 +14,32 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const result = await courtFromParams(params);
   const finnish = getCopy("fi");
+  if (!result) {
+    return { title: finnish.courtNotFound, robots: { index: false } };
+  }
+
+  const name = courtName(result.court, finnish);
+  const place =
+    formatAddress([
+      result.court.address,
+      result.court.neighborhood,
+      result.court.city,
+    ]) || finnish.addressMissing;
+  const description = finnish.metaCourtDescription(name, place);
+
   return {
-    title: result ? courtName(result.court, finnish) : finnish.courtNotFound,
+    title: name,
+    description,
+    openGraph: {
+      title: name,
+      description,
+      type: "article",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: name,
+      description,
+    },
   };
 }
 
