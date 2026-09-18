@@ -1,48 +1,26 @@
 # Hoop Finder
 
-Find outdoor basketball courts across Finland. Helping basketballers to find courts to go out and play.
+Outdoor basketball courts across Finland — find a hoop, go out and play.
 
-The first version is a map of outdoor basketball courts from LIPAS type **1310** and OpenStreetMap, with search and a court detail page.
+Map, search, and a page per court. UI defaults to Finnish; English is a toggle. Copy lives in [`src/lib/copy.ts`](src/lib/copy.ts).
 
-The UI defaults to Finnish, English is available. UI texts live in [`src/lib/copy.ts`](src/lib/copy.ts). The chosen language is stored in the browser. Court names come as LIPAS and OpenStreetMap provide them.
+## Data
 
-## What is in this MVP
+Courts are the committed snapshot in [`data/courts.json`](data/courts.json). Runtime does not call the source APIs.
 
-- Interactive MapLibre map with the user’s location and clustered courts nationwide
-- Search a city, neighborhood, or address, or zoom the map to your location
-- Court page with the fields LIPAS or OpenStreetMap actually provide
-- Court list shipped in [`data/courts.json`](data/courts.json); the header shows when that snapshot was fetched
-- Error, empty, and not-found states
+- [LIPAS](https://www.lipas.fi) type **1310** outdoor basketball sites
+- [OpenStreetMap](https://www.openstreetmap.org/about) `leisure=pitch` + `sport=basketball`, via Overpass (three Finland tiles)
+- [Nominatim](https://nominatim.org/) lookup fills missing OSM city, neighborhood, and street (most OSM pitches have no `addr:*` or a useful name)
 
-Weather, Linked Events, route finder, and cycling directions might come later. Or any other good feasible idea.
-
-## LIPAS schema notes
-
-Checked against `GET /v2/sports-site-categories` and live `1310` payloads:
-
-- Lighting exists as `ligthing?` (API spelling) and is optional — only about 40% of courts report it
-- There is **no hoop-count field**. `basketball-field-type` is free-text Finnish (full court, mini court, one-basket, streetball, …)
-- `owner` / `admin` on the list endpoint are codes (`foundation`, `city-sports`, …). Translated names live on the site payload under `search-meta.owner.name` and `search-meta.admin.name`; the UI maps those codes
-- Other optional properties: surface, dimensions, free use, school use, toilet, adjustable height, water point, scoreboard, match clock
-
-The app never invents values for missing fields.
-
-## Data sources
-
-The app never fetches courts at request time. It reads the committed snapshot in [`data/courts.json`](data/courts.json); the header shows when that dump was fetched.
-
-Refresh with `npm run refresh-courts` or the Monday GitHub Action. To refetch only LIPAS and keep the existing OSM snapshot:
+LIPAS wins when an OSM pitch is within 80 m. Same-source neighbours are kept.
 
 ```bash
-npm run refresh-courts:lipas
+npm run refresh-courts              # LIPAS + OSM + Nominatim
+npm run refresh-courts:lipas        # LIPAS only
+npm run refresh-courts:osm-places   # Nominatim only, keep the OSM snapshot
 ```
 
-- LIPAS type **1310** outdoor basketball sites
-- OpenStreetMap `leisure=pitch` + `sport=basketball`, via Overpass (three Finland tiles, then clipped to Finland). The public Overpass dispatcher often 504s on a nationwide query.
-
-LIPAS wins when an OSM pitch is within 80 m. Two courts from the same source are kept even if they sit next to each other. If Overpass fails, the previous OSM snapshot is kept and LIPAS can still update.
-
-Modules: [`src/lib/catalog.ts`](src/lib/catalog.ts), [`src/lib/sources/lipas.ts`](src/lib/sources/lipas.ts), [`src/lib/sources/osm.ts`](src/lib/sources/osm.ts).
+A Monday GitHub Action runs the full refresh. If Overpass fails, the previous OSM snapshot is kept.
 
 ## Develop
 
@@ -51,10 +29,8 @@ npm install
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
-
-If needed, copy `.env.example` and update API URLs. API keys are not required.
+Open [http://localhost:3000](http://localhost:3000). API keys are not required.
 
 ## License
 
-Hoop Finder is licensed under the [GNU Affero General Public License v3.0](LICENSE).
+[GNU Affero General Public License v3.0](LICENSE).
