@@ -10,6 +10,9 @@ export async function generateMetadata(): Promise<Metadata> {
   const finnish = getCopy("fi");
   return {
     description: finnish.metaDescriptionCount(courts.length),
+    alternates: {
+      canonical: "/",
+    },
   };
 }
 
