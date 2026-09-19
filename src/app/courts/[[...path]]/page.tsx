@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { notFound, permanentRedirect } from "next/navigation";
 import { CourtDetails } from "@/components/court/CourtDetails";
 import { getBasketballCourt, getCourtCatalog } from "@/lib/catalog";
+import { SITE_URL } from "@/lib/constants";
 import { getCopy } from "@/lib/copy";
 import {
   courtHref,
+  courtOgHref,
   courtTitle,
   formatAddress,
   parseCourtPath,
@@ -34,6 +37,7 @@ export async function generateMetadata({
   const canonical = courtHref(result.court);
 
   return {
+    metadataBase: await requestOrigin(),
     title: name,
     description,
     alternates: {
@@ -44,11 +48,14 @@ export async function generateMetadata({
       description,
       type: "article",
       url: canonical,
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: name,
-      description,
+      images: [
+        {
+          url: courtOgHref(result.court, result.sourceFetchedAt),
+          width: 1200,
+          height: 630,
+          alt: `${name} — ${place}`,
+        },
+      ],
     },
   };
 }
@@ -77,4 +84,16 @@ async function courtFromParams(params: Promise<{ path?: string[] }>) {
   if (parsed === "index") permanentRedirect("/");
   if (!parsed) return null;
   return getBasketballCourt(parsed.id);
+}
+
+async function requestOrigin(): Promise<URL> {
+  const headerList = await headers();
+  const host = (headerList.get("x-forwarded-host") ?? headerList.get("host"))
+    ?.split(",")[0]
+    ?.trim();
+  if (!host) return new URL(SITE_URL);
+  const protocol =
+    headerList.get("x-forwarded-proto")?.split(",")[0]?.trim() ??
+    (host.startsWith("localhost") || host.startsWith("127.") ? "http" : "https");
+  return new URL(`${protocol}://${host}`);
 }

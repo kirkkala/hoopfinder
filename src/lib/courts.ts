@@ -228,6 +228,16 @@ export function courtHref(court: Pick<Court, "id" | "source">): string {
   return `/courts/${courtPath(court)}`;
 }
 
+export function courtOgHref(
+  court: Pick<Court, "id" | "source">,
+  fetchedAt?: string | null,
+): string {
+  const path = `/images/og/${courtParam(court)}`;
+  if (!fetchedAt) return path;
+  const version = Date.parse(fetchedAt);
+  return Number.isFinite(version) ? `${path}?v=${version}` : path;
+}
+
 export function courtIdFromParam(value: string): string | null {
   const parsed = parseCourtPath(value.split("-"));
   return parsed && parsed !== "index" ? parsed.id : null;
