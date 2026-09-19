@@ -53,10 +53,10 @@ const messages = {
   language: { fi: "Language", en: "Language" },
   menu: { fi: "Valikko", en: "Menu" },
   info: { fi: "Info", en: "Info" },
-  introTitle: { fi: "Löydä koriskenttä", en: "Find a hoop" },
+  introTitle: { fi: "Koripallokentät suomessa", en: "Basketball courts in Finland" },
   introLead: {
-    fi: "Hoop Finderista löydät {count} ulkokoripallokenttää Suomesta. Olit sitten reissussa, mökillä, sukulaisten luona tai haluat löytää uuden kentän kodin läheltä — täältä löydät paikan heittää.",
-    en: "Hoop Finder finds {count} outdoor basketball courts in Finland. Whether you're on a trip, at the cottage, visiting relatives or want to find a new court close to home — here you can find a place to hoop.",
+    fi: "Hoop Finderissa on {count} ulkokoripallokenttää. Olit sitten reissussa, mökillä, sukulaisten luona tai haluat löytää uuden kentän kodin läheltä — täältä löydät paikan heittää.",
+    en: "Hoop Finder has {count} outdoor basketball courts. Whether you're on a trip, at the cottage, visiting relatives or want to find a new court close to home — here you can find a place to hoop.",
   },
   introLocationBenefit: {
     fi: "Salli sijaintisi, niin näet kuinka kaukana kukin kenttä sijaitsee.",
