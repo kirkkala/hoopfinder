@@ -21,9 +21,11 @@ const INTRO_KEY = "hoopfinder-intro-seen";
 export function AppHeader({
   fetchedAtBySource,
   courtCount,
+  home = false,
 }: {
   fetchedAtBySource?: FetchedAtBySource;
   courtCount: number;
+  home?: boolean;
 }) {
   const copy = useCopy();
   const headerRef = useRef<HTMLElement>(null);
@@ -64,6 +66,9 @@ export function AppHeader({
     setIntroOpen(false);
   }
 
+  const brandTitleClass =
+    "block font-display text-xl leading-none tracking-wide whitespace-nowrap text-white sm:text-2xl";
+
   return (
     <header
       ref={headerRef}
@@ -85,9 +90,15 @@ export function AppHeader({
               aria-hidden
             />
             <span className="min-w-0">
-              <span className="block font-display text-xl leading-none tracking-wide whitespace-nowrap text-white sm:text-2xl">
-                <AppWordmark region={copy.region} />
-              </span>
+              {home ? (
+                <h1 className={brandTitleClass}>
+                  <AppWordmark region={copy.region} />
+                </h1>
+              ) : (
+                <span className={brandTitleClass}>
+                  <AppWordmark region={copy.region} />
+                </span>
+              )}
               <span className="mt-0.5 hidden text-sm text-ink/70 sm:block">
                 {copy.tagline}
               </span>
