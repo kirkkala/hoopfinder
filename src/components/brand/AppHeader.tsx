@@ -1,6 +1,6 @@
 "use client";
 
-import { Fragment, useEffect, useId, useState } from "react";
+import { Fragment, useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { basketball } from "@lucide/lab";
 import { Icon } from "lucide-react";
@@ -26,7 +26,26 @@ export function AppHeader({
   courtCount: number;
 }) {
   const copy = useCopy();
+  const headerRef = useRef<HTMLElement>(null);
   const [introOpen, setIntroOpen] = useState(false);
+
+  useLayoutEffect(() => {
+    const header = headerRef.current;
+    if (!header) return;
+    const el = header;
+
+    function syncHeight() {
+      el.style.setProperty(
+        "--app-header-height",
+        `${el.getBoundingClientRect().height}px`,
+      );
+    }
+
+    syncHeight();
+    const observer = new ResizeObserver(syncHeight);
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   useEffect(() => {
     try {
@@ -46,7 +65,10 @@ export function AppHeader({
   }
 
   return (
-    <header className="relative z-20 border-b border-white/10 bg-asphalt">
+    <header
+      ref={headerRef}
+      className="relative z-20 border-b border-white/10 bg-asphalt"
+    >
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="court-arc absolute inset-0 opacity-40" />
       </div>
@@ -72,27 +94,16 @@ export function AppHeader({
             </span>
           </Link>
           <BetaBadge />
-          <nav
-            className={`${wide.flex} shrink-0 items-center gap-1.5`}
-            aria-label={copy.info}
-          >
-            <LanguageToggle />
-            <button
-              type="button"
-              onClick={() => setIntroOpen(true)}
-              aria-haspopup="dialog"
-              aria-expanded={introOpen}
-              className="rounded-full bg-white/10 px-2.5 py-1.5 text-xs font-bold tracking-wide text-ink/80 uppercase hover:bg-white/15 hover:text-white"
-            >
-              {copy.info}
-            </button>
-          </nav>
         </div>
-        <SourceFetchedAt
-          fetchedAtBySource={fetchedAtBySource}
-          className={`${wide.block} shrink-0 text-right text-sm text-ink-muted`}
-          timeClassName="text-ink/70"
-        />
+        <nav className="flex shrink-0 items-center gap-1.5">
+          <LanguageToggle />
+          <div className={wide.flex}>
+            <InfoMenuButton
+              introOpen={introOpen}
+              onOpenInfo={() => setIntroOpen(true)}
+            />
+          </div>
+        </nav>
         <HeaderMenu
           fetchedAtBySource={fetchedAtBySource}
           introOpen={introOpen}
@@ -156,15 +167,9 @@ function HeaderMenu({
   const menuId = useId();
   const [open, setOpen] = useState(false);
 
-  const isWide = useMinWidth(mq.wide);
-
   useEffect(() => {
     if (introOpen) setOpen(false);
   }, [introOpen]);
-
-  useEffect(() => {
-    if (isWide) setOpen(false);
-  }, [isWide]);
 
   useEffect(() => {
     if (!open) return;
@@ -182,8 +187,27 @@ function HeaderMenu({
     };
   }, [open]);
 
+  const items: {
+    id: string;
+    label: string;
+    onSelect: () => void;
+    hasPopup?: "dialog";
+    expanded?: boolean;
+  }[] = [
+    {
+      id: "info",
+      label: copy.info,
+      onSelect: () => {
+        setOpen(false);
+        onOpenInfo();
+      },
+      hasPopup: "dialog",
+      expanded: introOpen,
+    },
+  ];
+
   return (
-    <div className={`relative ${wide.hidden}`}>
+    <div className="relative">
       <button
         type="button"
         aria-expanded={open}
@@ -198,7 +222,7 @@ function HeaderMenu({
         <HamburgerIcon open={open} />
       </button>
       <div
-        className={`fixed inset-x-0 bottom-0 top-14 z-20 overflow-hidden ${
+        className={`fixed inset-x-0 bottom-0 z-20 overflow-hidden top-[calc(var(--app-header-height,3.5rem)-1px)] ${
           open ? "" : "pointer-events-none"
         }`}
       >
@@ -222,37 +246,39 @@ function HeaderMenu({
             <div className="court-arc absolute inset-0" />
           </div>
           <div className="relative flex min-h-0 min-w-0 flex-1 flex-col overflow-y-auto">
-            <div className="min-w-0 px-4 pt-5 pr-[max(1rem,env(safe-area-inset-right))]">
-              <p className="text-sm font-bold text-white">{APP_VERSION}</p>
-              <p className="mt-1 text-sm leading-5 text-ink-muted">
-                {copy.betaTooltip}
-              </p>
-              <div className="mt-5 flex items-center justify-between gap-3 border-t border-white/10 pt-4">
-                <p className="text-xs font-bold tracking-[0.16em] text-gold/80 uppercase">
-                  {copy.language}
+            <div className="min-w-0 pr-[max(0px,env(safe-area-inset-right))]">
+              <div className="px-4 pt-5 pb-4">
+                <p className="text-sm font-bold text-white">{APP_VERSION}</p>
+                <p className="mt-1 text-sm leading-5 text-ink-muted">
+                  {copy.betaTooltip}
                 </p>
-                <LanguageToggle />
               </div>
-              <button
-                type="button"
-                onClick={() => {
-                  setOpen(false);
-                  onOpenInfo();
-                }}
-                aria-haspopup="dialog"
-                aria-expanded={introOpen}
-                className="mt-4 text-md font-medium text-gold underline decoration-gold/50 underline-offset-4 hover:text-white hover:decoration-white"
-              >
-                {copy.info}
-              </button>
-              <div className="mt-4">
-                <BuyMeCoffeeButton />
+              <ul className="border-y border-white/10">
+                {items.map((item) => (
+                  <li key={item.id}>
+                    <button
+                      type="button"
+                      onClick={item.onSelect}
+                      aria-haspopup={item.hasPopup}
+                      aria-expanded={item.expanded}
+                      className="flex w-full items-center px-4 py-3.5 text-left text-base font-medium text-white outline-none hover:bg-white/5 focus-visible:bg-white/5 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-gold/60"
+                    >
+                      {item.label}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+              <div className="px-4">
+                <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1 pt-4">
+                  <BuyMeCoffeeButton />
+                  <p className="text-sm text-ink/85">👈 {copy.introSupport}</p>
+                </div>
+                <SourceFetchedAt
+                  fetchedAtBySource={fetchedAtBySource}
+                  className="mt-5 border-t border-white/10 pt-4 text-sm leading-5 text-ink-muted"
+                  timeClassName="text-ink/80"
+                />
               </div>
-              <SourceFetchedAt
-                fetchedAtBySource={fetchedAtBySource}
-                className="mt-5 border-t border-white/10 pt-4 text-sm leading-5 text-ink-muted"
-                timeClassName="text-ink/80"
-              />
             </div>
             <div className="mt-auto min-w-0 border-t border-white/10 bg-black/30 px-4 pt-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] pr-[max(1rem,env(safe-area-inset-right))] text-sm leading-5 text-ink-muted">
               <div className="space-y-1.5">
@@ -311,11 +337,33 @@ function HamburgerIcon({ open }: { open: boolean }) {
   );
 }
 
+function InfoMenuButton({
+  introOpen,
+  onOpenInfo,
+}: {
+  introOpen: boolean;
+  onOpenInfo: () => void;
+}) {
+  const copy = useCopy();
+
+  return (
+    <button
+      type="button"
+      onClick={onOpenInfo}
+      aria-haspopup="dialog"
+      aria-expanded={introOpen}
+      className="rounded-sm px-2.5 py-1.5 text-sm font-medium text-ink/80 outline-none hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-gold/60"
+    >
+      {copy.info}
+    </button>
+  );
+}
+
 function BetaBadge() {
   const copy = useCopy();
   const showTooltip = useMinWidth(mq.wide);
   const chip =
-    "inline-flex rounded-full bg-gold/20 px-2 py-0.5 font-sans text-[11px] font-bold uppercase tracking-[0.14em] text-gold";
+    "inline-flex rounded-full bg-gold/20 px-1.5 py-px font-sans text-[9px] font-bold uppercase tracking-[0.12em] text-gold sm:px-2 sm:py-0.5 sm:text-[11px] sm:tracking-[0.14em]";
 
   if (!showTooltip) {
     return <span className={chip}>Beta</span>;

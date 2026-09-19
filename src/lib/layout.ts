@@ -6,8 +6,8 @@ import { useSyncExternalStore } from "react";
  * Chrome layout breakpoints. Pixel values must match `--breakpoint-wide` and
  * `--breakpoint-split` in `src/app/globals.css` (640px = 40rem, 1024px = 64rem).
  *
- * compact (< wide): hamburger, short footer, data-updated in the menu
- * wide: inline lang/info, data-updated in the header, full footer
+ * compact (< wide): language + hamburger in the header, short footer, data-updated in the menu
+ * wide: inline lang/info, hamburger, data-updated in the menu, full footer
  * split: court list beside the map
  *
  * Visual spacing (`sm:px-4`, `sm:text-2xl`, …) uses default Tailwind scales and
