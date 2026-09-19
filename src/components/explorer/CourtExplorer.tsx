@@ -10,6 +10,7 @@ import { CourtList } from "@/components/explorer/CourtList";
 import { SearchFilters } from "@/components/explorer/SearchFilters";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import {
+  courtParam,
   withDistance,
   type Court,
   type CourtWithDistance,
@@ -66,10 +67,10 @@ function subscribeSelectedCourt() {
   return () => {};
 }
 
-function syncCourtUrl(id: string | null) {
+function syncCourtUrl(path: string | null) {
   const url = new URL(window.location.href);
-  if (id) {
-    url.searchParams.set("court", id);
+  if (path) {
+    url.searchParams.set("court", path);
   } else {
     url.searchParams.delete("court");
   }
@@ -175,7 +176,8 @@ export function CourtExplorer({
   function selectCourt(id: string) {
     setPickedId(id);
     writeSelectedCourt(id);
-    syncCourtUrl(id);
+    const court = courts.find((item) => item.id === id);
+    syncCourtUrl(court ? courtParam(court) : null);
   }
 
   function clearCourt() {

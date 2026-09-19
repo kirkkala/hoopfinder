@@ -7,7 +7,7 @@ import { ArrowRight, Icon } from "lucide-react";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { CourtBadges } from "@/components/explorer/CourtBadges";
 import { CourtHeading } from "@/components/explorer/CourtHeading";
-import { type CourtWithDistance } from "@/lib/courts";
+import { courtHref, type CourtWithDistance } from "@/lib/courts";
 
 export function CourtList({
   courts,
@@ -64,7 +64,7 @@ export function CourtList({
               <div className="flex flex-wrap items-center gap-2 text-sm">
                 <CourtBadges court={court} />
                 <Link
-                  href={`/courts/${court.id}`}
+                  href={courtHref(court)}
                   className="ml-auto inline-flex items-center gap-1 font-bold text-gold hover:text-white"
                 >
                   {copy.letsGo}

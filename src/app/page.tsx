@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { CourtExplorer } from "@/components/explorer/CourtExplorer";
 import { getCourtCatalog } from "@/lib/catalog";
 import { getCopy } from "@/lib/copy";
+import { courtIdFromParam } from "@/lib/courts";
 
 export const dynamic = "force-dynamic";
 
@@ -23,7 +24,7 @@ export default async function HomePage({
 }) {
   const { courts, fetchedAtBySource } = await getCourtCatalog();
   const { court } = await searchParams;
-  const focusId = typeof court === "string" ? court : null;
+  const focusId = typeof court === "string" ? courtIdFromParam(court) : null;
   return (
     <CourtExplorer
       courts={courts}
