@@ -74,11 +74,6 @@ export const metadata: Metadata = {
     title: appName,
     description,
   },
-  twitter: {
-    card: "summary_large_image",
-    title: appName,
-    description,
-  },
   appleWebApp: {
     capable: true,
     title: appName,
