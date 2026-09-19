@@ -89,7 +89,7 @@ export function IntroDialog({
             className="size-10 text-orange-500 drop-shadow-lg"
             aria-hidden
           />
-          <div className="mt-3 flex items-center justify-between gap-3 pr-8">
+          <div className="mt-3 flex items-center justify-between gap-3">
             <p className="font-display text-xl leading-none tracking-wide text-gold">
               <AppWordmark region={copy.region} />
             </p>
