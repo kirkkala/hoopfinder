@@ -168,7 +168,7 @@ export function CourtMap({
       ],
       { padding: 48, duration: 0 },
     );
-  }, [mapReady]);
+  }, [courts.length, mapReady]);
 
   useEffect(() => {
     if (!mapReady || selected || !focusBounds) {

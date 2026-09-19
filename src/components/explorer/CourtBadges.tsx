@@ -3,9 +3,9 @@
 import { Lightbulb, Unlock } from "lucide-react";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import type { Copy } from "@/lib/copy";
-import { formatStatus, type Court } from "@/lib/courts";
+import { formatStatus, type ExplorerCourt } from "@/lib/courts";
 
-export function CourtBadges({ court }: { court: Court }) {
+export function CourtBadges({ court }: { court: ExplorerCourt }) {
   const copy = useCopy();
   return (
     <>
