@@ -1,16 +1,21 @@
 import type { Metadata } from "next";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import { CourtDetails } from "@/components/court/CourtDetails";
 import { getBasketballCourt, getCourtCatalog } from "@/lib/catalog";
 import { getCopy } from "@/lib/copy";
-import { courtTitle, formatAddress } from "@/lib/courts";
+import {
+  courtHref,
+  courtTitle,
+  formatAddress,
+  parseCourtPath,
+} from "@/lib/courts";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ path?: string[] }>;
 }): Promise<Metadata> {
   const result = await courtFromParams(params);
   const finnish = getCopy("fi");
@@ -26,7 +31,7 @@ export async function generateMetadata({
       result.court.city,
     ]) || finnish.addressMissing;
   const description = finnish.metaCourtDescription(name, place);
-  const canonical = `/courts/${encodeURIComponent(result.court.id)}`;
+  const canonical = courtHref(result.court);
 
   return {
     title: name,
@@ -51,7 +56,7 @@ export async function generateMetadata({
 export default async function CourtPage({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ path?: string[] }>;
 }) {
   const result = await courtFromParams(params);
   if (!result) notFound();
@@ -66,8 +71,10 @@ export default async function CourtPage({
   );
 }
 
-async function courtFromParams(params: Promise<{ id: string }>) {
-  const { id } = await params;
-  if (!id) return null;
-  return getBasketballCourt(id);
+async function courtFromParams(params: Promise<{ path?: string[] }>) {
+  const { path } = await params;
+  const parsed = parseCourtPath(path ?? []);
+  if (parsed === "index") permanentRedirect("/");
+  if (!parsed) return null;
+  return getBasketballCourt(parsed.id);
 }

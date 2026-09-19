@@ -1,3 +1,13 @@
+export type OsmElementType = "node" | "way" | "relation";
+
+export function parseOsmCourtId(
+  id: string,
+): { type: OsmElementType; osmId: string } | null {
+  const match = /^osm-(node|way|relation)-(\d+)$/.exec(id);
+  if (!match) return null;
+  return { type: match[1] as OsmElementType, osmId: match[2] };
+}
+
 export const COURT_SOURCES = [
   {
     id: "lipas",
@@ -14,8 +24,10 @@ export const COURT_SOURCES = [
     href: "https://www.openstreetmap.org/about",
     required: false,
     listingUrl: (id: string) => {
-      const match = /^osm-(node|way|relation)-(\d+)$/.exec(id);
-      return match ? `https://www.openstreetmap.org/${match[1]}/${match[2]}` : null;
+      const parsed = parseOsmCourtId(id);
+      return parsed
+        ? `https://www.openstreetmap.org/${parsed.type}/${parsed.osmId}`
+        : null;
     },
   },
 ] as const;

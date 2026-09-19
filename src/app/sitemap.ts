@@ -1,6 +1,7 @@
 import type { MetadataRoute } from "next";
 import { getCourtCatalog } from "@/lib/catalog";
 import { SITE_URL } from "@/lib/constants";
+import { courtHref } from "@/lib/courts";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const { courts, fetchedAtBySource } = await getCourtCatalog();
@@ -14,7 +15,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1,
     },
     ...courts.map((court) => ({
-      url: `${SITE_URL}/courts/${encodeURIComponent(court.id)}`,
+      url: `${SITE_URL}${courtHref(court)}`,
       lastModified: fetchedAtBySource[court.source] ?? catalogUpdated,
       changeFrequency: "weekly" as const,
       priority: 0.7,

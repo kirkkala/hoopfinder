@@ -22,7 +22,7 @@ import { MAP_STYLE } from "@/lib/constants";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { CourtBadges } from "@/components/explorer/CourtBadges";
 import { CourtHeading } from "@/components/explorer/CourtHeading";
-import { courtTitle, type CourtWithDistance } from "@/lib/courts";
+import { courtHref, courtTitle, type CourtWithDistance } from "@/lib/courts";
 import {
   DEFAULT_MAP_CENTER,
   DEFAULT_MAP_ZOOM,
@@ -442,7 +442,7 @@ export function CourtMap({
               <CourtBadges court={selected} />
             </div>
             <Link
-              href={`/courts/${selected.id}`}
+              href={courtHref(selected)}
               className="inline-flex items-center gap-1 self-end pt-2 pb-1 text-sm font-bold text-gold hover:text-white"
             >
               {copy.letsGo}
