@@ -21945,7 +21945,7 @@
     "fetchedAt": "2026-09-18T20:54:02.209Z",
     "courts": [
       {
-        "id": "osm-node-10035879041",
+        "id": "node-10035879041",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -21980,7 +21980,7 @@
         }
       },
       {
-        "id": "osm-node-11042738246",
+        "id": "node-11042738246",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -22017,7 +22017,7 @@
         }
       },
       {
-        "id": "osm-node-11042738247",
+        "id": "node-11042738247",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -22054,7 +22054,7 @@
         }
       },
       {
-        "id": "osm-node-11059922831",
+        "id": "node-11059922831",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -22089,7 +22089,7 @@
         }
       },
       {
-        "id": "osm-node-11063372676",
+        "id": "node-11063372676",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -22126,7 +22126,7 @@
         }
       },
       {
-        "id": "osm-node-11222219289",
+        "id": "node-11222219289",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -22161,7 +22161,7 @@
         }
       },
       {
-        "id": "osm-node-11251738404",
+        "id": "node-11251738404",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -22196,7 +22196,7 @@
         }
       },
       {
-        "id": "osm-node-11251738405",
+        "id": "node-11251738405",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -22231,7 +22231,7 @@
         }
       },
       {
-        "id": "osm-node-11251738406",
+        "id": "node-11251738406",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -22266,7 +22266,7 @@
         }
       },
       {
-        "id": "osm-node-11425729973",
+        "id": "node-11425729973",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -22301,7 +22301,7 @@
         }
       },
       {
-        "id": "osm-node-11652414644",
+        "id": "node-11652414644",
         "source": "osm",
         "name": "Kyrön urheilukenttä",
         "nameFi": "Kyrön urheilukenttä",
@@ -22336,7 +22336,7 @@
         }
       },
       {
-        "id": "osm-node-11733844678",
+        "id": "node-11733844678",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -22371,7 +22371,7 @@
         }
       },
       {
-        "id": "osm-node-11832575585",
+        "id": "node-11832575585",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -22408,7 +22408,7 @@
         }
       },
       {
-        "id": "osm-node-11964403763",
+        "id": "node-11964403763",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -22445,7 +22445,7 @@
         }
       },
       {
-        "id": "osm-node-12331281254",
+        "id": "node-12331281254",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -22482,7 +22482,7 @@
         }
       },
       {
-        "id": "osm-node-12857216956",
+        "id": "node-12857216956",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -22517,7 +22517,7 @@
         }
       },
       {
-        "id": "osm-node-12898934911",
+        "id": "node-12898934911",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -22552,7 +22552,7 @@
         }
       },
       {
-        "id": "osm-node-13073960763",
+        "id": "node-13073960763",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -22587,7 +22587,7 @@
         }
       },
       {
-        "id": "osm-node-13123507250",
+        "id": "node-13123507250",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -22624,7 +22624,7 @@
         }
       },
       {
-        "id": "osm-node-13316379436",
+        "id": "node-13316379436",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -22661,7 +22661,7 @@
         }
       },
       {
-        "id": "osm-node-13437846778",
+        "id": "node-13437846778",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -22696,7 +22696,7 @@
         }
       },
       {
-        "id": "osm-node-13611079394",
+        "id": "node-13611079394",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -22733,7 +22733,7 @@
         }
       },
       {
-        "id": "osm-node-13614482071",
+        "id": "node-13614482071",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -22768,7 +22768,7 @@
         }
       },
       {
-        "id": "osm-node-13625156660",
+        "id": "node-13625156660",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -22803,7 +22803,7 @@
         }
       },
       {
-        "id": "osm-node-13666241024",
+        "id": "node-13666241024",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -22838,7 +22838,7 @@
         }
       },
       {
-        "id": "osm-node-13731595814",
+        "id": "node-13731595814",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -22873,7 +22873,7 @@
         }
       },
       {
-        "id": "osm-node-13733675544",
+        "id": "node-13733675544",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -22910,7 +22910,7 @@
         }
       },
       {
-        "id": "osm-node-13733675545",
+        "id": "node-13733675545",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -22947,7 +22947,7 @@
         }
       },
       {
-        "id": "osm-node-13861286713",
+        "id": "node-13861286713",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -22982,7 +22982,7 @@
         }
       },
       {
-        "id": "osm-node-13941735792",
+        "id": "node-13941735792",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -23017,7 +23017,7 @@
         }
       },
       {
-        "id": "osm-node-14052776544",
+        "id": "node-14052776544",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -23052,7 +23052,7 @@
         }
       },
       {
-        "id": "osm-node-14102704791",
+        "id": "node-14102704791",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -23089,7 +23089,7 @@
         }
       },
       {
-        "id": "osm-node-14103592510",
+        "id": "node-14103592510",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -23124,7 +23124,7 @@
         }
       },
       {
-        "id": "osm-node-14172633811",
+        "id": "node-14172633811",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -23161,7 +23161,7 @@
         }
       },
       {
-        "id": "osm-node-4766751822",
+        "id": "node-4766751822",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -23196,7 +23196,7 @@
         }
       },
       {
-        "id": "osm-node-4810474923",
+        "id": "node-4810474923",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -23231,7 +23231,7 @@
         }
       },
       {
-        "id": "osm-node-4839255791",
+        "id": "node-4839255791",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -23266,7 +23266,7 @@
         }
       },
       {
-        "id": "osm-node-4894012864",
+        "id": "node-4894012864",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -23301,7 +23301,7 @@
         }
       },
       {
-        "id": "osm-node-5239320091",
+        "id": "node-5239320091",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -23336,7 +23336,7 @@
         }
       },
       {
-        "id": "osm-node-7966908886",
+        "id": "node-7966908886",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -23371,7 +23371,7 @@
         }
       },
       {
-        "id": "osm-node-8071502153",
+        "id": "node-8071502153",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -23406,7 +23406,7 @@
         }
       },
       {
-        "id": "osm-node-8865384738",
+        "id": "node-8865384738",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -23441,7 +23441,7 @@
         }
       },
       {
-        "id": "osm-node-8923593326",
+        "id": "node-8923593326",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -23476,7 +23476,7 @@
         }
       },
       {
-        "id": "osm-node-8946407201",
+        "id": "node-8946407201",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -23511,7 +23511,7 @@
         }
       },
       {
-        "id": "osm-node-9139973071",
+        "id": "node-9139973071",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -23548,7 +23548,7 @@
         }
       },
       {
-        "id": "osm-node-9462516636",
+        "id": "node-9462516636",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -23585,7 +23585,7 @@
         }
       },
       {
-        "id": "osm-node-9501487293",
+        "id": "node-9501487293",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -23620,7 +23620,7 @@
         }
       },
       {
-        "id": "osm-node-9779879980",
+        "id": "node-9779879980",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -23657,7 +23657,7 @@
         }
       },
       {
-        "id": "osm-node-9785941627",
+        "id": "node-9785941627",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -23694,7 +23694,7 @@
         }
       },
       {
-        "id": "osm-node-9788931082",
+        "id": "node-9788931082",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -23731,7 +23731,7 @@
         }
       },
       {
-        "id": "osm-relation-14784673",
+        "id": "relation-14784673",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -23766,7 +23766,7 @@
         }
       },
       {
-        "id": "osm-relation-15340112",
+        "id": "relation-15340112",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -23801,7 +23801,7 @@
         }
       },
       {
-        "id": "osm-relation-15506869",
+        "id": "relation-15506869",
         "source": "osm",
         "name": "Oulunkylän liikuntapuisto / Koripallokenttä",
         "nameFi": "Oulunkylän liikuntapuisto / Koripallokenttä",
@@ -23838,7 +23838,7 @@
         }
       },
       {
-        "id": "osm-relation-17881053",
+        "id": "relation-17881053",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -23875,7 +23875,7 @@
         }
       },
       {
-        "id": "osm-relation-18718348",
+        "id": "relation-18718348",
         "source": "osm",
         "name": "Huuhkajapuiston katukoriskenttä",
         "nameFi": "Huuhkajapuiston katukoriskenttä",
@@ -23912,7 +23912,7 @@
         }
       },
       {
-        "id": "osm-relation-19661742",
+        "id": "relation-19661742",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -23949,7 +23949,7 @@
         }
       },
       {
-        "id": "osm-relation-19801590",
+        "id": "relation-19801590",
         "source": "osm",
         "name": "Säterinniitynkentän koripallokenttä 1-2",
         "nameFi": "Säterinniitynkentän koripallokenttä 1-2",
@@ -23986,7 +23986,7 @@
         }
       },
       {
-        "id": "osm-relation-3500808",
+        "id": "relation-3500808",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -24023,7 +24023,7 @@
         }
       },
       {
-        "id": "osm-way-1001978775",
+        "id": "way-1001978775",
         "source": "osm",
         "name": "Taidemaalarinpuiston peliareena",
         "nameFi": "Taidemaalarinpuiston peliareena",
@@ -24060,7 +24060,7 @@
         }
       },
       {
-        "id": "osm-way-1007020724",
+        "id": "way-1007020724",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -24097,7 +24097,7 @@
         }
       },
       {
-        "id": "osm-way-100894370",
+        "id": "way-100894370",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -24134,7 +24134,7 @@
         }
       },
       {
-        "id": "osm-way-1009281636",
+        "id": "way-1009281636",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -24171,7 +24171,7 @@
         }
       },
       {
-        "id": "osm-way-1009281637",
+        "id": "way-1009281637",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -24206,7 +24206,7 @@
         }
       },
       {
-        "id": "osm-way-1015892131",
+        "id": "way-1015892131",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -24241,7 +24241,7 @@
         }
       },
       {
-        "id": "osm-way-1016594168",
+        "id": "way-1016594168",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -24276,7 +24276,7 @@
         }
       },
       {
-        "id": "osm-way-1020037271",
+        "id": "way-1020037271",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -24313,7 +24313,7 @@
         }
       },
       {
-        "id": "osm-way-1020862891",
+        "id": "way-1020862891",
         "source": "osm",
         "name": "Haukilahden koripallokenttä",
         "nameFi": "Haukilahden koripallokenttä",
@@ -24350,7 +24350,7 @@
         }
       },
       {
-        "id": "osm-way-1024207258",
+        "id": "way-1024207258",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -24387,7 +24387,7 @@
         }
       },
       {
-        "id": "osm-way-1024207261",
+        "id": "way-1024207261",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -24424,7 +24424,7 @@
         }
       },
       {
-        "id": "osm-way-1025815871",
+        "id": "way-1025815871",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -24461,7 +24461,7 @@
         }
       },
       {
-        "id": "osm-way-1028351618",
+        "id": "way-1028351618",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -24498,7 +24498,7 @@
         }
       },
       {
-        "id": "osm-way-1030334777",
+        "id": "way-1030334777",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -24533,7 +24533,7 @@
         }
       },
       {
-        "id": "osm-way-1032933957",
+        "id": "way-1032933957",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -24568,7 +24568,7 @@
         }
       },
       {
-        "id": "osm-way-1034784943",
+        "id": "way-1034784943",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -24603,7 +24603,7 @@
         }
       },
       {
-        "id": "osm-way-1036823630",
+        "id": "way-1036823630",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -24638,7 +24638,7 @@
         }
       },
       {
-        "id": "osm-way-1046954914",
+        "id": "way-1046954914",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -24675,7 +24675,7 @@
         }
       },
       {
-        "id": "osm-way-1050161963",
+        "id": "way-1050161963",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -24710,7 +24710,7 @@
         }
       },
       {
-        "id": "osm-way-1054396210",
+        "id": "way-1054396210",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -24745,7 +24745,7 @@
         }
       },
       {
-        "id": "osm-way-105535701",
+        "id": "way-105535701",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -24782,7 +24782,7 @@
         }
       },
       {
-        "id": "osm-way-1059309805",
+        "id": "way-1059309805",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -24819,7 +24819,7 @@
         }
       },
       {
-        "id": "osm-way-1064531709",
+        "id": "way-1064531709",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -24856,7 +24856,7 @@
         }
       },
       {
-        "id": "osm-way-1064928713",
+        "id": "way-1064928713",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -24891,7 +24891,7 @@
         }
       },
       {
-        "id": "osm-way-1068654524",
+        "id": "way-1068654524",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -24928,7 +24928,7 @@
         }
       },
       {
-        "id": "osm-way-106877194",
+        "id": "way-106877194",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -24965,7 +24965,7 @@
         }
       },
       {
-        "id": "osm-way-1069293162",
+        "id": "way-1069293162",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -25002,7 +25002,7 @@
         }
       },
       {
-        "id": "osm-way-1071935794",
+        "id": "way-1071935794",
         "source": "osm",
         "name": "Kirstin koulun koripallokenttä",
         "nameFi": "Kirstin koulun koripallokenttä",
@@ -25039,7 +25039,7 @@
         }
       },
       {
-        "id": "osm-way-1072276406",
+        "id": "way-1072276406",
         "source": "osm",
         "name": "Entressen koripallokenttä",
         "nameFi": "Entressen koripallokenttä",
@@ -25076,7 +25076,7 @@
         }
       },
       {
-        "id": "osm-way-1076089638",
+        "id": "way-1076089638",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -25111,7 +25111,7 @@
         }
       },
       {
-        "id": "osm-way-1079055355",
+        "id": "way-1079055355",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -25146,7 +25146,7 @@
         }
       },
       {
-        "id": "osm-way-1079281256",
+        "id": "way-1079281256",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -25183,7 +25183,7 @@
         }
       },
       {
-        "id": "osm-way-1081109404",
+        "id": "way-1081109404",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -25220,7 +25220,7 @@
         }
       },
       {
-        "id": "osm-way-1081996085",
+        "id": "way-1081996085",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -25255,7 +25255,7 @@
         }
       },
       {
-        "id": "osm-way-1085329001",
+        "id": "way-1085329001",
         "source": "osm",
         "name": "Vakkareena",
         "nameFi": "Vakkareena",
@@ -25292,7 +25292,7 @@
         }
       },
       {
-        "id": "osm-way-1085377209",
+        "id": "way-1085377209",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -25329,7 +25329,7 @@
         }
       },
       {
-        "id": "osm-way-1087335505",
+        "id": "way-1087335505",
         "source": "osm",
         "name": "Monitoimikenttä",
         "nameFi": "Monitoimikenttä",
@@ -25366,7 +25366,7 @@
         }
       },
       {
-        "id": "osm-way-1091172605",
+        "id": "way-1091172605",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -25403,7 +25403,7 @@
         }
       },
       {
-        "id": "osm-way-1093308566",
+        "id": "way-1093308566",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -25438,7 +25438,7 @@
         }
       },
       {
-        "id": "osm-way-1093595639",
+        "id": "way-1093595639",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -25473,7 +25473,7 @@
         }
       },
       {
-        "id": "osm-way-1095004953",
+        "id": "way-1095004953",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -25510,7 +25510,7 @@
         }
       },
       {
-        "id": "osm-way-1095396325",
+        "id": "way-1095396325",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -25547,7 +25547,7 @@
         }
       },
       {
-        "id": "osm-way-1102417994",
+        "id": "way-1102417994",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -25584,7 +25584,7 @@
         }
       },
       {
-        "id": "osm-way-1103269655",
+        "id": "way-1103269655",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -25619,7 +25619,7 @@
         }
       },
       {
-        "id": "osm-way-110327550",
+        "id": "way-110327550",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -25656,7 +25656,7 @@
         }
       },
       {
-        "id": "osm-way-1104073345",
+        "id": "way-1104073345",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -25691,7 +25691,7 @@
         }
       },
       {
-        "id": "osm-way-1105037812",
+        "id": "way-1105037812",
         "source": "osm",
         "name": "Ojaniitun koripallokenttä",
         "nameFi": "Ojaniitun koripallokenttä",
@@ -25728,7 +25728,7 @@
         }
       },
       {
-        "id": "osm-way-1105331629",
+        "id": "way-1105331629",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -25765,7 +25765,7 @@
         }
       },
       {
-        "id": "osm-way-1105893359",
+        "id": "way-1105893359",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -25802,7 +25802,7 @@
         }
       },
       {
-        "id": "osm-way-1106272288",
+        "id": "way-1106272288",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -25837,7 +25837,7 @@
         }
       },
       {
-        "id": "osm-way-1110171520",
+        "id": "way-1110171520",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -25872,7 +25872,7 @@
         }
       },
       {
-        "id": "osm-way-1110171522",
+        "id": "way-1110171522",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -25909,7 +25909,7 @@
         }
       },
       {
-        "id": "osm-way-1112036621",
+        "id": "way-1112036621",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -25946,7 +25946,7 @@
         }
       },
       {
-        "id": "osm-way-1112905063",
+        "id": "way-1112905063",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -25983,7 +25983,7 @@
         }
       },
       {
-        "id": "osm-way-1113568593",
+        "id": "way-1113568593",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -26018,7 +26018,7 @@
         }
       },
       {
-        "id": "osm-way-1118598124",
+        "id": "way-1118598124",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -26053,7 +26053,7 @@
         }
       },
       {
-        "id": "osm-way-1119230813",
+        "id": "way-1119230813",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -26090,7 +26090,7 @@
         }
       },
       {
-        "id": "osm-way-1119397409",
+        "id": "way-1119397409",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -26125,7 +26125,7 @@
         }
       },
       {
-        "id": "osm-way-1119416808",
+        "id": "way-1119416808",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -26162,7 +26162,7 @@
         }
       },
       {
-        "id": "osm-way-1119730626",
+        "id": "way-1119730626",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -26197,7 +26197,7 @@
         }
       },
       {
-        "id": "osm-way-1121484614",
+        "id": "way-1121484614",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -26234,7 +26234,7 @@
         }
       },
       {
-        "id": "osm-way-1123672136",
+        "id": "way-1123672136",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -26271,7 +26271,7 @@
         }
       },
       {
-        "id": "osm-way-1126237593",
+        "id": "way-1126237593",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -26308,7 +26308,7 @@
         }
       },
       {
-        "id": "osm-way-1131930986",
+        "id": "way-1131930986",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -26343,7 +26343,7 @@
         }
       },
       {
-        "id": "osm-way-1134018168",
+        "id": "way-1134018168",
         "source": "osm",
         "name": "Jumppiksen koripallokenttä",
         "nameFi": "Jumppiksen koripallokenttä",
@@ -26380,7 +26380,7 @@
         }
       },
       {
-        "id": "osm-way-1134590415",
+        "id": "way-1134590415",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -26417,7 +26417,7 @@
         }
       },
       {
-        "id": "osm-way-1136153459",
+        "id": "way-1136153459",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -26454,7 +26454,7 @@
         }
       },
       {
-        "id": "osm-way-114471614",
+        "id": "way-114471614",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -26489,7 +26489,7 @@
         }
       },
       {
-        "id": "osm-way-114571646",
+        "id": "way-114571646",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -26524,7 +26524,7 @@
         }
       },
       {
-        "id": "osm-way-1147391855",
+        "id": "way-1147391855",
         "source": "osm",
         "name": "Oulunkylän liikuntapuisto / Minikoripallokenttä",
         "nameFi": "Oulunkylän liikuntapuisto / Minikoripallokenttä",
@@ -26561,7 +26561,7 @@
         }
       },
       {
-        "id": "osm-way-114857041",
+        "id": "way-114857041",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -26598,7 +26598,7 @@
         }
       },
       {
-        "id": "osm-way-1149504329",
+        "id": "way-1149504329",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -26633,7 +26633,7 @@
         }
       },
       {
-        "id": "osm-way-115468092",
+        "id": "way-115468092",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -26668,7 +26668,7 @@
         }
       },
       {
-        "id": "osm-way-1155234753",
+        "id": "way-1155234753",
         "source": "osm",
         "name": "Skräbbölen koulun kenttä",
         "nameFi": "Skräbbölen koulun kenttä",
@@ -26705,7 +26705,7 @@
         }
       },
       {
-        "id": "osm-way-1155334019",
+        "id": "way-1155334019",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -26742,7 +26742,7 @@
         }
       },
       {
-        "id": "osm-way-1155334028",
+        "id": "way-1155334028",
         "source": "osm",
         "name": "Yhteiskoulun koripallokenttä",
         "nameFi": "Yhteiskoulun koripallokenttä",
@@ -26779,7 +26779,7 @@
         }
       },
       {
-        "id": "osm-way-1155334035",
+        "id": "way-1155334035",
         "source": "osm",
         "name": "Lyseon koripallokenttä",
         "nameFi": "Lyseon koripallokenttä",
@@ -26816,7 +26816,7 @@
         }
       },
       {
-        "id": "osm-way-1155336555",
+        "id": "way-1155336555",
         "source": "osm",
         "name": "Liikennepuiston katukoriskenttä",
         "nameFi": "Liikennepuiston katukoriskenttä",
@@ -26853,7 +26853,7 @@
         }
       },
       {
-        "id": "osm-way-115749738",
+        "id": "way-115749738",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -26888,7 +26888,7 @@
         }
       },
       {
-        "id": "osm-way-1158926591",
+        "id": "way-1158926591",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -26923,7 +26923,7 @@
         }
       },
       {
-        "id": "osm-way-116122291",
+        "id": "way-116122291",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -26958,7 +26958,7 @@
         }
       },
       {
-        "id": "osm-way-1164871077",
+        "id": "way-1164871077",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -26995,7 +26995,7 @@
         }
       },
       {
-        "id": "osm-way-1164871078",
+        "id": "way-1164871078",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -27032,7 +27032,7 @@
         }
       },
       {
-        "id": "osm-way-1169428343",
+        "id": "way-1169428343",
         "source": "osm",
         "name": "Usvametsän koripallokenttä",
         "nameFi": "Usvametsän koripallokenttä",
@@ -27069,7 +27069,7 @@
         }
       },
       {
-        "id": "osm-way-1171963817",
+        "id": "way-1171963817",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -27104,7 +27104,7 @@
         }
       },
       {
-        "id": "osm-way-1174845071",
+        "id": "way-1174845071",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -27141,7 +27141,7 @@
         }
       },
       {
-        "id": "osm-way-1174845073",
+        "id": "way-1174845073",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -27178,7 +27178,7 @@
         }
       },
       {
-        "id": "osm-way-1175869277",
+        "id": "way-1175869277",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -27215,7 +27215,7 @@
         }
       },
       {
-        "id": "osm-way-1180420320",
+        "id": "way-1180420320",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -27252,7 +27252,7 @@
         }
       },
       {
-        "id": "osm-way-1182293324",
+        "id": "way-1182293324",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -27287,7 +27287,7 @@
         }
       },
       {
-        "id": "osm-way-1182293329",
+        "id": "way-1182293329",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -27324,7 +27324,7 @@
         }
       },
       {
-        "id": "osm-way-1186038269",
+        "id": "way-1186038269",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -27361,7 +27361,7 @@
         }
       },
       {
-        "id": "osm-way-1187703341",
+        "id": "way-1187703341",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -27396,7 +27396,7 @@
         }
       },
       {
-        "id": "osm-way-1187933445",
+        "id": "way-1187933445",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -27433,7 +27433,7 @@
         }
       },
       {
-        "id": "osm-way-118915678",
+        "id": "way-118915678",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -27468,7 +27468,7 @@
         }
       },
       {
-        "id": "osm-way-1189492192",
+        "id": "way-1189492192",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -27505,7 +27505,7 @@
         }
       },
       {
-        "id": "osm-way-1194091747",
+        "id": "way-1194091747",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -27540,7 +27540,7 @@
         }
       },
       {
-        "id": "osm-way-1195208084",
+        "id": "way-1195208084",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -27577,7 +27577,7 @@
         }
       },
       {
-        "id": "osm-way-119569036",
+        "id": "way-119569036",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -27612,7 +27612,7 @@
         }
       },
       {
-        "id": "osm-way-1198125569",
+        "id": "way-1198125569",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -27647,7 +27647,7 @@
         }
       },
       {
-        "id": "osm-way-1198408036",
+        "id": "way-1198408036",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -27682,7 +27682,7 @@
         }
       },
       {
-        "id": "osm-way-1198611391",
+        "id": "way-1198611391",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -27719,7 +27719,7 @@
         }
       },
       {
-        "id": "osm-way-1199164781",
+        "id": "way-1199164781",
         "source": "osm",
         "name": "Peliareena",
         "nameFi": "Peliareena",
@@ -27754,7 +27754,7 @@
         }
       },
       {
-        "id": "osm-way-1199533708",
+        "id": "way-1199533708",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -27791,7 +27791,7 @@
         }
       },
       {
-        "id": "osm-way-1202558765",
+        "id": "way-1202558765",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -27826,7 +27826,7 @@
         }
       },
       {
-        "id": "osm-way-1204351146",
+        "id": "way-1204351146",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -27863,7 +27863,7 @@
         }
       },
       {
-        "id": "osm-way-1204684610",
+        "id": "way-1204684610",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -27898,7 +27898,7 @@
         }
       },
       {
-        "id": "osm-way-1204967444",
+        "id": "way-1204967444",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -27935,7 +27935,7 @@
         }
       },
       {
-        "id": "osm-way-1204967445",
+        "id": "way-1204967445",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -27972,7 +27972,7 @@
         }
       },
       {
-        "id": "osm-way-1205280656",
+        "id": "way-1205280656",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -28009,7 +28009,7 @@
         }
       },
       {
-        "id": "osm-way-1205280657",
+        "id": "way-1205280657",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -28046,7 +28046,7 @@
         }
       },
       {
-        "id": "osm-way-1206324150",
+        "id": "way-1206324150",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -28081,7 +28081,7 @@
         }
       },
       {
-        "id": "osm-way-1208274975",
+        "id": "way-1208274975",
         "source": "osm",
         "name": "Oravapuisto",
         "nameFi": "Oravapuisto",
@@ -28116,7 +28116,7 @@
         }
       },
       {
-        "id": "osm-way-1211027193",
+        "id": "way-1211027193",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -28153,7 +28153,7 @@
         }
       },
       {
-        "id": "osm-way-12116021",
+        "id": "way-12116021",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -28188,7 +28188,7 @@
         }
       },
       {
-        "id": "osm-way-121326593",
+        "id": "way-121326593",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -28223,7 +28223,7 @@
         }
       },
       {
-        "id": "osm-way-1214025107",
+        "id": "way-1214025107",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -28260,7 +28260,7 @@
         }
       },
       {
-        "id": "osm-way-1215333429",
+        "id": "way-1215333429",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -28295,7 +28295,7 @@
         }
       },
       {
-        "id": "osm-way-1215614243",
+        "id": "way-1215614243",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -28330,7 +28330,7 @@
         }
       },
       {
-        "id": "osm-way-1216062341",
+        "id": "way-1216062341",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -28367,7 +28367,7 @@
         }
       },
       {
-        "id": "osm-way-1216062345",
+        "id": "way-1216062345",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -28404,7 +28404,7 @@
         }
       },
       {
-        "id": "osm-way-121726849",
+        "id": "way-121726849",
         "source": "osm",
         "name": "Lauttasaaren uimarannan koripallokenttä",
         "nameFi": "Lauttasaaren uimarannan koripallokenttä",
@@ -28441,7 +28441,7 @@
         }
       },
       {
-        "id": "osm-way-1220136039",
+        "id": "way-1220136039",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -28476,7 +28476,7 @@
         }
       },
       {
-        "id": "osm-way-1222725724",
+        "id": "way-1222725724",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -28513,7 +28513,7 @@
         }
       },
       {
-        "id": "osm-way-1222805520",
+        "id": "way-1222805520",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -28550,7 +28550,7 @@
         }
       },
       {
-        "id": "osm-way-1227871710",
+        "id": "way-1227871710",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -28587,7 +28587,7 @@
         }
       },
       {
-        "id": "osm-way-1229709872",
+        "id": "way-1229709872",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -28624,7 +28624,7 @@
         }
       },
       {
-        "id": "osm-way-1229760154",
+        "id": "way-1229760154",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -28661,7 +28661,7 @@
         }
       },
       {
-        "id": "osm-way-123210730",
+        "id": "way-123210730",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -28696,7 +28696,7 @@
         }
       },
       {
-        "id": "osm-way-1232765048",
+        "id": "way-1232765048",
         "source": "osm",
         "name": "Ässäkenttä",
         "nameFi": "Ässäkenttä",
@@ -28733,7 +28733,7 @@
         }
       },
       {
-        "id": "osm-way-1240203581",
+        "id": "way-1240203581",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -28770,7 +28770,7 @@
         }
       },
       {
-        "id": "osm-way-1241117916",
+        "id": "way-1241117916",
         "source": "osm",
         "name": "Kasavuoren koulukeskuksen urheilukenttä",
         "nameFi": "Kasavuoren koulukeskuksen urheilukenttä",
@@ -28807,7 +28807,7 @@
         }
       },
       {
-        "id": "osm-way-1243639860",
+        "id": "way-1243639860",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -28844,7 +28844,7 @@
         }
       },
       {
-        "id": "osm-way-1248265498",
+        "id": "way-1248265498",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -28881,7 +28881,7 @@
         }
       },
       {
-        "id": "osm-way-1253000702",
+        "id": "way-1253000702",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -28916,7 +28916,7 @@
         }
       },
       {
-        "id": "osm-way-1255027282",
+        "id": "way-1255027282",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -28953,7 +28953,7 @@
         }
       },
       {
-        "id": "osm-way-1256324781",
+        "id": "way-1256324781",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -28990,7 +28990,7 @@
         }
       },
       {
-        "id": "osm-way-1256875788",
+        "id": "way-1256875788",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -29025,7 +29025,7 @@
         }
       },
       {
-        "id": "osm-way-1260648326",
+        "id": "way-1260648326",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -29062,7 +29062,7 @@
         }
       },
       {
-        "id": "osm-way-1260659195",
+        "id": "way-1260659195",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -29099,7 +29099,7 @@
         }
       },
       {
-        "id": "osm-way-1267023348",
+        "id": "way-1267023348",
         "source": "osm",
         "name": "Kirkkojärvenrannan koripallokenttä",
         "nameFi": "Kirkkojärvenrannan koripallokenttä",
@@ -29134,7 +29134,7 @@
         }
       },
       {
-        "id": "osm-way-1267528971",
+        "id": "way-1267528971",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -29169,7 +29169,7 @@
         }
       },
       {
-        "id": "osm-way-1268179765",
+        "id": "way-1268179765",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -29204,7 +29204,7 @@
         }
       },
       {
-        "id": "osm-way-1270429502",
+        "id": "way-1270429502",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -29239,7 +29239,7 @@
         }
       },
       {
-        "id": "osm-way-1271700964",
+        "id": "way-1271700964",
         "source": "osm",
         "name": "Samis Basketball Court",
         "nameFi": "Samis Basketball Court",
@@ -29274,7 +29274,7 @@
         }
       },
       {
-        "id": "osm-way-1272108058",
+        "id": "way-1272108058",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -29309,7 +29309,7 @@
         }
       },
       {
-        "id": "osm-way-1272801244",
+        "id": "way-1272801244",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -29344,7 +29344,7 @@
         }
       },
       {
-        "id": "osm-way-1273860958",
+        "id": "way-1273860958",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -29379,7 +29379,7 @@
         }
       },
       {
-        "id": "osm-way-1275206166",
+        "id": "way-1275206166",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -29414,7 +29414,7 @@
         }
       },
       {
-        "id": "osm-way-127732443",
+        "id": "way-127732443",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -29451,7 +29451,7 @@
         }
       },
       {
-        "id": "osm-way-1279153480",
+        "id": "way-1279153480",
         "source": "osm",
         "name": "Suvelan asukaspuiston koripallokenttä",
         "nameFi": "Suvelan asukaspuiston koripallokenttä",
@@ -29486,7 +29486,7 @@
         }
       },
       {
-        "id": "osm-way-1282014982",
+        "id": "way-1282014982",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -29521,7 +29521,7 @@
         }
       },
       {
-        "id": "osm-way-1282541340",
+        "id": "way-1282541340",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -29556,7 +29556,7 @@
         }
       },
       {
-        "id": "osm-way-1282541341",
+        "id": "way-1282541341",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -29591,7 +29591,7 @@
         }
       },
       {
-        "id": "osm-way-1283639300",
+        "id": "way-1283639300",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -29626,7 +29626,7 @@
         }
       },
       {
-        "id": "osm-way-128385106",
+        "id": "way-128385106",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -29661,7 +29661,7 @@
         }
       },
       {
-        "id": "osm-way-128458358",
+        "id": "way-128458358",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -29696,7 +29696,7 @@
         }
       },
       {
-        "id": "osm-way-1284706957",
+        "id": "way-1284706957",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -29733,7 +29733,7 @@
         }
       },
       {
-        "id": "osm-way-1289700213",
+        "id": "way-1289700213",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -29770,7 +29770,7 @@
         }
       },
       {
-        "id": "osm-way-1292929842",
+        "id": "way-1292929842",
         "source": "osm",
         "name": "Katukoris",
         "nameFi": "Katukoris",
@@ -29807,7 +29807,7 @@
         }
       },
       {
-        "id": "osm-way-1295386927",
+        "id": "way-1295386927",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -29842,7 +29842,7 @@
         }
       },
       {
-        "id": "osm-way-1296325730",
+        "id": "way-1296325730",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -29877,7 +29877,7 @@
         }
       },
       {
-        "id": "osm-way-1297322229",
+        "id": "way-1297322229",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -29912,7 +29912,7 @@
         }
       },
       {
-        "id": "osm-way-1299869663",
+        "id": "way-1299869663",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -29947,7 +29947,7 @@
         }
       },
       {
-        "id": "osm-way-1299952476",
+        "id": "way-1299952476",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -29982,7 +29982,7 @@
         }
       },
       {
-        "id": "osm-way-1299986573",
+        "id": "way-1299986573",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -30019,7 +30019,7 @@
         }
       },
       {
-        "id": "osm-way-1300919855",
+        "id": "way-1300919855",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -30056,7 +30056,7 @@
         }
       },
       {
-        "id": "osm-way-130122079",
+        "id": "way-130122079",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -30093,7 +30093,7 @@
         }
       },
       {
-        "id": "osm-way-1303740254",
+        "id": "way-1303740254",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -30130,7 +30130,7 @@
         }
       },
       {
-        "id": "osm-way-1303984078",
+        "id": "way-1303984078",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -30165,7 +30165,7 @@
         }
       },
       {
-        "id": "osm-way-1304438481",
+        "id": "way-1304438481",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -30202,7 +30202,7 @@
         }
       },
       {
-        "id": "osm-way-1306172100",
+        "id": "way-1306172100",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -30237,7 +30237,7 @@
         }
       },
       {
-        "id": "osm-way-1306404210",
+        "id": "way-1306404210",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -30274,7 +30274,7 @@
         }
       },
       {
-        "id": "osm-way-130691086",
+        "id": "way-130691086",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -30311,7 +30311,7 @@
         }
       },
       {
-        "id": "osm-way-1307130029",
+        "id": "way-1307130029",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -30346,7 +30346,7 @@
         }
       },
       {
-        "id": "osm-way-1307148415",
+        "id": "way-1307148415",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -30381,7 +30381,7 @@
         }
       },
       {
-        "id": "osm-way-1307430358",
+        "id": "way-1307430358",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -30416,7 +30416,7 @@
         }
       },
       {
-        "id": "osm-way-1308990246",
+        "id": "way-1308990246",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -30453,7 +30453,7 @@
         }
       },
       {
-        "id": "osm-way-1309880563",
+        "id": "way-1309880563",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -30490,7 +30490,7 @@
         }
       },
       {
-        "id": "osm-way-1310893915",
+        "id": "way-1310893915",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -30527,7 +30527,7 @@
         }
       },
       {
-        "id": "osm-way-1310893916",
+        "id": "way-1310893916",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -30564,7 +30564,7 @@
         }
       },
       {
-        "id": "osm-way-1312113453",
+        "id": "way-1312113453",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -30599,7 +30599,7 @@
         }
       },
       {
-        "id": "osm-way-1313092823",
+        "id": "way-1313092823",
         "source": "osm",
         "name": "Hämeenkadun koulun koripallokenttä",
         "nameFi": "Hämeenkadun koulun koripallokenttä",
@@ -30636,7 +30636,7 @@
         }
       },
       {
-        "id": "osm-way-1315067614",
+        "id": "way-1315067614",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -30671,7 +30671,7 @@
         }
       },
       {
-        "id": "osm-way-1316026516",
+        "id": "way-1316026516",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -30706,7 +30706,7 @@
         }
       },
       {
-        "id": "osm-way-1318162876",
+        "id": "way-1318162876",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -30741,7 +30741,7 @@
         }
       },
       {
-        "id": "osm-way-1319015056",
+        "id": "way-1319015056",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -30778,7 +30778,7 @@
         }
       },
       {
-        "id": "osm-way-1319015057",
+        "id": "way-1319015057",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -30815,7 +30815,7 @@
         }
       },
       {
-        "id": "osm-way-1319219625",
+        "id": "way-1319219625",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -30852,7 +30852,7 @@
         }
       },
       {
-        "id": "osm-way-1319282356",
+        "id": "way-1319282356",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -30887,7 +30887,7 @@
         }
       },
       {
-        "id": "osm-way-1322306595",
+        "id": "way-1322306595",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -30922,7 +30922,7 @@
         }
       },
       {
-        "id": "osm-way-1324716180",
+        "id": "way-1324716180",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -30959,7 +30959,7 @@
         }
       },
       {
-        "id": "osm-way-1327205552",
+        "id": "way-1327205552",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -30994,7 +30994,7 @@
         }
       },
       {
-        "id": "osm-way-1333252631",
+        "id": "way-1333252631",
         "source": "osm",
         "name": "Vesivehmaan koulun urheilukenttä",
         "nameFi": "Vesivehmaan koulun urheilukenttä",
@@ -31029,7 +31029,7 @@
         }
       },
       {
-        "id": "osm-way-1335898657",
+        "id": "way-1335898657",
         "source": "osm",
         "name": "Hanhipuiston asfalttiparkkipaikan koripallokenttä",
         "nameFi": "Hanhipuiston asfalttiparkkipaikan koripallokenttä",
@@ -31066,7 +31066,7 @@
         }
       },
       {
-        "id": "osm-way-1335936357",
+        "id": "way-1335936357",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -31101,7 +31101,7 @@
         }
       },
       {
-        "id": "osm-way-1335982784",
+        "id": "way-1335982784",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -31138,7 +31138,7 @@
         }
       },
       {
-        "id": "osm-way-1336515721",
+        "id": "way-1336515721",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -31175,7 +31175,7 @@
         }
       },
       {
-        "id": "osm-way-133733579",
+        "id": "way-133733579",
         "source": "osm",
         "name": "Urheilupuiston koripallokenttä",
         "nameFi": "Urheilupuiston koripallokenttä",
@@ -31212,7 +31212,7 @@
         }
       },
       {
-        "id": "osm-way-133794476",
+        "id": "way-133794476",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -31247,7 +31247,7 @@
         }
       },
       {
-        "id": "osm-way-1338613789",
+        "id": "way-1338613789",
         "source": "osm",
         "name": "Paavolanpuiston koripallokenttä",
         "nameFi": "Paavolanpuiston koripallokenttä",
@@ -31284,7 +31284,7 @@
         }
       },
       {
-        "id": "osm-way-1343043470",
+        "id": "way-1343043470",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -31321,7 +31321,7 @@
         }
       },
       {
-        "id": "osm-way-1344508877",
+        "id": "way-1344508877",
         "source": "osm",
         "name": "Kantvikin koripallokenttä",
         "nameFi": "Kantvikin koripallokenttä",
@@ -31358,7 +31358,7 @@
         }
       },
       {
-        "id": "osm-way-1348742559",
+        "id": "way-1348742559",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -31395,7 +31395,7 @@
         }
       },
       {
-        "id": "osm-way-1349815820",
+        "id": "way-1349815820",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -31430,7 +31430,7 @@
         }
       },
       {
-        "id": "osm-way-1350905150",
+        "id": "way-1350905150",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -31465,7 +31465,7 @@
         }
       },
       {
-        "id": "osm-way-1351650701",
+        "id": "way-1351650701",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -31500,7 +31500,7 @@
         }
       },
       {
-        "id": "osm-way-1351822276",
+        "id": "way-1351822276",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -31535,7 +31535,7 @@
         }
       },
       {
-        "id": "osm-way-1360294687",
+        "id": "way-1360294687",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -31570,7 +31570,7 @@
         }
       },
       {
-        "id": "osm-way-1361763590",
+        "id": "way-1361763590",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -31607,7 +31607,7 @@
         }
       },
       {
-        "id": "osm-way-1363862857",
+        "id": "way-1363862857",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -31644,7 +31644,7 @@
         }
       },
       {
-        "id": "osm-way-1365582947",
+        "id": "way-1365582947",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -31679,7 +31679,7 @@
         }
       },
       {
-        "id": "osm-way-1367094805",
+        "id": "way-1367094805",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -31716,7 +31716,7 @@
         }
       },
       {
-        "id": "osm-way-1367657446",
+        "id": "way-1367657446",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -31751,7 +31751,7 @@
         }
       },
       {
-        "id": "osm-way-1367657447",
+        "id": "way-1367657447",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -31786,7 +31786,7 @@
         }
       },
       {
-        "id": "osm-way-1367657455",
+        "id": "way-1367657455",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -31823,7 +31823,7 @@
         }
       },
       {
-        "id": "osm-way-136866498",
+        "id": "way-136866498",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -31860,7 +31860,7 @@
         }
       },
       {
-        "id": "osm-way-1370006513",
+        "id": "way-1370006513",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -31895,7 +31895,7 @@
         }
       },
       {
-        "id": "osm-way-1371669408",
+        "id": "way-1371669408",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -31930,7 +31930,7 @@
         }
       },
       {
-        "id": "osm-way-1372608881",
+        "id": "way-1372608881",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -31965,7 +31965,7 @@
         }
       },
       {
-        "id": "osm-way-137353542",
+        "id": "way-137353542",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -32002,7 +32002,7 @@
         }
       },
       {
-        "id": "osm-way-1374025170",
+        "id": "way-1374025170",
         "source": "osm",
         "name": "Lakelan koripallokenttä",
         "nameFi": "Lakelan koripallokenttä",
@@ -32039,7 +32039,7 @@
         }
       },
       {
-        "id": "osm-way-1374823357",
+        "id": "way-1374823357",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -32076,7 +32076,7 @@
         }
       },
       {
-        "id": "osm-way-1374823358",
+        "id": "way-1374823358",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -32113,7 +32113,7 @@
         }
       },
       {
-        "id": "osm-way-1374823359",
+        "id": "way-1374823359",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -32148,7 +32148,7 @@
         }
       },
       {
-        "id": "osm-way-1374823360",
+        "id": "way-1374823360",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -32183,7 +32183,7 @@
         }
       },
       {
-        "id": "osm-way-1374823361",
+        "id": "way-1374823361",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -32218,7 +32218,7 @@
         }
       },
       {
-        "id": "osm-way-1376022578",
+        "id": "way-1376022578",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -32253,7 +32253,7 @@
         }
       },
       {
-        "id": "osm-way-1376661352",
+        "id": "way-1376661352",
         "source": "osm",
         "name": "Hansakallion koulun koripallokenttä",
         "nameFi": "Hansakallion koulun koripallokenttä",
@@ -32290,7 +32290,7 @@
         }
       },
       {
-        "id": "osm-way-1378301800",
+        "id": "way-1378301800",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -32327,7 +32327,7 @@
         }
       },
       {
-        "id": "osm-way-1380099356",
+        "id": "way-1380099356",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -32362,7 +32362,7 @@
         }
       },
       {
-        "id": "osm-way-138252507",
+        "id": "way-138252507",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -32399,7 +32399,7 @@
         }
       },
       {
-        "id": "osm-way-138624783",
+        "id": "way-138624783",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -32436,7 +32436,7 @@
         }
       },
       {
-        "id": "osm-way-138661355",
+        "id": "way-138661355",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -32473,7 +32473,7 @@
         }
       },
       {
-        "id": "osm-way-1387532215",
+        "id": "way-1387532215",
         "source": "osm",
         "name": "Puistokenttä etanapuisto",
         "nameFi": "Puistokenttä etanapuisto",
@@ -32510,7 +32510,7 @@
         }
       },
       {
-        "id": "osm-way-1388589606",
+        "id": "way-1388589606",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -32547,7 +32547,7 @@
         }
       },
       {
-        "id": "osm-way-1389590127",
+        "id": "way-1389590127",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -32584,7 +32584,7 @@
         }
       },
       {
-        "id": "osm-way-1390798898",
+        "id": "way-1390798898",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -32621,7 +32621,7 @@
         }
       },
       {
-        "id": "osm-way-1390798899",
+        "id": "way-1390798899",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -32658,7 +32658,7 @@
         }
       },
       {
-        "id": "osm-way-1395747578",
+        "id": "way-1395747578",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -32693,7 +32693,7 @@
         }
       },
       {
-        "id": "osm-way-1395747579",
+        "id": "way-1395747579",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -32728,7 +32728,7 @@
         }
       },
       {
-        "id": "osm-way-1410105056",
+        "id": "way-1410105056",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -32763,7 +32763,7 @@
         }
       },
       {
-        "id": "osm-way-1411055772",
+        "id": "way-1411055772",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -32798,7 +32798,7 @@
         }
       },
       {
-        "id": "osm-way-141894219",
+        "id": "way-141894219",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -32833,7 +32833,7 @@
         }
       },
       {
-        "id": "osm-way-1419379446",
+        "id": "way-1419379446",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -32870,7 +32870,7 @@
         }
       },
       {
-        "id": "osm-way-1419885930",
+        "id": "way-1419885930",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -32905,7 +32905,7 @@
         }
       },
       {
-        "id": "osm-way-1419885934",
+        "id": "way-1419885934",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -32940,7 +32940,7 @@
         }
       },
       {
-        "id": "osm-way-1419885935",
+        "id": "way-1419885935",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -32975,7 +32975,7 @@
         }
       },
       {
-        "id": "osm-way-1419948854",
+        "id": "way-1419948854",
         "source": "osm",
         "name": "Saarenpellon kenttä",
         "nameFi": "Saarenpellon kenttä",
@@ -33012,7 +33012,7 @@
         }
       },
       {
-        "id": "osm-way-1421250048",
+        "id": "way-1421250048",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -33049,7 +33049,7 @@
         }
       },
       {
-        "id": "osm-way-1421554306",
+        "id": "way-1421554306",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -33084,7 +33084,7 @@
         }
       },
       {
-        "id": "osm-way-1422278780",
+        "id": "way-1422278780",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -33121,7 +33121,7 @@
         }
       },
       {
-        "id": "osm-way-1422981288",
+        "id": "way-1422981288",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -33158,7 +33158,7 @@
         }
       },
       {
-        "id": "osm-way-1424052971",
+        "id": "way-1424052971",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -33195,7 +33195,7 @@
         }
       },
       {
-        "id": "osm-way-1424052972",
+        "id": "way-1424052972",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -33232,7 +33232,7 @@
         }
       },
       {
-        "id": "osm-way-1425793671",
+        "id": "way-1425793671",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -33267,7 +33267,7 @@
         }
       },
       {
-        "id": "osm-way-1426560362",
+        "id": "way-1426560362",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -33304,7 +33304,7 @@
         }
       },
       {
-        "id": "osm-way-1429288641",
+        "id": "way-1429288641",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -33341,7 +33341,7 @@
         }
       },
       {
-        "id": "osm-way-1430153474",
+        "id": "way-1430153474",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -33378,7 +33378,7 @@
         }
       },
       {
-        "id": "osm-way-1433090547",
+        "id": "way-1433090547",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -33415,7 +33415,7 @@
         }
       },
       {
-        "id": "osm-way-1434444799",
+        "id": "way-1434444799",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -33452,7 +33452,7 @@
         }
       },
       {
-        "id": "osm-way-1434444800",
+        "id": "way-1434444800",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -33489,7 +33489,7 @@
         }
       },
       {
-        "id": "osm-way-1434924794",
+        "id": "way-1434924794",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -33526,7 +33526,7 @@
         }
       },
       {
-        "id": "osm-way-1435824790",
+        "id": "way-1435824790",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -33563,7 +33563,7 @@
         }
       },
       {
-        "id": "osm-way-1435904757",
+        "id": "way-1435904757",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -33600,7 +33600,7 @@
         }
       },
       {
-        "id": "osm-way-144460946",
+        "id": "way-144460946",
         "source": "osm",
         "name": "Vaisaaren koripallokenttä",
         "nameFi": "Vaisaaren koripallokenttä",
@@ -33635,7 +33635,7 @@
         }
       },
       {
-        "id": "osm-way-1444727946",
+        "id": "way-1444727946",
         "source": "osm",
         "name": "Alppilan lukio / Yhden korin koripallokenttä",
         "nameFi": "Alppilan lukio / Yhden korin koripallokenttä",
@@ -33672,7 +33672,7 @@
         }
       },
       {
-        "id": "osm-way-1445983146",
+        "id": "way-1445983146",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -33707,7 +33707,7 @@
         }
       },
       {
-        "id": "osm-way-1445983148",
+        "id": "way-1445983148",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -33742,7 +33742,7 @@
         }
       },
       {
-        "id": "osm-way-1447687593",
+        "id": "way-1447687593",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -33777,7 +33777,7 @@
         }
       },
       {
-        "id": "osm-way-1451014954",
+        "id": "way-1451014954",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -33812,7 +33812,7 @@
         }
       },
       {
-        "id": "osm-way-1451054736",
+        "id": "way-1451054736",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -33849,7 +33849,7 @@
         }
       },
       {
-        "id": "osm-way-1453718144",
+        "id": "way-1453718144",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -33886,7 +33886,7 @@
         }
       },
       {
-        "id": "osm-way-1454969469",
+        "id": "way-1454969469",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -33921,7 +33921,7 @@
         }
       },
       {
-        "id": "osm-way-1455317543",
+        "id": "way-1455317543",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -33956,7 +33956,7 @@
         }
       },
       {
-        "id": "osm-way-1455856768",
+        "id": "way-1455856768",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -33993,7 +33993,7 @@
         }
       },
       {
-        "id": "osm-way-1457010584",
+        "id": "way-1457010584",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -34030,7 +34030,7 @@
         }
       },
       {
-        "id": "osm-way-1460132411",
+        "id": "way-1460132411",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -34065,7 +34065,7 @@
         }
       },
       {
-        "id": "osm-way-1460319891",
+        "id": "way-1460319891",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -34100,7 +34100,7 @@
         }
       },
       {
-        "id": "osm-way-1460319892",
+        "id": "way-1460319892",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -34135,7 +34135,7 @@
         }
       },
       {
-        "id": "osm-way-146066465",
+        "id": "way-146066465",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -34172,7 +34172,7 @@
         }
       },
       {
-        "id": "osm-way-14606791",
+        "id": "way-14606791",
         "source": "osm",
         "name": "Ala-Malmin liikuntapuisto",
         "nameFi": "Ala-Malmin liikuntapuisto",
@@ -34209,7 +34209,7 @@
         }
       },
       {
-        "id": "osm-way-1461497078",
+        "id": "way-1461497078",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -34246,7 +34246,7 @@
         }
       },
       {
-        "id": "osm-way-1461503979",
+        "id": "way-1461503979",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -34283,7 +34283,7 @@
         }
       },
       {
-        "id": "osm-way-1463413442",
+        "id": "way-1463413442",
         "source": "osm",
         "name": "Aholaidan katukoripallokenttä",
         "nameFi": "Aholaidan katukoripallokenttä",
@@ -34320,7 +34320,7 @@
         }
       },
       {
-        "id": "osm-way-1463963377",
+        "id": "way-1463963377",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -34355,7 +34355,7 @@
         }
       },
       {
-        "id": "osm-way-146643133",
+        "id": "way-146643133",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -34390,7 +34390,7 @@
         }
       },
       {
-        "id": "osm-way-1467064393",
+        "id": "way-1467064393",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -34427,7 +34427,7 @@
         }
       },
       {
-        "id": "osm-way-1467897819",
+        "id": "way-1467897819",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -34462,7 +34462,7 @@
         }
       },
       {
-        "id": "osm-way-1468420190",
+        "id": "way-1468420190",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -34497,7 +34497,7 @@
         }
       },
       {
-        "id": "osm-way-1468853881",
+        "id": "way-1468853881",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -34532,7 +34532,7 @@
         }
       },
       {
-        "id": "osm-way-1470414475",
+        "id": "way-1470414475",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -34567,7 +34567,7 @@
         }
       },
       {
-        "id": "osm-way-1474081384",
+        "id": "way-1474081384",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -34602,7 +34602,7 @@
         }
       },
       {
-        "id": "osm-way-1474181162",
+        "id": "way-1474181162",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -34637,7 +34637,7 @@
         }
       },
       {
-        "id": "osm-way-1474181168",
+        "id": "way-1474181168",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -34672,7 +34672,7 @@
         }
       },
       {
-        "id": "osm-way-1478421662",
+        "id": "way-1478421662",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -34707,7 +34707,7 @@
         }
       },
       {
-        "id": "osm-way-1478421672",
+        "id": "way-1478421672",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -34742,7 +34742,7 @@
         }
       },
       {
-        "id": "osm-way-1482159186",
+        "id": "way-1482159186",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -34779,7 +34779,7 @@
         }
       },
       {
-        "id": "osm-way-1482440740",
+        "id": "way-1482440740",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -34814,7 +34814,7 @@
         }
       },
       {
-        "id": "osm-way-1483346462",
+        "id": "way-1483346462",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -34851,7 +34851,7 @@
         }
       },
       {
-        "id": "osm-way-1484083025",
+        "id": "way-1484083025",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -34888,7 +34888,7 @@
         }
       },
       {
-        "id": "osm-way-1489251636",
+        "id": "way-1489251636",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -34923,7 +34923,7 @@
         }
       },
       {
-        "id": "osm-way-1489251637",
+        "id": "way-1489251637",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -34958,7 +34958,7 @@
         }
       },
       {
-        "id": "osm-way-1489466230",
+        "id": "way-1489466230",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -34995,7 +34995,7 @@
         }
       },
       {
-        "id": "osm-way-1491068521",
+        "id": "way-1491068521",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -35032,7 +35032,7 @@
         }
       },
       {
-        "id": "osm-way-1493456944",
+        "id": "way-1493456944",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -35069,7 +35069,7 @@
         }
       },
       {
-        "id": "osm-way-1493477007",
+        "id": "way-1493477007",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -35106,7 +35106,7 @@
         }
       },
       {
-        "id": "osm-way-149464979",
+        "id": "way-149464979",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -35141,7 +35141,7 @@
         }
       },
       {
-        "id": "osm-way-1495364732",
+        "id": "way-1495364732",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -35176,7 +35176,7 @@
         }
       },
       {
-        "id": "osm-way-1498541501",
+        "id": "way-1498541501",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -35213,7 +35213,7 @@
         }
       },
       {
-        "id": "osm-way-1499778137",
+        "id": "way-1499778137",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -35248,7 +35248,7 @@
         }
       },
       {
-        "id": "osm-way-1499778150",
+        "id": "way-1499778150",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -35285,7 +35285,7 @@
         }
       },
       {
-        "id": "osm-way-150103187",
+        "id": "way-150103187",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -35322,7 +35322,7 @@
         }
       },
       {
-        "id": "osm-way-1502833530",
+        "id": "way-1502833530",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -35359,7 +35359,7 @@
         }
       },
       {
-        "id": "osm-way-1502833536",
+        "id": "way-1502833536",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -35396,7 +35396,7 @@
         }
       },
       {
-        "id": "osm-way-1503545090",
+        "id": "way-1503545090",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -35431,7 +35431,7 @@
         }
       },
       {
-        "id": "osm-way-1509425627",
+        "id": "way-1509425627",
         "source": "osm",
         "name": "Makasiinipuiston koripallokenttä",
         "nameFi": "Makasiinipuiston koripallokenttä",
@@ -35468,7 +35468,7 @@
         }
       },
       {
-        "id": "osm-way-151873007",
+        "id": "way-151873007",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -35505,7 +35505,7 @@
         }
       },
       {
-        "id": "osm-way-1527888759",
+        "id": "way-1527888759",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -35540,7 +35540,7 @@
         }
       },
       {
-        "id": "osm-way-1530755683",
+        "id": "way-1530755683",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -35575,7 +35575,7 @@
         }
       },
       {
-        "id": "osm-way-1531057454",
+        "id": "way-1531057454",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -35610,7 +35610,7 @@
         }
       },
       {
-        "id": "osm-way-1531110993",
+        "id": "way-1531110993",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -35647,7 +35647,7 @@
         }
       },
       {
-        "id": "osm-way-1532671812",
+        "id": "way-1532671812",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -35682,7 +35682,7 @@
         }
       },
       {
-        "id": "osm-way-1539731459",
+        "id": "way-1539731459",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -35719,7 +35719,7 @@
         }
       },
       {
-        "id": "osm-way-1539961070",
+        "id": "way-1539961070",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -35756,7 +35756,7 @@
         }
       },
       {
-        "id": "osm-way-154229297",
+        "id": "way-154229297",
         "source": "osm",
         "name": "Laurin kenttä",
         "nameFi": "Laurin kenttä",
@@ -35793,7 +35793,7 @@
         }
       },
       {
-        "id": "osm-way-1544749623",
+        "id": "way-1544749623",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -35828,7 +35828,7 @@
         }
       },
       {
-        "id": "osm-way-1544763547",
+        "id": "way-1544763547",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -35865,7 +35865,7 @@
         }
       },
       {
-        "id": "osm-way-154552319",
+        "id": "way-154552319",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -35900,7 +35900,7 @@
         }
       },
       {
-        "id": "osm-way-1547392676",
+        "id": "way-1547392676",
         "source": "osm",
         "name": "Pakankylän koulun koripallokenttä",
         "nameFi": "Pakankylän koulun koripallokenttä",
@@ -35937,7 +35937,7 @@
         }
       },
       {
-        "id": "osm-way-1550144798",
+        "id": "way-1550144798",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -35974,7 +35974,7 @@
         }
       },
       {
-        "id": "osm-way-1550487093",
+        "id": "way-1550487093",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -36011,7 +36011,7 @@
         }
       },
       {
-        "id": "osm-way-1550619519",
+        "id": "way-1550619519",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -36048,7 +36048,7 @@
         }
       },
       {
-        "id": "osm-way-1550893330",
+        "id": "way-1550893330",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -36085,7 +36085,7 @@
         }
       },
       {
-        "id": "osm-way-1551230534",
+        "id": "way-1551230534",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -36122,7 +36122,7 @@
         }
       },
       {
-        "id": "osm-way-1553678178",
+        "id": "way-1553678178",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -36157,7 +36157,7 @@
         }
       },
       {
-        "id": "osm-way-1553986579",
+        "id": "way-1553986579",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -36194,7 +36194,7 @@
         }
       },
       {
-        "id": "osm-way-155425409",
+        "id": "way-155425409",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -36229,7 +36229,7 @@
         }
       },
       {
-        "id": "osm-way-1555179135",
+        "id": "way-1555179135",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -36266,7 +36266,7 @@
         }
       },
       {
-        "id": "osm-way-1555237967",
+        "id": "way-1555237967",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -36301,7 +36301,7 @@
         }
       },
       {
-        "id": "osm-way-1555864569",
+        "id": "way-1555864569",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -36336,7 +36336,7 @@
         }
       },
       {
-        "id": "osm-way-1555870735",
+        "id": "way-1555870735",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -36373,7 +36373,7 @@
         }
       },
       {
-        "id": "osm-way-1555873038",
+        "id": "way-1555873038",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -36410,7 +36410,7 @@
         }
       },
       {
-        "id": "osm-way-1555884389",
+        "id": "way-1555884389",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -36447,7 +36447,7 @@
         }
       },
       {
-        "id": "osm-way-1556044240",
+        "id": "way-1556044240",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -36482,7 +36482,7 @@
         }
       },
       {
-        "id": "osm-way-1556047962",
+        "id": "way-1556047962",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -36519,7 +36519,7 @@
         }
       },
       {
-        "id": "osm-way-1556372386",
+        "id": "way-1556372386",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -36554,7 +36554,7 @@
         }
       },
       {
-        "id": "osm-way-1556373370",
+        "id": "way-1556373370",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -36589,7 +36589,7 @@
         }
       },
       {
-        "id": "osm-way-1556431654",
+        "id": "way-1556431654",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -36624,7 +36624,7 @@
         }
       },
       {
-        "id": "osm-way-1557787302",
+        "id": "way-1557787302",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -36661,7 +36661,7 @@
         }
       },
       {
-        "id": "osm-way-1557804492",
+        "id": "way-1557804492",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -36698,7 +36698,7 @@
         }
       },
       {
-        "id": "osm-way-1558874451",
+        "id": "way-1558874451",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -36735,7 +36735,7 @@
         }
       },
       {
-        "id": "osm-way-1558874460",
+        "id": "way-1558874460",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -36770,7 +36770,7 @@
         }
       },
       {
-        "id": "osm-way-1558876167",
+        "id": "way-1558876167",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -36805,7 +36805,7 @@
         }
       },
       {
-        "id": "osm-way-156983869",
+        "id": "way-156983869",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -36840,7 +36840,7 @@
         }
       },
       {
-        "id": "osm-way-157993470",
+        "id": "way-157993470",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -36875,7 +36875,7 @@
         }
       },
       {
-        "id": "osm-way-158101597",
+        "id": "way-158101597",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -36910,7 +36910,7 @@
         }
       },
       {
-        "id": "osm-way-159060764",
+        "id": "way-159060764",
         "source": "osm",
         "name": "Kärppäpuiston koripallokenttä",
         "nameFi": "Kärppäpuiston koripallokenttä",
@@ -36947,7 +36947,7 @@
         }
       },
       {
-        "id": "osm-way-159144728",
+        "id": "way-159144728",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -36982,7 +36982,7 @@
         }
       },
       {
-        "id": "osm-way-159295945",
+        "id": "way-159295945",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -37017,7 +37017,7 @@
         }
       },
       {
-        "id": "osm-way-159319452",
+        "id": "way-159319452",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -37054,7 +37054,7 @@
         }
       },
       {
-        "id": "osm-way-161966213",
+        "id": "way-161966213",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -37091,7 +37091,7 @@
         }
       },
       {
-        "id": "osm-way-164680638",
+        "id": "way-164680638",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -37128,7 +37128,7 @@
         }
       },
       {
-        "id": "osm-way-164989982",
+        "id": "way-164989982",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -37163,7 +37163,7 @@
         }
       },
       {
-        "id": "osm-way-165194554",
+        "id": "way-165194554",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -37198,7 +37198,7 @@
         }
       },
       {
-        "id": "osm-way-165369437",
+        "id": "way-165369437",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -37233,7 +37233,7 @@
         }
       },
       {
-        "id": "osm-way-165956376",
+        "id": "way-165956376",
         "source": "osm",
         "name": "Kirkkojärvenkoulun pieni koripallokenttä",
         "nameFi": "Kirkkojärvenkoulun pieni koripallokenttä",
@@ -37270,7 +37270,7 @@
         }
       },
       {
-        "id": "osm-way-167054389",
+        "id": "way-167054389",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -37305,7 +37305,7 @@
         }
       },
       {
-        "id": "osm-way-169758962",
+        "id": "way-169758962",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -37340,7 +37340,7 @@
         }
       },
       {
-        "id": "osm-way-171827008",
+        "id": "way-171827008",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -37375,7 +37375,7 @@
         }
       },
       {
-        "id": "osm-way-173284502",
+        "id": "way-173284502",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -37410,7 +37410,7 @@
         }
       },
       {
-        "id": "osm-way-174490603",
+        "id": "way-174490603",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -37447,7 +37447,7 @@
         }
       },
       {
-        "id": "osm-way-177002707",
+        "id": "way-177002707",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -37484,7 +37484,7 @@
         }
       },
       {
-        "id": "osm-way-177232408",
+        "id": "way-177232408",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -37519,7 +37519,7 @@
         }
       },
       {
-        "id": "osm-way-177552730",
+        "id": "way-177552730",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -37556,7 +37556,7 @@
         }
       },
       {
-        "id": "osm-way-177758566",
+        "id": "way-177758566",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -37593,7 +37593,7 @@
         }
       },
       {
-        "id": "osm-way-178210209",
+        "id": "way-178210209",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -37630,7 +37630,7 @@
         }
       },
       {
-        "id": "osm-way-17922281",
+        "id": "way-17922281",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -37667,7 +37667,7 @@
         }
       },
       {
-        "id": "osm-way-17922287",
+        "id": "way-17922287",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -37704,7 +37704,7 @@
         }
       },
       {
-        "id": "osm-way-179544872",
+        "id": "way-179544872",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -37741,7 +37741,7 @@
         }
       },
       {
-        "id": "osm-way-179544874",
+        "id": "way-179544874",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -37778,7 +37778,7 @@
         }
       },
       {
-        "id": "osm-way-181145969",
+        "id": "way-181145969",
         "source": "osm",
         "name": "Koulupuistonkenttä",
         "nameFi": "Koulupuistonkenttä",
@@ -37815,7 +37815,7 @@
         }
       },
       {
-        "id": "osm-way-181153966",
+        "id": "way-181153966",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -37850,7 +37850,7 @@
         }
       },
       {
-        "id": "osm-way-182130319",
+        "id": "way-182130319",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -37887,7 +37887,7 @@
         }
       },
       {
-        "id": "osm-way-182190899",
+        "id": "way-182190899",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -37922,7 +37922,7 @@
         }
       },
       {
-        "id": "osm-way-182190901",
+        "id": "way-182190901",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -37957,7 +37957,7 @@
         }
       },
       {
-        "id": "osm-way-183589730",
+        "id": "way-183589730",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -37992,7 +37992,7 @@
         }
       },
       {
-        "id": "osm-way-183724971",
+        "id": "way-183724971",
         "source": "osm",
         "name": "Pohjoiskaarenpuiston lentopallokenttä",
         "nameFi": "Pohjoiskaarenpuiston lentopallokenttä",
@@ -38029,7 +38029,7 @@
         }
       },
       {
-        "id": "osm-way-186889371",
+        "id": "way-186889371",
         "source": "osm",
         "name": "Helmikuja 8",
         "nameFi": "Helmikuja 8",
@@ -38066,7 +38066,7 @@
         }
       },
       {
-        "id": "osm-way-187533662",
+        "id": "way-187533662",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -38103,7 +38103,7 @@
         }
       },
       {
-        "id": "osm-way-190514704",
+        "id": "way-190514704",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -38140,7 +38140,7 @@
         }
       },
       {
-        "id": "osm-way-193281485",
+        "id": "way-193281485",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -38175,7 +38175,7 @@
         }
       },
       {
-        "id": "osm-way-202853143",
+        "id": "way-202853143",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -38210,7 +38210,7 @@
         }
       },
       {
-        "id": "osm-way-203673023",
+        "id": "way-203673023",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -38247,7 +38247,7 @@
         }
       },
       {
-        "id": "osm-way-204089476",
+        "id": "way-204089476",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -38282,7 +38282,7 @@
         }
       },
       {
-        "id": "osm-way-208888003",
+        "id": "way-208888003",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -38319,7 +38319,7 @@
         }
       },
       {
-        "id": "osm-way-210260128",
+        "id": "way-210260128",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -38356,7 +38356,7 @@
         }
       },
       {
-        "id": "osm-way-216982950",
+        "id": "way-216982950",
         "source": "osm",
         "name": "Painiityn koripallokenttä",
         "nameFi": "Painiityn koripallokenttä",
@@ -38393,7 +38393,7 @@
         }
       },
       {
-        "id": "osm-way-218352175",
+        "id": "way-218352175",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -38428,7 +38428,7 @@
         }
       },
       {
-        "id": "osm-way-218455501",
+        "id": "way-218455501",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -38463,7 +38463,7 @@
         }
       },
       {
-        "id": "osm-way-219573359",
+        "id": "way-219573359",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -38498,7 +38498,7 @@
         }
       },
       {
-        "id": "osm-way-220522575",
+        "id": "way-220522575",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -38533,7 +38533,7 @@
         }
       },
       {
-        "id": "osm-way-222296418",
+        "id": "way-222296418",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -38570,7 +38570,7 @@
         }
       },
       {
-        "id": "osm-way-222631310",
+        "id": "way-222631310",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -38605,7 +38605,7 @@
         }
       },
       {
-        "id": "osm-way-223403963",
+        "id": "way-223403963",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -38640,7 +38640,7 @@
         }
       },
       {
-        "id": "osm-way-224384006",
+        "id": "way-224384006",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -38677,7 +38677,7 @@
         }
       },
       {
-        "id": "osm-way-225427799",
+        "id": "way-225427799",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -38714,7 +38714,7 @@
         }
       },
       {
-        "id": "osm-way-225885022",
+        "id": "way-225885022",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -38751,7 +38751,7 @@
         }
       },
       {
-        "id": "osm-way-228610740",
+        "id": "way-228610740",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -38786,7 +38786,7 @@
         }
       },
       {
-        "id": "osm-way-228987289",
+        "id": "way-228987289",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -38823,7 +38823,7 @@
         }
       },
       {
-        "id": "osm-way-22954716",
+        "id": "way-22954716",
         "source": "osm",
         "name": "Pattistenpellon koripallokenttä",
         "nameFi": "Pattistenpellon koripallokenttä",
@@ -38860,7 +38860,7 @@
         }
       },
       {
-        "id": "osm-way-229762069",
+        "id": "way-229762069",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -38897,7 +38897,7 @@
         }
       },
       {
-        "id": "osm-way-23036000",
+        "id": "way-23036000",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -38934,7 +38934,7 @@
         }
       },
       {
-        "id": "osm-way-231699019",
+        "id": "way-231699019",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -38969,7 +38969,7 @@
         }
       },
       {
-        "id": "osm-way-232729769",
+        "id": "way-232729769",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -39006,7 +39006,7 @@
         }
       },
       {
-        "id": "osm-way-235977420",
+        "id": "way-235977420",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -39041,7 +39041,7 @@
         }
       },
       {
-        "id": "osm-way-23749916",
+        "id": "way-23749916",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -39076,7 +39076,7 @@
         }
       },
       {
-        "id": "osm-way-241989789",
+        "id": "way-241989789",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -39113,7 +39113,7 @@
         }
       },
       {
-        "id": "osm-way-24393831",
+        "id": "way-24393831",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -39148,7 +39148,7 @@
         }
       },
       {
-        "id": "osm-way-24608317",
+        "id": "way-24608317",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -39183,7 +39183,7 @@
         }
       },
       {
-        "id": "osm-way-24643645",
+        "id": "way-24643645",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -39220,7 +39220,7 @@
         }
       },
       {
-        "id": "osm-way-24764668",
+        "id": "way-24764668",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -39257,7 +39257,7 @@
         }
       },
       {
-        "id": "osm-way-25243293",
+        "id": "way-25243293",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -39292,7 +39292,7 @@
         }
       },
       {
-        "id": "osm-way-26502915",
+        "id": "way-26502915",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -39329,7 +39329,7 @@
         }
       },
       {
-        "id": "osm-way-27094443",
+        "id": "way-27094443",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -39366,7 +39366,7 @@
         }
       },
       {
-        "id": "osm-way-27101013",
+        "id": "way-27101013",
         "source": "osm",
         "name": "Koudan kenttä",
         "nameFi": "Koudan kenttä",
@@ -39401,7 +39401,7 @@
         }
       },
       {
-        "id": "osm-way-27358355",
+        "id": "way-27358355",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -39438,7 +39438,7 @@
         }
       },
       {
-        "id": "osm-way-274099386",
+        "id": "way-274099386",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -39475,7 +39475,7 @@
         }
       },
       {
-        "id": "osm-way-27413194",
+        "id": "way-27413194",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -39512,7 +39512,7 @@
         }
       },
       {
-        "id": "osm-way-27536743",
+        "id": "way-27536743",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -39549,7 +39549,7 @@
         }
       },
       {
-        "id": "osm-way-275740178",
+        "id": "way-275740178",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -39586,7 +39586,7 @@
         }
       },
       {
-        "id": "osm-way-27621897",
+        "id": "way-27621897",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -39623,7 +39623,7 @@
         }
       },
       {
-        "id": "osm-way-28016024",
+        "id": "way-28016024",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -39660,7 +39660,7 @@
         }
       },
       {
-        "id": "osm-way-280468430",
+        "id": "way-280468430",
         "source": "osm",
         "name": "Tykkimäki Resort Koripallo",
         "nameFi": "Tykkimäki Resort Koripallo",
@@ -39697,7 +39697,7 @@
         }
       },
       {
-        "id": "osm-way-284318008",
+        "id": "way-284318008",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -39732,7 +39732,7 @@
         }
       },
       {
-        "id": "osm-way-285572675",
+        "id": "way-285572675",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -39769,7 +39769,7 @@
         }
       },
       {
-        "id": "osm-way-286027627",
+        "id": "way-286027627",
         "source": "osm",
         "name": "Notkopuisto",
         "nameFi": "Notkopuisto",
@@ -39806,7 +39806,7 @@
         }
       },
       {
-        "id": "osm-way-286547949",
+        "id": "way-286547949",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -39841,7 +39841,7 @@
         }
       },
       {
-        "id": "osm-way-292090586",
+        "id": "way-292090586",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -39876,7 +39876,7 @@
         }
       },
       {
-        "id": "osm-way-29227688",
+        "id": "way-29227688",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -39913,7 +39913,7 @@
         }
       },
       {
-        "id": "osm-way-293518116",
+        "id": "way-293518116",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -39950,7 +39950,7 @@
         }
       },
       {
-        "id": "osm-way-293576878",
+        "id": "way-293576878",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -39985,7 +39985,7 @@
         }
       },
       {
-        "id": "osm-way-296200199",
+        "id": "way-296200199",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -40022,7 +40022,7 @@
         }
       },
       {
-        "id": "osm-way-298838058",
+        "id": "way-298838058",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -40059,7 +40059,7 @@
         }
       },
       {
-        "id": "osm-way-299070923",
+        "id": "way-299070923",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -40096,7 +40096,7 @@
         }
       },
       {
-        "id": "osm-way-299232356",
+        "id": "way-299232356",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -40131,7 +40131,7 @@
         }
       },
       {
-        "id": "osm-way-301483766",
+        "id": "way-301483766",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -40166,7 +40166,7 @@
         }
       },
       {
-        "id": "osm-way-30179446",
+        "id": "way-30179446",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -40201,7 +40201,7 @@
         }
       },
       {
-        "id": "osm-way-30239927",
+        "id": "way-30239927",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -40236,7 +40236,7 @@
         }
       },
       {
-        "id": "osm-way-303166835",
+        "id": "way-303166835",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -40271,7 +40271,7 @@
         }
       },
       {
-        "id": "osm-way-303167499",
+        "id": "way-303167499",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -40308,7 +40308,7 @@
         }
       },
       {
-        "id": "osm-way-303692669",
+        "id": "way-303692669",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -40345,7 +40345,7 @@
         }
       },
       {
-        "id": "osm-way-30578999",
+        "id": "way-30578999",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -40382,7 +40382,7 @@
         }
       },
       {
-        "id": "osm-way-313599903",
+        "id": "way-313599903",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -40419,7 +40419,7 @@
         }
       },
       {
-        "id": "osm-way-313613476",
+        "id": "way-313613476",
         "source": "osm",
         "name": "Kuukkelinpuiston koripallokenttä",
         "nameFi": "Kuukkelinpuiston koripallokenttä",
@@ -40456,7 +40456,7 @@
         }
       },
       {
-        "id": "osm-way-313673466",
+        "id": "way-313673466",
         "source": "osm",
         "name": "Rummunlyöjänpuiston monitoimikenttä",
         "nameFi": "Rummunlyöjänpuiston monitoimikenttä",
@@ -40493,7 +40493,7 @@
         }
       },
       {
-        "id": "osm-way-313827687",
+        "id": "way-313827687",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -40530,7 +40530,7 @@
         }
       },
       {
-        "id": "osm-way-31774300",
+        "id": "way-31774300",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -40567,7 +40567,7 @@
         }
       },
       {
-        "id": "osm-way-31774303",
+        "id": "way-31774303",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -40604,7 +40604,7 @@
         }
       },
       {
-        "id": "osm-way-32404636",
+        "id": "way-32404636",
         "source": "osm",
         "name": "Koreankenttä",
         "nameFi": "Koreankenttä",
@@ -40641,7 +40641,7 @@
         }
       },
       {
-        "id": "osm-way-324477393",
+        "id": "way-324477393",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -40676,7 +40676,7 @@
         }
       },
       {
-        "id": "osm-way-324489672",
+        "id": "way-324489672",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -40713,7 +40713,7 @@
         }
       },
       {
-        "id": "osm-way-326199052",
+        "id": "way-326199052",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -40750,7 +40750,7 @@
         }
       },
       {
-        "id": "osm-way-328162587",
+        "id": "way-328162587",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -40785,7 +40785,7 @@
         }
       },
       {
-        "id": "osm-way-329937056",
+        "id": "way-329937056",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -40820,7 +40820,7 @@
         }
       },
       {
-        "id": "osm-way-337985721",
+        "id": "way-337985721",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -40857,7 +40857,7 @@
         }
       },
       {
-        "id": "osm-way-338436548",
+        "id": "way-338436548",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -40892,7 +40892,7 @@
         }
       },
       {
-        "id": "osm-way-338436549",
+        "id": "way-338436549",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -40927,7 +40927,7 @@
         }
       },
       {
-        "id": "osm-way-339969516",
+        "id": "way-339969516",
         "source": "osm",
         "name": "Espoonlahden urheilupuiston katukoriskenttä",
         "nameFi": "Espoonlahden urheilupuiston katukoriskenttä",
@@ -40964,7 +40964,7 @@
         }
       },
       {
-        "id": "osm-way-341325374",
+        "id": "way-341325374",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -41001,7 +41001,7 @@
         }
       },
       {
-        "id": "osm-way-343394590",
+        "id": "way-343394590",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -41038,7 +41038,7 @@
         }
       },
       {
-        "id": "osm-way-34654946",
+        "id": "way-34654946",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -41075,7 +41075,7 @@
         }
       },
       {
-        "id": "osm-way-351676106",
+        "id": "way-351676106",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -41112,7 +41112,7 @@
         }
       },
       {
-        "id": "osm-way-353929499",
+        "id": "way-353929499",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -41149,7 +41149,7 @@
         }
       },
       {
-        "id": "osm-way-355082441",
+        "id": "way-355082441",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -41184,7 +41184,7 @@
         }
       },
       {
-        "id": "osm-way-35801179",
+        "id": "way-35801179",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -41219,7 +41219,7 @@
         }
       },
       {
-        "id": "osm-way-36003436",
+        "id": "way-36003436",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -41256,7 +41256,7 @@
         }
       },
       {
-        "id": "osm-way-360504883",
+        "id": "way-360504883",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -41291,7 +41291,7 @@
         }
       },
       {
-        "id": "osm-way-364023922",
+        "id": "way-364023922",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -41326,7 +41326,7 @@
         }
       },
       {
-        "id": "osm-way-364727016",
+        "id": "way-364727016",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -41363,7 +41363,7 @@
         }
       },
       {
-        "id": "osm-way-367315329",
+        "id": "way-367315329",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -41398,7 +41398,7 @@
         }
       },
       {
-        "id": "osm-way-367887885",
+        "id": "way-367887885",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -41435,7 +41435,7 @@
         }
       },
       {
-        "id": "osm-way-36905784",
+        "id": "way-36905784",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -41472,7 +41472,7 @@
         }
       },
       {
-        "id": "osm-way-369357234",
+        "id": "way-369357234",
         "source": "osm",
         "name": "Kartanonkosken liikuntapuiston koripallokenttä",
         "nameFi": "Kartanonkosken liikuntapuiston koripallokenttä",
@@ -41507,7 +41507,7 @@
         }
       },
       {
-        "id": "osm-way-371895964",
+        "id": "way-371895964",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -41544,7 +41544,7 @@
         }
       },
       {
-        "id": "osm-way-373890344",
+        "id": "way-373890344",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -41579,7 +41579,7 @@
         }
       },
       {
-        "id": "osm-way-374818764",
+        "id": "way-374818764",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -41616,7 +41616,7 @@
         }
       },
       {
-        "id": "osm-way-374933040",
+        "id": "way-374933040",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -41651,7 +41651,7 @@
         }
       },
       {
-        "id": "osm-way-377107154",
+        "id": "way-377107154",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -41688,7 +41688,7 @@
         }
       },
       {
-        "id": "osm-way-37751763",
+        "id": "way-37751763",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -41723,7 +41723,7 @@
         }
       },
       {
-        "id": "osm-way-379368815",
+        "id": "way-379368815",
         "source": "osm",
         "name": "Kaivokselan palloilukenttä",
         "nameFi": "Kaivokselan palloilukenttä",
@@ -41760,7 +41760,7 @@
         }
       },
       {
-        "id": "osm-way-39362799",
+        "id": "way-39362799",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -41797,7 +41797,7 @@
         }
       },
       {
-        "id": "osm-way-39375513",
+        "id": "way-39375513",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -41834,7 +41834,7 @@
         }
       },
       {
-        "id": "osm-way-396996630",
+        "id": "way-396996630",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -41869,7 +41869,7 @@
         }
       },
       {
-        "id": "osm-way-397154154",
+        "id": "way-397154154",
         "source": "osm",
         "name": "Urheilupuiston koripallokenttä",
         "nameFi": "Urheilupuiston koripallokenttä",
@@ -41906,7 +41906,7 @@
         }
       },
       {
-        "id": "osm-way-39831638",
+        "id": "way-39831638",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -41943,7 +41943,7 @@
         }
       },
       {
-        "id": "osm-way-39958529",
+        "id": "way-39958529",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -41980,7 +41980,7 @@
         }
       },
       {
-        "id": "osm-way-401447686",
+        "id": "way-401447686",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -42017,7 +42017,7 @@
         }
       },
       {
-        "id": "osm-way-40231932",
+        "id": "way-40231932",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -42054,7 +42054,7 @@
         }
       },
       {
-        "id": "osm-way-404164142",
+        "id": "way-404164142",
         "source": "osm",
         "name": "Lauttasaaren uimarannan minikoripallokenttä",
         "nameFi": "Lauttasaaren uimarannan minikoripallokenttä",
@@ -42091,7 +42091,7 @@
         }
       },
       {
-        "id": "osm-way-408438831",
+        "id": "way-408438831",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -42128,7 +42128,7 @@
         }
       },
       {
-        "id": "osm-way-412948104",
+        "id": "way-412948104",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -42165,7 +42165,7 @@
         }
       },
       {
-        "id": "osm-way-412952687",
+        "id": "way-412952687",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -42202,7 +42202,7 @@
         }
       },
       {
-        "id": "osm-way-41332333",
+        "id": "way-41332333",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -42239,7 +42239,7 @@
         }
       },
       {
-        "id": "osm-way-41386289",
+        "id": "way-41386289",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -42276,7 +42276,7 @@
         }
       },
       {
-        "id": "osm-way-41921999",
+        "id": "way-41921999",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -42311,7 +42311,7 @@
         }
       },
       {
-        "id": "osm-way-4229388",
+        "id": "way-4229388",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -42348,7 +42348,7 @@
         }
       },
       {
-        "id": "osm-way-423117388",
+        "id": "way-423117388",
         "source": "osm",
         "name": "Lauttasaaren liikuntapuiston koripallokenttä",
         "nameFi": "Lauttasaaren liikuntapuiston koripallokenttä",
@@ -42383,7 +42383,7 @@
         }
       },
       {
-        "id": "osm-way-42384637",
+        "id": "way-42384637",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -42420,7 +42420,7 @@
         }
       },
       {
-        "id": "osm-way-4252918",
+        "id": "way-4252918",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -42455,7 +42455,7 @@
         }
       },
       {
-        "id": "osm-way-43230219",
+        "id": "way-43230219",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -42492,7 +42492,7 @@
         }
       },
       {
-        "id": "osm-way-432845462",
+        "id": "way-432845462",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -42527,7 +42527,7 @@
         }
       },
       {
-        "id": "osm-way-43396119",
+        "id": "way-43396119",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -42564,7 +42564,7 @@
         }
       },
       {
-        "id": "osm-way-435498815",
+        "id": "way-435498815",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -42599,7 +42599,7 @@
         }
       },
       {
-        "id": "osm-way-440037711",
+        "id": "way-440037711",
         "source": "osm",
         "name": "Amanda areena",
         "nameFi": "Amanda areena",
@@ -42634,7 +42634,7 @@
         }
       },
       {
-        "id": "osm-way-440957253",
+        "id": "way-440957253",
         "source": "osm",
         "name": "Von Glanin puisto / Koripallokenttä",
         "nameFi": "Von Glanin puisto / Koripallokenttä",
@@ -42671,7 +42671,7 @@
         }
       },
       {
-        "id": "osm-way-441211118",
+        "id": "way-441211118",
         "source": "osm",
         "name": "Malminkartanon ala-asteen koulu / Koripallokenttä",
         "nameFi": "Malminkartanon ala-asteen koulu / Koripallokenttä",
@@ -42708,7 +42708,7 @@
         }
       },
       {
-        "id": "osm-way-444396988",
+        "id": "way-444396988",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -42745,7 +42745,7 @@
         }
       },
       {
-        "id": "osm-way-44632476",
+        "id": "way-44632476",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -42780,7 +42780,7 @@
         }
       },
       {
-        "id": "osm-way-447545773",
+        "id": "way-447545773",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -42817,7 +42817,7 @@
         }
       },
       {
-        "id": "osm-way-44786315",
+        "id": "way-44786315",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -42854,7 +42854,7 @@
         }
       },
       {
-        "id": "osm-way-44809252",
+        "id": "way-44809252",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -42891,7 +42891,7 @@
         }
       },
       {
-        "id": "osm-way-45021098",
+        "id": "way-45021098",
         "source": "osm",
         "name": "Ilmarinkadun monitoimikenttä",
         "nameFi": "Ilmarinkadun monitoimikenttä",
@@ -42928,7 +42928,7 @@
         }
       },
       {
-        "id": "osm-way-454339729",
+        "id": "way-454339729",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -42965,7 +42965,7 @@
         }
       },
       {
-        "id": "osm-way-456598707",
+        "id": "way-456598707",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -43002,7 +43002,7 @@
         }
       },
       {
-        "id": "osm-way-45975041",
+        "id": "way-45975041",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -43037,7 +43037,7 @@
         }
       },
       {
-        "id": "osm-way-46033172",
+        "id": "way-46033172",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -43072,7 +43072,7 @@
         }
       },
       {
-        "id": "osm-way-46490943",
+        "id": "way-46490943",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -43107,7 +43107,7 @@
         }
       },
       {
-        "id": "osm-way-46494841",
+        "id": "way-46494841",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -43144,7 +43144,7 @@
         }
       },
       {
-        "id": "osm-way-46650061",
+        "id": "way-46650061",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -43179,7 +43179,7 @@
         }
       },
       {
-        "id": "osm-way-46854643",
+        "id": "way-46854643",
         "source": "osm",
         "name": "Samppalinnan vuoren kenttä",
         "nameFi": "Samppalinnan vuoren kenttä",
@@ -43216,7 +43216,7 @@
         }
       },
       {
-        "id": "osm-way-46896205",
+        "id": "way-46896205",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -43253,7 +43253,7 @@
         }
       },
       {
-        "id": "osm-way-47098334",
+        "id": "way-47098334",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -43290,7 +43290,7 @@
         }
       },
       {
-        "id": "osm-way-475875878",
+        "id": "way-475875878",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -43327,7 +43327,7 @@
         }
       },
       {
-        "id": "osm-way-478908218",
+        "id": "way-478908218",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -43364,7 +43364,7 @@
         }
       },
       {
-        "id": "osm-way-479804184",
+        "id": "way-479804184",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -43399,7 +43399,7 @@
         }
       },
       {
-        "id": "osm-way-479924378",
+        "id": "way-479924378",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -43436,7 +43436,7 @@
         }
       },
       {
-        "id": "osm-way-479924382",
+        "id": "way-479924382",
         "source": "osm",
         "name": "Arena",
         "nameFi": "Arena",
@@ -43473,7 +43473,7 @@
         }
       },
       {
-        "id": "osm-way-480898325",
+        "id": "way-480898325",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -43508,7 +43508,7 @@
         }
       },
       {
-        "id": "osm-way-481047056",
+        "id": "way-481047056",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -43545,7 +43545,7 @@
         }
       },
       {
-        "id": "osm-way-481126058",
+        "id": "way-481126058",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -43580,7 +43580,7 @@
         }
       },
       {
-        "id": "osm-way-482512996",
+        "id": "way-482512996",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -43615,7 +43615,7 @@
         }
       },
       {
-        "id": "osm-way-483874015",
+        "id": "way-483874015",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -43652,7 +43652,7 @@
         }
       },
       {
-        "id": "osm-way-485694909",
+        "id": "way-485694909",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -43689,7 +43689,7 @@
         }
       },
       {
-        "id": "osm-way-487908625",
+        "id": "way-487908625",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -43726,7 +43726,7 @@
         }
       },
       {
-        "id": "osm-way-489043505",
+        "id": "way-489043505",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -43761,7 +43761,7 @@
         }
       },
       {
-        "id": "osm-way-491624848",
+        "id": "way-491624848",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -43796,7 +43796,7 @@
         }
       },
       {
-        "id": "osm-way-492097302",
+        "id": "way-492097302",
         "source": "osm",
         "name": "Pikisaarenkenttä",
         "nameFi": "Pikisaarenkenttä",
@@ -43833,7 +43833,7 @@
         }
       },
       {
-        "id": "osm-way-493211870",
+        "id": "way-493211870",
         "source": "osm",
         "name": "Myllysaaren koripallokenttä",
         "nameFi": "Myllysaaren koripallokenttä",
@@ -43870,7 +43870,7 @@
         }
       },
       {
-        "id": "osm-way-503102812",
+        "id": "way-503102812",
         "source": "osm",
         "name": "Katukoris",
         "nameFi": "Katukoris",
@@ -43907,7 +43907,7 @@
         }
       },
       {
-        "id": "osm-way-503105750",
+        "id": "way-503105750",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -43944,7 +43944,7 @@
         }
       },
       {
-        "id": "osm-way-504398090",
+        "id": "way-504398090",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -43981,7 +43981,7 @@
         }
       },
       {
-        "id": "osm-way-505239952",
+        "id": "way-505239952",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -44016,7 +44016,7 @@
         }
       },
       {
-        "id": "osm-way-507038807",
+        "id": "way-507038807",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -44051,7 +44051,7 @@
         }
       },
       {
-        "id": "osm-way-511270603",
+        "id": "way-511270603",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -44086,7 +44086,7 @@
         }
       },
       {
-        "id": "osm-way-513366195",
+        "id": "way-513366195",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -44123,7 +44123,7 @@
         }
       },
       {
-        "id": "osm-way-51484532",
+        "id": "way-51484532",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -44160,7 +44160,7 @@
         }
       },
       {
-        "id": "osm-way-516128836",
+        "id": "way-516128836",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -44197,7 +44197,7 @@
         }
       },
       {
-        "id": "osm-way-517579761",
+        "id": "way-517579761",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -44234,7 +44234,7 @@
         }
       },
       {
-        "id": "osm-way-519151019",
+        "id": "way-519151019",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -44271,7 +44271,7 @@
         }
       },
       {
-        "id": "osm-way-525462807",
+        "id": "way-525462807",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -44306,7 +44306,7 @@
         }
       },
       {
-        "id": "osm-way-527683416",
+        "id": "way-527683416",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -44343,7 +44343,7 @@
         }
       },
       {
-        "id": "osm-way-53095212",
+        "id": "way-53095212",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -44380,7 +44380,7 @@
         }
       },
       {
-        "id": "osm-way-531263951",
+        "id": "way-531263951",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -44417,7 +44417,7 @@
         }
       },
       {
-        "id": "osm-way-533406385",
+        "id": "way-533406385",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -44454,7 +44454,7 @@
         }
       },
       {
-        "id": "osm-way-536301799",
+        "id": "way-536301799",
         "source": "osm",
         "name": "Ihalan koripallokentät",
         "nameFi": "Ihalan koripallokentät",
@@ -44491,7 +44491,7 @@
         }
       },
       {
-        "id": "osm-way-538767542",
+        "id": "way-538767542",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -44528,7 +44528,7 @@
         }
       },
       {
-        "id": "osm-way-539100382",
+        "id": "way-539100382",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -44563,7 +44563,7 @@
         }
       },
       {
-        "id": "osm-way-540392449",
+        "id": "way-540392449",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -44598,7 +44598,7 @@
         }
       },
       {
-        "id": "osm-way-541858501",
+        "id": "way-541858501",
         "source": "osm",
         "name": "Rieskalähteenpuiston kenttä",
         "nameFi": "Rieskalähteenpuiston kenttä",
@@ -44633,7 +44633,7 @@
         }
       },
       {
-        "id": "osm-way-541866287",
+        "id": "way-541866287",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -44670,7 +44670,7 @@
         }
       },
       {
-        "id": "osm-way-542467303",
+        "id": "way-542467303",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -44705,7 +44705,7 @@
         }
       },
       {
-        "id": "osm-way-542696074",
+        "id": "way-542696074",
         "source": "osm",
         "name": "Ihalan koulun koripallokenttä",
         "nameFi": "Ihalan koulun koripallokenttä",
@@ -44740,7 +44740,7 @@
         }
       },
       {
-        "id": "osm-way-542925817",
+        "id": "way-542925817",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -44775,7 +44775,7 @@
         }
       },
       {
-        "id": "osm-way-54377116",
+        "id": "way-54377116",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -44810,7 +44810,7 @@
         }
       },
       {
-        "id": "osm-way-544686884",
+        "id": "way-544686884",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -44845,7 +44845,7 @@
         }
       },
       {
-        "id": "osm-way-545702220",
+        "id": "way-545702220",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -44882,7 +44882,7 @@
         }
       },
       {
-        "id": "osm-way-549044369",
+        "id": "way-549044369",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -44919,7 +44919,7 @@
         }
       },
       {
-        "id": "osm-way-549044370",
+        "id": "way-549044370",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -44956,7 +44956,7 @@
         }
       },
       {
-        "id": "osm-way-549301643",
+        "id": "way-549301643",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -44993,7 +44993,7 @@
         }
       },
       {
-        "id": "osm-way-550280634",
+        "id": "way-550280634",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -45030,7 +45030,7 @@
         }
       },
       {
-        "id": "osm-way-552947976",
+        "id": "way-552947976",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -45065,7 +45065,7 @@
         }
       },
       {
-        "id": "osm-way-556500981",
+        "id": "way-556500981",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -45102,7 +45102,7 @@
         }
       },
       {
-        "id": "osm-way-556829031",
+        "id": "way-556829031",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -45137,7 +45137,7 @@
         }
       },
       {
-        "id": "osm-way-562762157",
+        "id": "way-562762157",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -45174,7 +45174,7 @@
         }
       },
       {
-        "id": "osm-way-567916932",
+        "id": "way-567916932",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -45211,7 +45211,7 @@
         }
       },
       {
-        "id": "osm-way-570736823",
+        "id": "way-570736823",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -45246,7 +45246,7 @@
         }
       },
       {
-        "id": "osm-way-572459742",
+        "id": "way-572459742",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -45281,7 +45281,7 @@
         }
       },
       {
-        "id": "osm-way-57384470",
+        "id": "way-57384470",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -45318,7 +45318,7 @@
         }
       },
       {
-        "id": "osm-way-575610052",
+        "id": "way-575610052",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -45355,7 +45355,7 @@
         }
       },
       {
-        "id": "osm-way-575688083",
+        "id": "way-575688083",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -45392,7 +45392,7 @@
         }
       },
       {
-        "id": "osm-way-576128670",
+        "id": "way-576128670",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -45427,7 +45427,7 @@
         }
       },
       {
-        "id": "osm-way-576521565",
+        "id": "way-576521565",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -45464,7 +45464,7 @@
         }
       },
       {
-        "id": "osm-way-580260026",
+        "id": "way-580260026",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -45501,7 +45501,7 @@
         }
       },
       {
-        "id": "osm-way-581501943",
+        "id": "way-581501943",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -45538,7 +45538,7 @@
         }
       },
       {
-        "id": "osm-way-581825158",
+        "id": "way-581825158",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -45575,7 +45575,7 @@
         }
       },
       {
-        "id": "osm-way-582950014",
+        "id": "way-582950014",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -45612,7 +45612,7 @@
         }
       },
       {
-        "id": "osm-way-584044251",
+        "id": "way-584044251",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -45649,7 +45649,7 @@
         }
       },
       {
-        "id": "osm-way-58558967",
+        "id": "way-58558967",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -45686,7 +45686,7 @@
         }
       },
       {
-        "id": "osm-way-585914177",
+        "id": "way-585914177",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -45721,7 +45721,7 @@
         }
       },
       {
-        "id": "osm-way-58643760",
+        "id": "way-58643760",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -45756,7 +45756,7 @@
         }
       },
       {
-        "id": "osm-way-589008094",
+        "id": "way-589008094",
         "source": "osm",
         "name": "Leikkipuisto Vallila / Koripallokenttä",
         "nameFi": "Leikkipuisto Vallila / Koripallokenttä",
@@ -45793,7 +45793,7 @@
         }
       },
       {
-        "id": "osm-way-589445300",
+        "id": "way-589445300",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -45830,7 +45830,7 @@
         }
       },
       {
-        "id": "osm-way-591362301",
+        "id": "way-591362301",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -45865,7 +45865,7 @@
         }
       },
       {
-        "id": "osm-way-59284329",
+        "id": "way-59284329",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -45902,7 +45902,7 @@
         }
       },
       {
-        "id": "osm-way-594658980",
+        "id": "way-594658980",
         "source": "osm",
         "name": "Haimoon katukoripallokenttä",
         "nameFi": "Haimoon katukoripallokenttä",
@@ -45937,7 +45937,7 @@
         }
       },
       {
-        "id": "osm-way-59714967",
+        "id": "way-59714967",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -45974,7 +45974,7 @@
         }
       },
       {
-        "id": "osm-way-59875337",
+        "id": "way-59875337",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -46011,7 +46011,7 @@
         }
       },
       {
-        "id": "osm-way-598944892",
+        "id": "way-598944892",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -46048,7 +46048,7 @@
         }
       },
       {
-        "id": "osm-way-60203675",
+        "id": "way-60203675",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -46085,7 +46085,7 @@
         }
       },
       {
-        "id": "osm-way-603042788",
+        "id": "way-603042788",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -46120,7 +46120,7 @@
         }
       },
       {
-        "id": "osm-way-608963468",
+        "id": "way-608963468",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -46157,7 +46157,7 @@
         }
       },
       {
-        "id": "osm-way-609785898",
+        "id": "way-609785898",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -46192,7 +46192,7 @@
         }
       },
       {
-        "id": "osm-way-610313501",
+        "id": "way-610313501",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -46229,7 +46229,7 @@
         }
       },
       {
-        "id": "osm-way-614008421",
+        "id": "way-614008421",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -46266,7 +46266,7 @@
         }
       },
       {
-        "id": "osm-way-615706016",
+        "id": "way-615706016",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -46301,7 +46301,7 @@
         }
       },
       {
-        "id": "osm-way-615942922",
+        "id": "way-615942922",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -46336,7 +46336,7 @@
         }
       },
       {
-        "id": "osm-way-615942924",
+        "id": "way-615942924",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -46371,7 +46371,7 @@
         }
       },
       {
-        "id": "osm-way-61924779",
+        "id": "way-61924779",
         "source": "osm",
         "name": "Tuukkalan kenttä",
         "nameFi": "Tuukkalan kenttä",
@@ -46408,7 +46408,7 @@
         }
       },
       {
-        "id": "osm-way-619867485",
+        "id": "way-619867485",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -46445,7 +46445,7 @@
         }
       },
       {
-        "id": "osm-way-62326333",
+        "id": "way-62326333",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -46482,7 +46482,7 @@
         }
       },
       {
-        "id": "osm-way-625721582",
+        "id": "way-625721582",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -46517,7 +46517,7 @@
         }
       },
       {
-        "id": "osm-way-626789140",
+        "id": "way-626789140",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -46552,7 +46552,7 @@
         }
       },
       {
-        "id": "osm-way-627271488",
+        "id": "way-627271488",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -46589,7 +46589,7 @@
         }
       },
       {
-        "id": "osm-way-628814115",
+        "id": "way-628814115",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -46624,7 +46624,7 @@
         }
       },
       {
-        "id": "osm-way-63161967",
+        "id": "way-63161967",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -46661,7 +46661,7 @@
         }
       },
       {
-        "id": "osm-way-635764645",
+        "id": "way-635764645",
         "source": "osm",
         "name": "Herukan koulun koripallokenttä",
         "nameFi": "Herukan koulun koripallokenttä",
@@ -46696,7 +46696,7 @@
         }
       },
       {
-        "id": "osm-way-642900875",
+        "id": "way-642900875",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -46731,7 +46731,7 @@
         }
       },
       {
-        "id": "osm-way-64942520",
+        "id": "way-64942520",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -46768,7 +46768,7 @@
         }
       },
       {
-        "id": "osm-way-651594245",
+        "id": "way-651594245",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -46805,7 +46805,7 @@
         }
       },
       {
-        "id": "osm-way-652891649",
+        "id": "way-652891649",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -46842,7 +46842,7 @@
         }
       },
       {
-        "id": "osm-way-653751947",
+        "id": "way-653751947",
         "source": "osm",
         "name": "Kolmen Tähden Areena",
         "nameFi": "Kolmen Tähden Areena",
@@ -46877,7 +46877,7 @@
         }
       },
       {
-        "id": "osm-way-666443954",
+        "id": "way-666443954",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -46912,7 +46912,7 @@
         }
       },
       {
-        "id": "osm-way-677745208",
+        "id": "way-677745208",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -46947,7 +46947,7 @@
         }
       },
       {
-        "id": "osm-way-677745209",
+        "id": "way-677745209",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -46982,7 +46982,7 @@
         }
       },
       {
-        "id": "osm-way-679429391",
+        "id": "way-679429391",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -47017,7 +47017,7 @@
         }
       },
       {
-        "id": "osm-way-679728467",
+        "id": "way-679728467",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -47052,7 +47052,7 @@
         }
       },
       {
-        "id": "osm-way-682065090",
+        "id": "way-682065090",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -47089,7 +47089,7 @@
         }
       },
       {
-        "id": "osm-way-687964582",
+        "id": "way-687964582",
         "source": "osm",
         "name": "Markkamäen koripallokenttä",
         "nameFi": "Markkamäen koripallokenttä",
@@ -47126,7 +47126,7 @@
         }
       },
       {
-        "id": "osm-way-687981995",
+        "id": "way-687981995",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -47161,7 +47161,7 @@
         }
       },
       {
-        "id": "osm-way-689668895",
+        "id": "way-689668895",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -47196,7 +47196,7 @@
         }
       },
       {
-        "id": "osm-way-69415503",
+        "id": "way-69415503",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -47231,7 +47231,7 @@
         }
       },
       {
-        "id": "osm-way-696074063",
+        "id": "way-696074063",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -47268,7 +47268,7 @@
         }
       },
       {
-        "id": "osm-way-696484078",
+        "id": "way-696484078",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -47303,7 +47303,7 @@
         }
       },
       {
-        "id": "osm-way-702306010",
+        "id": "way-702306010",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -47340,7 +47340,7 @@
         }
       },
       {
-        "id": "osm-way-705379923",
+        "id": "way-705379923",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -47375,7 +47375,7 @@
         }
       },
       {
-        "id": "osm-way-706010193",
+        "id": "way-706010193",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -47412,7 +47412,7 @@
         }
       },
       {
-        "id": "osm-way-706010194",
+        "id": "way-706010194",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -47449,7 +47449,7 @@
         }
       },
       {
-        "id": "osm-way-706116765",
+        "id": "way-706116765",
         "source": "osm",
         "name": "Hämeensaaren koripallokenttä",
         "nameFi": "Hämeensaaren koripallokenttä",
@@ -47486,7 +47486,7 @@
         }
       },
       {
-        "id": "osm-way-708093685",
+        "id": "way-708093685",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -47521,7 +47521,7 @@
         }
       },
       {
-        "id": "osm-way-70930857",
+        "id": "way-70930857",
         "source": "osm",
         "name": "Lansapuronpuiston kuntoilupaikan koripallokenttä",
         "nameFi": "Lansapuronpuiston kuntoilupaikan koripallokenttä",
@@ -47558,7 +47558,7 @@
         }
       },
       {
-        "id": "osm-way-710490762",
+        "id": "way-710490762",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -47595,7 +47595,7 @@
         }
       },
       {
-        "id": "osm-way-711251445",
+        "id": "way-711251445",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -47630,7 +47630,7 @@
         }
       },
       {
-        "id": "osm-way-714023385",
+        "id": "way-714023385",
         "source": "osm",
         "name": "Häkki",
         "nameFi": "Häkki",
@@ -47667,7 +47667,7 @@
         }
       },
       {
-        "id": "osm-way-714459526",
+        "id": "way-714459526",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -47702,7 +47702,7 @@
         }
       },
       {
-        "id": "osm-way-71587727",
+        "id": "way-71587727",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -47737,7 +47737,7 @@
         }
       },
       {
-        "id": "osm-way-717479041",
+        "id": "way-717479041",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -47772,7 +47772,7 @@
         }
       },
       {
-        "id": "osm-way-718174976",
+        "id": "way-718174976",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -47809,7 +47809,7 @@
         }
       },
       {
-        "id": "osm-way-719990694",
+        "id": "way-719990694",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -47844,7 +47844,7 @@
         }
       },
       {
-        "id": "osm-way-720983805",
+        "id": "way-720983805",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -47879,7 +47879,7 @@
         }
       },
       {
-        "id": "osm-way-722388640",
+        "id": "way-722388640",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -47914,7 +47914,7 @@
         }
       },
       {
-        "id": "osm-way-722388641",
+        "id": "way-722388641",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -47949,7 +47949,7 @@
         }
       },
       {
-        "id": "osm-way-723202255",
+        "id": "way-723202255",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -47986,7 +47986,7 @@
         }
       },
       {
-        "id": "osm-way-723202256",
+        "id": "way-723202256",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -48023,7 +48023,7 @@
         }
       },
       {
-        "id": "osm-way-724472926",
+        "id": "way-724472926",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -48060,7 +48060,7 @@
         }
       },
       {
-        "id": "osm-way-724871033",
+        "id": "way-724871033",
         "source": "osm",
         "name": "Päiväkoti Kytöniitty / Koripallokenttä",
         "nameFi": "Päiväkoti Kytöniitty / Koripallokenttä",
@@ -48097,7 +48097,7 @@
         }
       },
       {
-        "id": "osm-way-729130906",
+        "id": "way-729130906",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -48132,7 +48132,7 @@
         }
       },
       {
-        "id": "osm-way-731868977",
+        "id": "way-731868977",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -48167,7 +48167,7 @@
         }
       },
       {
-        "id": "osm-way-732982941",
+        "id": "way-732982941",
         "source": "osm",
         "name": "Paunanpellon koripallokenttä",
         "nameFi": "Paunanpellon koripallokenttä",
@@ -48204,7 +48204,7 @@
         }
       },
       {
-        "id": "osm-way-733981386",
+        "id": "way-733981386",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -48239,7 +48239,7 @@
         }
       },
       {
-        "id": "osm-way-734447756",
+        "id": "way-734447756",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -48276,7 +48276,7 @@
         }
       },
       {
-        "id": "osm-way-734455590",
+        "id": "way-734455590",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -48311,7 +48311,7 @@
         }
       },
       {
-        "id": "osm-way-734736980",
+        "id": "way-734736980",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -48348,7 +48348,7 @@
         }
       },
       {
-        "id": "osm-way-737038082",
+        "id": "way-737038082",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -48383,7 +48383,7 @@
         }
       },
       {
-        "id": "osm-way-739837944",
+        "id": "way-739837944",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -48418,7 +48418,7 @@
         }
       },
       {
-        "id": "osm-way-741971754",
+        "id": "way-741971754",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -48455,7 +48455,7 @@
         }
       },
       {
-        "id": "osm-way-744467063",
+        "id": "way-744467063",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -48492,7 +48492,7 @@
         }
       },
       {
-        "id": "osm-way-744467064",
+        "id": "way-744467064",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -48529,7 +48529,7 @@
         }
       },
       {
-        "id": "osm-way-746195752",
+        "id": "way-746195752",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -48564,7 +48564,7 @@
         }
       },
       {
-        "id": "osm-way-747005697",
+        "id": "way-747005697",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -48601,7 +48601,7 @@
         }
       },
       {
-        "id": "osm-way-747728393",
+        "id": "way-747728393",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -48638,7 +48638,7 @@
         }
       },
       {
-        "id": "osm-way-750768270",
+        "id": "way-750768270",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -48675,7 +48675,7 @@
         }
       },
       {
-        "id": "osm-way-753424604",
+        "id": "way-753424604",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -48710,7 +48710,7 @@
         }
       },
       {
-        "id": "osm-way-753672253",
+        "id": "way-753672253",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -48747,7 +48747,7 @@
         }
       },
       {
-        "id": "osm-way-760602512",
+        "id": "way-760602512",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -48784,7 +48784,7 @@
         }
       },
       {
-        "id": "osm-way-761345826",
+        "id": "way-761345826",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -48821,7 +48821,7 @@
         }
       },
       {
-        "id": "osm-way-763422901",
+        "id": "way-763422901",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -48858,7 +48858,7 @@
         }
       },
       {
-        "id": "osm-way-764278721",
+        "id": "way-764278721",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -48893,7 +48893,7 @@
         }
       },
       {
-        "id": "osm-way-765964310",
+        "id": "way-765964310",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -48930,7 +48930,7 @@
         }
       },
       {
-        "id": "osm-way-766529983",
+        "id": "way-766529983",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -48967,7 +48967,7 @@
         }
       },
       {
-        "id": "osm-way-769757615",
+        "id": "way-769757615",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -49002,7 +49002,7 @@
         }
       },
       {
-        "id": "osm-way-778604387",
+        "id": "way-778604387",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -49037,7 +49037,7 @@
         }
       },
       {
-        "id": "osm-way-78017005",
+        "id": "way-78017005",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -49074,7 +49074,7 @@
         }
       },
       {
-        "id": "osm-way-781566865",
+        "id": "way-781566865",
         "source": "osm",
         "name": "Teemu Pukki-Lähiliikuntapaikka",
         "nameFi": "Teemu Pukki-Lähiliikuntapaikka",
@@ -49109,7 +49109,7 @@
         }
       },
       {
-        "id": "osm-way-785811208",
+        "id": "way-785811208",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -49146,7 +49146,7 @@
         }
       },
       {
-        "id": "osm-way-788514136",
+        "id": "way-788514136",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -49183,7 +49183,7 @@
         }
       },
       {
-        "id": "osm-way-790197490",
+        "id": "way-790197490",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -49220,7 +49220,7 @@
         }
       },
       {
-        "id": "osm-way-791074470",
+        "id": "way-791074470",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -49255,7 +49255,7 @@
         }
       },
       {
-        "id": "osm-way-791759161",
+        "id": "way-791759161",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -49292,7 +49292,7 @@
         }
       },
       {
-        "id": "osm-way-795678297",
+        "id": "way-795678297",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -49329,7 +49329,7 @@
         }
       },
       {
-        "id": "osm-way-797094582",
+        "id": "way-797094582",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -49366,7 +49366,7 @@
         }
       },
       {
-        "id": "osm-way-79815519",
+        "id": "way-79815519",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -49403,7 +49403,7 @@
         }
       },
       {
-        "id": "osm-way-80138446",
+        "id": "way-80138446",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -49438,7 +49438,7 @@
         }
       },
       {
-        "id": "osm-way-804676858",
+        "id": "way-804676858",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -49475,7 +49475,7 @@
         }
       },
       {
-        "id": "osm-way-80503964",
+        "id": "way-80503964",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -49512,7 +49512,7 @@
         }
       },
       {
-        "id": "osm-way-807316439",
+        "id": "way-807316439",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -49549,7 +49549,7 @@
         }
       },
       {
-        "id": "osm-way-807490479",
+        "id": "way-807490479",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -49586,7 +49586,7 @@
         }
       },
       {
-        "id": "osm-way-80761879",
+        "id": "way-80761879",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -49621,7 +49621,7 @@
         }
       },
       {
-        "id": "osm-way-80761887",
+        "id": "way-80761887",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -49658,7 +49658,7 @@
         }
       },
       {
-        "id": "osm-way-807789757",
+        "id": "way-807789757",
         "source": "osm",
         "name": "Ässäkenttä",
         "nameFi": "Ässäkenttä",
@@ -49695,7 +49695,7 @@
         }
       },
       {
-        "id": "osm-way-809072050",
+        "id": "way-809072050",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -49732,7 +49732,7 @@
         }
       },
       {
-        "id": "osm-way-810332749",
+        "id": "way-810332749",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -49769,7 +49769,7 @@
         }
       },
       {
-        "id": "osm-way-810387634",
+        "id": "way-810387634",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -49806,7 +49806,7 @@
         }
       },
       {
-        "id": "osm-way-810387635",
+        "id": "way-810387635",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -49841,7 +49841,7 @@
         }
       },
       {
-        "id": "osm-way-810387636",
+        "id": "way-810387636",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -49876,7 +49876,7 @@
         }
       },
       {
-        "id": "osm-way-813679661",
+        "id": "way-813679661",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -49911,7 +49911,7 @@
         }
       },
       {
-        "id": "osm-way-814967273",
+        "id": "way-814967273",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -49948,7 +49948,7 @@
         }
       },
       {
-        "id": "osm-way-81731928",
+        "id": "way-81731928",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -49985,7 +49985,7 @@
         }
       },
       {
-        "id": "osm-way-818309582",
+        "id": "way-818309582",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -50022,7 +50022,7 @@
         }
       },
       {
-        "id": "osm-way-820195802",
+        "id": "way-820195802",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -50057,7 +50057,7 @@
         }
       },
       {
-        "id": "osm-way-821132425",
+        "id": "way-821132425",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -50094,7 +50094,7 @@
         }
       },
       {
-        "id": "osm-way-82192237",
+        "id": "way-82192237",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -50129,7 +50129,7 @@
         }
       },
       {
-        "id": "osm-way-823106904",
+        "id": "way-823106904",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -50166,7 +50166,7 @@
         }
       },
       {
-        "id": "osm-way-823212621",
+        "id": "way-823212621",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -50201,7 +50201,7 @@
         }
       },
       {
-        "id": "osm-way-823912009",
+        "id": "way-823912009",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -50238,7 +50238,7 @@
         }
       },
       {
-        "id": "osm-way-82668650",
+        "id": "way-82668650",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -50273,7 +50273,7 @@
         }
       },
       {
-        "id": "osm-way-828238798",
+        "id": "way-828238798",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -50310,7 +50310,7 @@
         }
       },
       {
-        "id": "osm-way-83912541",
+        "id": "way-83912541",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -50347,7 +50347,7 @@
         }
       },
       {
-        "id": "osm-way-841299537",
+        "id": "way-841299537",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -50384,7 +50384,7 @@
         }
       },
       {
-        "id": "osm-way-843222670",
+        "id": "way-843222670",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -50421,7 +50421,7 @@
         }
       },
       {
-        "id": "osm-way-84586399",
+        "id": "way-84586399",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -50458,7 +50458,7 @@
         }
       },
       {
-        "id": "osm-way-852150824",
+        "id": "way-852150824",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -50493,7 +50493,7 @@
         }
       },
       {
-        "id": "osm-way-854046145",
+        "id": "way-854046145",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -50530,7 +50530,7 @@
         }
       },
       {
-        "id": "osm-way-854963231",
+        "id": "way-854963231",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -50567,7 +50567,7 @@
         }
       },
       {
-        "id": "osm-way-859892693",
+        "id": "way-859892693",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -50604,7 +50604,7 @@
         }
       },
       {
-        "id": "osm-way-862163629",
+        "id": "way-862163629",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -50641,7 +50641,7 @@
         }
       },
       {
-        "id": "osm-way-866744266",
+        "id": "way-866744266",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -50676,7 +50676,7 @@
         }
       },
       {
-        "id": "osm-way-867904384",
+        "id": "way-867904384",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -50713,7 +50713,7 @@
         }
       },
       {
-        "id": "osm-way-868769601",
+        "id": "way-868769601",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -50750,7 +50750,7 @@
         }
       },
       {
-        "id": "osm-way-870906206",
+        "id": "way-870906206",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -50785,7 +50785,7 @@
         }
       },
       {
-        "id": "osm-way-872017947",
+        "id": "way-872017947",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -50820,7 +50820,7 @@
         }
       },
       {
-        "id": "osm-way-87534928",
+        "id": "way-87534928",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -50855,7 +50855,7 @@
         }
       },
       {
-        "id": "osm-way-875586877",
+        "id": "way-875586877",
         "source": "osm",
         "name": "Harjurinne Miniarena",
         "nameFi": "Harjurinteen miniareena",
@@ -50890,7 +50890,7 @@
         }
       },
       {
-        "id": "osm-way-875812343",
+        "id": "way-875812343",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -50927,7 +50927,7 @@
         }
       },
       {
-        "id": "osm-way-878028675",
+        "id": "way-878028675",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -50964,7 +50964,7 @@
         }
       },
       {
-        "id": "osm-way-878573492",
+        "id": "way-878573492",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -50999,7 +50999,7 @@
         }
       },
       {
-        "id": "osm-way-879191449",
+        "id": "way-879191449",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -51036,7 +51036,7 @@
         }
       },
       {
-        "id": "osm-way-879649044",
+        "id": "way-879649044",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -51073,7 +51073,7 @@
         }
       },
       {
-        "id": "osm-way-879759698",
+        "id": "way-879759698",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -51108,7 +51108,7 @@
         }
       },
       {
-        "id": "osm-way-881920174",
+        "id": "way-881920174",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -51145,7 +51145,7 @@
         }
       },
       {
-        "id": "osm-way-884617319",
+        "id": "way-884617319",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -51180,7 +51180,7 @@
         }
       },
       {
-        "id": "osm-way-88646131",
+        "id": "way-88646131",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -51215,7 +51215,7 @@
         }
       },
       {
-        "id": "osm-way-888882371",
+        "id": "way-888882371",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -51252,7 +51252,7 @@
         }
       },
       {
-        "id": "osm-way-89082662",
+        "id": "way-89082662",
         "source": "osm",
         "name": "2",
         "nameFi": "2",
@@ -51289,7 +51289,7 @@
         }
       },
       {
-        "id": "osm-way-893174047",
+        "id": "way-893174047",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -51324,7 +51324,7 @@
         }
       },
       {
-        "id": "osm-way-893279634",
+        "id": "way-893279634",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -51361,7 +51361,7 @@
         }
       },
       {
-        "id": "osm-way-893805951",
+        "id": "way-893805951",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -51398,7 +51398,7 @@
         }
       },
       {
-        "id": "osm-way-89584194",
+        "id": "way-89584194",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -51433,7 +51433,7 @@
         }
       },
       {
-        "id": "osm-way-896275254",
+        "id": "way-896275254",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -51468,7 +51468,7 @@
         }
       },
       {
-        "id": "osm-way-89723322",
+        "id": "way-89723322",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -51503,7 +51503,7 @@
         }
       },
       {
-        "id": "osm-way-899460777",
+        "id": "way-899460777",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -51540,7 +51540,7 @@
         }
       },
       {
-        "id": "osm-way-905384227",
+        "id": "way-905384227",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -51577,7 +51577,7 @@
         }
       },
       {
-        "id": "osm-way-905384228",
+        "id": "way-905384228",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -51614,7 +51614,7 @@
         }
       },
       {
-        "id": "osm-way-905463060",
+        "id": "way-905463060",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -51651,7 +51651,7 @@
         }
       },
       {
-        "id": "osm-way-905842706",
+        "id": "way-905842706",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -51688,7 +51688,7 @@
         }
       },
       {
-        "id": "osm-way-907698446",
+        "id": "way-907698446",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -51725,7 +51725,7 @@
         }
       },
       {
-        "id": "osm-way-908068368",
+        "id": "way-908068368",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -51760,7 +51760,7 @@
         }
       },
       {
-        "id": "osm-way-91482065",
+        "id": "way-91482065",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -51797,7 +51797,7 @@
         }
       },
       {
-        "id": "osm-way-917804070",
+        "id": "way-917804070",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -51834,7 +51834,7 @@
         }
       },
       {
-        "id": "osm-way-919296570",
+        "id": "way-919296570",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -51871,7 +51871,7 @@
         }
       },
       {
-        "id": "osm-way-922540200",
+        "id": "way-922540200",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -51908,7 +51908,7 @@
         }
       },
       {
-        "id": "osm-way-925207297",
+        "id": "way-925207297",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -51943,7 +51943,7 @@
         }
       },
       {
-        "id": "osm-way-925461143",
+        "id": "way-925461143",
         "source": "osm",
         "name": "Kilterin koripallokenttä",
         "nameFi": "Kilterin koripallokenttä",
@@ -51980,7 +51980,7 @@
         }
       },
       {
-        "id": "osm-way-927248088",
+        "id": "way-927248088",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -52017,7 +52017,7 @@
         }
       },
       {
-        "id": "osm-way-931728396",
+        "id": "way-931728396",
         "source": "osm",
         "name": "Koriskenttä",
         "nameFi": "Koriskenttä",
@@ -52054,7 +52054,7 @@
         }
       },
       {
-        "id": "osm-way-938046592",
+        "id": "way-938046592",
         "source": "osm",
         "name": "Hannu Krankka -liikuntapuiston peliaareena",
         "nameFi": "Hannu Krankka -liikuntapuiston peliaareena",
@@ -52089,7 +52089,7 @@
         }
       },
       {
-        "id": "osm-way-942780887",
+        "id": "way-942780887",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -52126,7 +52126,7 @@
         }
       },
       {
-        "id": "osm-way-942780888",
+        "id": "way-942780888",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -52163,7 +52163,7 @@
         }
       },
       {
-        "id": "osm-way-944659715",
+        "id": "way-944659715",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -52200,7 +52200,7 @@
         }
       },
       {
-        "id": "osm-way-946240140",
+        "id": "way-946240140",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -52235,7 +52235,7 @@
         }
       },
       {
-        "id": "osm-way-946380909",
+        "id": "way-946380909",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -52270,7 +52270,7 @@
         }
       },
       {
-        "id": "osm-way-94652196",
+        "id": "way-94652196",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -52305,7 +52305,7 @@
         }
       },
       {
-        "id": "osm-way-946841732",
+        "id": "way-946841732",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -52340,7 +52340,7 @@
         }
       },
       {
-        "id": "osm-way-94689797",
+        "id": "way-94689797",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -52375,7 +52375,7 @@
         }
       },
       {
-        "id": "osm-way-953283866",
+        "id": "way-953283866",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -52412,7 +52412,7 @@
         }
       },
       {
-        "id": "osm-way-953958274",
+        "id": "way-953958274",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -52447,7 +52447,7 @@
         }
       },
       {
-        "id": "osm-way-95418183",
+        "id": "way-95418183",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -52484,7 +52484,7 @@
         }
       },
       {
-        "id": "osm-way-954951653",
+        "id": "way-954951653",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -52521,7 +52521,7 @@
         }
       },
       {
-        "id": "osm-way-956645172",
+        "id": "way-956645172",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -52556,7 +52556,7 @@
         }
       },
       {
-        "id": "osm-way-956645173",
+        "id": "way-956645173",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -52593,7 +52593,7 @@
         }
       },
       {
-        "id": "osm-way-957593721",
+        "id": "way-957593721",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -52630,7 +52630,7 @@
         }
       },
       {
-        "id": "osm-way-959739969",
+        "id": "way-959739969",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -52665,7 +52665,7 @@
         }
       },
       {
-        "id": "osm-way-960010887",
+        "id": "way-960010887",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -52700,7 +52700,7 @@
         }
       },
       {
-        "id": "osm-way-961290108",
+        "id": "way-961290108",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -52735,7 +52735,7 @@
         }
       },
       {
-        "id": "osm-way-962272274",
+        "id": "way-962272274",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -52770,7 +52770,7 @@
         }
       },
       {
-        "id": "osm-way-962646858",
+        "id": "way-962646858",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -52805,7 +52805,7 @@
         }
       },
       {
-        "id": "osm-way-964201704",
+        "id": "way-964201704",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -52840,7 +52840,7 @@
         }
       },
       {
-        "id": "osm-way-964563745",
+        "id": "way-964563745",
         "source": "osm",
         "name": "Jupperin koripallokenttä",
         "nameFi": "Jupperin koripallokenttä",
@@ -52877,7 +52877,7 @@
         }
       },
       {
-        "id": "osm-way-965322764",
+        "id": "way-965322764",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -52912,7 +52912,7 @@
         }
       },
       {
-        "id": "osm-way-965618095",
+        "id": "way-965618095",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -52949,7 +52949,7 @@
         }
       },
       {
-        "id": "osm-way-968381811",
+        "id": "way-968381811",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -52986,7 +52986,7 @@
         }
       },
       {
-        "id": "osm-way-970116063",
+        "id": "way-970116063",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -53021,7 +53021,7 @@
         }
       },
       {
-        "id": "osm-way-970632220",
+        "id": "way-970632220",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -53058,7 +53058,7 @@
         }
       },
       {
-        "id": "osm-way-973604366",
+        "id": "way-973604366",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -53095,7 +53095,7 @@
         }
       },
       {
-        "id": "osm-way-975713860",
+        "id": "way-975713860",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -53132,7 +53132,7 @@
         }
       },
       {
-        "id": "osm-way-978748682",
+        "id": "way-978748682",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -53169,7 +53169,7 @@
         }
       },
       {
-        "id": "osm-way-98117638",
+        "id": "way-98117638",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -53204,7 +53204,7 @@
         }
       },
       {
-        "id": "osm-way-981928270",
+        "id": "way-981928270",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -53241,7 +53241,7 @@
         }
       },
       {
-        "id": "osm-way-982018375",
+        "id": "way-982018375",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -53276,7 +53276,7 @@
         }
       },
       {
-        "id": "osm-way-986062414",
+        "id": "way-986062414",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -53311,7 +53311,7 @@
         }
       },
       {
-        "id": "osm-way-986926193",
+        "id": "way-986926193",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -53348,7 +53348,7 @@
         }
       },
       {
-        "id": "osm-way-996203346",
+        "id": "way-996203346",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -53383,7 +53383,7 @@
         }
       },
       {
-        "id": "osm-way-99750854",
+        "id": "way-99750854",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -53420,7 +53420,7 @@
         }
       },
       {
-        "id": "osm-way-99900575",
+        "id": "way-99900575",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -53457,7 +53457,7 @@
         }
       },
       {
-        "id": "osm-way-999690387",
+        "id": "way-999690387",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",
@@ -53494,7 +53494,7 @@
         }
       },
       {
-        "id": "osm-way-999823657",
+        "id": "way-999823657",
         "source": "osm",
         "name": "Koripallokenttä",
         "nameFi": "Koripallokenttä",

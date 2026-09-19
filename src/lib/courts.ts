@@ -235,7 +235,7 @@ export function parseCourtPath(
   if (segments[0] === "osm") {
     if (segments.length === 2 && isOsmType(segments[1])) return "index";
     if (segments.length === 3) {
-      const id = `osm-${segments[1]}-${segments[2]}`;
+      const id = `${segments[1]}-${segments[2]}`;
       return parseOsmCourtId(id) ? { id } : null;
     }
   }

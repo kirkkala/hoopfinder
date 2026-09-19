@@ -3,7 +3,7 @@ export type OsmElementType = "node" | "way" | "relation";
 export function parseOsmCourtId(
   id: string,
 ): { type: OsmElementType; osmId: string } | null {
-  const match = /^osm-(node|way|relation)-(\d+)$/.exec(id);
+  const match = /^(node|way|relation)-(\d+)$/.exec(id);
   if (!match) return null;
   return { type: match[1] as OsmElementType, osmId: match[2] };
 }
