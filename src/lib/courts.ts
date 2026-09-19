@@ -39,9 +39,44 @@ export type Court = {
   };
 };
 
-export type CourtWithDistance = Court & {
+export type ExplorerCourt = Pick<
+  Court,
+  | "id"
+  | "source"
+  | "name"
+  | "nameFi"
+  | "status"
+  | "address"
+  | "city"
+  | "neighborhood"
+  | "lat"
+  | "lon"
+> & {
+  amenities: Pick<Court["amenities"], "lighting" | "freeUse">;
+};
+
+export type CourtWithDistance = ExplorerCourt & {
   distanceKm: number | null;
 };
+
+export function toExplorerCourt(court: Court): ExplorerCourt {
+  return {
+    id: court.id,
+    source: court.source,
+    name: court.name,
+    nameFi: court.nameFi,
+    status: court.status,
+    address: court.address,
+    city: court.city,
+    neighborhood: court.neighborhood,
+    lat: court.lat,
+    lon: court.lon,
+    amenities: {
+      lighting: court.amenities.lighting,
+      freeUse: court.amenities.freeUse,
+    },
+  };
+}
 
 export function emptyAmenities(): Court["amenities"] {
   return {
@@ -123,7 +158,7 @@ export function isGenericCourtName(name: string): boolean {
 }
 
 export function withDistance(
-  courts: Court[],
+  courts: ExplorerCourt[],
   origin: Coordinates | null,
 ): CourtWithDistance[] {
   return courts
