@@ -203,16 +203,34 @@ function isOsmType(segment: string): boolean {
   return segment === "node" || segment === "way" || segment === "relation";
 }
 
-/** `/courts/lipas/82547` or `/courts/osm/way/1095396325`. */
-export function courtHref(court: Pick<Court, "id" | "source">): string {
+function courtSegments(court: Pick<Court, "id" | "source">): string[] {
   switch (court.source) {
     case "osm": {
       const osm = parseOsmCourtId(court.id);
-      return osm ? `/courts/osm/${osm.type}/${osm.osmId}` : `/courts/${court.id}`;
+      return osm ? ["osm", osm.type, osm.osmId] : [court.id];
     }
     case "lipas":
-      return `/courts/lipas/${court.id}`;
+      return ["lipas", court.id];
   }
+}
+
+/** `lipas/82547` or `osm/way/1095396325` — court page path after `/courts/`. */
+export function courtPath(court: Pick<Court, "id" | "source">): string {
+  return courtSegments(court).join("/");
+}
+
+/** `lipas-82547` or `osm-way-1095396325` — hyphen form for `?court=` (no `%2F`). */
+export function courtParam(court: Pick<Court, "id" | "source">): string {
+  return courtSegments(court).join("-");
+}
+
+export function courtHref(court: Pick<Court, "id" | "source">): string {
+  return `/courts/${courtPath(court)}`;
+}
+
+export function courtIdFromParam(value: string): string | null {
+  const parsed = parseCourtPath(value.split("-"));
+  return parsed && parsed !== "index" ? parsed.id : null;
 }
 
 /** `"index"` → home; `{ id }` → court; `null` → 404. */
