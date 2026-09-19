@@ -37,6 +37,7 @@ import { LocateMeButton, locationHint } from "@/components/LocateMeButton";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { CourtMiniMap } from "@/components/court/CourtMiniMap";
 import {
+  courtParam,
   courtTitle,
   formatAddress,
   formatAdmin,
@@ -85,7 +86,7 @@ export function CourtDetails({
 
       <main className="mx-auto grid w-full max-w-5xl flex-1 gap-6 px-4 py-8 split:grid-cols-[1.1fr_0.9fr]">
         <section className="space-y-5">
-          <BackToMap courtId={court.id} className={split.hidden} />
+          <BackToMap court={court} className={split.hidden} />
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">
               {copy.courtKind}
@@ -237,7 +238,7 @@ export function CourtDetails({
         </section>
 
         <aside className="overflow-hidden rounded-3xl border border-white/10 bg-panel">
-          <BackToMap courtId={court.id} className="px-3 py-4" />
+          <BackToMap court={court} className="px-3 py-4" />
           <div className="h-80">
             <CourtMiniMap court={court} />
           </div>
@@ -397,16 +398,16 @@ function CourtDistanceBlock({ court }: { court: Court }) {
 }
 
 function BackToMap({
-  courtId,
+  court,
   className,
 }: {
-  courtId: string;
+  court: Court;
   className?: string;
 }) {
   const copy = useCopy();
   return (
     <Link
-      href={`/?court=${encodeURIComponent(courtId)}`}
+      href={`/?court=${encodeURIComponent(courtParam(court))}`}
       className={`inline-flex shrink-0 items-center gap-1 text-md font-medium text-gold hover:text-white ${className ?? ""}`}
     >
       <Map aria-hidden />
