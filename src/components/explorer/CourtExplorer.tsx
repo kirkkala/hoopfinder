@@ -201,7 +201,11 @@ export function CourtExplorer({
 
   return (
     <div className="flex h-dvh flex-col bg-asphalt">
-      <AppHeader fetchedAtBySource={fetchedAtBySource} courtCount={courts.length} />
+      <AppHeader
+        home
+        fetchedAtBySource={fetchedAtBySource}
+        courtCount={courts.length}
+      />
 
       <div className={`flex min-h-0 flex-1 flex-col ${split.row}`}>
         <aside className={`flex w-full shrink-0 flex-col border-b border-white/10 bg-panel ${split.aside}`}>
