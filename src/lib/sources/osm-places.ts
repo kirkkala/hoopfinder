@@ -81,7 +81,7 @@ function osmLookupId(courtId: string): string | null {
 
 function courtIdFromHit(hit: NominatimHit): string | null {
   if (!hit.osm_type || hit.osm_id == null) return null;
-  return `osm-${hit.osm_type}-${hit.osm_id}`;
+  return `${hit.osm_type}-${hit.osm_id}`;
 }
 
 async function lookupBatch(ids: string[]): Promise<NominatimHit[]> {

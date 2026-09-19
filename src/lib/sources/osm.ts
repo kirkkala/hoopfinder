@@ -209,7 +209,7 @@ function toCourt(element: OsmElement): Court | null {
   const hoops = text(tags.hoops);
 
   return {
-    id: `osm-${element.type}-${element.id}`,
+    id: `${element.type}-${element.id}`,
     source: "osm",
     name,
     nameFi,
