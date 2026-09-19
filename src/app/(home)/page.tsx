@@ -47,7 +47,7 @@ export default async function HomePage({
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <CourtExplorer
-        courts={courts}
+        courtCount={courts.length}
         fetchedAtBySource={fetchedAtBySource}
         focusId={focusId}
       />

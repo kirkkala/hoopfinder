@@ -12,8 +12,8 @@ import { useCopy } from "@/components/brand/LocaleProvider";
 import {
   courtParam,
   withDistance,
-  type Court,
   type CourtWithDistance,
+  type ExplorerCourt,
 } from "@/lib/courts";
 import { isInBounds, type MapBounds } from "@/lib/geo";
 import { mq, split, useMinWidth } from "@/lib/layout";
@@ -78,15 +78,16 @@ function syncCourtUrl(path: string | null) {
 }
 
 export function CourtExplorer({
-  courts,
+  courtCount: catalogCount,
   fetchedAtBySource,
   focusId,
 }: {
-  courts: Court[];
+  courtCount: number;
   fetchedAtBySource: FetchedAtBySource;
   focusId: string | null;
 }) {
   const copy = useCopy();
+  const [courts, setCourts] = useState<ExplorerCourt[]>([]);
   const [query, setQuery] = useState("");
   const { origin, status: locationStatus, request } = useLocationStatus();
   const [locateSeq, setLocateSeq] = useState(0);
@@ -107,6 +108,23 @@ export function CourtExplorer({
     focusId && courts.some((court) => court.id === focusId) ? focusId : null;
   const selectedId = pickedId === undefined ? (focusedId ?? restoredId) : pickedId;
   const keepCamera = pickedId === undefined && restoredId !== null && !focusedId;
+
+  useEffect(() => {
+    const controller = new AbortController();
+    void fetch("/api/courts", { signal: controller.signal })
+      .then((response) => {
+        if (!response.ok) throw new Error("court list failed");
+        return response.json() as Promise<{ courts: ExplorerCourt[] }>;
+      })
+      .then((payload) => {
+        setCourts(payload.courts);
+      })
+      .catch((error: unknown) => {
+        if (error instanceof DOMException && error.name === "AbortError") return;
+        setCourts([]);
+      });
+    return () => controller.abort();
+  }, []);
 
   useEffect(() => {
     if (focusedId) writeSelectedCourt(focusedId);
@@ -204,7 +222,7 @@ export function CourtExplorer({
       <AppHeader
         home
         fetchedAtBySource={fetchedAtBySource}
-        courtCount={courts.length}
+        courtCount={catalogCount}
       />
 
       <div className={`flex min-h-0 flex-1 flex-col ${split.row}`}>
