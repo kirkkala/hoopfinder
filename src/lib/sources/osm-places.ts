@@ -1,4 +1,5 @@
 import type { Court } from "@/lib/courts";
+import { parseOsmCourtId } from "@/lib/sources";
 
 const USER_AGENT = "HoopFinder/0.1 (https://github.com/kirkkala/hoopfinder)";
 const LOOKUP = "https://nominatim.openstreetmap.org/lookup";
@@ -72,10 +73,10 @@ function needsPlace(court: Court): boolean {
 }
 
 function osmLookupId(courtId: string): string | null {
-  const match = /^osm-(node|way|relation)-(\d+)$/.exec(courtId);
-  if (!match) return null;
-  const prefix = { node: "N", way: "W", relation: "R" }[match[1]];
-  return prefix ? `${prefix}${match[2]}` : null;
+  const parsed = parseOsmCourtId(courtId);
+  if (!parsed) return null;
+  const prefix = { node: "N", way: "W", relation: "R" }[parsed.type];
+  return `${prefix}${parsed.osmId}`;
 }
 
 function courtIdFromHit(hit: NominatimHit): string | null {

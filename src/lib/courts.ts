@@ -1,7 +1,7 @@
 import { getCopy, type Copy } from "@/lib/copy";
 import type { Coordinates } from "@/lib/geo";
 import { haversineKm } from "@/lib/geo";
-import type { CourtSourceId } from "@/lib/sources";
+import { parseOsmCourtId, type CourtSourceId } from "@/lib/sources";
 
 export type Court = {
   id: string;
@@ -197,4 +197,47 @@ function formatCodedLabel(code: string, labels: Record<string, string>): string 
 
 function titleCase(value: string): string {
   return value.replaceAll(/\b\w/g, (letter) => letter.toUpperCase());
+}
+
+function isOsmType(segment: string): boolean {
+  return segment === "node" || segment === "way" || segment === "relation";
+}
+
+/** `/courts/lipas/82547` or `/courts/osm/way/1095396325`. */
+export function courtHref(court: Pick<Court, "id" | "source">): string {
+  switch (court.source) {
+    case "osm": {
+      const osm = parseOsmCourtId(court.id);
+      return osm ? `/courts/osm/${osm.type}/${osm.osmId}` : `/courts/${court.id}`;
+    }
+    case "lipas":
+      return `/courts/lipas/${court.id}`;
+  }
+}
+
+/** `"index"` → home; `{ id }` → court; `null` → 404. */
+export function parseCourtPath(
+  segments: string[],
+): "index" | { id: string } | null {
+  if (segments.length === 0) return "index";
+  if (segments.length === 1) {
+    return segments[0] === "lipas" ||
+      segments[0] === "osm" ||
+      isOsmType(segments[0])
+      ? "index"
+      : null;
+  }
+  if (segments[0] === "lipas") {
+    return segments.length === 2 && /^\d+$/.test(segments[1])
+      ? { id: segments[1] }
+      : null;
+  }
+  if (segments[0] === "osm") {
+    if (segments.length === 2 && isOsmType(segments[1])) return "index";
+    if (segments.length === 3) {
+      const id = `osm-${segments[1]}-${segments[2]}`;
+      return parseOsmCourtId(id) ? { id } : null;
+    }
+  }
+  return null;
 }
