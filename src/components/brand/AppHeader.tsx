@@ -67,7 +67,7 @@ export function AppHeader({
   return (
     <header
       ref={headerRef}
-      className="relative z-20 border-b border-white/10 bg-asphalt"
+      className="sticky top-0 z-20 border-b border-white/10 bg-asphalt"
     >
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="court-arc absolute inset-0 opacity-40" />
