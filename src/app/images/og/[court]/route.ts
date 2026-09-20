@@ -5,7 +5,11 @@ import {
   courtTitle,
   formatAddress,
 } from "@/lib/courts";
-import { generateCourtOgImage } from "@/lib/og";
+import {
+  generateCourtOgImage,
+  generateHomeOgImage,
+  HOME_OG_ID,
+} from "@/lib/og";
 
 export const dynamic = "force-dynamic";
 
@@ -14,6 +18,8 @@ export async function GET(
   context: RouteContext<"/images/og/[court]">,
 ) {
   const { court: param } = await context.params;
+  if (param === HOME_OG_ID) return generateHomeOgImage();
+
   const id = courtIdFromParam(param);
   const result = id ? await getBasketballCourt(id) : null;
   if (!result) return new Response("Not Found", { status: 404 });

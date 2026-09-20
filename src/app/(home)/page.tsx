@@ -4,6 +4,7 @@ import { getCourtCatalog } from "@/lib/catalog";
 import { SITE_URL } from "@/lib/constants";
 import { getCopy } from "@/lib/copy";
 import { courtIdFromParam } from "@/lib/courts";
+import { homeOgHref, OG_CONTENT_TYPE, OG_SIZE } from "@/lib/og";
 
 export const dynamic = "force-dynamic";
 
@@ -14,6 +15,17 @@ export async function generateMetadata(): Promise<Metadata> {
     description: finnish.metaDescriptionCount(courts.length),
     alternates: {
       canonical: "/",
+    },
+    openGraph: {
+      images: [
+        {
+          url: homeOgHref(),
+          width: OG_SIZE.width,
+          height: OG_SIZE.height,
+          alt: finnish.metaOgImageAlt,
+          type: OG_CONTENT_TYPE,
+        },
+      ],
     },
   };
 }
