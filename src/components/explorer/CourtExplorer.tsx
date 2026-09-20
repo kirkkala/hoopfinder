@@ -218,14 +218,14 @@ export function CourtExplorer({
   }
 
   return (
-    <div className="flex h-dvh flex-col bg-asphalt">
+    <div className="flex h-dvh flex-col overflow-hidden overscroll-none bg-asphalt">
       <AppHeader
         home
         fetchedAtBySource={fetchedAtBySource}
         courtCount={catalogCount}
       />
 
-      <div className={`flex min-h-0 flex-1 flex-col ${split.row}`}>
+      <div className={`flex min-h-0 flex-1 flex-col overflow-hidden ${split.row}`}>
         <aside className={`flex w-full shrink-0 flex-col border-b border-white/10 bg-panel ${split.aside}`}>
           <div className={`p-3 sm:p-4 ${split.paneBorder}`}>
             <SearchFilters
@@ -244,7 +244,7 @@ export function CourtExplorer({
           </div>
 
           {showList ? (
-            <div className="min-h-0 flex-1 overflow-y-auto px-3">
+            <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain px-3">
               <CourtList
                 courts={courtsInView}
                 selectedId={selectedId}
