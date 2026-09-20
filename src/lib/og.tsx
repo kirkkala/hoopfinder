@@ -1,10 +1,15 @@
 import { ImageResponse } from "next/og";
 import type { ReactNode } from "react";
-import { APP_NAME } from "@/lib/constants";
+import { APP_NAME, APP_VERSION } from "@/lib/constants";
 import { getCopy } from "@/lib/copy";
 
 export const OG_SIZE = { width: 1200, height: 630 };
 export const OG_CONTENT_TYPE = "image/png";
+export const HOME_OG_ID = "home";
+
+export function homeOgHref() {
+  return `/images/og/${HOME_OG_ID}?v=${encodeURIComponent(APP_VERSION)}`;
+}
 
 /**
  * Facebook mobile (and Messenger) center-crops 1.91:1 images toward 1:1.
