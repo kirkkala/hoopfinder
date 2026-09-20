@@ -32,20 +32,23 @@ export function AppHeader({
   const [introOpen, setIntroOpen] = useState(false);
 
   useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
+  useLayoutEffect(() => {
     const header = headerRef.current;
     if (!header) return;
-    const el = header;
 
     function syncHeight() {
-      el.style.setProperty(
+      document.documentElement.style.setProperty(
         "--app-header-height",
-        `${el.getBoundingClientRect().height}px`,
+        `${header.getBoundingClientRect().height}px`,
       );
     }
 
     syncHeight();
     const observer = new ResizeObserver(syncHeight);
-    observer.observe(el);
+    observer.observe(header);
     return () => observer.disconnect();
   }, []);
 
@@ -72,7 +75,9 @@ export function AppHeader({
   return (
     <header
       ref={headerRef}
-      className="sticky top-0 z-20 border-b border-white/10 bg-asphalt"
+      className={`z-20 shrink-0 border-b border-white/10 bg-asphalt ${
+        home ? "relative" : "sticky top-0"
+      }`}
     >
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="court-arc absolute inset-0 opacity-40" />

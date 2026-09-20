@@ -10,7 +10,7 @@ export function AppFooter() {
   const copy = useCopy();
 
   return (
-    <footer className="border-t border-white/10 bg-asphalt px-3 py-2.5 text-xs leading-5 text-ink-muted sm:px-4 sm:py-3 sm:text-sm sm:leading-6">
+    <footer className="shrink-0 border-t border-white/10 bg-asphalt px-3 py-2.5 text-xs leading-5 text-ink-muted sm:px-4 sm:py-3 sm:text-sm sm:leading-6">
       <div className="flex flex-wrap items-center justify-between gap-x-3 gap-y-2">
         <div className="min-w-0 wide:flex-1">
           <p className="whitespace-nowrap">
