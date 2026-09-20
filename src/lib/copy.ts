@@ -215,6 +215,7 @@ const messages = {
   no: { fi: "Ei", en: "No" },
   notReported: { fi: "Ei ilmoitettu", en: "Not reported" },
   addCourt: { fi: "Lisää kenttä", en: "Add court" },
+  addCourtConfirmHere: { fi: "Lisää kenttä", en: "Add court" },
   addCourtInfoTitle: { fi: "Lisää kenttä Hoop Finderiin", en: "Add court to Hoop Finder" },
   addCourtExit: { fi: "Poistu", en: "Exit" },
   addCourtLead: {

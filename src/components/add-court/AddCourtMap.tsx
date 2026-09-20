@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { MapPin } from "lucide-react";
 import { setWorkerUrl } from "maplibre-gl";
 import Map, {
   Layer,
   Marker,
   NavigationControl,
+  Popup,
   Source,
   type MapLayerMouseEvent,
   type MapRef,
@@ -32,6 +33,16 @@ const ADD_COURT_MIN_ZOOM = 15;
 /** OpenFreeMap Liberty fill for seas, lakes, and wide rivers. */
 const WATER_LAYER = "water";
 
+/** Pin is 36px tall; extra bottom offset keeps the chip off the marker. */
+const CONFIRM_OFFSET = {
+  top: [0, 0],
+  bottom: [0, -28],
+  "bottom-left": [0, -28],
+  "bottom-right": [0, -28],
+  left: [8, -18],
+  right: [-8, -18],
+};
+
 export type AddCourtMapAlert = "zoom" | "too-close" | "outside-finland" | "on-water";
 
 function readSavedView(): { latitude: number; longitude: number; zoom: number } | null {
@@ -55,6 +66,7 @@ export function AddCourtMap({
   origin,
   locateSeq,
   draft,
+  confirm,
   onPlace,
   onAlert,
   onCanPlaceChange,
@@ -63,6 +75,7 @@ export function AddCourtMap({
   origin: Coordinates | null;
   locateSeq: number;
   draft: Coordinates | null;
+  confirm?: ReactNode;
   onPlace: (coords: Coordinates) => void;
   onAlert: (kind: AddCourtMapAlert) => void;
   onCanPlaceChange: (canPlace: boolean) => void;
@@ -226,6 +239,21 @@ export function AddCourtMap({
         <Marker latitude={draft.lat} longitude={draft.lon} anchor="bottom">
           <MapPin className="size-9 fill-gold text-asphalt drop-shadow-lg" aria-hidden />
         </Marker>
+      ) : null}
+
+      {draft && confirm ? (
+        <Popup
+          latitude={draft.lat}
+          longitude={draft.lon}
+          closeButton={false}
+          closeOnClick={false}
+          focusAfterOpen={false}
+          offset={CONFIRM_OFFSET}
+          maxWidth="none"
+          padding={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        >
+          {confirm}
+        </Popup>
       ) : null}
     </Map>
   );

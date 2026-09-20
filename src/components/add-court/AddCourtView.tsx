@@ -33,6 +33,7 @@ export function AddCourtView({
   const copy = useCopy();
   const [courts, setCourts] = useState<ExplorerCourt[]>([]);
   const [draft, setDraft] = useState<Coordinates | null>(null);
+  const [draftStep, setDraftStep] = useState<"confirm" | "form">("confirm");
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [email, setEmail] = useState("");
@@ -58,11 +59,17 @@ export function AddCourtView({
 
   function clearDraft() {
     setDraft(null);
+    setDraftStep("confirm");
     setName("");
     setAddress("");
     setEmail("");
     setError(null);
     setSending(false);
+  }
+
+  function backToConfirm() {
+    setDraftStep("confirm");
+    setError(null);
   }
 
   useEffect(() => {
@@ -74,6 +81,10 @@ export function AddCourtView({
         return;
       }
       if (draft) {
+        if (draftStep === "form") {
+          backToConfirm();
+          return;
+        }
         clearDraft();
         return;
       }
@@ -81,10 +92,11 @@ export function AddCourtView({
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [draft, mapAlert, success]);
+  }, [draft, draftStep, mapAlert, success]);
 
   function placeDraft(coords: Coordinates) {
     setDraft(coords);
+    setDraftStep("confirm");
     setMapAlert(null);
     setError(null);
     setSuccess(false);
@@ -105,7 +117,7 @@ export function AddCourtView({
 
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
-    if (!draft || sending) return;
+    if (!draft || draftStep !== "form" || sending) return;
     setSending(true);
     setError(null);
     setSuccess(false);
@@ -192,6 +204,14 @@ export function AddCourtView({
             origin={origin}
             locateSeq={locateSeq}
             draft={draft}
+            confirm={
+              draftStep === "confirm" ? (
+                <ConfirmPlaceCard
+                  onCancel={clearDraft}
+                  onConfirm={() => setDraftStep("form")}
+                />
+              ) : null
+            }
             onPlace={placeDraft}
             onAlert={showAlert}
             onCanPlaceChange={(next) => {
@@ -202,8 +222,8 @@ export function AddCourtView({
           />
         </div>
 
-        {draft ? (
-          <AddMapPanel title={copy.addCourt} onClose={clearDraft}>
+        {draft && draftStep === "form" ? (
+          <AddMapPanel title={copy.addCourt} onClose={backToConfirm}>
             <form onSubmit={handleSubmit}>
               <p className="mt-1 text-xs text-ink-muted">
                 {draft.lat.toFixed(5)}, {draft.lon.toFixed(5)}
@@ -298,6 +318,39 @@ export function AddCourtView({
       </section>
 
       <AppFooter />
+    </div>
+  );
+}
+
+function ConfirmPlaceCard({
+  onCancel,
+  onConfirm,
+}: {
+  onCancel: () => void;
+  onConfirm: () => void;
+}) {
+  const copy = useCopy();
+  return (
+    <div
+      className="flex items-center gap-1 p-1"
+      role="dialog"
+      aria-label={copy.addCourt}
+    >
+      <button
+        type="button"
+        onClick={onConfirm}
+        className="rounded-full bg-gold px-3 py-1 text-sm font-bold text-asphalt hover:bg-white"
+      >
+        {copy.addCourtConfirmHere}
+      </button>
+      <button
+        type="button"
+        onClick={onCancel}
+        className="rounded-full p-1 text-ink-muted hover:bg-white/10 hover:text-white"
+        aria-label={copy.close}
+      >
+        <X className="size-4" aria-hidden />
+      </button>
     </div>
   );
 }
