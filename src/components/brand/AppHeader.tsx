@@ -39,12 +39,12 @@ export function AppHeader({
     const header = headerRef.current;
     if (!header) return;
 
-    function syncHeight() {
+    const syncHeight = () => {
       document.documentElement.style.setProperty(
         "--app-header-height",
         `${header.getBoundingClientRect().height}px`,
       );
-    }
+    };
 
     syncHeight();
     const observer = new ResizeObserver(syncHeight);
