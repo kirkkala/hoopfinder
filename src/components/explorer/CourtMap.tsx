@@ -7,7 +7,6 @@ import {
   LngLatBounds,
   setWorkerUrl,
   type ExpressionSpecification,
-  type GeoJSONSource,
 } from "maplibre-gl";
 import Map, {
   Layer,
@@ -40,7 +39,7 @@ import {
 setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
 
 const MAP_VIEW_KEY = "hoopfinder-map-view";
-const CLICKABLE_LAYERS = ["clusters", "cluster-count", "court-points", "court-labels"];
+const CLICKABLE_LAYERS = ["court-points", "court-labels"];
 const HOVER: ExpressionSpecification = [
   "boolean",
   ["feature-state", "hover"],
@@ -258,7 +257,7 @@ export function CourtMap({
   function handleMouseMove(event: MapLayerMouseEvent) {
     const feature = event.features?.[0];
     setCursor(feature ? "pointer" : "");
-    const id = feature && !feature.properties?.cluster ? String(feature.properties?.id ?? "") : "";
+    const id = feature ? String(feature.properties?.id ?? "") : "";
     pointerId.current = id || null;
     paintHover();
   }
@@ -267,26 +266,6 @@ export function CourtMap({
     const feature = event.features?.[0];
     if (!feature || feature.geometry.type !== "Point") {
       if (selectedRef.current) onClose();
-      return;
-    }
-
-    const coordinates = feature.geometry.coordinates as [number, number];
-
-    if (feature.properties?.cluster) {
-      if (selectedRef.current) onClose();
-      const map = mapRef.current;
-      const clusterId = Number(feature.properties.cluster_id);
-      const source = map?.getSource("courts");
-      if (map && Number.isFinite(clusterId) && source) {
-        void (source as GeoJSONSource)
-          .getClusterExpansionZoom(clusterId)
-          .then((zoom) => {
-            map.easeTo({ center: coordinates, zoom });
-          })
-          .catch(() => {
-            map.easeTo({ center: coordinates, zoom: map.getZoom() + 2 });
-          });
-      }
       return;
     }
 
@@ -325,67 +304,10 @@ export function CourtMap({
       attributionControl={{ compact: true }}
     >
       <NavigationControl position="top-right" />
-      <Source
-        id="courts"
-        type="geojson"
-        data={data}
-        promoteId="id"
-        cluster
-        clusterMaxZoom={14}
-        clusterRadius={48}
-      >
-        <Layer
-          id="clusters"
-          type="circle"
-          filter={["has", "point_count"]}
-          paint={{
-            "circle-color": [
-              "step",
-              ["get", "point_count"],
-              "#ffd482",
-              10,
-              "#ff4339",
-              30,
-              "#8299e0",
-            ],
-            "circle-radius": [
-              "step",
-              ["get", "point_count"],
-              18,
-              10,
-              24,
-              30,
-              32,
-            ],
-            "circle-stroke-width": 3,
-            "circle-stroke-color": "#ffffff",
-          }}
-        />
-        <Layer
-          id="cluster-count"
-          type="symbol"
-          filter={["has", "point_count"]}
-          layout={{
-            "text-field": ["get", "point_count_abbreviated"],
-            "text-size": [
-              "step",
-              ["get", "point_count"],
-              16,
-              10,
-              15,
-              30,
-              18,
-            ],
-            "text-font": ["Noto Sans Regular"],
-            "text-allow-overlap": true,
-            "text-ignore-placement": true,
-          }}
-          paint={{ "text-color": "#111111" }}
-        />
+      <Source id="courts" type="geojson" data={data} promoteId="id">
         <Layer
           id="court-points"
           type="circle"
-          filter={["!", ["has", "point_count"]]}
           paint={{
             "circle-color": [
               "case",
@@ -407,7 +329,6 @@ export function CourtMap({
           id="court-labels"
           type="symbol"
           minzoom={12}
-          filter={["!", ["has", "point_count"]]}
           layout={{
             "text-field": ["get", "name"],
             "text-font": ["Noto Sans Regular"],
