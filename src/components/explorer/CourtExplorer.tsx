@@ -20,6 +20,7 @@ import { mq, split, useMinWidth } from "@/lib/layout";
 import { useLocationStatus } from "@/lib/origin";
 import type { PlaceMatch } from "@/lib/places";
 import type { FetchedAtBySource } from "@/lib/catalog";
+import { fetchMapCourts } from "@/lib/map-courts";
 
 const CourtMap = dynamic(
   () => import("@/components/explorer/CourtMap").then((mod) => mod.CourtMap),
@@ -111,13 +112,9 @@ export function CourtExplorer({
 
   useEffect(() => {
     const controller = new AbortController();
-    void fetch("/api/courts", { signal: controller.signal })
-      .then((response) => {
-        if (!response.ok) throw new Error("court list failed");
-        return response.json() as Promise<{ courts: ExplorerCourt[] }>;
-      })
-      .then((payload) => {
-        setCourts(payload.courts);
+    void fetchMapCourts(controller.signal)
+      .then((loaded) => {
+        if (!controller.signal.aborted) setCourts(loaded);
       })
       .catch((error: unknown) => {
         if (error instanceof DOMException && error.name === "AbortError") return;
@@ -195,7 +192,11 @@ export function CourtExplorer({
     setPickedId(id);
     writeSelectedCourt(id);
     const court = courts.find((item) => item.id === id);
-    syncCourtUrl(court ? courtParam(court) : null);
+    if (!court || court.source === "pending") {
+      syncCourtUrl(null);
+      return;
+    }
+    syncCourtUrl(courtParam(court));
   }
 
   function clearCourt() {

@@ -2,6 +2,7 @@
 
 import { Fragment, useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { basketball } from "@lucide/lab";
 import { Icon } from "lucide-react";
 import { IntroDialog } from "@/components/brand/IntroDialog";
@@ -114,6 +115,9 @@ export function AppHeader({
         <nav className="flex shrink-0 items-center gap-1.5">
           <LanguageToggle />
           <div className={wide.flex}>
+            <AddCourtNavLink />
+          </div>
+          <div className={wide.flex}>
             <InfoMenuButton
               introOpen={introOpen}
               onOpenInfo={() => setIntroOpen(true)}
@@ -203,25 +207,6 @@ function HeaderMenu({
     };
   }, [open]);
 
-  const items: {
-    id: string;
-    label: string;
-    onSelect: () => void;
-    hasPopup?: "dialog";
-    expanded?: boolean;
-  }[] = [
-    {
-      id: "info",
-      label: copy.info,
-      onSelect: () => {
-        setOpen(false);
-        onOpenInfo();
-      },
-      hasPopup: "dialog",
-      expanded: introOpen,
-    },
-  ];
-
   return (
     <div className="relative">
       <button
@@ -270,19 +255,29 @@ function HeaderMenu({
                 </p>
               </div>
               <ul className="border-y border-white/10">
-                {items.map((item) => (
-                  <li key={item.id}>
-                    <button
-                      type="button"
-                      onClick={item.onSelect}
-                      aria-haspopup={item.hasPopup}
-                      aria-expanded={item.expanded}
-                      className="flex w-full items-center px-4 py-3.5 text-left text-base font-medium text-white outline-none hover:bg-white/5 focus-visible:bg-white/5 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-gold/60"
-                    >
-                      {item.label}
-                    </button>
-                  </li>
-                ))}
+                <li>
+                  <Link
+                    href="/add"
+                    onClick={() => setOpen(false)}
+                    className="flex w-full items-center px-4 py-3.5 text-left text-base font-medium text-white outline-none hover:bg-white/5 focus-visible:bg-white/5 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-gold/60"
+                  >
+                    {copy.addCourt}
+                  </Link>
+                </li>
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOpen(false);
+                      onOpenInfo();
+                    }}
+                    aria-haspopup="dialog"
+                    aria-expanded={introOpen}
+                    className="flex w-full items-center px-4 py-3.5 text-left text-base font-medium text-white outline-none hover:bg-white/5 focus-visible:bg-white/5 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-gold/60"
+                  >
+                    {copy.info}
+                  </button>
+                </li>
               </ul>
               <div className="px-4">
                 <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1 pt-4">
@@ -350,6 +345,22 @@ function HamburgerIcon({ open }: { open: boolean }) {
         }}
       />
     </span>
+  );
+}
+
+function AddCourtNavLink() {
+  const copy = useCopy();
+  const onAddPage = usePathname() === "/add";
+
+  return (
+    <Link
+      href="/add"
+      className={`rounded-sm px-2.5 py-1.5 text-sm font-medium outline-none hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-gold/60 ${
+        onAddPage ? "text-gold" : "text-ink/80"
+      }`}
+    >
+      {copy.addCourt}
+    </Link>
   );
 }
 

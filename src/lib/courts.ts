@@ -39,21 +39,21 @@ export type Court = {
   };
 };
 
-export type ExplorerCourt = Pick<
-  Court,
-  | "id"
-  | "source"
-  | "name"
-  | "nameFi"
-  | "status"
-  | "address"
-  | "city"
-  | "neighborhood"
-  | "lat"
-  | "lon"
-> & {
+export type ExplorerCourt = {
+  id: string;
+  name: string;
+  nameFi: string;
+  status: string;
+  address: string | null;
+  city: string | null;
+  neighborhood: string | null;
+  lat: number;
+  lon: number;
   amenities: Pick<Court["amenities"], "lighting" | "freeUse">;
-};
+} & (
+  | { source: CourtSourceId }
+  | { source: "pending" }
+);
 
 export type CourtWithDistance = ExplorerCourt & {
   distanceKm: number | null;
@@ -98,7 +98,17 @@ export function emptyAmenities(): Court["amenities"] {
   };
 }
 
-const DUPLICATE_KM = 0.08;
+/** Same pad as LIPAS/OSM merge — pending pins drop off once a source court lands here. */
+export const COURT_MATCH_KM = 0.08;
+
+export function isTooCloseToCourt(
+  point: Coordinates,
+  courts: Coordinates[],
+): boolean {
+  return courts.some(
+    (court) => haversineKm(point, { lat: court.lat, lon: court.lon }) < COURT_MATCH_KM,
+  );
+}
 
 export function mergeCourts(batches: Court[][]): Court[] {
   const merged: Court[] = [];
@@ -120,7 +130,7 @@ function isNearDuplicate(existing: Court, candidate: Court): boolean {
     haversineKm(
       { lat: existing.lat, lon: existing.lon },
       { lat: candidate.lat, lon: candidate.lon },
-    ) < DUPLICATE_KM
+    ) < COURT_MATCH_KM
   );
 }
 
@@ -203,9 +213,16 @@ export function formatReportedBoolean(
 
 export function formatStatus(status: string, copy: Copy = getCopy()): string {
   if (status === "active") return copy.statusOpen;
+  if (status === "pending") return copy.statusPending;
   if (status === "out-of-service-temporarily") return copy.statusTemporarilyClosed;
   if (status === "out-of-service-permanently") return copy.statusPermanentlyClosed;
   return copy.statusUnknown;
+}
+
+export function isPendingCourt(
+  court: Pick<ExplorerCourt, "source">,
+): court is { source: "pending" } {
+  return court.source === "pending";
 }
 
 export function formatAddress(

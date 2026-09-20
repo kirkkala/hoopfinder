@@ -214,6 +214,76 @@ const messages = {
   yes: { fi: "Kyllä", en: "Yes" },
   no: { fi: "Ei", en: "No" },
   notReported: { fi: "Ei ilmoitettu", en: "Not reported" },
+  addCourt: { fi: "Lisää kenttä", en: "Add court" },
+  addCourtInfoTitle: { fi: "Lisää kenttä Hoop Finderiin", en: "Add court to Hoop Finder" },
+  addCourtLead: {
+    fi: "Tee palvelusta parempi lisäämällä puuttuvia kenttiä.",
+    en: "Make the service better by adding missing courts.",
+  },
+  addCourtHint: {
+    fi: "Zoomaa karttaa tai paikanna itsesi jos olet puuttuvalla kentällä ja napauta karttaa.",
+    en: "Zoom in or locate yourself if you are missing a court and tap the map to add a court.",
+  },
+  addCourtHintZoom: {
+    fi: "Zoomaa lähemmäs merkitäksesi korin sijainnin mahdollisimman tarkasti.",
+    en: "Zoom in closer to mark the hoop location as accurately as possible.",
+  },
+  addCourtZoomTitle: { fi: "Zoomaa lähemmäs", en: "Zoom in closer" },
+  addCourtName: { fi: "Kentän nimi", en: "Court name" },
+  addCourtNamePlaceholder: {
+    fi: "Esim. Puiston koripallokenttä",
+    en: "e.g. Park basketball court",
+  },
+  addCourtAddress: { fi: "Osoite", en: "Address" },
+  addCourtAddressPlaceholder: {
+    fi: "Paratiisitie 13, 00100 Helsinki",
+    en: "Paratiisitie 13, 00100 Helsinki",
+  },
+  addCourtEmail: { fi: "Sähköposti", en: "Email" },
+  addCourtEmailPlaceholder: {
+    fi: "nimi@esimerkki.fi",
+    en: "name@example.com",
+  },
+  addCourtEmailHelp: {
+    fi: "Tarvitsemme sähköpostin yhteydenottoon. Sitä ei näytetä kartalla.",
+    en: "We need an email to follow up. It is not shown on the map.",
+  },
+  addCourtSubmit: { fi: "Lähetä", en: "Submit" },
+  addCourtCancel: { fi: "Peruuta", en: "Cancel" },
+  addCourtSending: { fi: "Lähetetään…", en: "Sending…" },
+  addCourtError: {
+    fi: "Lähetys epäonnistui. Kokeile uudelleen.",
+    en: "Could not send. Try again.",
+  },
+  addCourtInvalid: {
+    fi: "Tarkista tiedot. Sähköpostin pitää olla kelvollinen.",
+    en: "Check the details. Email must be valid.",
+  },
+  addCourtUnavailable: {
+    fi: "Kenttien lisääminen ei ole juuri nyt käytössä.",
+    en: "Adding courts is not available right now.",
+  },
+  addCourtTooClose: {
+    fi: "Tässä on jo kenttä kartalla",
+    en: "There is already a court here",
+  },
+  addCourtTooCloseBody: {
+    fi: "Valitse toinen paikka kartalta.",
+    en: "Pick another place on the map.",
+  },
+  addCourtSuccess: {
+    fi: "Kiitos! Kenttä lisätty.",
+    en: "Thanks! Court added.",
+  },
+  addCourtOutsideFinland: {
+    fi: "Valitse paikka Suomesta.",
+    en: "Pick a place in Finland.",
+  },
+  pendingComingSoon: {
+    fi: "Käyttäjän raportoima puuttuva kenttä. Odottaa hyväksyntää.",
+    en: "User-reported missing court. Waiting for approval.",
+  },
+  statusPending: { fi: "Tulossa", en: "Coming soon" },
   statusOpen: { fi: "Avoinna", en: "Open" },
   statusTemporarilyClosed: {
     fi: "Tilapäisesti kiinni",

@@ -26,10 +26,18 @@ A Monday GitHub Action runs the full refresh. If Overpass fails, the previous OS
 
 ```bash
 npm install
+docker compose up -d
+cp .env.example .env.local   # if you do not already have one
 npm run dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000). API keys are not required.
+
+Postgres is only for visitor-submitted courts on `/add`. Copy `DATABASE_URL` from `.env.example` into `.env.local` if needed. The `submitted_courts` table is created on first request. Stop the database with `docker compose down`.
+
+## Suggest a court
+
+Not every hoop is in LIPAS or OpenStreetMap. Visitors can open `/add`, drop a pin (not next to an existing court), send a name, address and email, and see it on the explore map as coming soon. After the court lands in a source snapshot (within about 80 m), the pending pin is hidden and the usual court page is shown. Email is stored for follow-up and is not shown on the map. No login in this first version.
 
 ## License
 

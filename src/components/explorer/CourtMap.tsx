@@ -22,7 +22,12 @@ import { MAP_STYLE } from "@/lib/constants";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { CourtBadges } from "@/components/explorer/CourtBadges";
 import { CourtHeading } from "@/components/explorer/CourtHeading";
-import { courtHref, courtTitle, type CourtWithDistance } from "@/lib/courts";
+import {
+  courtHref,
+  courtTitle,
+  isPendingCourt,
+  type CourtWithDistance,
+} from "@/lib/courts";
 import {
   DEFAULT_MAP_CENTER,
   DEFAULT_MAP_ZOOM,
@@ -139,6 +144,7 @@ export function CourtMap({
         properties: {
           id: court.id,
           name: courtTitle(court, copy),
+          pending: isPendingCourt(court) ? 1 : 0,
         },
       })),
     }),
@@ -381,10 +387,20 @@ export function CourtMap({
           type="circle"
           filter={["!", ["has", "point_count"]]}
           paint={{
-            "circle-color": "#ff4339",
+            "circle-color": [
+              "case",
+              ["==", ["to-number", ["get", "pending"]], 1],
+              "#ffd482",
+              "#ff4339",
+            ],
             "circle-radius": ["case", HOVER, 9, 8],
             "circle-stroke-width": ["case", HOVER, 2.5, 2],
-            "circle-stroke-color": "#ffffff",
+            "circle-stroke-color": [
+              "case",
+              ["==", ["to-number", ["get", "pending"]], 1],
+              "#111111",
+              "#ffffff",
+            ],
           }}
         />
         <Layer
@@ -441,13 +457,17 @@ export function CourtMap({
             <div className="flex flex-wrap items-center gap-1.5 text-xs">
               <CourtBadges court={selected} />
             </div>
-            <Link
-              href={courtHref(selected)}
-              className="inline-flex items-center gap-1 self-end pt-2 pb-1 text-sm font-bold text-gold hover:text-white"
-            >
-              {copy.letsGo}
-              <ArrowRight className="size-3.5" aria-hidden />
-            </Link>
+            {isPendingCourt(selected) ? (
+              <p className="pt-1 text-sm text-ink-muted">{copy.pendingComingSoon}</p>
+            ) : (
+              <Link
+                href={courtHref(selected)}
+                className="inline-flex items-center gap-1 self-end pt-2 pb-1 text-sm font-bold text-gold hover:text-white"
+              >
+                {copy.letsGo}
+                <ArrowRight className="size-3.5" aria-hidden />
+              </Link>
+            )}
           </div>
         </Popup>
       ) : null}
