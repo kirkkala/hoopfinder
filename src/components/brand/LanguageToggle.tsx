@@ -1,17 +1,34 @@
 "use client";
 
 import { useCopy, useLocale } from "@/components/brand/LocaleProvider";
-import { LOCALES } from "@/lib/copy";
+import { LOCALES, type Locale } from "@/lib/copy";
 
-export function LanguageToggle({ stretch = false }: { stretch?: boolean }) {
+const LANGUAGE_LABEL: Record<Locale, string> = {
+  fi: "Suomeksi",
+  en: "In English",
+};
+
+const LANGUAGE_LABEL_SHORT: Record<Locale, string> = {
+  fi: "FI",
+  en: "EN",
+};
+
+export function LanguageToggle({
+  stretch = false,
+  short = false,
+}: {
+  stretch?: boolean;
+  short?: boolean;
+}) {
   const copy = useCopy();
   const { locale, setLocale } = useLocale();
+  const labels = short ? LANGUAGE_LABEL_SHORT : LANGUAGE_LABEL;
 
   return (
     <div
-      className={`flex shrink-0 rounded-full bg-white/10 p-0.5 text-xs font-bold tracking-wide ${
+      className={`flex shrink-0 rounded-full bg-white/10 p-0.5 text-xs font-bold ${
         stretch ? "w-full" : ""
-      }`}
+      } ${short ? "tracking-wide" : ""}`}
       role="group"
       aria-label={copy.language}
     >
@@ -21,7 +38,7 @@ export function LanguageToggle({ stretch = false }: { stretch?: boolean }) {
           type="button"
           onClick={() => setLocale(option)}
           aria-pressed={locale === option}
-          className={`rounded-full px-2.5 py-1.5 uppercase ${
+          className={`rounded-full px-2.5 py-1.5 ${short ? "uppercase" : ""} ${
             stretch ? "flex-1" : ""
           } ${
             locale === option
@@ -29,7 +46,7 @@ export function LanguageToggle({ stretch = false }: { stretch?: boolean }) {
               : "text-ink/70 hover:text-white"
           }`}
         >
-          {option}
+          {labels[option]}
         </button>
       ))}
     </div>

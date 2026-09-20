@@ -4,7 +4,7 @@ import { Fragment, useEffect, useId, useLayoutEffect, useRef, useState } from "r
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { basketball } from "@lucide/lab";
-import { Icon } from "lucide-react";
+import { Icon, X } from "lucide-react";
 import { IntroDialog } from "@/components/brand/IntroDialog";
 import { LanguageToggle } from "@/components/brand/LanguageToggle";
 import { BuyMeCoffeeButton } from "@/components/brand/BuyMeCoffeeButton";
@@ -111,17 +111,17 @@ export function AppHeader({
             </span>
           </Link>
           <BetaBadge />
-        </div>
-        <nav className="flex shrink-0 items-center gap-1.5">
-          <LanguageToggle />
-          <div className={wide.flex}>
-            <AddCourtNavLink />
-          </div>
           <div className={wide.flex}>
             <InfoMenuButton
               introOpen={introOpen}
               onOpenInfo={() => setIntroOpen(true)}
             />
+          </div>
+          <AddCourtNavLink />
+        </div>
+        <nav className="flex shrink-0 items-center gap-1.5">
+          <div className={wide.flex}>
+            <LanguageToggle short />
           </div>
         </nav>
         <HeaderMenu
@@ -253,17 +253,11 @@ function HeaderMenu({
                 <p className="mt-1 text-sm leading-5 text-ink-muted">
                   {copy.betaTooltip}
                 </p>
+                <div className="mt-4">
+                  <LanguageToggle stretch />
+                </div>
               </div>
               <ul className="border-y border-white/10">
-                <li>
-                  <Link
-                    href="/add"
-                    onClick={() => setOpen(false)}
-                    className="flex w-full items-center px-4 py-3.5 text-left text-base font-medium text-white outline-none hover:bg-white/5 focus-visible:bg-white/5 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-gold/60"
-                  >
-                    {copy.addCourt}
-                  </Link>
-                </li>
                 <li>
                   <button
                     type="button"
@@ -277,6 +271,15 @@ function HeaderMenu({
                   >
                     {copy.info}
                   </button>
+                </li>
+                <li>
+                  <Link
+                    href="/add"
+                    onClick={() => setOpen(false)}
+                    className="flex w-full items-center px-4 py-3.5 text-left text-base font-medium text-white outline-none hover:bg-white/5 focus-visible:bg-white/5 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-gold/60"
+                  >
+                    {copy.addCourt}
+                  </Link>
                 </li>
               </ul>
               <div className="px-4">
@@ -354,12 +357,22 @@ function AddCourtNavLink() {
 
   return (
     <Link
-      href="/add"
-      className={`rounded-sm px-2.5 py-1.5 text-sm font-medium outline-none hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-gold/60 ${
-        onAddPage ? "text-gold" : "text-ink/80"
+      href={onAddPage ? "/" : "/add"}
+      aria-current={onAddPage ? "page" : undefined}
+      aria-label={onAddPage ? copy.addCourtExit : undefined}
+      className={`group inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-sm px-2.5 py-1.5 text-sm font-medium outline-none focus-visible:ring-2 focus-visible:ring-gold/60 ${
+        onAddPage
+          ? "text-gold"
+          : "text-ink/80 hover:bg-white/10 hover:text-white"
       }`}
     >
       {copy.addCourt}
+      {onAddPage ? (
+        <X
+          aria-hidden
+          className="size-3.5 stroke-2 opacity-70 transition duration-150 group-hover:stroke-[3] group-hover:opacity-100 group-hover:text-white group-focus-visible:stroke-[3] group-focus-visible:opacity-100 group-focus-visible:text-white"
+        />
+      ) : null}
     </Link>
   );
 }
@@ -379,7 +392,7 @@ function InfoMenuButton({
       onClick={onOpenInfo}
       aria-haspopup="dialog"
       aria-expanded={introOpen}
-      className="rounded-sm px-2.5 py-1.5 text-sm font-medium text-ink/80 outline-none hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-gold/60"
+      className="shrink-0 whitespace-nowrap rounded-sm px-2.5 py-1.5 text-sm font-medium text-ink/80 outline-none hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-gold/60"
     >
       {copy.info}
     </button>

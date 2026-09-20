@@ -52,7 +52,7 @@ const messages = {
   },
   language: { fi: "Language", en: "Language" },
   menu: { fi: "Valikko", en: "Menu" },
-  info: { fi: "Info", en: "Info" },
+  info: { fi: "Tietoa palvelusta", en: "About the service" },
   introTitle: { fi: "Koripallokentät suomessa", en: "Basketball courts in Finland" },
   introLead: {
     fi: "Hoop Finderissa on {count} ulkokoripallokenttää. Olit sitten reissussa, mökillä, sukulaisten luona tai haluat löytää uuden kentän kodin läheltä — täältä löydät paikan heittää.",
@@ -216,6 +216,7 @@ const messages = {
   notReported: { fi: "Ei ilmoitettu", en: "Not reported" },
   addCourt: { fi: "Lisää kenttä", en: "Add court" },
   addCourtInfoTitle: { fi: "Lisää kenttä Hoop Finderiin", en: "Add court to Hoop Finder" },
+  addCourtExit: { fi: "Poistu", en: "Exit" },
   addCourtLead: {
     fi: "Tee palvelusta parempi lisäämällä puuttuvia kenttiä.",
     en: "Make the service better by adding missing courts.",
