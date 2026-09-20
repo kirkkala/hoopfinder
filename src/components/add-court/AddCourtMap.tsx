@@ -29,6 +29,11 @@ const MAP_VIEW_KEY = "hoopfinder-map-view";
 /** Neighborhood zoom so a pin can land on a park, not a city. */
 const ADD_COURT_MIN_ZOOM = 15;
 
+/** OpenFreeMap Liberty fill for seas, lakes, and wide rivers. */
+const WATER_LAYER = "water";
+
+export type AddCourtMapAlert = "zoom" | "too-close" | "outside-finland" | "on-water";
+
 function readSavedView(): { latitude: number; longitude: number; zoom: number } | null {
   try {
     const saved = JSON.parse(localStorage.getItem(MAP_VIEW_KEY) ?? "");
@@ -59,7 +64,7 @@ export function AddCourtMap({
   locateSeq: number;
   draft: Coordinates | null;
   onPlace: (coords: Coordinates) => void;
-  onAlert: (kind: "zoom" | "too-close" | "outside-finland") => void;
+  onAlert: (kind: AddCourtMapAlert) => void;
   onCanPlaceChange: (canPlace: boolean) => void;
 }) {
   const copy = useCopy();
@@ -138,6 +143,10 @@ export function AddCourtMap({
     const point = { lat: event.lngLat.lat, lon: event.lngLat.lng };
     if (!isInFinland(point.lat, point.lon)) {
       onAlert("outside-finland");
+      return;
+    }
+    if (clickIsOnWater(event)) {
+      onAlert("on-water");
       return;
     }
     if (isTooCloseToCourt(point, courts)) {
@@ -220,4 +229,10 @@ export function AddCourtMap({
       ) : null}
     </Map>
   );
+}
+
+function clickIsOnWater(event: MapLayerMouseEvent): boolean {
+  const map = event.target;
+  if (!map.getLayer(WATER_LAYER)) return false;
+  return map.queryRenderedFeatures(event.point, { layers: [WATER_LAYER] }).length > 0;
 }

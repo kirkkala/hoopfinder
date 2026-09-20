@@ -10,6 +10,7 @@ import { useCopy } from "@/components/brand/LocaleProvider";
 import type { Copy } from "@/lib/copy";
 import type { FetchedAtBySource } from "@/lib/catalog";
 import type { ExplorerCourt } from "@/lib/courts";
+import type { AddCourtMapAlert } from "@/components/add-court/AddCourtMap";
 import type { Coordinates } from "@/lib/geo";
 import { fetchMapCourts } from "@/lib/map-courts";
 import { useLocationStatus } from "@/lib/origin";
@@ -38,9 +39,7 @@ export function AddCourtView({
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState(false);
   const [sending, setSending] = useState(false);
-  const [mapAlert, setMapAlert] = useState<
-    "zoom" | "too-close" | "outside-finland" | null
-  >(null);
+  const [mapAlert, setMapAlert] = useState<AddCourtMapAlert | null>(null);
   const { origin, status: locationStatus, request } = useLocationStatus();
   const [locateSeq, setLocateSeq] = useState(0);
 
@@ -91,7 +90,7 @@ export function AddCourtView({
     setSuccess(false);
   }
 
-  function showAlert(kind: "zoom" | "too-close" | "outside-finland") {
+  function showAlert(kind: AddCourtMapAlert) {
     if (kind !== "zoom") {
       clearDraft();
       setSuccess(false);
@@ -147,18 +146,26 @@ export function AddCourtView({
     }
   }
 
-  const alertTitle =
-    mapAlert === "zoom"
-      ? copy.addCourtZoomTitle
-      : mapAlert === "too-close"
-        ? copy.addCourtTooClose
-        : copy.addCourtOutsideFinland;
-  const alertBody =
-    mapAlert === "zoom"
-      ? copy.addCourtHintZoom
-      : mapAlert === "too-close"
-        ? copy.addCourtTooCloseBody
-        : null;
+  const alertCopy = mapAlert
+    ? {
+        zoom: {
+          title: copy.addCourtZoomTitle,
+          body: copy.addCourtHintZoom,
+        },
+        "too-close": {
+          title: copy.addCourtTooClose,
+          body: copy.addCourtTooCloseBody,
+        },
+        "outside-finland": {
+          title: copy.addCourtOutsideFinland,
+          body: null,
+        },
+        "on-water": {
+          title: copy.addCourtOnWater,
+          body: copy.addCourtOnWaterBody,
+        },
+      }[mapAlert]
+    : null;
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden overscroll-none bg-asphalt">
@@ -272,13 +279,13 @@ export function AddCourtView({
               </div>
             </form>
           </AddMapPanel>
-        ) : mapAlert ? (
+        ) : mapAlert && alertCopy ? (
           <AddMapPanel
-            title={alertTitle}
+            title={alertCopy.title}
             onClose={() => setMapAlert(null)}
             muted={mapAlert === "zoom"}
           >
-            {alertBody}
+            {alertCopy.body}
           </AddMapPanel>
         ) : success ? (
           <AddMapPanel

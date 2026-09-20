@@ -265,20 +265,28 @@ const messages = {
     en: "Adding courts is not available right now.",
   },
   addCourtTooClose: {
-    fi: "Tässä on jo kenttä kartalla",
-    en: "There is already a court here",
+    fi: "Tässä on jo yksi kenttä ihan lähellä",
+    en: "There is already a court close by",
   },
   addCourtTooCloseBody: {
     fi: "Valitse toinen paikka kartalta.",
     en: "Pick another place on the map.",
   },
   addCourtSuccess: {
-    fi: "Kiitos! Kenttä lisätty.",
-    en: "Thanks! Court added.",
+    fi: "Kiitos! Kenttä lisätty Hoop Finderiin.",
+    en: "Thanks! Court added to Hoop Finder.",
   },
   addCourtOutsideFinland: {
     fi: "Valitse paikka Suomesta.",
     en: "Pick a place in Finland.",
+  },
+  addCourtOnWater: {
+    fi: "Älä laita kenttää veteen",
+    en: "Don't place the court in the water",
+  },
+  addCourtOnWaterBody: {
+    fi: "Hoop Finder ei ole vesipallokenttäpaikannin",
+    en: "Hoop Finder is not a water polo court locator.",
   },
   pendingComingSoon: {
     fi: "Käyttäjän raportoima puuttuva kenttä. Odottaa hyväksyntää.",
