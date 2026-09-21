@@ -330,6 +330,13 @@ const messages = {
       return `${count} ${noun}`;
     },
   },
+  adminFilter: { fi: "Suodatus", en: "Filter" },
+  adminFilterAll: { fi: "Kaikki", en: "All" },
+  adminFilterPending: { fi: "Odottaa", en: "Pending" },
+  adminFilterEmpty: {
+    fi: "Ei kenttiä tässä näkymässä.",
+    en: "No courts in this view.",
+  },
   adminStatusPublished: { fi: "Julkaistu", en: "Published" },
   adminStatusPending: { fi: "Odottaa julkaisua", en: "Pending publication" },
   adminPublish: { fi: "Julkaise", en: "Publish" },

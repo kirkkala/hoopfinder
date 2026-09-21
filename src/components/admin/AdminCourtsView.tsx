@@ -54,6 +54,7 @@ function SubmittedList({
   const copy = useCopy();
   const router = useRouter();
   const [courts, setCourts] = useState(initialCourts);
+  const [filter, setFilter] = useState<StatusFilter>("all");
   const [savingId, setSavingId] = useState<string | null>(null);
   const [errorId, setErrorId] = useState<string | null>(null);
 
@@ -91,13 +92,22 @@ function SubmittedList({
     );
   }
 
+  const visible =
+    filter === "all"
+      ? courts
+      : courts.filter((court) => court.status === filter);
+
   return (
     <>
+      <StatusFilterToggle filter={filter} onChange={setFilter} />
       <p className="mt-3 font-display text-lg tracking-wide text-gold">
-        {copy.adminCourtCount(courts.length)}
+        {copy.adminCourtCount(visible.length)}
       </p>
+      {visible.length === 0 ? (
+        <p className="mt-8 text-sm text-ink-muted">{copy.adminFilterEmpty}</p>
+      ) : (
       <ul className="mt-5 space-y-3">
-        {courts.map((court) => {
+        {visible.map((court) => {
           const saving = savingId === court.id;
           const published = court.status === "published";
           return (
@@ -184,7 +194,49 @@ function SubmittedList({
           );
         })}
       </ul>
+      )}
     </>
+  );
+}
+
+type StatusFilter = "all" | "pending" | "published";
+
+const STATUS_FILTERS: StatusFilter[] = ["all", "pending", "published"];
+
+function StatusFilterToggle({
+  filter,
+  onChange,
+}: {
+  filter: StatusFilter;
+  onChange: (filter: StatusFilter) => void;
+}) {
+  const copy = useCopy();
+  return (
+    <div
+      className="mt-4 flex w-fit rounded-full bg-white/10 p-0.5 text-xs font-bold"
+      role="group"
+      aria-label={copy.adminFilter}
+    >
+      {STATUS_FILTERS.map((option) => (
+        <button
+          key={option}
+          type="button"
+          aria-pressed={filter === option}
+          onClick={() => onChange(option)}
+          className={`rounded-full px-3 py-1.5 ${
+            filter === option
+              ? "bg-gold text-asphalt"
+              : "text-ink/70 hover:text-white"
+          }`}
+        >
+          {option === "all"
+            ? copy.adminFilterAll
+            : option === "published"
+              ? copy.adminStatusPublished
+              : copy.adminFilterPending}
+        </button>
+      ))}
+    </div>
   );
 }
 
