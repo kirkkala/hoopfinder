@@ -2,7 +2,7 @@ import postgres from "postgres";
 
 type Sql = postgres.Sql;
 
-const SCHEMA_VERSION = 3;
+const SCHEMA_VERSION = 7;
 
 const globalForDb = globalThis as typeof globalThis & {
   __hoopfinderSql?: Sql;
@@ -54,7 +54,51 @@ async function ensureSchema(sql: Sql) {
       email TEXT NOT NULL,
       lat DOUBLE PRECISION NOT NULL,
       lon DOUBLE PRECISION NOT NULL,
+      status TEXT NOT NULL DEFAULT 'pending',
       created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+  await sql`
+    ALTER TABLE submitted_courts
+    ADD COLUMN IF NOT EXISTS status TEXT NOT NULL DEFAULT 'pending'
+  `;
+  await sql`
+    UPDATE submitted_courts
+    SET status = 'published'
+    WHERE status = 'approved'
+  `;
+  await sql`CREATE SEQUENCE IF NOT EXISTS submitted_court_id_seq START WITH 10000`;
+  const legacy = await sql<{ id: string }[]>`
+    SELECT id
+    FROM submitted_courts
+    WHERE id !~ '^submitted-[0-9]+$'
+    ORDER BY created_at ASC, id ASC
+  `;
+  for (const row of legacy) {
+    const [seq] = await sql<{ n: string }[]>`
+      SELECT nextval('submitted_court_id_seq')::text AS n
+    `;
+    if (!seq) throw new Error("submitted court sequence returned no value");
+    await sql`
+      UPDATE submitted_courts
+      SET id = ${`submitted-${seq.n}`}
+      WHERE id = ${row.id}
+    `;
+  }
+  await sql`
+    SELECT setval(
+      'submitted_court_id_seq',
+      GREATEST(
+        9999,
+        COALESCE(
+          (
+            SELECT MAX(substring(id from '^submitted-([0-9]+)$')::int)
+            FROM submitted_courts
+            WHERE id ~ '^submitted-[0-9]+$'
+          ),
+          9999
+        )
+      )
     )
   `;
 }

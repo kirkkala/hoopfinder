@@ -35,6 +35,16 @@ Open [http://localhost:3000](http://localhost:3000). API keys are not required.
 
 Postgres is only for visitor-submitted courts on `/add`. Copy `DATABASE_URL` from `.env.example` into `.env.local` if needed. The `submitted_courts` table is created on first request. Stop the database with `docker compose down`.
 
+Dump the database `npm run dev` uses (`DATABASE_URL` in `.env.local`), not the Docker container:
+
+```bash
+pg_dump postgres://hoopfinder:hoopfinder@localhost:5432/hoopfinder > hoopfinder.sql
+```
+
+`docker compose exec … pg_dump` dumps Compose Postgres. If another Postgres is already on localhost:5432 (Homebrew, Postgres.app), the app writes there and the Compose dump is empty.
+
+Restore with `psql postgres://hoopfinder:hoopfinder@localhost:5432/hoopfinder < hoopfinder.sql`.
+
 ## Suggest a court
 
 Not every hoop is in LIPAS or OpenStreetMap. Visitors can open `/add`, drop a pin (not next to an existing court), send a name, address and email, and see it on the explore map as coming soon. After the court lands in a source snapshot (within about 80 m), the pending pin is hidden and the usual court page is shown. Email is stored for follow-up and is not shown on the map. No login in this first version.

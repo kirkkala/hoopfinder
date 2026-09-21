@@ -1,0 +1,210 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { basketball } from "@lucide/lab";
+import { Globe, GlobeOff, Icon, Map, MapPin } from "lucide-react";
+import { AppFooter } from "@/components/brand/AppFooter";
+import { AppHeader } from "@/components/brand/AppHeader";
+import { useCopy } from "@/components/brand/LocaleProvider";
+import type { FetchedAtBySource } from "@/lib/catalog";
+import { homeCourtHref } from "@/lib/courts";
+import type {
+  AdminSubmittedCourt,
+  SubmittedStatus,
+} from "@/lib/submitted-courts";
+import { formatFetchedAt } from "@/lib/time";
+
+export function AdminCourtsView({
+  courtCount,
+  fetchedAtBySource,
+  courts,
+}: {
+  courtCount: number;
+  fetchedAtBySource: FetchedAtBySource;
+  courts: AdminSubmittedCourt[] | null;
+}) {
+  const copy = useCopy();
+
+  return (
+    <div className="flex min-h-dvh flex-col bg-asphalt">
+      <AppHeader
+        fetchedAtBySource={fetchedAtBySource}
+        courtCount={courtCount}
+      />
+      <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-8 sm:px-6">
+        <h1 className="font-display text-4xl tracking-wide text-white">
+          {copy.adminTitle}
+        </h1>
+        {courts === null ? (
+          <p className="mt-6 text-sm text-ink-muted">{copy.adminUnavailable}</p>
+        ) : (
+          <SubmittedList initialCourts={courts} />
+        )}
+      </main>
+      <AppFooter />
+    </div>
+  );
+}
+
+function SubmittedList({
+  initialCourts,
+}: {
+  initialCourts: AdminSubmittedCourt[];
+}) {
+  const copy = useCopy();
+  const router = useRouter();
+  const [courts, setCourts] = useState(initialCourts);
+  const [savingId, setSavingId] = useState<string | null>(null);
+  const [errorId, setErrorId] = useState<string | null>(null);
+
+  useEffect(() => {
+    setCourts(initialCourts);
+  }, [initialCourts]);
+
+  async function setStatus(id: string, status: SubmittedStatus) {
+    setSavingId(id);
+    setErrorId(null);
+    try {
+      const response = await fetch(
+        `/api/admin/courts/${encodeURIComponent(id)}`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status }),
+        },
+      );
+      if (!response.ok) throw new Error("status update failed");
+      setCourts((current) =>
+        current.map((court) =>
+          court.id === id ? { ...court, status } : court,
+        ),
+      );
+      router.refresh();
+    } catch {
+      setErrorId(id);
+    } finally {
+      setSavingId(null);
+    }
+  }
+
+  if (courts.length === 0) {
+    return (
+      <div className="mt-10 flex flex-col items-center gap-2 px-6 py-12 text-center">
+        <Icon iconNode={basketball} className="size-10 text-gold/70" aria-hidden />
+        <p className="font-display text-2xl tracking-wide text-white">
+          {copy.adminEmpty}
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <p className="mt-3 font-display text-lg tracking-wide text-gold">
+        {copy.adminCourtCount(courts.length)}
+      </p>
+      <ul className="mt-5 space-y-3">
+        {courts.map((court) => {
+          const saving = savingId === court.id;
+          const published = court.status === "published";
+          return (
+            <li
+              key={court.id}
+              className={`rounded-2xl border p-4 ${
+                published
+                  ? "border-emerald-400/40 bg-emerald-400/10"
+                  : "border-yellow-400/40 bg-yellow-400/10"
+              }`}
+            >
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                <div className="min-w-0">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h2 className="font-semibold text-white">{court.name}</h2>
+                    <StatusBadge published={published} />
+                  </div>
+                  <p className="mt-1 text-sm text-ink-muted">{court.address}</p>
+                  <p className="mt-1 text-sm text-ink-muted">
+                    <a
+                      href={`mailto:${court.email}`}
+                      className="text-gold hover:text-white"
+                    >
+                      {court.email}
+                    </a>
+                  </p>
+                  <p className="mt-2 text-xs text-ink-muted">
+                    {copy.adminSubmittedAt}{" "}
+                    <time dateTime={court.createdAt}>
+                      {formatFetchedAt(court.createdAt)}
+                    </time>
+                  </p>
+                </div>
+                <div className="flex shrink-0 flex-wrap items-center gap-2">
+                  <Link
+                    href={homeCourtHref({
+                      id: court.id,
+                      source: published ? "submitted" : "pending",
+                    })}
+                    className="inline-flex items-center gap-1 rounded-full px-3 py-2 text-sm font-medium text-ink/80 hover:bg-white/10 hover:text-white"
+                  >
+                    <Map className="size-3.5" aria-hidden />
+                    {copy.adminShowOnMap}
+                  </Link>
+                  <a
+                    href={`https://www.google.com/maps?q=${court.lat},${court.lon}`}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1 rounded-full px-3 py-2 text-sm font-medium text-ink/80 hover:bg-white/10 hover:text-white"
+                  >
+                    <MapPin className="size-3.5" aria-hidden />
+                    {copy.adminShowOnGoogleMaps}
+                  </a>
+                  {published ? (
+                    <button
+                      type="button"
+                      disabled={saving}
+                      onClick={() => void setStatus(court.id, "pending")}
+                      className="inline-flex items-center gap-1.5 rounded-full bg-yellow-400 px-4 py-2 text-sm font-bold text-asphalt hover:bg-yellow-300 disabled:cursor-wait disabled:opacity-70"
+                    >
+                      <GlobeOff className="size-4" aria-hidden />
+                      {saving ? copy.adminSaving : copy.adminUnpublish}
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      disabled={saving}
+                      onClick={() => void setStatus(court.id, "published")}
+                      className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-4 py-2 text-sm font-bold text-white hover:bg-white/25 disabled:cursor-wait disabled:opacity-70"
+                    >
+                      <Globe className="size-4" aria-hidden />
+                      {saving ? copy.adminSaving : copy.adminPublish}
+                    </button>
+                  )}
+                </div>
+              </div>
+              {errorId === court.id ? (
+                <p className="mt-3 text-sm text-red-400">{copy.adminStatusError}</p>
+              ) : null}
+            </li>
+          );
+        })}
+      </ul>
+    </>
+  );
+}
+
+function StatusBadge({ published }: { published: boolean }) {
+  const copy = useCopy();
+  return (
+    <span
+      className={`rounded-full px-2 py-0.5 text-xs font-bold ${
+        published
+          ? "bg-emerald-500 text-white"
+          : "bg-yellow-400 text-asphalt"
+      }`}
+    >
+      {published ? copy.adminStatusPublished : copy.adminStatusPending}
+    </span>
+  );
+}

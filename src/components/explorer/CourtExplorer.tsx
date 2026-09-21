@@ -192,7 +192,7 @@ export function CourtExplorer({
     setPickedId(id);
     writeSelectedCourt(id);
     const court = courts.find((item) => item.id === id);
-    if (!court || court.source === "pending") {
+    if (!court) {
       syncCourtUrl(null);
       return;
     }

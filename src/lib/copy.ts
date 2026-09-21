@@ -266,7 +266,7 @@ const messages = {
     en: "Adding courts is not available right now.",
   },
   addCourtTooClose: {
-    fi: "Tässä on jo yksi kenttä ihan lähellä",
+    fi: "Tässä on jo kenttä ihan lähellä",
     en: "There is already a court close by",
   },
   addCourtTooCloseBody: {
@@ -274,8 +274,8 @@ const messages = {
     en: "Pick another place on the map.",
   },
   addCourtSuccess: {
-    fi: "Kiitos! Kenttä lisätty Hoop Finderiin.",
-    en: "Thanks! Court added to Hoop Finder.",
+    fi: "Kiitos! Kenttä odottaa julkaisua.",
+    en: "Thanks! The court is pending publication.",
   },
   addCourtOutsideFinland: {
     fi: "Valitse paikka Suomesta.",
@@ -290,10 +290,45 @@ const messages = {
     en: "Hoop Finder is not a water polo court locator.",
   },
   pendingComingSoon: {
-    fi: "Käyttäjän raportoima puuttuva kenttä. Odottaa hyväksyntää.",
-    en: "User-reported missing court. Waiting for approval.",
+    fi: "Käyttäjän lisäämä kenttä.",
+    en: "Court added by a visitor.",
   },
-  statusPending: { fi: "Tulossa", en: "Coming soon" },
+  sourceSubmitted: {
+    fi: "Käyttäjän lisäämä",
+    en: "Added by a visitor",
+  },
+  adminTitle: { fi: "Hallintapaneeli", en: "Admin panel" },
+  adminEmpty: {
+    fi: "Ei käyttäjien lisäämiä kenttiä.",
+    en: "No visitor-submitted courts.",
+  },
+  adminUnavailable: {
+    fi: "Hallintapaneeli ei ole juuri nyt käytössä.",
+    en: "Admin panel is not available right now.",
+  },
+  adminCourtCount: {
+    fi: (count: number) => {
+      const noun = count === 1 ? "kenttä" : "kenttää";
+      return `${count} ${noun}`;
+    },
+    en: (count: number) => {
+      const noun = count === 1 ? "court" : "courts";
+      return `${count} ${noun}`;
+    },
+  },
+  adminStatusPublished: { fi: "Julkaistu", en: "Published" },
+  adminStatusPending: { fi: "Odottaa julkaisua", en: "Pending publication" },
+  adminPublish: { fi: "Julkaise", en: "Publish" },
+  adminUnpublish: { fi: "Piilota", en: "Unpublish" },
+  adminSaving: { fi: "Tallennetaan…", en: "Saving…" },
+  adminStatusError: {
+    fi: "Tilan vaihto epäonnistui. Kokeile uudelleen.",
+    en: "Could not update status. Try again.",
+  },
+  adminShowOnMap: { fi: "Katso kartalla", en: "View on map" },
+  adminShowOnGoogleMaps: { fi: "Google Maps", en: "Google Maps" },
+  adminSubmittedAt: { fi: "Lähetetty", en: "Submitted" },
+  statusPending: { fi: "Odottaa julkaisua", en: "Pending" },
   statusOpen: { fi: "Avoinna", en: "Open" },
   statusTemporarilyClosed: {
     fi: "Tilapäisesti kiinni",

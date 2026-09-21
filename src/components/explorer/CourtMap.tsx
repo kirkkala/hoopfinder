@@ -21,6 +21,7 @@ import { MAP_STYLE } from "@/lib/constants";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { CourtBadges } from "@/components/explorer/CourtBadges";
 import { CourtHeading } from "@/components/explorer/CourtHeading";
+import { PendingCourtNote } from "@/components/explorer/PendingCourtNote";
 import {
   courtHref,
   courtTitle,
@@ -379,7 +380,7 @@ export function CourtMap({
               <CourtBadges court={selected} />
             </div>
             {isPendingCourt(selected) ? (
-              <p className="pt-1 text-sm text-ink-muted">{copy.pendingComingSoon}</p>
+              <PendingCourtNote createdAt={selected.createdAt} className="pt-1" />
             ) : (
               <Link
                 href={courtHref(selected)}

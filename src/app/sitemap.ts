@@ -16,7 +16,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     ...courts.map((court) => ({
       url: `${SITE_URL}${courtHref(court)}`,
-      lastModified: fetchedAtBySource[court.source] ?? catalogUpdated,
+      lastModified:
+        court.source === "submitted"
+          ? catalogUpdated
+          : (fetchedAtBySource[court.source] ?? catalogUpdated),
       changeFrequency: "weekly" as const,
       priority: 0.7,
     })),

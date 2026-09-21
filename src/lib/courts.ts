@@ -5,7 +5,7 @@ import { parseOsmCourtId, type CourtSourceId } from "@/lib/sources";
 
 export type Court = {
   id: string;
-  source: CourtSourceId;
+  source: CourtSourceId | "submitted";
   name: string;
   nameFi: string;
   status: string;
@@ -51,8 +51,8 @@ export type ExplorerCourt = {
   lon: number;
   amenities: Pick<Court["amenities"], "lighting" | "freeUse">;
 } & (
-  | { source: CourtSourceId }
-  | { source: "pending" }
+  | { source: CourtSourceId | "submitted" }
+  | { source: "pending"; createdAt: string }
 );
 
 export type CourtWithDistance = ExplorerCourt & {
@@ -221,7 +221,7 @@ export function formatStatus(status: string, copy: Copy = getCopy()): string {
 
 export function isPendingCourt(
   court: Pick<ExplorerCourt, "source">,
-): court is { source: "pending" } {
+): court is Extract<ExplorerCourt, { source: "pending" }> {
   return court.source === "pending";
 }
 
@@ -255,7 +255,7 @@ function isOsmType(segment: string): boolean {
   return segment === "node" || segment === "way" || segment === "relation";
 }
 
-function courtSegments(court: Pick<Court, "id" | "source">): string[] {
+function courtSegments(court: Pick<ExplorerCourt, "id" | "source">): string[] {
   switch (court.source) {
     case "osm": {
       const osm = parseOsmCourtId(court.id);
@@ -263,7 +263,14 @@ function courtSegments(court: Pick<Court, "id" | "source">): string[] {
     }
     case "lipas":
       return ["lipas", court.id];
+    case "pending":
+    case "submitted":
+      return ["submitted", submittedCourtKey(court.id)];
   }
+}
+
+function submittedCourtKey(id: string): string {
+  return id.startsWith("submitted-") ? id.slice("submitted-".length) : id;
 }
 
 /** `lipas/82547` or `osm/way/1095396325` — court page path after `/courts/`. */
@@ -272,12 +279,17 @@ export function courtPath(court: Pick<Court, "id" | "source">): string {
 }
 
 /** `lipas-82547` or `osm-way-1095396325` — hyphen form for `?court=` (no `%2F`). */
-export function courtParam(court: Pick<Court, "id" | "source">): string {
+export function courtParam(court: Pick<ExplorerCourt, "id" | "source">): string {
   return courtSegments(court).join("-");
 }
 
 export function courtHref(court: Pick<Court, "id" | "source">): string {
   return `/courts/${courtPath(court)}`;
+}
+
+/** Home map with that court’s popup open. Works for published and pending pins. */
+export function homeCourtHref(court: Pick<ExplorerCourt, "id" | "source">): string {
+  return `/?court=${encodeURIComponent(courtParam(court))}`;
 }
 
 export function courtOgHref(
@@ -300,6 +312,12 @@ export function parseCourtPath(
   segments: string[],
 ): "index" | { id: string } | null {
   if (segments.length === 0) return "index";
+  if (segments[0] === "submitted") {
+    if (segments.length === 1) return "index";
+    return segments.length === 2 && /^\d+$/.test(segments[1])
+      ? { id: `submitted-${segments[1]}` }
+      : null;
+  }
   if (segments.length === 1) {
     return segments[0] === "lipas" ||
       segments[0] === "osm" ||

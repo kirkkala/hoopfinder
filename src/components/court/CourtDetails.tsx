@@ -37,7 +37,6 @@ import { LocateMeButton, locationHint } from "@/components/LocateMeButton";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { CourtMiniMap } from "@/components/court/CourtMiniMap";
 import {
-  courtParam,
   courtTitle,
   formatAddress,
   formatAdmin,
@@ -45,6 +44,7 @@ import {
   formatReportedBoolean,
   formatStatus,
   formatSurface,
+  homeCourtHref,
   type Court,
 } from "@/lib/courts";
 import { haversineKm } from "@/lib/geo";
@@ -274,7 +274,27 @@ export function CourtDetails({
                 value={formatOwner(court.owner, copy)}
               />
             ) : null}
-            {source ? (
+            {court.source === "submitted" ? (
+              <Fact
+                icon={Database}
+                label={copy.dataFromSource}
+                value={
+                  <div className="space-y-1">
+                    <p>
+                      {copy.source}: {copy.sourceSubmitted}
+                    </p>
+                    {sourceFetchedAt ? (
+                      <p className="text-xs text-ink-muted">
+                        {copy.dataFetchedAt}:{" "}
+                        <time dateTime={sourceFetchedAt}>
+                          {formatFetchedAt(sourceFetchedAt)}
+                        </time>
+                      </p>
+                    ) : null}
+                  </div>
+                }
+              />
+            ) : source ? (
               <Fact
                 icon={Database}
                 label={copy.dataFromSource}
@@ -374,7 +394,7 @@ function BackToMap({
   const copy = useCopy();
   return (
     <Link
-      href={`/?court=${encodeURIComponent(courtParam(court))}`}
+      href={homeCourtHref(court)}
       className={`inline-flex shrink-0 items-center gap-1 text-md font-medium text-gold hover:text-white ${className ?? ""}`}
     >
       <Map aria-hidden />

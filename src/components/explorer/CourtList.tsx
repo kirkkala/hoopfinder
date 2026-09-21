@@ -7,6 +7,7 @@ import { ArrowRight, Icon } from "lucide-react";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { CourtBadges } from "@/components/explorer/CourtBadges";
 import { CourtHeading } from "@/components/explorer/CourtHeading";
+import { PendingCourtNote } from "@/components/explorer/PendingCourtNote";
 import { courtHref, isPendingCourt, type CourtWithDistance } from "@/lib/courts";
 
 export function CourtList({
@@ -64,7 +65,10 @@ export function CourtList({
               <div className="flex flex-wrap items-center gap-2 text-sm">
                 <CourtBadges court={court} />
                 {isPendingCourt(court) ? (
-                  <p className="ml-auto text-ink-muted">{copy.pendingComingSoon}</p>
+                  <PendingCourtNote
+                    createdAt={court.createdAt}
+                    className="ml-auto text-right"
+                  />
                 ) : (
                   <Link
                     href={courtHref(court)}

@@ -12,6 +12,7 @@ import {
   formatAddress,
   parseCourtPath,
 } from "@/lib/courts";
+import { getPublishedSubmittedCourt } from "@/lib/submitted-courts";
 
 export const dynamic = "force-dynamic";
 
@@ -83,7 +84,11 @@ async function courtFromParams(params: Promise<{ path?: string[] }>) {
   const parsed = parseCourtPath(path ?? []);
   if (parsed === "index") permanentRedirect("/");
   if (!parsed) return null;
-  return getBasketballCourt(parsed.id);
+  const catalogCourt = await getBasketballCourt(parsed.id);
+  if (catalogCourt) return catalogCourt;
+  const submitted = await getPublishedSubmittedCourt(parsed.id);
+  if (!submitted) return null;
+  return { court: submitted.court, sourceFetchedAt: submitted.createdAt };
 }
 
 async function requestOrigin(): Promise<URL> {
