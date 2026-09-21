@@ -3,6 +3,7 @@ import { getCourtCatalog } from "@/lib/catalog";
 import {
   emptyAmenities,
   isTooCloseToCourt,
+  submittedCourtKey,
   type Court,
   type ExplorerCourt,
 } from "@/lib/courts";
@@ -39,7 +40,7 @@ export type AdminSubmittedCourt = {
 };
 
 type SubmittedRow = {
-  id: string;
+  id: number | string;
   name: string;
   address: string;
   lat: number;
@@ -80,7 +81,7 @@ export async function listAdminSubmittedCourts(): Promise<
   });
   if (!rows) return null;
   return rows.map((row) => ({
-    id: row.id,
+    id: String(row.id),
     name: row.name,
     address: row.address,
     email: row.email,
@@ -94,11 +95,13 @@ export async function listAdminSubmittedCourts(): Promise<
 export async function getSubmittedCourt(
   id: string,
 ): Promise<{ court: Court; createdAt: string } | null> {
+  const key = submittedCourtKey(id);
+  if (!/^\d+$/.test(key)) return null;
   const rows = await withDb((sql) => {
     return sql<AdminRow[]>`
       SELECT id, name, address, email, lat, lon, status, created_at
       FROM submitted_courts
-      WHERE id = ${id}
+      WHERE id = ${key}
       LIMIT 1
     `;
   });
@@ -128,14 +131,9 @@ export async function createSubmittedCourt(
       return { error: "too-close" as const };
     }
 
-    const [seq] = await sql<{ n: string }[]>`
-      SELECT nextval('submitted_court_id_seq')::text AS n
-    `;
-    if (!seq) throw new Error("submitted court sequence returned no value");
-    const id = `submitted-${seq.n}`;
     const rows = await sql<SubmittedRow[]>`
-      INSERT INTO submitted_courts (id, name, address, email, lat, lon)
-      VALUES (${id}, ${input.name}, ${input.address}, ${input.email}, ${input.lat}, ${input.lon})
+      INSERT INTO submitted_courts (name, address, email, lat, lon)
+      VALUES (${input.name}, ${input.address}, ${input.email}, ${input.lat}, ${input.lon})
       RETURNING id, name, address, lat, lon, status, created_at
     `;
     const row = rows[0];
@@ -150,11 +148,13 @@ export async function setSubmittedCourtStatus(
   id: string,
   status: SubmittedStatus,
 ): Promise<{ court: ExplorerCourt } | { error: "unavailable" | "not-found" }> {
+  const key = submittedCourtKey(id);
+  if (!/^\d+$/.test(key)) return { error: "not-found" };
   const updated = await withDb(async (sql) => {
     const rows = await sql<SubmittedRow[]>`
       UPDATE submitted_courts
       SET status = ${status}
-      WHERE id = ${id}
+      WHERE id = ${key}
       RETURNING id, name, address, lat, lon, status, created_at
     `;
     const row = rows[0];
@@ -165,9 +165,10 @@ export async function setSubmittedCourtStatus(
 }
 
 function toExplorerCourt(row: SubmittedRow): ExplorerCourt {
+  const id = `submitted-${row.id}`;
   if (asSubmittedStatus(row.status) === "published") {
     return {
-      id: row.id,
+      id,
       source: "submitted",
       name: row.name,
       nameFi: row.name,
@@ -182,7 +183,7 @@ function toExplorerCourt(row: SubmittedRow): ExplorerCourt {
   }
 
   return {
-    id: row.id,
+    id,
     source: "pending",
     name: row.name,
     nameFi: row.name,
@@ -199,7 +200,7 @@ function toExplorerCourt(row: SubmittedRow): ExplorerCourt {
 
 function toCourt(row: SubmittedRow): Court {
   return {
-    id: row.id,
+    id: `submitted-${row.id}`,
     source: "submitted",
     name: row.name,
     nameFi: row.name,

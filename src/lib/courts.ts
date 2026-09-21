@@ -269,7 +269,8 @@ function courtSegments(court: Pick<ExplorerCourt, "id" | "source">): string[] {
   }
 }
 
-function submittedCourtKey(id: string): string {
+/** Numeric id in `submitted_courts`; `submitted-` is only for the merged map list. */
+export function submittedCourtKey(id: string): string {
   return id.startsWith("submitted-") ? id.slice("submitted-".length) : id;
 }
 
