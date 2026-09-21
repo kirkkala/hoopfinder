@@ -381,15 +381,14 @@ export function CourtMap({
             </div>
             {isPendingCourt(selected) ? (
               <PendingCourtNote createdAt={selected.createdAt} className="pt-1" />
-            ) : (
-              <Link
-                href={courtHref(selected)}
-                className="inline-flex items-center gap-1 self-end pt-2 pb-1 text-sm font-bold text-gold hover:text-white"
-              >
-                {copy.letsGo}
-                <ArrowRight className="size-3.5" aria-hidden />
-              </Link>
-            )}
+            ) : null}
+            <Link
+              href={courtHref(selected)}
+              className="inline-flex items-center gap-1 self-end pt-2 pb-1 text-sm font-bold text-gold hover:text-white"
+            >
+              {copy.letsGo}
+              <ArrowRight className="size-3.5" aria-hidden />
+            </Link>
           </div>
         </Popup>
       ) : null}

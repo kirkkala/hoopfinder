@@ -10,7 +10,7 @@ import {
   generateHomeOgImage,
   HOME_OG_ID,
 } from "@/lib/og";
-import { getPublishedSubmittedCourt } from "@/lib/submitted-courts";
+import { getSubmittedCourt } from "@/lib/submitted-courts";
 
 export const dynamic = "force-dynamic";
 
@@ -40,7 +40,7 @@ export async function GET(
 async function getCourtById(id: string) {
   const catalogCourt = await getBasketballCourt(id);
   if (catalogCourt) return catalogCourt;
-  const submitted = await getPublishedSubmittedCourt(id);
+  const submitted = await getSubmittedCourt(id);
   if (!submitted) return null;
   return { court: submitted.court, sourceFetchedAt: submitted.createdAt };
 }

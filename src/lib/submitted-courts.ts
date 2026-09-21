@@ -91,14 +91,14 @@ export async function listAdminSubmittedCourts(): Promise<
   }));
 }
 
-export async function getPublishedSubmittedCourt(
+export async function getSubmittedCourt(
   id: string,
 ): Promise<{ court: Court; createdAt: string } | null> {
   const rows = await withDb((sql) => {
     return sql<AdminRow[]>`
       SELECT id, name, address, email, lat, lon, status, created_at
       FROM submitted_courts
-      WHERE id = ${id} AND status = 'published'
+      WHERE id = ${id}
       LIMIT 1
     `;
   });
@@ -203,7 +203,7 @@ function toCourt(row: SubmittedRow): Court {
     source: "submitted",
     name: row.name,
     nameFi: row.name,
-    status: "active",
+    status: asSubmittedStatus(row.status) === "published" ? "active" : "pending",
     address: row.address,
     postalCode: null,
     city: null,

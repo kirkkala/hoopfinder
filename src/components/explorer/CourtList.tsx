@@ -67,17 +67,16 @@ export function CourtList({
                 {isPendingCourt(court) ? (
                   <PendingCourtNote
                     createdAt={court.createdAt}
-                    className="ml-auto text-right"
+                    className="w-full"
                   />
-                ) : (
-                  <Link
-                    href={courtHref(court)}
-                    className="ml-auto inline-flex items-center gap-1 font-bold text-gold hover:text-white"
-                  >
-                    {copy.letsGo}
-                    <ArrowRight className="size-3.5" aria-hidden />
-                  </Link>
-                )}
+                ) : null}
+                <Link
+                  href={courtHref(court)}
+                  className="ml-auto inline-flex items-center gap-1 font-bold text-gold hover:text-white"
+                >
+                  {copy.letsGo}
+                  <ArrowRight className="size-3.5" aria-hidden />
+                </Link>
               </div>
             </div>
           </li>

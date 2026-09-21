@@ -12,7 +12,7 @@ import {
   formatAddress,
   parseCourtPath,
 } from "@/lib/courts";
-import { getPublishedSubmittedCourt } from "@/lib/submitted-courts";
+import { getSubmittedCourt } from "@/lib/submitted-courts";
 
 export const dynamic = "force-dynamic";
 
@@ -36,11 +36,13 @@ export async function generateMetadata({
     ]) || finnish.addressMissing;
   const description = finnish.metaCourtDescription(name, place);
   const canonical = courtHref(result.court);
+  const pending = result.court.status === "pending";
 
   return {
     metadataBase: await requestOrigin(),
     title: name,
     description,
+    robots: pending ? { index: false, follow: false } : undefined,
     alternates: {
       canonical,
     },
@@ -86,7 +88,7 @@ async function courtFromParams(params: Promise<{ path?: string[] }>) {
   if (!parsed) return null;
   const catalogCourt = await getBasketballCourt(parsed.id);
   if (catalogCourt) return catalogCourt;
-  const submitted = await getPublishedSubmittedCourt(parsed.id);
+  const submitted = await getSubmittedCourt(parsed.id);
   if (!submitted) return null;
   return { court: submitted.court, sourceFetchedAt: submitted.createdAt };
 }

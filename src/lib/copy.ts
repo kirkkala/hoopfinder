@@ -293,6 +293,11 @@ const messages = {
     fi: "Käyttäjän lisäämä kenttä.",
     en: "Court added by a visitor.",
   },
+  pendingAddedOn: {
+    fi: (date: string) => `Käyttäjän ${date} lisäämä kenttä`,
+    en: (date: string) => `Court added by a visitor on ${date}`,
+  },
+  statusUnderReview: { fi: "Odottaa tarkastusta", en: "Waiting for review" },
   sourceSubmitted: {
     fi: "Käyttäjän lisäämä",
     en: "Added by a visitor",

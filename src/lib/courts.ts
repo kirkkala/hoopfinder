@@ -274,7 +274,7 @@ function submittedCourtKey(id: string): string {
 }
 
 /** `lipas/82547` or `osm/way/1095396325` — court page path after `/courts/`. */
-export function courtPath(court: Pick<Court, "id" | "source">): string {
+export function courtPath(court: Pick<ExplorerCourt, "id" | "source">): string {
   return courtSegments(court).join("/");
 }
 
@@ -283,7 +283,7 @@ export function courtParam(court: Pick<ExplorerCourt, "id" | "source">): string 
   return courtSegments(court).join("-");
 }
 
-export function courtHref(court: Pick<Court, "id" | "source">): string {
+export function courtHref(court: Pick<ExplorerCourt, "id" | "source">): string {
   return `/courts/${courtPath(court)}`;
 }
 
@@ -293,7 +293,7 @@ export function homeCourtHref(court: Pick<ExplorerCourt, "id" | "source">): stri
 }
 
 export function courtOgHref(
-  court: Pick<Court, "id" | "source">,
+  court: Pick<ExplorerCourt, "id" | "source">,
   fetchedAt?: string | null,
 ): string {
   const path = `/images/og/${courtParam(court)}`;
