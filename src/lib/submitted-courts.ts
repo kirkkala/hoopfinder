@@ -164,6 +164,22 @@ export async function setSubmittedCourtStatus(
   return updated ?? { error: "unavailable" };
 }
 
+export async function deleteSubmittedCourt(
+  id: string,
+): Promise<{ ok: true } | { error: "unavailable" | "not-found" }> {
+  const key = submittedCourtKey(id);
+  if (!/^\d+$/.test(key)) return { error: "not-found" };
+  const deleted = await withDb(async (sql) => {
+    const rows = await sql<{ id: number | string }[]>`
+      DELETE FROM submitted_courts
+      WHERE id = ${key}
+      RETURNING id
+    `;
+    return rows[0] ? { ok: true as const } : { error: "not-found" as const };
+  });
+  return deleted ?? { error: "unavailable" };
+}
+
 function toExplorerCourt(row: SubmittedRow): ExplorerCourt {
   const id = `submitted-${row.id}`;
   if (asSubmittedStatus(row.status) === "published") {

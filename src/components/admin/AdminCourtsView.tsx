@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { basketball } from "@lucide/lab";
-import { Globe, GlobeOff, Icon, Map, MapPin } from "lucide-react";
+import { Globe, GlobeOff, Icon, Map, MapPin, Trash2 } from "lucide-react";
 import { AppFooter } from "@/components/brand/AppFooter";
 import { AppHeader } from "@/components/brand/AppHeader";
 import { useCopy } from "@/components/brand/LocaleProvider";
@@ -58,6 +58,7 @@ function SubmittedList({
   const [courts, setCourts] = useState(initialCourts);
   const [savingId, setSavingId] = useState<string | null>(null);
   const [errorId, setErrorId] = useState<string | null>(null);
+  const [errorKind, setErrorKind] = useState<"status" | "delete">("status");
 
   useEffect(() => {
     setCourts(initialCourts);
@@ -83,6 +84,27 @@ function SubmittedList({
       );
       router.refresh();
     } catch {
+      setErrorKind("status");
+      setErrorId(id);
+    } finally {
+      setSavingId(null);
+    }
+  }
+
+  async function remove(id: string, name: string) {
+    if (!window.confirm(copy.adminDeleteConfirm(name))) return;
+    setSavingId(id);
+    setErrorId(null);
+    try {
+      const response = await fetch(
+        `/api/admin/courts/${encodeURIComponent(id)}`,
+        { method: "DELETE" },
+      );
+      if (!response.ok) throw new Error("delete failed");
+      setCourts((current) => current.filter((court) => court.id !== id));
+      router.refresh();
+    } catch {
+      setErrorKind("delete");
       setErrorId(id);
     } finally {
       setSavingId(null);
@@ -112,16 +134,27 @@ function SubmittedList({
           return (
             <li
               key={court.id}
-              className={`rounded-2xl border p-4 ${
+              className={`relative rounded-2xl border p-4 pr-24 ${
                 published
                   ? "border-emerald-400/40 bg-emerald-400/10"
                   : "border-yellow-400/40 bg-yellow-400/10"
               }`}
             >
-              <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+              <button
+                type="button"
+                disabled={saving}
+                onClick={() => void remove(court.id, court.name)}
+                className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium text-ink/70 hover:bg-red-500/15 hover:text-red-300 disabled:cursor-wait disabled:opacity-70"
+              >
+                <Trash2 className="size-3.5" aria-hidden />
+                {copy.adminDelete}
+              </button>
+              <div className="flex flex-col gap-3">
                 <div className="min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <h2 className="font-semibold text-white">{court.name}</h2>
+                    <h2 className="max-w-full font-semibold text-white">
+                      {court.name}
+                    </h2>
                     <StatusBadge published={published} />
                   </div>
                   <p className="mt-1 text-sm text-ink-muted">{court.address}</p>
@@ -184,7 +217,11 @@ function SubmittedList({
                 </div>
               </div>
               {errorId === court.id ? (
-                <p className="mt-3 text-sm text-red-400">{copy.adminStatusError}</p>
+                <p className="mt-3 text-sm text-red-400">
+                  {errorKind === "delete"
+                    ? copy.adminDeleteError
+                    : copy.adminStatusError}
+                </p>
               ) : null}
             </li>
           );

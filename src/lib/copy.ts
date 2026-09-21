@@ -341,6 +341,17 @@ const messages = {
   adminShowOnMap: { fi: "Katso kartalla", en: "View on map" },
   adminShowOnGoogleMaps: { fi: "Google Maps", en: "Google Maps" },
   adminSubmittedAt: { fi: "Lähetetty", en: "Submitted" },
+  adminDelete: { fi: "Poista", en: "Delete" },
+  adminDeleteConfirm: {
+    fi: (name: string) =>
+      `Poistetaanko “${name}” pysyvästi? Tätä ei voi perua.`,
+    en: (name: string) =>
+      `Delete “${name}” permanently? This cannot be undone.`,
+  },
+  adminDeleteError: {
+    fi: "Poisto epäonnistui. Kokeile uudelleen.",
+    en: "Could not delete the court. Try again.",
+  },
   statusPending: { fi: "Tarkistettavana", en: "Pending review" },
   statusOpen: { fi: "Avoinna", en: "Open" },
   statusTemporarilyClosed: {
