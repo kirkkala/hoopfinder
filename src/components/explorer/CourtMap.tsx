@@ -104,6 +104,7 @@ export function CourtMap({
   onSelect,
   onClose,
   onBoundsChange,
+  thanks = false,
 }: {
   courts: CourtWithDistance[];
   selectedId: string | null;
@@ -114,6 +115,7 @@ export function CourtMap({
   onSelect: (id: string) => void;
   onClose: () => void;
   onBoundsChange: (bounds: MapBounds) => void;
+  thanks?: boolean;
 }) {
   const copy = useCopy();
   const mapRef = useRef<MapRef>(null);
@@ -379,16 +381,27 @@ export function CourtMap({
             <div className="flex flex-wrap items-center gap-1.5 text-xs">
               <CourtBadges court={selected} />
             </div>
-            {isPendingCourt(selected) ? (
+            {thanks && isPendingCourt(selected) ? (
+              <div className="pt-1">
+                <p className="text-sm font-bold leading-5 text-ink/90">
+                  {copy.addCourtSuccessLead}
+                </p>
+                <p className="mt-1 text-sm leading-5 text-ink-muted">
+                  {copy.addCourtSuccess}
+                </p>
+              </div>
+            ) : isPendingCourt(selected) ? (
               <PendingCourtNote createdAt={selected.createdAt} className="pt-1" />
             ) : null}
-            <Link
-              href={courtHref(selected)}
-              className="inline-flex items-center gap-1 self-end pt-2 pb-1 text-sm font-bold text-gold hover:text-white"
-            >
-              {copy.letsGo}
-              <ArrowRight className="size-3.5" aria-hidden />
-            </Link>
+            {!thanks ? (
+              <Link
+                href={courtHref(selected)}
+                className="inline-flex items-center gap-1 self-end pt-2 pb-1 text-sm font-bold text-gold hover:text-white"
+              >
+                {copy.letsGo}
+                <ArrowRight className="size-3.5" aria-hidden />
+              </Link>
+            ) : null}
           </div>
         </Popup>
       ) : null}

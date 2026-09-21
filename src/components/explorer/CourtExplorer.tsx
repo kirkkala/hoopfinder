@@ -75,6 +75,7 @@ function syncCourtUrl(path: string | null) {
   } else {
     url.searchParams.delete("court");
   }
+  url.searchParams.delete("thanks");
   if (url.href !== window.location.href) window.history.replaceState(null, "", url);
 }
 
@@ -82,12 +83,15 @@ export function CourtExplorer({
   courtCount: catalogCount,
   fetchedAtBySource,
   focusId,
+  thanks: thanksFromUrl = false,
 }: {
   courtCount: number;
   fetchedAtBySource: FetchedAtBySource;
   focusId: string | null;
+  thanks?: boolean;
 }) {
   const copy = useCopy();
+  const [thanks, setThanks] = useState(thanksFromUrl);
   const [courts, setCourts] = useState<ExplorerCourt[]>([]);
   const [query, setQuery] = useState("");
   const { origin, status: locationStatus, request } = useLocationStatus();
@@ -190,6 +194,7 @@ export function CourtExplorer({
 
   function selectCourt(id: string) {
     setPickedId(id);
+    setThanks(false);
     writeSelectedCourt(id);
     const court = courts.find((item) => item.id === id);
     if (!court) {
@@ -201,6 +206,7 @@ export function CourtExplorer({
 
   function clearCourt() {
     setPickedId(null);
+    setThanks(false);
     clearSelectedCourt();
     syncCourtUrl(null);
   }
@@ -267,6 +273,7 @@ export function CourtExplorer({
               onSelect={selectCourt}
               onClose={clearCourt}
               onBoundsChange={setMapBounds}
+              thanks={thanks}
             />
           </div>
         </section>

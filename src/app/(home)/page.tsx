@@ -33,10 +33,10 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams: Promise<{ court?: string | string[] }>;
+  searchParams: Promise<{ court?: string | string[]; thanks?: string | string[] }>;
 }) {
   const { courts, fetchedAtBySource } = await getCourtCatalog();
-  const { court } = await searchParams;
+  const { court, thanks } = await searchParams;
   const focusId = typeof court === "string" ? courtIdFromParam(court) : null;
   const finnish = getCopy("fi");
   const jsonLd = {
@@ -62,6 +62,7 @@ export default async function HomePage({
         courtCount={courts.length}
         fetchedAtBySource={fetchedAtBySource}
         focusId={focusId}
+        thanks={thanks === "1"}
       />
     </>
   );

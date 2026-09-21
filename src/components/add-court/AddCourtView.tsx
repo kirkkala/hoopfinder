@@ -2,14 +2,15 @@
 
 import { useEffect, useState, type FormEvent, type ReactNode } from "react";
 import dynamic from "next/dynamic";
-import { X } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { ChevronDown, X } from "lucide-react";
 import { AppHeader } from "@/components/brand/AppHeader";
 import { AppFooter } from "@/components/brand/AppFooter";
 import { LocateMeButton } from "@/components/LocateMeButton";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import type { Copy } from "@/lib/copy";
 import type { FetchedAtBySource } from "@/lib/catalog";
-import type { ExplorerCourt } from "@/lib/courts";
+import { homeCourtHref, type ExplorerCourt } from "@/lib/courts";
 import type { AddCourtMapAlert } from "@/components/add-court/AddCourtMap";
 import type { Coordinates } from "@/lib/geo";
 import { fetchMapCourts } from "@/lib/map-courts";
@@ -31,6 +32,7 @@ export function AddCourtView({
   fetchedAtBySource: FetchedAtBySource;
 }) {
   const copy = useCopy();
+  const router = useRouter();
   const [courts, setCourts] = useState<ExplorerCourt[]>([]);
   const [draft, setDraft] = useState<Coordinates | null>(null);
   const [draftStep, setDraftStep] = useState<"confirm" | "form">("confirm");
@@ -38,11 +40,11 @@ export function AddCourtView({
   const [address, setAddress] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState<string | null>(null);
-  const [success, setSuccess] = useState(false);
   const [sending, setSending] = useState(false);
   const [mapAlert, setMapAlert] = useState<AddCourtMapAlert | null>(null);
   const { origin, status: locationStatus, request } = useLocationStatus();
   const [locateSeq, setLocateSeq] = useState(0);
+  const [infoOpen, setInfoOpen] = useState(true);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -73,7 +75,7 @@ export function AddCourtView({
   }
 
   useEffect(() => {
-    if (!draft && !mapAlert && !success) return;
+    if (!draft && !mapAlert) return;
     function onKeyDown(event: KeyboardEvent) {
       if (event.key !== "Escape") return;
       if (mapAlert) {
@@ -86,26 +88,22 @@ export function AddCourtView({
           return;
         }
         clearDraft();
-        return;
       }
-      setSuccess(false);
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [draft, draftStep, mapAlert, success]);
+  }, [draft, draftStep, mapAlert]);
 
   function placeDraft(coords: Coordinates) {
     setDraft(coords);
     setDraftStep("confirm");
     setMapAlert(null);
     setError(null);
-    setSuccess(false);
   }
 
   function showAlert(kind: AddCourtMapAlert) {
     if (kind !== "zoom") {
       clearDraft();
-      setSuccess(false);
     }
     setMapAlert(kind);
   }
@@ -120,7 +118,6 @@ export function AddCourtView({
     if (!draft || draftStep !== "form" || sending) return;
     setSending(true);
     setError(null);
-    setSuccess(false);
     try {
       const response = await fetch("/api/submitted-courts", {
         method: "POST",
@@ -145,12 +142,10 @@ export function AddCourtView({
         setError(submitError(copy, code));
         return;
       }
-      setCourts((current) => [
-        payload.court,
-        ...current.filter((item) => item.id !== payload.court.id),
-      ]);
-      clearDraft();
-      setSuccess(true);
+      if (document.activeElement instanceof HTMLElement) {
+        document.activeElement.blur();
+      }
+      router.push(homeCourtHref(payload.court, { thanks: true }));
     } catch {
       setError(copy.addCourtError);
     } finally {
@@ -186,15 +181,29 @@ export function AddCourtView({
         courtCount={courtCount}
       />
 
-      <div className="shrink-0 border-b border-white/10 px-3 py-3 sm:px-4 lg:px-6">
-        <p className="font-display text-lg tracking-wide text-gold">
-          {copy.addCourtInfoTitle}
-        </p>
-        <p className="mt-1 text-sm text-ink/90">{copy.addCourtLead}</p>
-        <div className="mt-2 flex flex-wrap items-center gap-2.5">
-          <p className="text-sm text-ink-muted">{copy.addCourtHint}</p>
-          <LocateMeButton status={locationStatus} onClick={requestLocation} />
-        </div>
+      <div className="shrink-0 border-b border-white/10">
+        <button
+          type="button"
+          onClick={() => setInfoOpen((open) => !open)}
+          aria-expanded={infoOpen}
+          className="flex w-full items-center justify-between gap-3 px-3 py-2.5 text-left sm:px-4 lg:px-6"
+        >
+          <p className="font-display text-lg tracking-wide text-gold">
+            {copy.addCourtInfoTitle}
+          </p>
+          <ChevronDown
+            aria-hidden
+            className={`size-5 shrink-0 text-ink-muted transition-transform ${
+              infoOpen ? "rotate-180" : ""
+            }`}
+          />
+        </button>
+        {infoOpen ? (
+          <div className="px-3 pb-3 sm:px-4 lg:px-6">
+            <p className="text-sm text-ink/90">{copy.addCourtLead}</p>
+            <p className="mt-1 text-sm text-ink-muted">{copy.addCourtHint}</p>
+          </div>
+        ) : null}
       </div>
 
       <section className="relative min-h-0 flex-1 bg-asphalt">
@@ -222,10 +231,47 @@ export function AddCourtView({
           />
         </div>
 
+        <div className="pointer-events-none absolute top-3 left-3 z-10 drop-shadow-[0_8px_20px_rgb(0_0_0_/_0.35)]">
+          <div className="pointer-events-auto">
+            <LocateMeButton
+              compact
+              status={locationStatus}
+              onClick={requestLocation}
+            />
+          </div>
+        </div>
+
         {draft && draftStep === "form" ? (
-          <AddMapPanel title={copy.addCourt} onClose={backToConfirm}>
-            <form onSubmit={handleSubmit}>
-              <p className="mt-1 text-xs text-ink-muted">
+          <AddMapPanel
+            title={copy.addCourt}
+            onClose={backToConfirm}
+            footer={
+              <div className="flex flex-wrap items-center justify-end gap-2">
+                <button
+                  type="button"
+                  onClick={clearDraft}
+                  className="rounded-full px-3 py-1.5 text-sm font-medium text-ink/80 hover:bg-white/10 hover:text-white"
+                >
+                  {copy.addCourtCancel}
+                </button>
+                <button
+                  type="submit"
+                  form="add-court-form"
+                  disabled={
+                    sending ||
+                    !name.trim() ||
+                    !address.trim() ||
+                    !email.trim()
+                  }
+                  className="rounded-full bg-gold px-3 py-1.5 text-sm font-bold text-asphalt hover:bg-white disabled:cursor-default disabled:opacity-60"
+                >
+                  {sending ? copy.addCourtSending : copy.addCourtSubmit}
+                </button>
+              </div>
+            }
+          >
+            <form id="add-court-form" onSubmit={handleSubmit}>
+              <p className="text-xs text-ink-muted">
                 {draft.lat.toFixed(5)}, {draft.lon.toFixed(5)}
               </p>
               <label className="mt-3 block">
@@ -276,27 +322,6 @@ export function AddCourtView({
                 </span>
               </label>
               {error ? <p className="mt-2 text-sm text-red-400">{error}</p> : null}
-              <div className="mt-3 flex flex-wrap items-center justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={clearDraft}
-                  className="rounded-full px-3 py-1.5 text-sm font-medium text-ink/80 hover:bg-white/10 hover:text-white"
-                >
-                  {copy.addCourtCancel}
-                </button>
-                <button
-                  type="submit"
-                  disabled={
-                    sending ||
-                    !name.trim() ||
-                    !address.trim() ||
-                    !email.trim()
-                  }
-                  className="rounded-full bg-gold px-3 py-1.5 text-sm font-bold text-asphalt hover:bg-white disabled:cursor-default disabled:opacity-60"
-                >
-                  {sending ? copy.addCourtSending : copy.addCourtSubmit}
-                </button>
-              </div>
             </form>
           </AddMapPanel>
         ) : mapAlert && alertCopy ? (
@@ -304,15 +329,9 @@ export function AddCourtView({
             title={alertCopy.title}
             onClose={() => setMapAlert(null)}
             muted={mapAlert === "zoom"}
+            onMap
           >
             {alertCopy.body}
-          </AddMapPanel>
-        ) : success ? (
-          <AddMapPanel
-            title={copy.addCourtInfoTitle}
-            onClose={() => setSuccess(false)}
-          >
-            <p className="text-emerald-300">{copy.addCourtSuccess}</p>
           </AddMapPanel>
         ) : null}
       </section>
@@ -334,7 +353,7 @@ function ConfirmPlaceCard({
     <div
       className="flex items-center gap-1 p-1"
       role="dialog"
-      aria-label={copy.addCourt}
+      aria-label={copy.addCourtConfirmHere}
     >
       <button
         type="button"
@@ -359,23 +378,37 @@ function AddMapPanel({
   title,
   onClose,
   muted = false,
+  onMap = false,
+  footer,
   children,
 }: {
   title: string;
   onClose: () => void;
   muted?: boolean;
+  onMap?: boolean;
+  footer?: ReactNode;
   children?: ReactNode;
 }) {
   const copy = useCopy();
   return (
-    <div className="pointer-events-none absolute inset-x-0 top-14 z-20 flex justify-center px-3 sm:top-16 sm:px-4">
+    <div
+      className={
+        onMap
+          ? "pointer-events-none absolute inset-x-0 top-14 z-20 flex justify-center px-3 sm:px-4"
+          : "pointer-events-none fixed inset-x-0 top-[calc(var(--app-header-height,3.5rem)+3rem)] z-30 flex justify-center px-3 wide:absolute wide:top-14 wide:z-20 sm:px-4"
+      }
+    >
       <div
         role="dialog"
         aria-modal="false"
         aria-labelledby="add-court-alert-title"
-        className="pointer-events-auto max-h-[min(70dvh,32rem)] w-full max-w-sm overflow-y-auto rounded-2xl border border-white/10 bg-panel/95 p-3 shadow-[0_12px_32px_rgb(0_0_0_/_0.45)]"
+        className={`pointer-events-auto flex w-full max-w-sm flex-col overflow-hidden rounded-2xl border border-white/10 bg-panel/95 shadow-[0_12px_32px_rgb(0_0_0_/_0.45)] ${
+          onMap
+            ? "max-h-[min(70dvh,32rem)]"
+            : "max-h-[calc(100dvh-var(--app-header-height,3.5rem)-4rem)] wide:max-h-[min(70dvh,32rem)]"
+        }`}
       >
-        <div className="flex items-start justify-between gap-2">
+        <div className="flex shrink-0 items-start justify-between gap-2 px-3 pt-3">
           <p
             id="add-court-alert-title"
             className="font-display text-lg tracking-wide text-gold"
@@ -391,13 +424,20 @@ function AddMapPanel({
             <X className="size-4" aria-hidden />
           </button>
         </div>
-        {typeof children === "string" ? (
-          <p className={`mt-1 text-sm ${muted ? "text-ink-muted" : "text-ink/90"}`}>
-            {children}
-          </p>
-        ) : (
-          children
-        )}
+        <div className="min-h-0 overflow-y-auto overscroll-contain px-3 py-2">
+          {typeof children === "string" ? (
+            <p className={`text-sm ${muted ? "text-ink-muted" : "text-ink/90"}`}>
+              {children}
+            </p>
+          ) : (
+            children
+          )}
+        </div>
+        {footer ? (
+          <div className="shrink-0 border-t border-white/10 px-3 py-2.5">
+            {footer}
+          </div>
+        ) : null}
       </div>
     </div>
   );

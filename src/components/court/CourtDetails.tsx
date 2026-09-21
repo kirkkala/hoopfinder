@@ -114,7 +114,18 @@ export function CourtDetails({
             <Fact
               icon={court.status === "active" ? CircleCheck : CirclePause}
               label={copy.status}
-              value={pending ? copy.statusUnderReview : formatStatus(court.status, copy)}
+              value={
+                pending ? (
+                  <>
+                    {copy.statusUnderReview}
+                    <span className="mt-1 block text-sm text-ink-muted">
+                      {copy.pendingPublishAfterReview}
+                    </span>
+                  </>
+                ) : (
+                  formatStatus(court.status, copy)
+                )
+              }
             />
             {!pending && (
               <>

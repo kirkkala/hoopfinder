@@ -76,7 +76,7 @@ export function AppHeader({
   return (
     <header
       ref={headerRef}
-      className={`z-20 shrink-0 border-b border-white/10 bg-asphalt ${
+      className={`z-40 shrink-0 border-b border-white/10 bg-asphalt ${
         home ? "relative" : "sticky top-0"
       }`}
     >
@@ -216,14 +216,14 @@ function HeaderMenu({
         aria-haspopup="true"
         aria-label={open ? copy.close : copy.menu}
         onClick={() => setOpen((value) => !value)}
-        className={`relative z-30 grid size-10 shrink-0 place-items-center rounded-full outline-none transition-colors duration-200 hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-gold/60 ${
+        className={`relative z-50 grid size-10 shrink-0 place-items-center rounded-full outline-none transition-colors duration-200 hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-gold/60 ${
           open ? "bg-white/10 text-gold" : "text-ink"
         }`}
       >
         <HamburgerIcon open={open} />
       </button>
       <div
-        className={`fixed inset-x-0 bottom-0 z-20 overflow-hidden top-[calc(var(--app-header-height,3.5rem)-1px)] ${
+        className={`fixed inset-x-0 bottom-0 z-40 overflow-hidden top-[calc(var(--app-header-height,3.5rem)-1px)] ${
           open ? "" : "pointer-events-none"
         }`}
       >

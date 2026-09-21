@@ -289,8 +289,12 @@ export function courtHref(court: Pick<ExplorerCourt, "id" | "source">): string {
 }
 
 /** Home map with that court’s popup open. Works for published and pending pins. */
-export function homeCourtHref(court: Pick<ExplorerCourt, "id" | "source">): string {
-  return `/?court=${encodeURIComponent(courtParam(court))}`;
+export function homeCourtHref(
+  court: Pick<ExplorerCourt, "id" | "source">,
+  options?: { thanks?: boolean },
+): string {
+  const href = `/?court=${encodeURIComponent(courtParam(court))}`;
+  return options?.thanks ? `${href}&thanks=1` : href;
 }
 
 export function courtOgHref(

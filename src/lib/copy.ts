@@ -215,16 +215,16 @@ const messages = {
   no: { fi: "Ei", en: "No" },
   notReported: { fi: "Ei ilmoitettu", en: "Not reported" },
   addCourt: { fi: "Lisää kenttä", en: "Add court" },
-  addCourtConfirmHere: { fi: "Lisää kenttä", en: "Add court" },
+  addCourtConfirmHere: { fi: "Tallenna", en: "Save" },
   addCourtInfoTitle: { fi: "Lisää kenttä Hoop Finderiin", en: "Add court to Hoop Finder" },
   addCourtExit: { fi: "Poistu", en: "Exit" },
   addCourtLead: {
-    fi: "Tee palvelusta parempi lisäämällä puuttuvia kenttiä.",
-    en: "Make the service better by adding missing courts.",
+    fi: "Tee palvelusta parempi lisäämällä puuttuva kenttä.",
+    en: "Make the service better by adding a missing court.",
   },
   addCourtHint: {
-    fi: "Zoomaa karttaa tai paikanna itsesi jos olet puuttuvalla kentällä ja napauta karttaa.",
-    en: "Zoom in or locate yourself if you are missing a court and tap the map to add a court.",
+    fi: "Liikuta karttaa ja zoomaa tai paikanna itsesi ja napsauta karttaa lisätäksesi kentän.",
+    en: "Pan and zoom the map or locate yourself and tap the map to add a missing court.",
   },
   addCourtHintZoom: {
     fi: "Zoomaa lähemmäs merkitäksesi korin sijainnin mahdollisimman tarkasti.",
@@ -247,8 +247,8 @@ const messages = {
     en: "name@example.com",
   },
   addCourtEmailHelp: {
-    fi: "Tarvitsemme sähköpostin yhteydenottoon. Sitä ei näytetä kartalla.",
-    en: "We need an email to follow up. It is not shown on the map.",
+    fi: "Anna sähkköpostiosoite johon lähetämme linkin kentän lisäämisen vahvistamiseksi. Ylläpito voi myös tarvittaessa kysyä lisätietoja. Sähköpostiosoitettasi ei näytetä palvelussa.",
+    en: "Enter your email address to receive a link to verify the court addition or the admin may ask for additional information. Your email address is not shown in the service.",
   },
   addCourtSubmit: { fi: "Lähetä", en: "Submit" },
   addCourtCancel: { fi: "Peruuta", en: "Cancel" },
@@ -273,9 +273,13 @@ const messages = {
     fi: "Valitse toinen paikka kartalta.",
     en: "Pick another place on the map.",
   },
+  addCourtSuccessLead: {
+    fi: "Kiitos kun autoit tekemään palvelusta paremman!",
+    en: "Thank you for contributing to making the service better!",
+  },
   addCourtSuccess: {
-    fi: "Kiitos! Kenttä odottaa julkaisua.",
-    en: "Thanks! The court is pending publication.",
+    fi: "Kentän tiedot on tallennettu ja se on nyt tarkistettavana. Tiedot julkaistaan pian Hoop Finderiin kaikkien nähtäväksi.",
+    en: "The court information has been saved and is now pending review. The information will be published on Hoop Finder soon.",
   },
   addCourtOutsideFinland: {
     fi: "Valitse paikka Suomesta.",
@@ -298,6 +302,10 @@ const messages = {
     en: (date: string) => `Court added by a visitor on ${date}`,
   },
   statusUnderReview: { fi: "Odottaa tarkastusta", en: "Waiting for review" },
+  pendingPublishAfterReview: {
+    fi: "Kentän tiedot julkaistaan palvelussa kun ylläpito on tarkistanut sen.",
+    en: "The court information is published after an admin has reviewed it.",
+  },
   sourceSubmitted: {
     fi: "Käyttäjän lisäämä",
     en: "Added by a visitor",
@@ -333,7 +341,7 @@ const messages = {
   adminShowOnMap: { fi: "Katso kartalla", en: "View on map" },
   adminShowOnGoogleMaps: { fi: "Google Maps", en: "Google Maps" },
   adminSubmittedAt: { fi: "Lähetetty", en: "Submitted" },
-  statusPending: { fi: "Odottaa julkaisua", en: "Pending" },
+  statusPending: { fi: "Tarkistettavana", en: "Pending review" },
   statusOpen: { fi: "Avoinna", en: "Open" },
   statusTemporarilyClosed: {
     fi: "Tilapäisesti kiinni",
