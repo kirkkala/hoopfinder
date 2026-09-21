@@ -8,9 +8,11 @@ export function AppWordmark({
   className?: string;
 }) {
   return (
-    <span className={className}>
+    <span className={className ? `inline-block ${className}` : "inline-block"}>
       {APP_NAME}{" "}
-      <span className="text-[0.62em] opacity-60">{region}</span>
+      <span className="block text-right text-[0.62em] leading-none opacity-60 sm:inline">
+        {region}
+      </span>
     </span>
   );
 }
