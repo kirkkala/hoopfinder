@@ -35,6 +35,8 @@ import { AppFooter } from "@/components/brand/AppFooter";
 import { CourtDistance } from "@/components/CourtDistance";
 import { LocateMeButton, locationHint } from "@/components/LocateMeButton";
 import { useCopy } from "@/components/brand/LocaleProvider";
+import { useIsAdmin } from "@/components/admin/AdminProvider";
+import { AdminStatusButton } from "@/components/admin/AdminStatusButton";
 import { CourtMiniMap } from "@/components/court/CourtMiniMap";
 import {
   courtTitle,
@@ -67,6 +69,7 @@ export function CourtDetails({
   courtCount: number;
 }) {
   const copy = useCopy();
+  const isAdmin = useIsAdmin();
   const address = formatAddress([
     court.address,
     court.neighborhood,
@@ -76,6 +79,8 @@ export function CourtDetails({
   const listingUrl = sourceListingUrl(court.source, court.id);
   const { amenities } = court;
   const pending = court.status === "pending";
+  const showAdminStatus =
+    isAdmin && court.source === "submitted";
   const dimensions =
     amenities.lengthM && amenities.widthM
       ? `${amenities.lengthM} × ${amenities.widthM} m`
@@ -127,6 +132,11 @@ export function CourtDetails({
                 )
               }
             />
+            {showAdminStatus ? (
+              <div className="mt-3">
+                <AdminStatusButton id={court.id} published={!pending} />
+              </div>
+            ) : null}
             {!pending && (
               <>
                 <Fact

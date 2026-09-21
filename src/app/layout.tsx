@@ -3,7 +3,9 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Bebas_Neue, Outfit } from "next/font/google";
 import type { Metadata, Viewport } from "next";
+import { AdminProvider } from "@/components/admin/AdminProvider";
 import { LocaleProvider } from "@/components/brand/LocaleProvider";
+import { isAdmin } from "@/lib/admin";
 import { SITE_URL } from "@/lib/constants";
 import { getCopy } from "@/lib/copy";
 
@@ -85,7 +87,9 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="fi" className={`${outfit.variable} ${bebas.variable}`}>
       <body className="min-h-dvh bg-asphalt font-sans text-ink antialiased">
-        <LocaleProvider>{children}</LocaleProvider>
+        <LocaleProvider>
+          <AdminProvider isAdmin={isAdmin()}>{children}</AdminProvider>
+        </LocaleProvider>
         <Analytics />
         <SpeedInsights />
       </body>

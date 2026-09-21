@@ -310,6 +310,7 @@ const messages = {
     fi: "Käyttäjän lisäämä",
     en: "Added by a visitor",
   },
+  adminNav: { fi: "Ylläpito", en: "Admin" },
   adminTitle: { fi: "Hallintapaneeli", en: "Admin panel" },
   adminEmpty: {
     fi: "Ei käyttäjien lisäämiä kenttiä.",

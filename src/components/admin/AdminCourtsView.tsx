@@ -4,16 +4,14 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { basketball } from "@lucide/lab";
-import { Globe, GlobeOff, Icon, Map, MapPin, Trash2 } from "lucide-react";
+import { Icon, Map, MapPin, Trash2 } from "lucide-react";
+import { AdminStatusButton } from "@/components/admin/AdminStatusButton";
 import { AppFooter } from "@/components/brand/AppFooter";
 import { AppHeader } from "@/components/brand/AppHeader";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import type { FetchedAtBySource } from "@/lib/catalog";
 import { homeCourtHref } from "@/lib/courts";
-import type {
-  AdminSubmittedCourt,
-  SubmittedStatus,
-} from "@/lib/submitted-courts";
+import type { AdminSubmittedCourt } from "@/lib/submitted-courts";
 import { formatFetchedAt } from "@/lib/time";
 
 export function AdminCourtsView({
@@ -58,38 +56,10 @@ function SubmittedList({
   const [courts, setCourts] = useState(initialCourts);
   const [savingId, setSavingId] = useState<string | null>(null);
   const [errorId, setErrorId] = useState<string | null>(null);
-  const [errorKind, setErrorKind] = useState<"status" | "delete">("status");
 
   useEffect(() => {
     setCourts(initialCourts);
   }, [initialCourts]);
-
-  async function setStatus(id: string, status: SubmittedStatus) {
-    setSavingId(id);
-    setErrorId(null);
-    try {
-      const response = await fetch(
-        `/api/admin/courts/${encodeURIComponent(id)}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ status }),
-        },
-      );
-      if (!response.ok) throw new Error("status update failed");
-      setCourts((current) =>
-        current.map((court) =>
-          court.id === id ? { ...court, status } : court,
-        ),
-      );
-      router.refresh();
-    } catch {
-      setErrorKind("status");
-      setErrorId(id);
-    } finally {
-      setSavingId(null);
-    }
-  }
 
   async function remove(id: string, name: string) {
     if (!window.confirm(copy.adminDeleteConfirm(name))) return;
@@ -104,7 +74,6 @@ function SubmittedList({
       setCourts((current) => current.filter((court) => court.id !== id));
       router.refresh();
     } catch {
-      setErrorKind("delete");
       setErrorId(id);
     } finally {
       setSavingId(null);
@@ -193,34 +162,22 @@ function SubmittedList({
                     <MapPin className="size-3.5" aria-hidden />
                     {copy.adminShowOnGoogleMaps}
                   </a>
-                  {published ? (
-                    <button
-                      type="button"
-                      disabled={saving}
-                      onClick={() => void setStatus(court.id, "pending")}
-                      className="inline-flex items-center gap-1.5 rounded-full bg-yellow-400 px-4 py-2 text-sm font-bold text-asphalt hover:bg-yellow-300 disabled:cursor-wait disabled:opacity-70"
-                    >
-                      <GlobeOff className="size-4" aria-hidden />
-                      {saving ? copy.adminSaving : copy.adminUnpublish}
-                    </button>
-                  ) : (
-                    <button
-                      type="button"
-                      disabled={saving}
-                      onClick={() => void setStatus(court.id, "published")}
-                      className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-4 py-2 text-sm font-bold text-white hover:bg-white/25 disabled:cursor-wait disabled:opacity-70"
-                    >
-                      <Globe className="size-4" aria-hidden />
-                      {saving ? copy.adminSaving : copy.adminPublish}
-                    </button>
-                  )}
+                  <AdminStatusButton
+                    id={court.id}
+                    published={published}
+                    onStatusChange={(status) => {
+                      setCourts((current) =>
+                        current.map((item) =>
+                          item.id === court.id ? { ...item, status } : item,
+                        ),
+                      );
+                    }}
+                  />
                 </div>
               </div>
               {errorId === court.id ? (
                 <p className="mt-3 text-sm text-red-400">
-                  {errorKind === "delete"
-                    ? copy.adminDeleteError
-                    : copy.adminStatusError}
+                  {copy.adminDeleteError}
                 </p>
               ) : null}
             </li>
