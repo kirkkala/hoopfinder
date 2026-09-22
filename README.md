@@ -58,6 +58,8 @@ Generate `AUTH_SECRET` with `npx auth secret`.
 
 Set the same variables on Vercel. Production also needs `NEXTAUTH_URL=https://www.hoopfinder.fi`.
 
+Transactional email uses [Resend](https://resend.com). Set `RESEND_API_KEY` and `EMAIL_FROM`.
+
 ## License
 
 [GNU Affero General Public License v3.0](LICENSE).
