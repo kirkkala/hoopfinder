@@ -17,6 +17,8 @@ export type Court = {
   lon: number;
   comment: string | null;
   website: string | null;
+  /** Visitor submission whose email link has been opened. */
+  emailConfirmed?: boolean;
   constructionYear: number | null;
   owner: string | null;
   admin: string | null;
@@ -52,7 +54,7 @@ export type ExplorerCourt = {
   amenities: Pick<Court["amenities"], "lighting" | "freeUse">;
 } & (
   | { source: CourtSourceId | "submitted" }
-  | { source: "pending"; createdAt: string }
+  | { source: "pending"; createdAt: string; emailConfirmed: boolean }
 );
 
 export type CourtWithDistance = ExplorerCourt & {
@@ -101,6 +103,9 @@ export function emptyAmenities(): Court["amenities"] {
 /** Same pad as LIPAS/OSM merge — pending pins drop off once a source court lands here. */
 export const COURT_MATCH_KM = 0.08;
 
+/** Unconfirmed pins may sit nearby, but not on top of each other. */
+export const SAME_SPOT_KM = 0.015;
+
 export function isTooCloseToCourt(
   point: Coordinates,
   courts: Coordinates[],
@@ -108,6 +113,26 @@ export function isTooCloseToCourt(
   return courts.some(
     (court) => haversineKm(point, { lat: court.lat, lon: court.lon }) < COURT_MATCH_KM,
   );
+}
+
+/** Catalog and email-confirmed courts block 80 m. Unconfirmed courts block the same spot only. */
+export function courtPlacementBlocked(
+  point: Coordinates,
+  courts: Array<
+    Coordinates & {
+      source?: ExplorerCourt["source"];
+      emailConfirmed?: boolean;
+      status?: string;
+    }
+  >,
+): boolean {
+  return courts.some((court) => {
+    const unconfirmed =
+      court.status === "unconfirmed" ||
+      (court.source === "pending" && court.emailConfirmed === false);
+    const km = unconfirmed ? SAME_SPOT_KM : COURT_MATCH_KM;
+    return haversineKm(point, court) < km;
+  });
 }
 
 export function mergeCourts(batches: Court[][]): Court[] {

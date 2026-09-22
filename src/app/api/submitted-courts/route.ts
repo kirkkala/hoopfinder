@@ -1,3 +1,4 @@
+import { SITE_URL } from "@/lib/constants";
 import {
   createSubmittedCourt,
   listSubmittedCourts,
@@ -28,10 +29,10 @@ export async function POST(request: Request) {
   }
 
   try {
-    const result = await createSubmittedCourt(parsed.data);
+    const result = await createSubmittedCourt(parsed.data, requestOrigin(request));
     if ("error" in result) {
       const status =
-        result.error === "unavailable"
+        result.error === "unavailable" || result.error === "email"
           ? 503
           : result.error === "too-close"
             ? 409
@@ -43,4 +44,15 @@ export async function POST(request: Request) {
     console.error(error);
     return Response.json({ error: "unavailable" }, { status: 503 });
   }
+}
+
+function requestOrigin(request: Request): string {
+  const host = (request.headers.get("x-forwarded-host") ?? request.headers.get("host"))
+    ?.split(",")[0]
+    ?.trim();
+  if (!host) return SITE_URL;
+  const protocol =
+    request.headers.get("x-forwarded-proto")?.split(",")[0]?.trim() ??
+    (host.startsWith("localhost") || host.startsWith("127.") ? "http" : "https");
+  return `${protocol}://${host}`;
 }

@@ -110,13 +110,16 @@ function SubmittedList({
         {visible.map((court) => {
           const saving = savingId === court.id;
           const published = court.status === "published";
+          const confirmed = court.status === "pending";
           return (
             <li
               key={court.id}
               className={`relative rounded-2xl border p-4 pr-24 ${
                 published
                   ? "border-emerald-400/40 bg-emerald-400/10"
-                  : "border-yellow-400/40 bg-yellow-400/10"
+                  : confirmed
+                    ? "border-yellow-400/40 bg-yellow-400/10"
+                    : "border-white/15 bg-white/5"
               }`}
             >
               <button
@@ -134,7 +137,7 @@ function SubmittedList({
                     <h2 className="max-w-full font-semibold text-white">
                       {court.name}
                     </h2>
-                    <StatusBadge published={published} />
+                    <StatusBadge status={court.status} />
                   </div>
                   <p className="mt-1 text-sm text-ink-muted">{court.address}</p>
                   <p className="mt-1 text-sm text-ink-muted">
@@ -172,17 +175,19 @@ function SubmittedList({
                     <MapPin className="size-3.5" aria-hidden />
                     {copy.adminShowOnGoogleMaps}
                   </a>
-                  <AdminStatusButton
-                    id={court.id}
-                    published={published}
-                    onStatusChange={(status) => {
-                      setCourts((current) =>
-                        current.map((item) =>
-                          item.id === court.id ? { ...item, status } : item,
-                        ),
-                      );
-                    }}
-                  />
+                  {confirmed || published ? (
+                    <AdminStatusButton
+                      id={court.id}
+                      published={published}
+                      onStatusChange={(status) => {
+                        setCourts((current) =>
+                          current.map((item) =>
+                            item.id === court.id ? { ...item, status } : item,
+                          ),
+                        );
+                      }}
+                    />
+                  ) : null}
                 </div>
               </div>
               {errorId === court.id ? (
@@ -199,9 +204,14 @@ function SubmittedList({
   );
 }
 
-type StatusFilter = "all" | "pending" | "published";
+type StatusFilter = "all" | "unconfirmed" | "pending" | "published";
 
-const STATUS_FILTERS: StatusFilter[] = ["all", "pending", "published"];
+const STATUS_FILTERS: StatusFilter[] = [
+  "all",
+  "unconfirmed",
+  "pending",
+  "published",
+];
 
 function StatusFilterToggle({
   filter,
@@ -213,7 +223,7 @@ function StatusFilterToggle({
   const copy = useCopy();
   return (
     <div
-      className="mt-4 flex w-fit rounded-full bg-white/10 p-0.5 text-xs font-bold"
+      className="mt-4 flex w-fit max-w-full flex-wrap rounded-full bg-white/10 p-0.5 text-xs font-bold"
       role="group"
       aria-label={copy.adminFilter}
     >
@@ -233,24 +243,36 @@ function StatusFilterToggle({
             ? copy.adminFilterAll
             : option === "published"
               ? copy.adminStatusPublished
-              : copy.adminFilterPending}
+              : option === "unconfirmed"
+                ? copy.adminFilterUnconfirmed
+                : copy.adminFilterPending}
         </button>
       ))}
     </div>
   );
 }
 
-function StatusBadge({ published }: { published: boolean }) {
+function StatusBadge({
+  status,
+}: {
+  status: "unconfirmed" | "pending" | "published";
+}) {
   const copy = useCopy();
+  const label =
+    status === "published"
+      ? copy.adminStatusPublished
+      : status === "pending"
+        ? copy.adminStatusConfirmed
+        : copy.adminStatusUnconfirmed;
+  const className =
+    status === "published"
+      ? "bg-emerald-500 text-white"
+      : status === "pending"
+        ? "bg-emerald-400/20 text-emerald-100"
+        : "bg-white/15 text-white/80";
   return (
-    <span
-      className={`rounded-full px-2 py-0.5 text-xs font-bold ${
-        published
-          ? "bg-emerald-500 text-white"
-          : "bg-yellow-400 text-asphalt"
-      }`}
-    >
-      {published ? copy.adminStatusPublished : copy.adminStatusPending}
+    <span className={`rounded-full px-2 py-0.5 text-xs font-bold ${className}`}>
+      {label}
     </span>
   );
 }

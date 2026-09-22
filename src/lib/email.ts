@@ -1,17 +1,12 @@
 import { Resend } from "resend";
 
-type SendEmailInput = {
-  to: string | string[];
-  subject: string;
-  text: string;
-  html?: string;
-  replyTo?: string;
-};
+const CONFIRMATION_TEMPLATE_ID = "hoop-add-confirmation-link";
 
-export type SendEmailResult = { id: string } | { error: "unconfigured" | "failed" };
-
-/** Sends one transactional email through Resend. */
-export async function sendEmail(input: SendEmailInput): Promise<SendEmailResult> {
+export async function sendCourtConfirmationEmail(input: {
+  to: string;
+  courtName: string;
+  confirmUrl: string;
+}): Promise<{ id: string } | { error: "unconfigured" | "failed" }> {
   const apiKey = process.env.RESEND_API_KEY?.trim();
   const from = process.env.EMAIL_FROM?.trim();
   if (!apiKey || !from) {
@@ -23,10 +18,13 @@ export async function sendEmail(input: SendEmailInput): Promise<SendEmailResult>
   const { data, error } = await resend.emails.send({
     from,
     to: input.to,
-    subject: input.subject,
-    text: input.text,
-    ...(input.html ? { html: input.html } : {}),
-    ...(input.replyTo ? { replyTo: input.replyTo } : {}),
+    template: {
+      id: CONFIRMATION_TEMPLATE_ID,
+      variables: {
+        COURT_NAME: input.courtName,
+        COURT_ADD_CONFIRMATION_LINK: input.confirmUrl,
+      },
+    },
   });
 
   if (error || !data) {

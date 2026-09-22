@@ -257,6 +257,10 @@ const messages = {
     fi: "Lähetys epäonnistui. Kokeile uudelleen.",
     en: "Could not send. Try again.",
   },
+  addCourtEmailError: {
+    fi: "Vahvistusviestin lähetys epäonnistui. Kokeile uudelleen.",
+    en: "Could not send the confirmation email. Try again.",
+  },
   addCourtInvalid: {
     fi: "Tarkista tiedot. Sähköpostin pitää olla kelvollinen.",
     en: "Check the details. Email must be valid.",
@@ -278,8 +282,21 @@ const messages = {
     en: "Thank you for contributing to making the service better!",
   },
   addCourtSuccess: {
-    fi: "Kentän tiedot on tallennettu ja se on nyt tarkistettavana. Tiedot julkaistaan pian Hoop Finderiin kaikkien nähtäväksi.",
-    en: "The court information has been saved and is now pending review. The information will be published on Hoop Finder soon.",
+    fi: "Avaa sähköpostisi ja vahvista lisäys linkistä. Sen jälkeen ylläpito voi julkaista kentän.",
+    en: "Open your email and confirm the addition from the link. An admin can publish the court after that.",
+  },
+  confirmCourtTitle: { fi: "Kenttä vahvistettu", en: "Court confirmed" },
+  confirmCourtBody: {
+    fi: "Kiitos. Ylläpito näkee kentän nyt vahvistettuna ja ja julkaisee tiedot pian Hoop Finderiin.",
+    en: "Thank you. The admins can now see the court as confirmed and will publish it soon on Hoop Finder.",
+  },
+  confirmCourtInvalidTitle: {
+    fi: "Linkki ei kelpaa",
+    en: "Link is not valid",
+  },
+  confirmCourtInvalid: {
+    fi: "Vahvistuslinkki ei ole voimassa.",
+    en: "This confirmation link is not valid.",
   },
   addCourtOutsideFinland: {
     fi: "Valitse paikka Suomesta.",
@@ -302,6 +319,14 @@ const messages = {
     en: (date: string) => `Court added by a visitor on ${date}`,
   },
   statusUnderReview: { fi: "Odottaa tarkastusta", en: "Waiting for review" },
+  statusAwaitingEmail: {
+    fi: "Odottaa sähköpostivahvistusta",
+    en: "Waiting for email confirmation",
+  },
+  statusAwaitingEmailBody: {
+    fi: "Kenttä julkaistaan, kun lisääjä on vahvistanut sen ja ylläpito on tarkistanut sen.",
+    en: "The court is published after the submitter confirms it and an admin reviews it.",
+  },
   pendingPublishAfterReview: {
     fi: "Kentän tiedot julkaistaan palvelussa kun ylläpito on tarkistanut sen.",
     en: "The court information is published after an admin has reviewed it.",
@@ -355,12 +380,15 @@ const messages = {
   adminFilter: { fi: "Suodatus", en: "Filter" },
   adminFilterAll: { fi: "Kaikki", en: "All" },
   adminFilterPending: { fi: "Odottaa", en: "Pending" },
+  adminFilterUnconfirmed: { fi: "Vahvistamatta", en: "Unconfirmed" },
   adminFilterEmpty: {
     fi: "Ei kenttiä tässä näkymässä.",
     en: "No courts in this view.",
   },
   adminStatusPublished: { fi: "Julkaistu", en: "Published" },
   adminStatusPending: { fi: "Odottaa julkaisua", en: "Pending publication" },
+  adminStatusConfirmed: { fi: "Vahvistettu", en: "Confirmed" },
+  adminStatusUnconfirmed: { fi: "Ei vahvistettu", en: "Not confirmed" },
   adminPublish: { fi: "Julkaise", en: "Publish" },
   adminUnpublish: { fi: "Piilota", en: "Unpublish" },
   adminSaving: { fi: "Tallennetaan…", en: "Saving…" },

@@ -1,6 +1,8 @@
+import { randomBytes } from "node:crypto";
 import { z } from "zod";
 import { getCourtCatalog } from "@/lib/catalog";
 import {
+  courtPlacementBlocked,
   emptyAmenities,
   isTooCloseToCourt,
   submittedCourtKey,
@@ -8,6 +10,7 @@ import {
   type ExplorerCourt,
 } from "@/lib/courts";
 import { withDb } from "@/lib/db";
+import { sendCourtConfirmationEmail } from "@/lib/email";
 import { isInFinland } from "@/lib/sources/finland";
 
 export const SubmittedCourtSchema = z.object({
@@ -24,9 +27,10 @@ export type SubmittedCourtError =
   | "unavailable"
   | "invalid"
   | "too-close"
-  | "outside-finland";
+  | "outside-finland"
+  | "email";
 
-export type SubmittedStatus = "pending" | "published";
+export type SubmittedStatus = "unconfirmed" | "pending" | "published";
 
 export type AdminSubmittedCourt = {
   id: string;
@@ -112,6 +116,7 @@ export async function getSubmittedCourt(
 
 export async function createSubmittedCourt(
   input: SubmittedCourtInput,
+  origin: string,
 ): Promise<{ court: ExplorerCourt } | { error: SubmittedCourtError }> {
   if (!isInFinland(input.lat, input.lon)) {
     return { error: "outside-finland" };
@@ -122,31 +127,76 @@ export async function createSubmittedCourt(
     return { error: "too-close" };
   }
 
+  const token = randomBytes(32).toString("base64url");
   const created = await withDb(async (sql) => {
     const existing = await sql<SubmittedRow[]>`
       SELECT id, name, address, lat, lon, status, created_at
       FROM submitted_courts
     `;
-    if (isTooCloseToCourt(input, existing)) {
+    if (courtPlacementBlocked(input, existing)) {
       return { error: "too-close" as const };
     }
 
     const rows = await sql<SubmittedRow[]>`
-      INSERT INTO submitted_courts (name, address, email, lat, lon)
-      VALUES (${input.name}, ${input.address}, ${input.email}, ${input.lat}, ${input.lon})
+      INSERT INTO submitted_courts (
+        name, address, email, lat, lon, status, confirmation_token
+      )
+      VALUES (
+        ${input.name},
+        ${input.address},
+        ${input.email},
+        ${input.lat},
+        ${input.lon},
+        'unconfirmed',
+        ${token}
+      )
       RETURNING id, name, address, lat, lon, status, created_at
     `;
     const row = rows[0];
     if (!row) throw new Error("submitted court insert returned no row");
-    return { court: toExplorerCourt(row) };
+    return { id: String(row.id), court: toExplorerCourt(row) };
   });
 
-  return created ?? { error: "unavailable" };
+  if (!created) return { error: "unavailable" };
+  if ("error" in created) return created;
+
+  const sent = await sendCourtConfirmationEmail({
+    to: input.email,
+    courtName: input.name,
+    confirmUrl: `${origin}/add/confirm/${token}`,
+  });
+  if ("error" in sent) {
+    await withDb(
+      (sql) => sql`
+        DELETE FROM submitted_courts
+        WHERE id = ${created.id} AND status = 'unconfirmed'
+      `,
+    );
+    return { error: "email" };
+  }
+
+  return { court: created.court };
+}
+
+export async function confirmSubmittedCourt(
+  token: string,
+): Promise<"confirmed" | "invalid"> {
+  if (!/^[\w-]{20,128}$/.test(token)) return "invalid";
+  const result = await withDb(async (sql) => {
+    const rows = await sql<{ id: number | string }[]>`
+      UPDATE submitted_courts
+      SET status = CASE WHEN status = 'unconfirmed' THEN 'pending' ELSE status END
+      WHERE confirmation_token = ${token}
+      RETURNING id
+    `;
+    return rows[0] ? ("confirmed" as const) : ("invalid" as const);
+  });
+  return result ?? "invalid";
 }
 
 export async function setSubmittedCourtStatus(
   id: string,
-  status: SubmittedStatus,
+  status: Exclude<SubmittedStatus, "unconfirmed">,
 ): Promise<{ court: ExplorerCourt } | { error: "unavailable" | "not-found" }> {
   const key = submittedCourtKey(id);
   if (!/^\d+$/.test(key)) return { error: "not-found" };
@@ -155,6 +205,7 @@ export async function setSubmittedCourtStatus(
       UPDATE submitted_courts
       SET status = ${status}
       WHERE id = ${key}
+        AND status = ${status === "published" ? "pending" : "published"}
       RETURNING id, name, address, lat, lon, status, created_at
     `;
     const row = rows[0];
@@ -211,6 +262,7 @@ function toExplorerCourt(row: SubmittedRow): ExplorerCourt {
     lon: row.lon,
     amenities: { lighting: null, freeUse: null },
     createdAt: toIso(row.created_at),
+    emailConfirmed: asSubmittedStatus(row.status) === "pending",
   };
 }
 
@@ -233,11 +285,13 @@ function toCourt(row: SubmittedRow): Court {
     owner: null,
     admin: null,
     amenities: emptyAmenities(),
+    emailConfirmed: asSubmittedStatus(row.status) !== "unconfirmed",
   };
 }
 
 function asSubmittedStatus(value: string): SubmittedStatus {
-  return value === "published" ? "published" : "pending";
+  if (value === "published" || value === "unconfirmed") return value;
+  return "pending";
 }
 
 function toIso(value: Date | string): string {

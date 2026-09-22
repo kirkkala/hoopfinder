@@ -14,7 +14,7 @@ import Map, {
 } from "react-map-gl/maplibre";
 import { MAP_STYLE } from "@/lib/constants";
 import { useCopy } from "@/components/brand/LocaleProvider";
-import { courtTitle, isPendingCourt, isTooCloseToCourt, type ExplorerCourt } from "@/lib/courts";
+import { courtPlacementBlocked, courtTitle, isPendingCourt, type ExplorerCourt } from "@/lib/courts";
 import { isInFinland } from "@/lib/sources/finland";
 import {
   DEFAULT_MAP_CENTER,
@@ -165,7 +165,7 @@ export function AddCourtMap({
       onAlert("on-water");
       return;
     }
-    if (isTooCloseToCourt(point, courts)) {
+    if (courtPlacementBlocked(point, courts)) {
       onAlert("too-close");
       return;
     }

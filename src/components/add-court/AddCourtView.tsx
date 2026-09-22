@@ -445,6 +445,7 @@ function AddMapPanel({
 
 function submitError(copy: Copy, error: string | undefined): string {
   if (error === "unavailable") return copy.addCourtUnavailable;
+  if (error === "email") return copy.addCourtEmailError;
   if (error === "invalid") return copy.addCourtInvalid;
   return copy.addCourtError;
 }

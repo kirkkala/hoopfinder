@@ -79,6 +79,7 @@ export function CourtDetails({
   const listingUrl = sourceListingUrl(court.source, court.id);
   const { amenities } = court;
   const pending = court.status === "pending";
+  const awaitingEmail = pending && court.emailConfirmed === false;
   const showAdminStatus =
     isAdmin && court.source === "submitted";
   const dimensions =
@@ -120,7 +121,14 @@ export function CourtDetails({
               icon={court.status === "active" ? CircleCheck : CirclePause}
               label={copy.status}
               value={
-                pending ? (
+                awaitingEmail ? (
+                  <>
+                    {copy.statusAwaitingEmail}
+                    <span className="mt-1 block text-sm text-ink-muted">
+                      {copy.statusAwaitingEmailBody}
+                    </span>
+                  </>
+                ) : pending ? (
                   <>
                     {copy.statusUnderReview}
                     <span className="mt-1 block text-sm text-ink-muted">
@@ -132,7 +140,7 @@ export function CourtDetails({
                 )
               }
             />
-            {showAdminStatus ? (
+            {showAdminStatus && !awaitingEmail ? (
               <div className="mt-3">
                 <AdminStatusButton id={court.id} published={!pending} />
               </div>

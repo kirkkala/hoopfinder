@@ -2,7 +2,7 @@ import postgres from "postgres";
 
 type Sql = postgres.Sql;
 
-const SCHEMA_VERSION = 8;
+const SCHEMA_VERSION = 10;
 
 const globalForDb = globalThis as typeof globalThis & {
   __hoopfinderSql?: Sql;
@@ -54,8 +54,19 @@ async function ensureSchema(sql: Sql) {
       email TEXT NOT NULL,
       lat DOUBLE PRECISION NOT NULL,
       lon DOUBLE PRECISION NOT NULL,
-      status TEXT NOT NULL DEFAULT 'pending',
-      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+      status TEXT NOT NULL DEFAULT 'unconfirmed',
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      confirmation_token TEXT
     )
+  `;
+  await sql`ALTER TABLE submitted_courts DROP COLUMN IF EXISTS confirmed_at`;
+  await sql`ALTER TABLE submitted_courts DROP COLUMN IF EXISTS confirmation_token_hash`;
+  await sql`ALTER TABLE submitted_courts ADD COLUMN IF NOT EXISTS confirmation_token TEXT`;
+  await sql`ALTER TABLE submitted_courts ALTER COLUMN status SET DEFAULT 'unconfirmed'`;
+  await sql`DROP INDEX IF EXISTS submitted_courts_confirmation_token_hash_idx`;
+  await sql`
+    CREATE UNIQUE INDEX IF NOT EXISTS submitted_courts_confirmation_token_idx
+    ON submitted_courts (confirmation_token)
+    WHERE confirmation_token IS NOT NULL
   `;
 }
