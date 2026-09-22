@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { MapPin } from "lucide-react";
-import { setWorkerUrl } from "maplibre-gl";
+import { setWorkerUrl, type Offset } from "maplibre-gl";
 import Map, {
   Layer,
   Marker,
@@ -34,8 +34,11 @@ const ADD_COURT_MIN_ZOOM = 15;
 const WATER_LAYER = "water";
 
 /** Pin is 36px tall; extra bottom offset keeps the chip off the marker. */
-const CONFIRM_OFFSET = {
+const CONFIRM_OFFSET: Offset = {
+  center: [0, 0],
   top: [0, 0],
+  "top-left": [0, 0],
+  "top-right": [0, 0],
   bottom: [0, -28],
   "bottom-left": [0, -28],
   "bottom-right": [0, -28],
