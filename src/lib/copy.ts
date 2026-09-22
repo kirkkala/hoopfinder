@@ -236,7 +236,7 @@ const messages = {
   yes: { fi: "Kyllä", en: "Yes" },
   no: { fi: "Ei", en: "No" },
   notReported: { fi: "Ei ilmoitettu", en: "Not reported" },
-  addCourt: { fi: "Lisää kenttä Hoop Finderiin", en: "Add court to Hoop Finder" },
+  addCourt: { fi: "Lisää kenttä", en: "Add court" },
   addCourtConfirmHere: { fi: "Lisää tähän", en: "Lisää tähän" },
   addCourtInfoTitle: { fi: "Lisää kenttä Hoop Finderiin", en: "Add court to Hoop Finder" },
   addCourtExit: { fi: "Poistu", en: "Exit" },
