@@ -196,6 +196,28 @@ const messages = {
   courtFacts: { fi: "Kentän tiedot", en: "Court scouting" },
   schoolUse: { fi: "Koulukäyttö", en: "School use" },
   fieldType: { fi: "Kenttätyyppi", en: "Field type" },
+  fieldTypes: {
+    full: { fi: "Normaali koripallokenttä", en: "Full court" },
+    "one-hoop": { fi: "Yhden korin kenttä", en: "One hoop" },
+    mini: { fi: "Minikoripallokenttä", en: "Mini court" },
+    street: { fi: "Katukoris", en: "Streetball" },
+  } satisfies Record<string, Pair<string>>,
+  waterPoints: {
+    yes: { fi: "On", en: "Yes" },
+    no: { fi: "Ei ole", en: "No" },
+    seasonal: { fi: "Kausittainen", en: "Seasonal" },
+  } satisfies Record<string, Pair<string>>,
+  lengthM: { fi: "Pituus (m)", en: "Length (m)" },
+  widthM: { fi: "Leveys (m)", en: "Width (m)" },
+  addCourtOptional: {
+    fi: "Vapaaehtoiset. Jätä tyhjäksi, jos et tiedä.",
+    en: "Optional. Leave blank if you don't know.",
+  },
+  addCourtUnknown: { fi: "Ei tietoa", en: "Not known" },
+  addCourtYesNoHint: {
+    fi: "Jos et tiedä, jätä valitsematta.",
+    en: "If you don't know, leave it unselected.",
+  },
   surface: { fi: "Pinta", en: "Surface" },
   surfaceNotes: { fi: "Pintatiedot", en: "Surface notes" },
   dimensions: { fi: "Mitat", en: "Dimensions" },

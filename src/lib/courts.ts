@@ -215,8 +215,65 @@ export function withDistance(
     });
 }
 
+export const COURT_STATUS_CODES = [
+  "active",
+  "out-of-service-temporarily",
+  "out-of-service-permanently",
+] as const;
+
+export const FIELD_TYPE_CODES = ["full", "one-hoop", "mini", "street"] as const;
+
+export const WATER_POINT_CODES = ["yes", "no", "seasonal"] as const;
+
+export const SURFACE_CODES = [
+  "asphalt",
+  "concrete",
+  "synthetic",
+  "artificial-turf",
+  "sand-infilled-artificial-turf",
+  "sand",
+  "stone",
+  "rock-dust",
+  "gravel",
+  "fine_gravel",
+] as const;
+
+export const OWNER_CODES = [
+  "city",
+  "city-main-owner",
+  "company-ltd",
+  "foundation",
+  "municipal-consortium",
+  "other",
+  "registered-association",
+  "state",
+  "unknown",
+] as const;
+
+export const ADMIN_CODES = [
+  "city-education",
+  "city-other",
+  "city-sports",
+  "city-technical-services",
+  "municipal-consortium",
+  "other",
+  "private-association",
+  "private-company",
+  "private-foundation",
+  "state",
+  "unknown",
+] as const;
+
 export function formatSurface(code: string, copy: Copy = getCopy()): string {
   return formatCodedLabel(code, copy.surfaces as Record<string, string>);
+}
+
+export function formatFieldType(code: string, copy: Copy = getCopy()): string {
+  return formatCodedLabel(code, copy.fieldTypes as Record<string, string>);
+}
+
+export function formatWaterPoint(code: string, copy: Copy = getCopy()): string {
+  return formatCodedLabel(code, copy.waterPoints as Record<string, string>);
 }
 
 export function formatOwner(value: string, copy: Copy = getCopy()): string {

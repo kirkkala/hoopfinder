@@ -2,11 +2,17 @@ import { randomBytes } from "node:crypto";
 import { z } from "zod";
 import { getCourtCatalog } from "@/lib/catalog";
 import {
+  ADMIN_CODES,
+  COURT_STATUS_CODES,
   courtHref,
   courtPlacementBlocked,
   emptyAmenities,
+  FIELD_TYPE_CODES,
   isTooCloseToCourt,
+  OWNER_CODES,
   submittedCourtKey,
+  SURFACE_CODES,
+  WATER_POINT_CODES,
   type Court,
   type ExplorerCourt,
 } from "@/lib/courts";
@@ -15,12 +21,43 @@ import { withDb } from "@/lib/db";
 import { sendTemplateEmail } from "@/lib/email";
 import { isInFinland } from "@/lib/sources/finland";
 
+const triState = z.enum(["yes", "no"]).nullable().optional();
+const optionalText = (max: number) =>
+  z
+    .string()
+    .trim()
+    .max(max)
+    .nullable()
+    .optional()
+    .transform((value) => value || null);
+
 export const SubmittedCourtSchema = z.object({
   name: z.string().trim().min(1).max(120),
   address: z.string().trim().min(1).max(200),
   email: z.string().trim().toLowerCase().pipe(z.email().max(254)),
   lat: z.number().finite(),
   lon: z.number().finite(),
+  courtStatus: z.enum(COURT_STATUS_CODES).nullable().optional(),
+  website: optionalText(300),
+  comment: optionalText(2000),
+  constructionYear: z.number().int().min(1850).max(2100).nullable().optional(),
+  owner: z.enum(OWNER_CODES).nullable().optional(),
+  admin: z.enum(ADMIN_CODES).nullable().optional(),
+  lighting: triState,
+  lightingInfo: optionalText(300),
+  freeUse: triState,
+  schoolUse: triState,
+  fieldType: z.enum(FIELD_TYPE_CODES).nullable().optional(),
+  surfaceMaterial: z.array(z.enum(SURFACE_CODES)).max(SURFACE_CODES.length).optional(),
+  surfaceMaterialInfo: optionalText(300),
+  lengthM: z.number().positive().max(200).nullable().optional(),
+  widthM: z.number().positive().max(200).nullable().optional(),
+  areaM2: z.number().positive().max(20000).nullable().optional(),
+  toilet: triState,
+  heightAdjustable: triState,
+  waterPoint: z.enum(WATER_POINT_CODES).nullable().optional(),
+  matchClock: triState,
+  scoreboard: triState,
 });
 
 export type SubmittedCourtInput = z.infer<typeof SubmittedCourtSchema>;
@@ -53,6 +90,7 @@ type SubmittedRow = {
   lon: number;
   status: SubmittedStatus;
   created_at: Date | string;
+  details?: unknown;
 };
 
 type AdminRow = SubmittedRow & {
@@ -63,7 +101,7 @@ type AdminRow = SubmittedRow & {
 export async function listSubmittedCourts(): Promise<ExplorerCourt[]> {
   const rows = await withDb((sql) => {
     return sql<SubmittedRow[]>`
-      SELECT id, name, address, lat, lon, status, created_at
+      SELECT id, name, address, lat, lon, status, created_at, details
       FROM submitted_courts
       ORDER BY created_at DESC
     `;
@@ -105,7 +143,7 @@ export async function getSubmittedCourt(
   if (!/^\d+$/.test(key)) return null;
   const rows = await withDb((sql) => {
     return sql<AdminRow[]>`
-      SELECT id, name, address, email, lat, lon, status, created_at
+      SELECT id, name, address, email, lat, lon, status, created_at, details
       FROM submitted_courts
       WHERE id = ${key}
       LIMIT 1
@@ -141,7 +179,7 @@ export async function createSubmittedCourt(
 
     const rows = await sql<SubmittedRow[]>`
       INSERT INTO submitted_courts (
-        name, address, email, lat, lon, status, confirmation_token
+        name, address, email, lat, lon, status, confirmation_token, details
       )
       VALUES (
         ${input.name},
@@ -150,9 +188,10 @@ export async function createSubmittedCourt(
         ${input.lat},
         ${input.lon},
         'unconfirmed',
-        ${token}
+        ${token},
+        ${sql.json(storedDetails(input))}
       )
-      RETURNING id, name, address, lat, lon, status, created_at
+      RETURNING id, name, address, lat, lon, status, created_at, details
     `;
     const row = rows[0];
     if (!row) throw new Error("submitted court insert returned no row");
@@ -309,19 +348,24 @@ export async function deleteSubmittedCourt(
 
 function toExplorerCourt(row: SubmittedRow): ExplorerCourt {
   const id = `submitted-${row.id}`;
+  const details = readDetails(row.details);
+  const amenities = {
+    lighting: triToBool(details.lighting),
+    freeUse: triToBool(details.freeUse),
+  };
   if (asSubmittedStatus(row.status) === "published") {
     return {
       id,
       source: "submitted",
       name: row.name,
       nameFi: row.name,
-      status: "active",
+      status: details.status ?? "active",
       address: row.address,
       city: null,
       neighborhood: null,
       lat: row.lat,
       lon: row.lon,
-      amenities: { lighting: null, freeUse: null },
+      amenities,
     };
   }
 
@@ -336,33 +380,120 @@ function toExplorerCourt(row: SubmittedRow): ExplorerCourt {
     neighborhood: null,
     lat: row.lat,
     lon: row.lon,
-    amenities: { lighting: null, freeUse: null },
+    amenities,
     createdAt: toIso(row.created_at),
     emailConfirmed: asSubmittedStatus(row.status) === "pending",
   };
 }
 
 function toCourt(row: SubmittedRow): Court {
+  const details = readDetails(row.details);
+  const published = asSubmittedStatus(row.status) === "published";
   return {
     id: `submitted-${row.id}`,
     source: "submitted",
     name: row.name,
     nameFi: row.name,
-    status: asSubmittedStatus(row.status) === "published" ? "active" : "pending",
+    status: published ? (details.status ?? "active") : "pending",
     address: row.address,
     postalCode: null,
     city: null,
     neighborhood: null,
     lat: row.lat,
     lon: row.lon,
-    comment: null,
-    website: null,
-    constructionYear: null,
-    owner: null,
-    admin: null,
-    amenities: emptyAmenities(),
+    comment: details.comment ?? null,
+    website: details.website ?? null,
+    constructionYear: details.constructionYear ?? null,
+    owner: details.owner ?? null,
+    admin: details.admin ?? null,
+    amenities: {
+      ...emptyAmenities(),
+      lighting: triToBool(details.lighting),
+      lightingInfo: details.lightingInfo ?? null,
+      freeUse: triToBool(details.freeUse),
+      schoolUse: triToBool(details.schoolUse),
+      fieldType: details.fieldType ?? null,
+      surfaceMaterial: details.surfaceMaterial ?? [],
+      surfaceMaterialInfo: details.surfaceMaterialInfo ?? null,
+      lengthM: details.lengthM ?? null,
+      widthM: details.widthM ?? null,
+      areaM2: details.areaM2 ?? null,
+      toilet: triToBool(details.toilet),
+      heightAdjustable: triToBool(details.heightAdjustable),
+      waterPoint: details.waterPoint ?? null,
+      matchClock: triToBool(details.matchClock),
+      scoreboard: triToBool(details.scoreboard),
+    },
     emailConfirmed: asSubmittedStatus(row.status) !== "unconfirmed",
   };
+}
+
+const StoredDetailsSchema = SubmittedCourtSchema.pick({
+  website: true,
+  comment: true,
+  constructionYear: true,
+  owner: true,
+  admin: true,
+  lighting: true,
+  lightingInfo: true,
+  freeUse: true,
+  schoolUse: true,
+  fieldType: true,
+  surfaceMaterial: true,
+  surfaceMaterialInfo: true,
+  lengthM: true,
+  widthM: true,
+  areaM2: true,
+  toilet: true,
+  heightAdjustable: true,
+  waterPoint: true,
+  matchClock: true,
+  scoreboard: true,
+}).extend({
+  status: z.enum(COURT_STATUS_CODES).nullable().optional(),
+});
+
+function storedDetails(input: SubmittedCourtInput) {
+  return {
+    status: input.courtStatus ?? null,
+    website: input.website ?? null,
+    comment: input.comment ?? null,
+    constructionYear: input.constructionYear ?? null,
+    owner: input.owner ?? null,
+    admin: input.admin ?? null,
+    lighting: input.lighting ?? null,
+    lightingInfo: input.lightingInfo ?? null,
+    freeUse: input.freeUse ?? null,
+    schoolUse: input.schoolUse ?? null,
+    fieldType: input.fieldType ?? null,
+    surfaceMaterial: input.surfaceMaterial ?? [],
+    surfaceMaterialInfo: input.surfaceMaterialInfo ?? null,
+    lengthM: input.lengthM ?? null,
+    widthM: input.widthM ?? null,
+    areaM2: input.areaM2 ?? null,
+    toilet: input.toilet ?? null,
+    heightAdjustable: input.heightAdjustable ?? null,
+    waterPoint: input.waterPoint ?? null,
+    matchClock: input.matchClock ?? null,
+    scoreboard: input.scoreboard ?? null,
+  };
+}
+
+function readDetails(value: unknown): z.infer<typeof StoredDetailsSchema> {
+  const parsed = StoredDetailsSchema.safeParse(value ?? {});
+  if (parsed.success) return parsed.data;
+  return {
+    website: null,
+    comment: null,
+    lightingInfo: null,
+    surfaceMaterialInfo: null,
+  };
+}
+
+function triToBool(value: "yes" | "no" | null | undefined): boolean | null {
+  if (value === "yes") return true;
+  if (value === "no") return false;
+  return null;
 }
 
 function asSubmittedStatus(value: string): SubmittedStatus {

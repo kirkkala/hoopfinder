@@ -16,6 +16,13 @@ import { LocateMeButton } from "@/components/LocateMeButton";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import type { Copy } from "@/lib/copy";
 import { homeCourtHref, type ExplorerCourt } from "@/lib/courts";
+import {
+  AddCourtFields,
+  addCourtDetailsDirty,
+  addCourtDetailsPayload,
+  EMPTY_ADD_COURT_DETAILS,
+  type AddCourtDetails,
+} from "@/components/add-court/AddCourtFields";
 import type { AddCourtMapAlert } from "@/components/add-court/AddCourtMap";
 import type { Coordinates } from "@/lib/geo";
 import { fetchMapCourts } from "@/lib/map-courts";
@@ -38,6 +45,10 @@ const GOLD_BUTTON_CLASS =
 const MAP_CHROME_OFFSET =
   "calc(max(0.75rem, env(safe-area-inset-top)) + 4.25rem)";
 
+/** Fill the map under the chrome, leaving the same inset used at the sides. */
+const MAP_PANEL_MAX_HEIGHT =
+  "calc(100dvh - max(0.75rem, env(safe-area-inset-top)) - 4.25rem - max(0.75rem, env(safe-area-inset-bottom)))";
+
 export function AddCourtView() {
   const copy = useCopy();
   const router = useRouter();
@@ -48,6 +59,7 @@ export function AddCourtView() {
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
   const [email, setEmail] = useState("");
+  const [details, setDetails] = useState<AddCourtDetails>(EMPTY_ADD_COURT_DETAILS);
   const [error, setError] = useState<string | null>(null);
   const [sending, setSending] = useState(false);
   const [mapAlert, setMapAlert] = useState<AddCourtMapAlert | null>(null);
@@ -87,6 +99,7 @@ export function AddCourtView() {
     setName("");
     setAddress("");
     setEmail("");
+    setDetails(EMPTY_ADD_COURT_DETAILS);
     setError(null);
     setSending(false);
     setFormCollapsed(false);
@@ -94,7 +107,7 @@ export function AddCourtView() {
   }
 
   function formIsDirty() {
-    return Boolean(name.trim() || address.trim() || email.trim());
+    return Boolean(name.trim() || address.trim() || email.trim() || addCourtDetailsDirty(details));
   }
 
   function requestCancel() {
@@ -161,6 +174,11 @@ export function AddCourtView() {
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
     if (!draft || draftStep !== "form" || sending) return;
+    const extra = addCourtDetailsPayload(details);
+    if (extra === "invalid") {
+      setError(copy.addCourtInvalid);
+      return;
+    }
     setSending(true);
     setError(null);
     try {
@@ -173,6 +191,7 @@ export function AddCourtView() {
           email,
           lat: draft.lat,
           lon: draft.lon,
+          ...extra,
         }),
       });
       const payload = (await response.json()) as
@@ -414,6 +433,7 @@ export function AddCourtView() {
                   {copy.addCourtEmailHelp}
                 </span>
               </label>
+              <AddCourtFields details={details} onChange={setDetails} />
               {error ? <p className="mt-2 text-sm text-red-400">{error}</p> : null}
             </form>
           </AddCourtFormPanel>
@@ -540,7 +560,8 @@ function AddCourtFormPanel({
         role="dialog"
         aria-modal="false"
         aria-labelledby="add-court-form-title"
-        className="pointer-events-auto flex max-h-[min(70dvh,32rem)] w-full max-w-sm flex-col overflow-hidden rounded-2xl border border-white/10 bg-panel/95 shadow-[0_12px_32px_rgb(0_0_0_/_0.45)]"
+        className="pointer-events-auto flex w-full max-w-sm flex-col overflow-hidden rounded-2xl border border-white/10 bg-panel/95 shadow-[0_12px_32px_rgb(0_0_0_/_0.45)]"
+        style={{ maxHeight: MAP_PANEL_MAX_HEIGHT }}
       >
         <div
           className={`shrink-0 px-3 pt-3 ${collapsed ? "" : "border-b border-white/10"}`}

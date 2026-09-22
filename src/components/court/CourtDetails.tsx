@@ -44,9 +44,11 @@ import {
   formatAddress,
   formatAdmin,
   formatOwner,
+  formatFieldType,
   formatReportedBoolean,
   formatStatus,
   formatSurface,
+  formatWaterPoint,
   homeCourtHref,
   type Court,
 } from "@/lib/courts";
@@ -215,7 +217,7 @@ export function CourtDetails({
                 <Fact
                   icon={LayoutGrid}
                   label={copy.fieldType}
-                  value={amenities.fieldType[0].toUpperCase() + amenities.fieldType.slice(1)}
+                  value={formatFieldType(amenities.fieldType, copy)}
                 />
               ) : null}
               {amenities.surfaceMaterial.length ? (
@@ -269,7 +271,7 @@ export function CourtDetails({
                 <Fact
                   icon={Droplets}
                   label={copy.waterPoint}
-                  value={amenities.waterPoint}
+                  value={formatWaterPoint(amenities.waterPoint, copy)}
                 />
               ) : null}
               {amenities.matchClock !== null ? (
