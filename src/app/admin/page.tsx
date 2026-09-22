@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
 import { AdminCourtsView } from "@/components/admin/AdminCourtsView";
+import { getAuthSession } from "@/auth";
 import { getCourtCatalog } from "@/lib/catalog";
 import { getCopy } from "@/lib/copy";
 import { listAdminSubmittedCourts } from "@/lib/submitted-courts";
@@ -15,6 +17,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function AdminPage() {
+  const session = await getAuthSession();
+  if (!session?.user?.isAdmin) {
+    redirect("/login?callbackUrl=/admin");
+  }
+
   const [{ courts, fetchedAtBySource }, submitted] = await Promise.all([
     getCourtCatalog(),
     listAdminSubmittedCourts(),

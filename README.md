@@ -31,7 +31,7 @@ cp .env.example .env.local   # if you do not already have one
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000). API keys are not required.
+Open [http://localhost:3000](http://localhost:3000). The public map does not need API keys.
 
 Postgres is only for visitor-submitted courts on `/add`. Copy `DATABASE_URL` from `.env.example` into `.env.local` if needed. The `submitted_courts` table is created on first request. Stop the database with `docker compose down`.
 
@@ -47,7 +47,16 @@ Restore with `psql postgres://hoopfinder:hoopfinder@localhost:5432/hoopfinder < 
 
 ## Suggest a court
 
-Not every hoop is in LIPAS or OpenStreetMap. Visitors can open `/add`, drop a pin (not next to an existing court), send a name, address and email, and see it on the explore map as coming soon. After the court lands in a source snapshot (within about 80 m), the pending pin is hidden and the usual court page is shown. Email is stored for follow-up and is not shown on the map. No login in this first version.
+Visitors can open `/add`, drop a pin (not next to an existing court), add properties and email, and see it on the explore map as "coming soon". Admin approval is required
+## Admin
+
+`/admin` reviews visitor-submitted courts. Sign-in is with Google, NextAuth, a JWT session, and admin access from an environment variable.
+
+Only `ADMIN_EMAILS` can access the admin panel.
+
+Generate `AUTH_SECRET` with `npx auth secret`.
+
+Set the same variables on Vercel. Production also needs `NEXTAUTH_URL=https://www.hoopfinder.fi`.
 
 ## License
 

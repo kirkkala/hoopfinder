@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { requireAdmin } from "@/auth";
 import {
   deleteSubmittedCourt,
   setSubmittedCourtStatus,
@@ -12,6 +13,9 @@ export async function POST(
   request: Request,
   context: RouteContext<"/api/admin/courts/[id]">,
 ) {
+  const denied = await requireAdmin();
+  if (denied) return denied;
+
   const { id } = await context.params;
   if (!id) {
     return Response.json({ error: "not-found" }, { status: 404 });
@@ -46,6 +50,9 @@ export async function DELETE(
   _request: Request,
   context: RouteContext<"/api/admin/courts/[id]">,
 ) {
+  const denied = await requireAdmin();
+  if (denied) return denied;
+
   const { id } = await context.params;
   if (!id) {
     return Response.json({ error: "not-found" }, { status: 404 });

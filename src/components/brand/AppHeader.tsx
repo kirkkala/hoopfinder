@@ -12,6 +12,7 @@ import { SourceCredits } from "@/components/brand/AppFooter";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { AppWordmark } from "@/components/brand/AppWordmark";
 import { useIsAdmin } from "@/components/admin/AdminProvider";
+import { AuthControl } from "@/components/auth/AuthControl";
 import { APP_VERSION } from "@/lib/constants";
 import type { FetchedAtBySource } from "@/lib/catalog";
 import { mq, useMinWidth, wide } from "@/lib/layout";
@@ -298,6 +299,7 @@ function HeaderMenu({
                     </Link>
                   </li>
                 ) : null}
+                <AuthControl onAction={() => setOpen(false)} />
               </ul>
               <div className="px-4">
                 <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1 pt-4">
