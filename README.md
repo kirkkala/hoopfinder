@@ -47,7 +47,9 @@ Restore with `psql postgres://hoopfinder:hoopfinder@localhost:5432/hoopfinder < 
 
 ## Suggest a court
 
-Visitors can open `/add`, drop a pin (not next to an existing court), add properties and email, and see it on the explore map as "coming soon". Admin approval is required
+Visitors open `/add`, drop a pin in Finland (not next to an existing court), and submit a name, address, and email. Other court facts are optional.
+
+The pin shows on the map immediately. The visitor confirms by email, then an admin publishes it from `/admin`.
 ## Admin
 
 `/admin` reviews visitor-submitted courts. Sign-in is with Google, NextAuth, a JWT session, and admin access from an environment variable.
