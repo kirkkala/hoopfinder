@@ -75,12 +75,12 @@ const messages = {
     en: "Who built this and why"
   },
   introCreatedBy1: {
-    fi: "koodaili sivuston harrasteprojektina käyttäen Lipas ja OpenStreetMaps avoimia rajapintoja.",
-    en: "built this site as a side project using the open APIs of Lipas and OpenStreetMaps.",
+    fi: "koodaili sivuston harrasteprojektina hakien kenttien tiedot Lipas.fi, OpenStreetMaps sekä Nominatim avoimista rajapintoista. Lisäksi käyttäjät voivat itse lisätä palveluun puuttuvia kenttiä.",
+    en: "built this site as a side project by fetching court data from the open APIs of Lipas.fi, OpenStreetMaps and Nominatim. Additionally, users can add missing courts to the service.",
   },
   introCreatedBy2: {
-    fi: "Motivaationa saada isot ja pienet ihmiset liikkumaan koripallon kanssa.",
-    en: "With a motivation to get big and small humans to move more with a basketball." 
+    fi: "Motivaationa oli saada isot ja pienet ihmiset ulos liikkumaan enemmän koripallon kanssa.",
+    en: "The motivation was to get big and small humans out of the house and move more with a basketball."
   },
   introCreatedBySourceCode: {
     fi: "Lähdekoodi löytyy Githubista",
