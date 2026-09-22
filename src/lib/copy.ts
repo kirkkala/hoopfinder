@@ -87,7 +87,7 @@ const messages = {
     en: "Source code is on Github"
   },
   introSupport: { fi: "Tue kehittäjää", en: "Support the developer" },
-  introCta: { fi: "ok bro", en: "ok bro" },
+  okBroCta: { fi: "ok bro", en: "ok bro" },
   madeWith: { fi: 'Made with', en: "Made with" },
   love: { fi: "love", en: "love" },
   courtDataFrom: {
@@ -226,7 +226,6 @@ const messages = {
     fi: "Liikuta karttaa ja zoomaa tai paikanna itsesi ja napsauta karttaa lisätäksesi kentän.",
     en: "Pan and zoom the map or locate yourself and tap the map to add a missing court.",
   },
-  addCourtInfoCta: { fi: "ok bro", en: "ok bro" },
   addCourtInfoOpen: { fi: "Ohje", en: "Help" },
   addCourtHintZoom: {
     fi: "Zoomaa lähemmäs merkitäksesi korin sijainnin mahdollisimman tarkasti.",

@@ -141,7 +141,7 @@ export function IntroDialog({
             onClick={onClose}
             className="mt-6 w-full rounded-full bg-gold px-4 py-3 text-base font-bold text-asphalt hover:bg-[#ffe0a3]"
           >
-            {copy.introCta}
+            {copy.okBroCta}
           </button>
         </div>
       </div>
