@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { requireAdmin } from "@/auth";
+import { siteOrigin } from "@/lib/site-origin";
 import {
   deleteSubmittedCourt,
   setSubmittedCourtStatus,
@@ -34,9 +35,14 @@ export async function POST(
   }
 
   try {
-    const result = await setSubmittedCourtStatus(id, parsed.data.status);
+    const result = await setSubmittedCourtStatus(
+      id,
+      parsed.data.status,
+      siteOrigin(request),
+    );
     if ("error" in result) {
-      const status = result.error === "unavailable" ? 503 : 404;
+      const status =
+        result.error === "unavailable" || result.error === "email" ? 503 : 404;
       return Response.json({ error: result.error }, { status });
     }
     return Response.json(result);

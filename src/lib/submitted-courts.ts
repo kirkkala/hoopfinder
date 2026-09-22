@@ -2,6 +2,7 @@ import { randomBytes } from "node:crypto";
 import { z } from "zod";
 import { getCourtCatalog } from "@/lib/catalog";
 import {
+  courtHref,
   courtPlacementBlocked,
   emptyAmenities,
   isTooCloseToCourt,
@@ -10,7 +11,7 @@ import {
   type ExplorerCourt,
 } from "@/lib/courts";
 import { withDb } from "@/lib/db";
-import { sendCourtConfirmationEmail } from "@/lib/email";
+import { sendTemplateEmail } from "@/lib/email";
 import { isInFinland } from "@/lib/sources/finland";
 
 export const SubmittedCourtSchema = z.object({
@@ -160,10 +161,13 @@ export async function createSubmittedCourt(
   if (!created) return { error: "unavailable" };
   if ("error" in created) return created;
 
-  const sent = await sendCourtConfirmationEmail({
+  const sent = await sendTemplateEmail({
     to: input.email,
-    courtName: input.name,
-    confirmUrl: `${origin}/add/confirm/${token}`,
+    template: "hoop-add-confirmation-link",
+    variables: {
+      COURT_NAME: input.name,
+      COURT_ADD_CONFIRMATION_LINK: `${origin}/add/confirm/${token}`,
+    },
   });
   if ("error" in sent) {
     await withDb(
@@ -178,10 +182,9 @@ export async function createSubmittedCourt(
   return { court: created.court };
 }
 
-export async function confirmSubmittedCourt(
-  token: string,
-): Promise<"confirmed" | "invalid"> {
-  if (!/^[\w-]{20,128}$/.test(token)) return "invalid";
+/** Court id like `submitted-10014`, or null when the link is not valid. */
+export async function confirmSubmittedCourt(token: string): Promise<string | null> {
+  if (!/^[\w-]{20,128}$/.test(token)) return null;
   const result = await withDb(async (sql) => {
     const rows = await sql<{ id: number | string }[]>`
       UPDATE submitted_courts
@@ -189,30 +192,58 @@ export async function confirmSubmittedCourt(
       WHERE confirmation_token = ${token}
       RETURNING id
     `;
-    return rows[0] ? ("confirmed" as const) : ("invalid" as const);
+    const row = rows[0];
+    return row ? `submitted-${row.id}` : null;
   });
-  return result ?? "invalid";
+  return result ?? null;
 }
 
 export async function setSubmittedCourtStatus(
   id: string,
   status: Exclude<SubmittedStatus, "unconfirmed">,
-): Promise<{ court: ExplorerCourt } | { error: "unavailable" | "not-found" }> {
+  origin: string,
+): Promise<
+  { court: ExplorerCourt } | { error: "unavailable" | "not-found" | "email" }
+> {
   const key = submittedCourtKey(id);
   if (!/^\d+$/.test(key)) return { error: "not-found" };
   const updated = await withDb(async (sql) => {
-    const rows = await sql<SubmittedRow[]>`
+    const rows = await sql<(SubmittedRow & { email: string })[]>`
       UPDATE submitted_courts
       SET status = ${status}
       WHERE id = ${key}
         AND status = ${status === "published" ? "pending" : "published"}
-      RETURNING id, name, address, lat, lon, status, created_at
+      RETURNING id, name, address, email, lat, lon, status, created_at
     `;
     const row = rows[0];
-    return row ? { court: toExplorerCourt(row) } : { error: "not-found" as const };
+    return row
+      ? { court: toExplorerCourt(row), email: row.email }
+      : { error: "not-found" as const };
   });
 
-  return updated ?? { error: "unavailable" };
+  if (!updated) return { error: "unavailable" };
+  if ("error" in updated) return updated;
+  if (status !== "published") return { court: updated.court };
+
+  const sent = await sendTemplateEmail({
+    to: updated.email,
+    template: "hoop-add-confirmed",
+    variables: {
+      PUBLISHED_COURT_URL: `${origin}${courtHref(updated.court)}`,
+    },
+  });
+  if ("error" in sent) {
+    await withDb(
+      (sql) => sql`
+        UPDATE submitted_courts
+        SET status = 'pending'
+        WHERE id = ${key} AND status = 'published'
+      `,
+    );
+    return { error: "email" };
+  }
+
+  return { court: updated.court };
 }
 
 export async function deleteSubmittedCourt(

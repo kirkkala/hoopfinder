@@ -244,6 +244,13 @@ export function formatStatus(status: string, copy: Copy = getCopy()): string {
   return copy.statusUnknown;
 }
 
+/** Set before leaving the email link, so the court page can say thanks without a query param. */
+export const COURT_THANKS_KEY = "hf-court-thanks";
+
+export function isAwaitingEmail(court: ExplorerCourt | Court): boolean {
+  return "emailConfirmed" in court && court.emailConfirmed === false;
+}
+
 export function isPendingCourt(
   court: Pick<ExplorerCourt, "source">,
 ): court is Extract<ExplorerCourt, { source: "pending" }> {

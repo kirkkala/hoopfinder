@@ -8,7 +8,7 @@ import { useCopy } from "@/components/brand/LocaleProvider";
 import { CourtBadges } from "@/components/explorer/CourtBadges";
 import { CourtHeading } from "@/components/explorer/CourtHeading";
 import { PendingCourtNote } from "@/components/explorer/PendingCourtNote";
-import { courtHref, isPendingCourt, type CourtWithDistance } from "@/lib/courts";
+import { courtHref, isAwaitingEmail, isPendingCourt, type CourtWithDistance } from "@/lib/courts";
 
 export function CourtList({
   courts,
@@ -70,13 +70,15 @@ export function CourtList({
                     className="w-full"
                   />
                 ) : null}
-                <Link
-                  href={courtHref(court)}
-                  className="ml-auto inline-flex items-center gap-1 font-bold text-gold hover:text-white"
-                >
-                  {copy.letsGo}
-                  <ArrowRight className="size-3.5" aria-hidden />
-                </Link>
+                {isAwaitingEmail(court) ? null : (
+                  <Link
+                    href={courtHref(court)}
+                    className="ml-auto inline-flex items-center gap-1 font-bold text-gold hover:text-white"
+                  >
+                    {copy.letsGo}
+                    <ArrowRight className="size-3.5" aria-hidden />
+                  </Link>
+                )}
               </div>
             </div>
           </li>

@@ -39,6 +39,7 @@ import { useIsAdmin } from "@/components/admin/AdminProvider";
 import { AdminStatusButton } from "@/components/admin/AdminStatusButton";
 import { CourtMiniMap } from "@/components/court/CourtMiniMap";
 import {
+  COURT_THANKS_KEY,
   courtTitle,
   formatAddress,
   formatAdmin,
@@ -79,7 +80,12 @@ export function CourtDetails({
   const listingUrl = sourceListingUrl(court.source, court.id);
   const { amenities } = court;
   const pending = court.status === "pending";
-  const awaitingEmail = pending && court.emailConfirmed === false;
+  const [thanks, setThanks] = useState(false);
+  useEffect(() => {
+    if (sessionStorage.getItem(COURT_THANKS_KEY) !== court.id) return;
+    sessionStorage.removeItem(COURT_THANKS_KEY);
+    setThanks(true);
+  }, [court.id]);
   const showAdminStatus =
     isAdmin && court.source === "submitted";
   const dimensions =
@@ -116,19 +122,19 @@ export function CourtDetails({
             )}
           </div>
 
+          {thanks ? (
+            <div className="rounded-3xl border border-gold/40 bg-gold/10 p-5">
+              <p className="font-bold text-white">{copy.confirmThanksTitle}</p>
+              <p className="mt-1 text-sm text-ink-muted">{copy.confirmThanksBody}</p>
+            </div>
+          ) : null}
+
           <dl className="grid gap-3 rounded-3xl border border-white/10 bg-panel p-5">
             <Fact
               icon={court.status === "active" ? CircleCheck : CirclePause}
               label={copy.status}
               value={
-                awaitingEmail ? (
-                  <>
-                    {copy.statusAwaitingEmail}
-                    <span className="mt-1 block text-sm text-ink-muted">
-                      {copy.statusAwaitingEmailBody}
-                    </span>
-                  </>
-                ) : pending ? (
+                pending ? (
                   <>
                     {copy.statusUnderReview}
                     <span className="mt-1 block text-sm text-ink-muted">
@@ -140,7 +146,7 @@ export function CourtDetails({
                 )
               }
             />
-            {showAdminStatus && !awaitingEmail ? (
+            {showAdminStatus ? (
               <div className="mt-3">
                 <AdminStatusButton id={court.id} published={!pending} />
               </div>

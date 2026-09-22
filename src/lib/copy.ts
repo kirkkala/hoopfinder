@@ -278,17 +278,17 @@ const messages = {
     en: "Pick another place on the map.",
   },
   addCourtSuccessLead: {
-    fi: "Kiitos kun autoit tekemään palvelusta paremman!",
-    en: "Thank you for contributing to making the service better!",
+    fi: "Kiitos kun autat tekemään palvelusta paremman!",
+    en: "Thank you for contributing with making the service better!",
   },
   addCourtSuccess: {
-    fi: "Avaa sähköpostisi ja vahvista lisäys linkistä. Sen jälkeen ylläpito voi julkaista kentän.",
-    en: "Open your email and confirm the addition from the link. An admin can publish the court after that.",
+    fi: "Sait sähköpostiisi vahvistuslinkin, klikkaa sitä ja kenttä julkaistaan pian!",
+    en: "You received a confirmation link in your email, click it and the court will be published soon!",
   },
-  confirmCourtTitle: { fi: "Kenttä vahvistettu", en: "Court confirmed" },
-  confirmCourtBody: {
-    fi: "Kiitos. Ylläpito näkee kentän nyt vahvistettuna ja ja julkaisee tiedot pian Hoop Finderiin.",
-    en: "Thank you. The admins can now see the court as confirmed and will publish it soon on Hoop Finder.",
+  confirmThanksTitle: { fi: "Kiitos!", en: "Thank you!" },
+  confirmThanksBody: {
+    fi: "Ylläpito sai ilmotuksen vahvistuksesta, tarkistaa tiedot ja hyväksyy lisäyksesi pian!",
+    en: "Administrator was notified of the confirmation. They will check the details and approve it soon!",
   },
   confirmCourtInvalidTitle: {
     fi: "Linkki ei kelpaa",
@@ -315,17 +315,13 @@ const messages = {
     en: "Court added by a visitor.",
   },
   pendingAddedOn: {
-    fi: (date: string) => `Käyttäjän ${date} lisäämä kenttä`,
+    fi: (date: string) => `Kenttä on lisätty käyttäjän toimesta ${date}`,
     en: (date: string) => `Court added by a visitor on ${date}`,
   },
-  statusUnderReview: { fi: "Odottaa tarkastusta", en: "Waiting for review" },
+  statusUnderReview: { fi: "Odottaa tarkistusta", en: "Waiting to be checked" },
   statusAwaitingEmail: {
-    fi: "Odottaa sähköpostivahvistusta",
-    en: "Waiting for email confirmation",
-  },
-  statusAwaitingEmailBody: {
-    fi: "Kenttä julkaistaan, kun lisääjä on vahvistanut sen ja ylläpito on tarkistanut sen.",
-    en: "The court is published after the submitter confirms it and an admin reviews it.",
+    fi: "Odottaa vahvistusta",
+    en: "Waiting for confirmation",
   },
   pendingPublishAfterReview: {
     fi: "Kentän tiedot julkaistaan palvelussa kun ylläpito on tarkistanut sen.",
@@ -388,7 +384,7 @@ const messages = {
   adminStatusPublished: { fi: "Julkaistu", en: "Published" },
   adminStatusPending: { fi: "Odottaa julkaisua", en: "Pending publication" },
   adminStatusConfirmed: { fi: "Vahvistettu", en: "Confirmed" },
-  adminStatusUnconfirmed: { fi: "Ei vahvistettu", en: "Not confirmed" },
+  adminStatusUnconfirmed: { fi: "Odottaa sähköpostivahvistusta", en: "Waiting for email confirmation" },
   adminPublish: { fi: "Julkaise", en: "Publish" },
   adminUnpublish: { fi: "Piilota", en: "Unpublish" },
   adminSaving: { fi: "Tallennetaan…", en: "Saving…" },

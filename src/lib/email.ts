@@ -1,11 +1,9 @@
 import { Resend } from "resend";
 
-const CONFIRMATION_TEMPLATE_ID = "hoop-add-confirmation-link";
-
-export async function sendCourtConfirmationEmail(input: {
+export async function sendTemplateEmail(input: {
   to: string;
-  courtName: string;
-  confirmUrl: string;
+  template: string;
+  variables: Record<string, string>;
 }): Promise<{ id: string } | { error: "unconfigured" | "failed" }> {
   const apiKey = process.env.RESEND_API_KEY?.trim();
   const from = process.env.EMAIL_FROM?.trim();
@@ -18,13 +16,7 @@ export async function sendCourtConfirmationEmail(input: {
   const { data, error } = await resend.emails.send({
     from,
     to: input.to,
-    template: {
-      id: CONFIRMATION_TEMPLATE_ID,
-      variables: {
-        COURT_NAME: input.courtName,
-        COURT_ADD_CONFIRMATION_LINK: input.confirmUrl,
-      },
-    },
+    template: { id: input.template, variables: input.variables },
   });
 
   if (error || !data) {

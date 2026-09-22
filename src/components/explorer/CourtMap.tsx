@@ -25,6 +25,7 @@ import { PendingCourtNote } from "@/components/explorer/PendingCourtNote";
 import {
   courtHref,
   courtTitle,
+  isAwaitingEmail,
   isPendingCourt,
   type CourtWithDistance,
 } from "@/lib/courts";
@@ -393,7 +394,7 @@ export function CourtMap({
             ) : isPendingCourt(selected) ? (
               <PendingCourtNote createdAt={selected.createdAt} className="pt-1" />
             ) : null}
-            {!thanks ? (
+            {!thanks && !isAwaitingEmail(selected) ? (
               <Link
                 href={courtHref(selected)}
                 className="inline-flex items-center gap-1 self-end pt-2 pb-1 text-sm font-bold text-gold hover:text-white"

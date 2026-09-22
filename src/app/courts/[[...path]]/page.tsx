@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import { notFound, permanentRedirect } from "next/navigation";
+import { notFound, permanentRedirect, redirect } from "next/navigation";
 import { CourtDetails } from "@/components/court/CourtDetails";
 import { getBasketballCourt, getCourtCatalog } from "@/lib/catalog";
 import { SITE_URL } from "@/lib/constants";
@@ -10,6 +10,8 @@ import {
   courtOgHref,
   courtTitle,
   formatAddress,
+  homeCourtHref,
+  isAwaitingEmail,
   parseCourtPath,
 } from "@/lib/courts";
 import { getSubmittedCourt } from "@/lib/submitted-courts";
@@ -25,6 +27,9 @@ export async function generateMetadata({
   const finnish = getCopy("fi");
   if (!result) {
     return { title: finnish.courtNotFound, robots: { index: false } };
+  }
+  if (isAwaitingEmail(result.court)) {
+    return { title: finnish.statusAwaitingEmail, robots: { index: false, follow: false } };
   }
 
   const name = courtTitle(result.court, finnish);
@@ -70,6 +75,9 @@ export default async function CourtPage({
 }) {
   const result = await courtFromParams(params);
   if (!result) notFound();
+  if (isAwaitingEmail(result.court)) {
+    redirect(homeCourtHref({ id: result.court.id, source: "pending" }));
+  }
   const { courts, fetchedAtBySource } = await getCourtCatalog();
   return (
     <CourtDetails
