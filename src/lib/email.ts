@@ -1,7 +1,7 @@
 import { Resend } from "resend";
 
 export async function sendTemplateEmail(input: {
-  to: string;
+  to: string | string[];
   template: string;
   variables: Record<string, string>;
 }): Promise<{ id: string } | { error: "unconfigured" | "failed" }> {

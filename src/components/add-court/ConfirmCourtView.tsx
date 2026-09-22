@@ -11,9 +11,11 @@ import type { FetchedAtBySource } from "@/lib/catalog";
 export function ConfirmCourtView({
   courtCount,
   fetchedAtBySource,
+  notifyFailed = false,
 }: {
   courtCount: number;
   fetchedAtBySource: FetchedAtBySource;
+  notifyFailed?: boolean;
 }) {
   const copy = useCopy();
 
@@ -26,10 +28,10 @@ export function ConfirmCourtView({
       <main className="mx-auto flex w-full max-w-lg flex-1 flex-col items-center justify-center gap-3 px-6 py-10 text-center">
         <Icon iconNode={basketball} className="size-10 text-gold" aria-hidden />
         <h1 className="font-display text-4xl tracking-wide text-white">
-          {copy.confirmCourtInvalidTitle}
+          {notifyFailed ? copy.confirmNotifyFailedTitle : copy.confirmCourtInvalidTitle}
         </h1>
         <p className="text-sm text-ink-muted">
-          {copy.confirmCourtInvalid}
+          {notifyFailed ? copy.confirmNotifyFailed : copy.confirmCourtInvalid}
         </p>
         <Link
           href="/"

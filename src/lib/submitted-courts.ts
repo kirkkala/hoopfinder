@@ -10,6 +10,7 @@ import {
   type Court,
   type ExplorerCourt,
 } from "@/lib/courts";
+import { adminEmails } from "@/lib/admin";
 import { withDb } from "@/lib/db";
 import { sendTemplateEmail } from "@/lib/email";
 import { isInFinland } from "@/lib/sources/finland";
@@ -183,19 +184,63 @@ export async function createSubmittedCourt(
 }
 
 /** Court id like `submitted-10014`, or null when the link is not valid. */
-export async function confirmSubmittedCourt(token: string): Promise<string | null> {
+export async function confirmSubmittedCourt(
+  token: string,
+  origin: string,
+): Promise<string | null | { error: "email" }> {
   if (!/^[\w-]{20,128}$/.test(token)) return null;
-  const result = await withDb(async (sql) => {
-    const rows = await sql<{ id: number | string }[]>`
-      UPDATE submitted_courts
-      SET status = CASE WHEN status = 'unconfirmed' THEN 'pending' ELSE status END
-      WHERE confirmation_token = ${token}
-      RETURNING id
+  const confirmed = await withDb(async (sql) => {
+    const rows = await sql<
+      { id: number | string; name: string; email: string; previous_status: string }[]
+    >`
+      UPDATE submitted_courts AS court
+      SET status = CASE WHEN court.status = 'unconfirmed' THEN 'pending' ELSE court.status END
+      FROM (
+        SELECT id, status
+        FROM submitted_courts
+        WHERE confirmation_token = ${token}
+      ) AS previous
+      WHERE court.id = previous.id
+      RETURNING court.id, court.name, court.email, previous.status AS previous_status
     `;
     const row = rows[0];
-    return row ? `submitted-${row.id}` : null;
+    return row
+      ? {
+          id: String(row.id),
+          name: row.name,
+          email: row.email,
+          justConfirmed: row.previous_status === "unconfirmed",
+        }
+      : null;
   });
-  return result ?? null;
+  if (!confirmed) return confirmed ?? null;
+  if (!confirmed.justConfirmed) return `submitted-${confirmed.id}`;
+
+  const admins = adminEmails();
+  const sent =
+    admins.length === 0
+      ? { error: "unconfigured" as const }
+      : await sendTemplateEmail({
+          to: admins,
+          template: "admin-verification-notification",
+          variables: {
+            USER_EMAIL: confirmed.email,
+            COURT_NAME: confirmed.name,
+            ADMIN_PAGE_URL: `${origin}/admin`,
+          },
+        });
+  if ("error" in sent) {
+    await withDb(
+      (sql) => sql`
+        UPDATE submitted_courts
+        SET status = 'unconfirmed'
+        WHERE id = ${confirmed.id} AND status = 'pending'
+      `,
+    );
+    return { error: "email" };
+  }
+
+  return `submitted-${confirmed.id}`;
 }
 
 export async function setSubmittedCourtStatus(

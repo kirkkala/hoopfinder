@@ -1,9 +1,11 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { ConfirmCourtView } from "@/components/add-court/ConfirmCourtView";
 import { ThanksRedirect } from "@/components/add-court/ThanksRedirect";
 import { getCourtCatalog } from "@/lib/catalog";
 import { courtHref } from "@/lib/courts";
 import { getCopy } from "@/lib/copy";
+import { siteOrigin } from "@/lib/site-origin";
 import { confirmSubmittedCourt } from "@/lib/submitted-courts";
 
 export const dynamic = "force-dynamic";
@@ -22,12 +24,12 @@ export default async function ConfirmCourtPage({
   params: Promise<{ token: string }>;
 }) {
   const { token } = await params;
-  const courtId = await confirmSubmittedCourt(token);
-  if (courtId) {
+  const result = await confirmSubmittedCourt(token, siteOrigin(await headers()));
+  if (typeof result === "string") {
     return (
       <ThanksRedirect
-        href={courtHref({ id: courtId, source: "pending" })}
-        courtId={courtId}
+        href={courtHref({ id: result, source: "pending" })}
+        courtId={result}
       />
     );
   }
@@ -35,6 +37,7 @@ export default async function ConfirmCourtPage({
   const { courts, fetchedAtBySource } = await getCourtCatalog();
   return (
     <ConfirmCourtView
+      notifyFailed={result?.error === "email"}
       courtCount={courts.length}
       fetchedAtBySource={fetchedAtBySource}
     />

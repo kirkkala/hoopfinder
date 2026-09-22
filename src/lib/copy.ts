@@ -298,6 +298,14 @@ const messages = {
     fi: "Vahvistuslinkki ei ole voimassa.",
     en: "This confirmation link is not valid.",
   },
+  confirmNotifyFailedTitle: {
+    fi: "Ilmoitus ei lähtenyt",
+    en: "The notification didn't send",
+  },
+  confirmNotifyFailed: {
+    fi: "Avaa vahvistuslinkki uudelleen.",
+    en: "Open the confirmation link again.",
+  },
   addCourtOutsideFinland: {
     fi: "Valitse paikka Suomesta.",
     en: "Pick a place in Finland.",
