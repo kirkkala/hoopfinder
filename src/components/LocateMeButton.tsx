@@ -25,15 +25,22 @@ export function LocateMeButton({
   status,
   onClick,
   compact = false,
+  iconOnly = false,
 }: {
   status: LocationStatus;
   onClick: () => void;
   compact?: boolean;
+  iconOnly?: boolean;
 }) {
   const copy = useCopy();
   const LocationIcon = LOCATION_ICON[status];
   const pending = status === "pending";
   const label = copy.nearMe[status];
+  const iconClass = iconOnly
+    ? "size-5"
+    : compact
+      ? "size-5 sm:size-3.5"
+      : "size-3.5";
 
   return (
     <button
@@ -42,16 +49,22 @@ export function LocateMeButton({
       disabled={pending}
       aria-label={label}
       className={
-        compact
-          ? `${BUTTON_CLASS} size-12 sm:h-auto sm:w-auto sm:gap-1.5 sm:px-3 sm:py-1.5 sm:text-sm`
-          : `${BUTTON_CLASS} gap-1.5 px-3 py-1.5 text-sm`
+        iconOnly
+          ? `${BUTTON_CLASS} size-12 outline-none focus-visible:ring-2 focus-visible:ring-gold/60`
+          : compact
+            ? `${BUTTON_CLASS} size-12 sm:h-auto sm:w-auto sm:gap-1.5 sm:px-3 sm:py-1.5 sm:text-sm`
+            : `${BUTTON_CLASS} gap-1.5 px-3 py-1.5 text-sm`
       }
     >
       <LocationIcon
         aria-hidden
-        className={`${compact ? "size-5 sm:size-3.5" : "size-3.5"} ${pending ? "animate-spin" : ""}`}
+        className={`${iconClass} ${pending ? "animate-spin" : ""}`}
       />
-      {compact ? <span className="hidden sm:inline">{label}</span> : label}
+      {iconOnly ? null : compact ? (
+        <span className="hidden sm:inline">{label}</span>
+      ) : (
+        label
+      )}
     </button>
   );
 }

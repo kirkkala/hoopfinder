@@ -1,20 +1,25 @@
 "use client";
 
-import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type FormEvent,
+  type ReactNode,
+  type RefObject,
+} from "react";
 import dynamic from "next/dynamic";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { ChevronDown, X } from "lucide-react";
-import { AppHeader } from "@/components/brand/AppHeader";
-import { AppFooter } from "@/components/brand/AppFooter";
+import { CircleHelp, X } from "lucide-react";
 import { LocateMeButton } from "@/components/LocateMeButton";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import type { Copy } from "@/lib/copy";
-import type { FetchedAtBySource } from "@/lib/catalog";
 import { homeCourtHref, type ExplorerCourt } from "@/lib/courts";
 import type { AddCourtMapAlert } from "@/components/add-court/AddCourtMap";
 import type { Coordinates } from "@/lib/geo";
 import { fetchMapCourts } from "@/lib/map-courts";
-import { useLocationStatus } from "@/lib/origin";
+import { useLocationStatus, type LocationStatus } from "@/lib/origin";
 
 const AddCourtMap = dynamic(
   () => import("@/components/add-court/AddCourtMap").then((mod) => mod.AddCourtMap),
@@ -24,15 +29,19 @@ const AddCourtMap = dynamic(
 const INPUT_CLASS =
   "h-11 w-full rounded-xl border border-white/25 bg-asphalt px-3 text-base text-white outline-none placeholder:text-white/55 focus:border-gold/50 focus:ring-2 focus:ring-gold/60 sm:text-sm";
 
-export function AddCourtView({
-  courtCount,
-  fetchedAtBySource,
-}: {
-  courtCount: number;
-  fetchedAtBySource: FetchedAtBySource;
-}) {
+const TEXT_BUTTON_CLASS =
+  "rounded-full px-3 py-1.5 text-sm font-medium text-ink/80 outline-none hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-gold/60";
+
+const GOLD_BUTTON_CLASS =
+  "rounded-full bg-gold px-3 py-1.5 text-sm font-bold text-asphalt outline-none hover:bg-white focus-visible:ring-2 focus-visible:ring-gold/60";
+
+const MAP_CHROME_OFFSET =
+  "calc(max(0.75rem, env(safe-area-inset-top)) + 4.25rem)";
+
+export function AddCourtView() {
   const copy = useCopy();
   const router = useRouter();
+  const infoCtaRef = useRef<HTMLButtonElement>(null);
   const [courts, setCourts] = useState<ExplorerCourt[]>([]);
   const [draft, setDraft] = useState<Coordinates | null>(null);
   const [draftStep, setDraftStep] = useState<"confirm" | "form">("confirm");
@@ -45,6 +54,19 @@ export function AddCourtView({
   const { origin, status: locationStatus, request } = useLocationStatus();
   const [locateSeq, setLocateSeq] = useState(0);
   const [infoOpen, setInfoOpen] = useState(true);
+  const [formCollapsed, setFormCollapsed] = useState(false);
+  const [discardConfirm, setDiscardConfirm] = useState(false);
+  const showFormRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!infoOpen) return;
+    infoCtaRef.current?.focus();
+  }, [infoOpen]);
+
+  useEffect(() => {
+    if (draftStep !== "form" || !formCollapsed || discardConfirm) return;
+    showFormRef.current?.focus();
+  }, [discardConfirm, draftStep, formCollapsed]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -67,24 +89,47 @@ export function AddCourtView({
     setEmail("");
     setError(null);
     setSending(false);
+    setFormCollapsed(false);
+    setDiscardConfirm(false);
   }
 
-  function backToConfirm() {
-    setDraftStep("confirm");
-    setError(null);
+  function formIsDirty() {
+    return Boolean(name.trim() || address.trim() || email.trim());
+  }
+
+  function requestCancel() {
+    if (formIsDirty()) {
+      setDiscardConfirm(true);
+      return;
+    }
+    clearDraft();
+  }
+
+  function keepForm() {
+    setDiscardConfirm(false);
+    setFormCollapsed(false);
   }
 
   useEffect(() => {
-    if (!draft && !mapAlert) return;
+    if (!infoOpen && !draft && !mapAlert) return;
     function onKeyDown(event: KeyboardEvent) {
       if (event.key !== "Escape") return;
+      if (infoOpen) {
+        setInfoOpen(false);
+        return;
+      }
       if (mapAlert) {
         setMapAlert(null);
         return;
       }
       if (draft) {
         if (draftStep === "form") {
-          backToConfirm();
+          if (discardConfirm) {
+            setDiscardConfirm(false);
+            setFormCollapsed(false);
+            return;
+          }
+          setFormCollapsed((collapsed) => !collapsed);
           return;
         }
         clearDraft();
@@ -92,7 +137,7 @@ export function AddCourtView({
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [draft, draftStep, mapAlert]);
+  }, [discardConfirm, draft, draftStep, infoOpen, mapAlert]);
 
   function placeDraft(coords: Coordinates) {
     setDraft(coords);
@@ -176,38 +221,8 @@ export function AddCourtView({
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden overscroll-none bg-asphalt">
-      <AppHeader
-        fetchedAtBySource={fetchedAtBySource}
-        courtCount={courtCount}
-      />
-
-      <div className="shrink-0 border-b border-white/10">
-        <button
-          type="button"
-          onClick={() => setInfoOpen((open) => !open)}
-          aria-expanded={infoOpen}
-          className="flex w-full items-center justify-between gap-3 px-3 py-2.5 text-left sm:px-4 lg:px-6"
-        >
-          <p className="font-display text-lg tracking-wide text-gold">
-            {copy.addCourtInfoTitle}
-          </p>
-          <ChevronDown
-            aria-hidden
-            className={`size-5 shrink-0 text-ink-muted transition-transform ${
-              infoOpen ? "rotate-180" : ""
-            }`}
-          />
-        </button>
-        {infoOpen ? (
-          <div className="px-3 pb-3 sm:px-4 lg:px-6">
-            <p className="text-sm text-ink/90">{copy.addCourtLead}</p>
-            <p className="mt-1 text-sm text-ink-muted">{copy.addCourtHint}</p>
-          </div>
-        ) : null}
-      </div>
-
       <section className="relative min-h-0 flex-1 bg-asphalt">
-        <div className="absolute inset-0">
+        <div className="add-court-map absolute inset-0" inert={infoOpen}>
           <AddCourtMap
             courts={courts}
             origin={origin}
@@ -217,7 +232,11 @@ export function AddCourtView({
               draftStep === "confirm" ? (
                 <ConfirmPlaceCard
                   onCancel={clearDraft}
-                  onConfirm={() => setDraftStep("form")}
+                  onConfirm={() => {
+                    setDraftStep("form");
+                    setFormCollapsed(false);
+                    setDiscardConfirm(false);
+                  }}
                 />
               ) : null
             }
@@ -231,29 +250,103 @@ export function AddCourtView({
           />
         </div>
 
-        <div className="pointer-events-none absolute top-3 left-3 z-10 drop-shadow-[0_8px_20px_rgb(0_0_0_/_0.35)]">
-          <div className="pointer-events-auto">
+        <div className="pointer-events-none absolute inset-x-0 top-0 z-40 flex justify-start p-3 pt-[max(0.75rem,env(safe-area-inset-top))] pl-[max(0.75rem,env(safe-area-inset-left))]">
+          <div className="pointer-events-auto flex items-center gap-2 drop-shadow-[0_8px_20px_rgb(0_0_0_/_0.35)]">
             <LocateMeButton
-              compact
+              iconOnly
               status={locationStatus}
               onClick={requestLocation}
             />
+            <button
+              type="button"
+              onClick={() => setInfoOpen((open) => !open)}
+              aria-expanded={infoOpen}
+              aria-controls="add-court-info"
+              aria-label={copy.addCourtInfoOpen}
+              className={`inline-flex h-12 shrink-0 items-center gap-1.5 rounded-full bg-asphalt/95 px-3 ring-1 ring-white/15 outline-none hover:bg-gold hover:text-asphalt focus-visible:ring-2 focus-visible:ring-gold/60 ${
+                infoOpen ? "text-gold" : "text-white"
+              }`}
+            >
+              <CircleHelp aria-hidden className="size-5" />
+              <span className="text-sm font-bold">{copy.addCourtInfoOpen}</span>
+            </button>
+            <Link
+              href="/"
+              className="inline-flex h-12 shrink-0 items-center gap-1.5 rounded-full bg-white px-3.5 text-sm font-bold text-asphalt outline-none hover:bg-gold hover:text-asphalt focus-visible:ring-2 focus-visible:ring-gold/60"
+            >
+              <X aria-hidden className="size-6 stroke-[2.5]" />
+              {copy.addCourtExit}
+            </Link>
           </div>
         </div>
 
+        {infoOpen ? (
+          <div
+            className="absolute inset-0 z-30 flex items-start justify-center overflow-y-auto bg-black/60 px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] sm:items-center"
+            style={{ paddingTop: MAP_CHROME_OFFSET }}
+            onClick={() => setInfoOpen(false)}
+          >
+            <AddCourtInfoDialog
+              ctaRef={infoCtaRef}
+              locationStatus={locationStatus}
+              onLocate={requestLocation}
+              onClose={() => setInfoOpen(false)}
+            />
+          </div>
+        ) : null}
+
         {draft && draftStep === "form" ? (
-          <AddMapPanel
+          <AddCourtFormPanel
+            inert={infoOpen}
+            collapsed={formCollapsed || discardConfirm}
             title={copy.addCourt}
-            onClose={backToConfirm}
+            header={
+              discardConfirm ? (
+                <div className="mt-2 pb-3">
+                  <p role="status" className="text-sm text-ink/90">
+                    {copy.addCourtDiscardAsk}
+                  </p>
+                  <div className="mt-3 flex flex-wrap items-center justify-end gap-2">
+                    <button
+                      type="button"
+                      onClick={keepForm}
+                      className={GOLD_BUTTON_CLASS}
+                    >
+                      {copy.addCourtDiscardKeep}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={clearDraft}
+                      className={TEXT_BUTTON_CLASS}
+                    >
+                      {copy.addCourtDiscardConfirm}
+                    </button>
+                  </div>
+                </div>
+              ) : (
+                <div className="mt-2 flex flex-wrap items-center justify-end gap-1 pb-3">
+                  <button
+                    ref={showFormRef}
+                    type="button"
+                    aria-expanded={!formCollapsed}
+                    aria-controls={formCollapsed ? undefined : "add-court-form"}
+                    onClick={() => setFormCollapsed((collapsed) => !collapsed)}
+                    className={formCollapsed ? GOLD_BUTTON_CLASS : TEXT_BUTTON_CLASS}
+                  >
+                    {formCollapsed ? copy.addCourtShowForm : copy.addCourtShowMap}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={requestCancel}
+                    className={TEXT_BUTTON_CLASS}
+                  >
+                    {copy.addCourtCancel}
+                  </button>
+                </div>
+              )
+            }
             footer={
               <div className="flex flex-wrap items-center justify-end gap-2">
-                <button
-                  type="button"
-                  onClick={clearDraft}
-                  className="rounded-full px-3 py-1.5 text-sm font-medium text-ink/80 hover:bg-white/10 hover:text-white"
-                >
-                  {copy.addCourtCancel}
-                </button>
                 <button
                   type="submit"
                   form="add-court-form"
@@ -323,20 +416,68 @@ export function AddCourtView({
               </label>
               {error ? <p className="mt-2 text-sm text-red-400">{error}</p> : null}
             </form>
-          </AddMapPanel>
+          </AddCourtFormPanel>
         ) : mapAlert && alertCopy ? (
           <AddMapPanel
+            inert={infoOpen}
             title={alertCopy.title}
             onClose={() => setMapAlert(null)}
             muted={mapAlert === "zoom"}
-            onMap
           >
             {alertCopy.body}
           </AddMapPanel>
         ) : null}
       </section>
+    </div>
+  );
+}
 
-      <AppFooter />
+function AddCourtInfoDialog({
+  ctaRef,
+  locationStatus,
+  onLocate,
+  onClose,
+}: {
+  ctaRef: RefObject<HTMLButtonElement | null>;
+  locationStatus: LocationStatus;
+  onLocate: () => void;
+  onClose: () => void;
+}) {
+  const copy = useCopy();
+  return (
+    <div
+      id="add-court-info"
+      role="dialog"
+      aria-modal="false"
+      aria-labelledby="add-court-info-title"
+      onClick={(event) => event.stopPropagation()}
+      className="relative mt-3 h-fit w-full max-w-md rounded-3xl border border-white/10 bg-panel shadow-[0_24px_64px_rgb(0_0_0_/_0.55)] sm:mt-0 sm:max-w-lg"
+    >
+      <div className="court-arc pointer-events-none absolute inset-0 rounded-3xl opacity-40" />
+      <div className="relative px-6 pt-6 pb-5">
+        <h2
+          id="add-court-info-title"
+          className="font-display text-4xl leading-none tracking-wide text-balance text-gold"
+        >
+          {copy.addCourtInfoTitle}
+        </h2>
+        <p className="mt-4 text-base leading-6 text-ink/90">{copy.addCourtLead}</p>
+        <p className="mt-2 text-base leading-6 text-ink-muted">{copy.addCourtHint}</p>
+        <div className="mt-4">
+          <LocateMeButton status={locationStatus} onClick={onLocate} />
+          {locationStatus === "denied" ? (
+            <p className="mt-2 text-sm text-ink-muted">{copy.locationBlockedHelp}</p>
+          ) : null}
+        </div>
+        <button
+          ref={ctaRef}
+          type="button"
+          onClick={onClose}
+          className="mt-6 w-full rounded-full bg-gold px-4 py-3 text-base font-bold text-asphalt hover:bg-[#ffe0a3]"
+        >
+          {copy.addCourtInfoCta}
+        </button>
+      </div>
     </div>
   );
 }
@@ -374,39 +515,88 @@ function ConfirmPlaceCard({
   );
 }
 
+function AddCourtFormPanel({
+  title,
+  header,
+  collapsed,
+  inert = false,
+  footer,
+  children,
+}: {
+  title: string;
+  header: ReactNode;
+  collapsed: boolean;
+  inert?: boolean;
+  footer?: ReactNode;
+  children?: ReactNode;
+}) {
+  return (
+    <div
+      inert={inert}
+      className="pointer-events-none absolute inset-x-0 z-20 flex justify-center px-3 sm:px-4"
+      style={{ top: MAP_CHROME_OFFSET }}
+    >
+      <div
+        role="dialog"
+        aria-modal="false"
+        aria-labelledby="add-court-form-title"
+        className="pointer-events-auto flex max-h-[min(70dvh,32rem)] w-full max-w-sm flex-col overflow-hidden rounded-2xl border border-white/10 bg-panel/95 shadow-[0_12px_32px_rgb(0_0_0_/_0.45)]"
+      >
+        <div
+          className={`shrink-0 px-3 pt-3 ${collapsed ? "" : "border-b border-white/10"}`}
+        >
+          <p
+            id="add-court-form-title"
+            className="font-display text-lg tracking-wide text-gold"
+          >
+            {title}
+          </p>
+          {header}
+        </div>
+        {collapsed ? null : (
+          <>
+            <div className="min-h-0 overflow-y-auto overscroll-contain px-3 py-2">
+              {children}
+            </div>
+            {footer ? (
+              <div className="shrink-0 border-t border-white/10 px-3 py-2.5">
+                {footer}
+              </div>
+            ) : null}
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
+
 function AddMapPanel({
   title,
   onClose,
   muted = false,
-  onMap = false,
+  inert = false,
   footer,
   children,
 }: {
   title: string;
   onClose: () => void;
   muted?: boolean;
-  onMap?: boolean;
+  inert?: boolean;
   footer?: ReactNode;
   children?: ReactNode;
 }) {
   const copy = useCopy();
   return (
     <div
-      className={
-        onMap
-          ? "pointer-events-none absolute inset-x-0 top-14 z-20 flex justify-center px-3 sm:px-4"
-          : "pointer-events-none fixed inset-x-0 top-[calc(var(--app-header-height,3.5rem)+3rem)] z-30 flex justify-center px-3 wide:absolute wide:top-14 wide:z-20 sm:px-4"
-      }
+      inert={inert}
+      className="pointer-events-none absolute inset-x-0 z-20 flex justify-center px-3 sm:px-4"
+      style={{ top: MAP_CHROME_OFFSET }}
     >
       <div
         role="dialog"
         aria-modal="false"
         aria-labelledby="add-court-alert-title"
-        className={`pointer-events-auto flex w-full max-w-sm flex-col overflow-hidden rounded-2xl border border-white/10 bg-panel/95 shadow-[0_12px_32px_rgb(0_0_0_/_0.45)] ${
-          onMap
-            ? "max-h-[min(70dvh,32rem)]"
-            : "max-h-[calc(100dvh-var(--app-header-height,3.5rem)-4rem)] wide:max-h-[min(70dvh,32rem)]"
-        }`}
+        className="pointer-events-auto flex max-h-[min(70dvh,32rem)] w-full max-w-sm flex-col overflow-hidden rounded-2xl border border-white/10 bg-panel/95 shadow-[0_12px_32px_rgb(0_0_0_/_0.45)]"
       >
         <div className="flex shrink-0 items-start justify-between gap-2 px-3 pt-3">
           <p

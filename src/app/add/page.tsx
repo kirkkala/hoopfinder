@@ -1,10 +1,7 @@
 import type { Metadata } from "next";
 import { AddCourtView } from "@/components/add-court/AddCourtView";
-import { getCourtCatalog } from "@/lib/catalog";
 import { getCopy } from "@/lib/copy";
 import { homeOgHref, OG_CONTENT_TYPE, OG_SIZE } from "@/lib/og";
-
-export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
   const finnish = getCopy("fi");
@@ -26,12 +23,6 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function AddCourtPage() {
-  const { courts, fetchedAtBySource } = await getCourtCatalog();
-  return (
-    <AddCourtView
-      courtCount={courts.length}
-      fetchedAtBySource={fetchedAtBySource}
-    />
-  );
+export default function AddCourtPage() {
+  return <AddCourtView />;
 }

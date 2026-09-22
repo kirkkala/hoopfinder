@@ -117,7 +117,7 @@ const messages = {
   nearMe: {
     idle: { fi: "Paikanna", en: "Locate me" },
     pending: { fi: "Paikannetaan…", en: "Locating…" },
-    granted: { fi: "Sijaintisi", en: "Near you" },
+    granted: { fi: "Sijaintisi", en: "Locate" },
     denied: { fi: "Sijainti estetty", en: "Location blocked" },
     unavailable: { fi: "Ei GPS:ää", en: "No GPS" },
   },
@@ -215,7 +215,7 @@ const messages = {
   no: { fi: "Ei", en: "No" },
   notReported: { fi: "Ei ilmoitettu", en: "Not reported" },
   addCourt: { fi: "Lisää kenttä", en: "Add court" },
-  addCourtConfirmHere: { fi: "Tallenna", en: "Save" },
+  addCourtConfirmHere: { fi: "Lisää tähän", en: "Lisää tähän" },
   addCourtInfoTitle: { fi: "Lisää kenttä Hoop Finderiin", en: "Add court to Hoop Finder" },
   addCourtExit: { fi: "Poistu", en: "Exit" },
   addCourtLead: {
@@ -226,6 +226,8 @@ const messages = {
     fi: "Liikuta karttaa ja zoomaa tai paikanna itsesi ja napsauta karttaa lisätäksesi kentän.",
     en: "Pan and zoom the map or locate yourself and tap the map to add a missing court.",
   },
+  addCourtInfoCta: { fi: "ok bro", en: "ok bro" },
+  addCourtInfoOpen: { fi: "Ohje", en: "Help" },
   addCourtHintZoom: {
     fi: "Zoomaa lähemmäs merkitäksesi korin sijainnin mahdollisimman tarkasti.",
     en: "Zoom in closer to mark the hoop location as accurately as possible.",
@@ -250,8 +252,16 @@ const messages = {
     fi: "Anna sähkköpostiosoite johon lähetämme linkin kentän lisäämisen vahvistamiseksi. Ylläpito voi myös tarvittaessa kysyä lisätietoja. Sähköpostiosoitettasi ei näytetä palvelussa.",
     en: "Enter your email address to receive a link to verify the court addition or the admin may ask for additional information. Your email address is not shown in the service.",
   },
-  addCourtSubmit: { fi: "Lähetä", en: "Submit" },
-  addCourtCancel: { fi: "Peruuta", en: "Cancel" },
+  addCourtSubmit: { fi: "Tallenna", en: "Save" },
+  addCourtCancel: { fi: "Sulje", en: "Close" },
+  addCourtShowMap: { fi: "Näytä kartta", en: "Show map" },
+  addCourtShowForm: { fi: "Näytä lomake", en: "Show form" },
+  addCourtDiscardAsk: {
+    fi: "Sulje ja poista syöttämäsi tiedot?",
+    en: "Close and delete what you entered?",
+  },
+  addCourtDiscardConfirm: { fi: "Sulje", en: "Close" },
+  addCourtDiscardKeep: { fi: "Palaa lomakkeeseen", en: "Back to the form" },
   addCourtSending: { fi: "Lähetetään…", en: "Sending…" },
   addCourtError: {
     fi: "Lähetys epäonnistui. Kokeile uudelleen.",
