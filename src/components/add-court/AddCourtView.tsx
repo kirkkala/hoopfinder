@@ -469,12 +469,17 @@ export function AddCourtView() {
                   maxLength={254}
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
-                  placeholder={copy.addCourtEmailPlaceholder}
                   className={INPUT_CLASS}
                   autoComplete="email"
                 />
                 <span className="mt-1 block text-xs text-ink-muted">
                   {copy.addCourtEmailHelp}
+                </span>
+                <span className="mt-1 block text-xs text-ink-muted">
+                  {copy.addCourtEmailUpdates}
+                </span>
+                <span className="mt-1 block text-xs text-ink-muted">
+                  {copy.addCourtEmailPrivacy}
                 </span>
               </label>
               <AddCourtFields details={details} onChange={setDetails} />

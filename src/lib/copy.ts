@@ -279,13 +279,17 @@ const messages = {
     en: "Looking up the address…",
   },
   addCourtEmail: { fi: "Sähköposti", en: "Email" },
-  addCourtEmailPlaceholder: {
-    fi: "nimi@esimerkki.fi",
-    en: "name@example.com",
-  },
   addCourtEmailHelp: {
-    fi: "Anna sähkköpostiosoite johon lähetämme linkin kentän lisäämisen vahvistamiseksi. Ylläpito voi myös tarvittaessa kysyä lisätietoja. Sähköpostiosoitettasi ei näytetä palvelussa.",
-    en: "Enter your email address to receive a link to verify the court addition or the admin may ask for additional information. Your email address is not shown in the service.",
+    fi: "Lähetämme sähköpostiisi linkin jolla sinun tulee vahvistaa kentän lisääminen palveluun.",
+    en: "We'll email you a link to confirm adding this court. You'll need to click it to complete the process.",
+  },
+  addCourtEmailUpdates: {
+    fi: "Ylläpito voi tarvittaessa kysyä lisätietoja tai ilmoittaa päivityksistä. Emme spammaa.",
+    en: "An admin may ask for extra details if needed, or tell you about updates. We won't spam you.",
+  },
+  addCourtEmailPrivacy: {
+    fi: "Sähköpostiosoitettasi ei näytetä palvelussa.",
+    en: "Your email address is not shown in the service.",
   },
   addCourtSubmit: { fi: "Tallenna", en: "Save" },
   addCourtCancel: { fi: "Sulje", en: "Close" },
