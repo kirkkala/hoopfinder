@@ -11,7 +11,7 @@ import {
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { CircleHelp, X } from "lucide-react";
+import { CircleHelp, LoaderCircle, X } from "lucide-react";
 import { LocateMeButton } from "@/components/LocateMeButton";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import type { Copy } from "@/lib/copy";
@@ -58,6 +58,8 @@ export function AddCourtView() {
   const [draftStep, setDraftStep] = useState<"confirm" | "form">("confirm");
   const [name, setName] = useState("");
   const [address, setAddress] = useState("");
+  const [addressLoading, setAddressLoading] = useState(false);
+  const addressEdited = useRef(false);
   const [email, setEmail] = useState("");
   const [details, setDetails] = useState<AddCourtDetails>(EMPTY_ADD_COURT_DETAILS);
   const [error, setError] = useState<string | null>(null);
@@ -94,10 +96,12 @@ export function AddCourtView() {
   }, []);
 
   function clearDraft() {
+    addressEdited.current = false;
     setDraft(null);
     setDraftStep("confirm");
     setName("");
     setAddress("");
+    setAddressLoading(false);
     setEmail("");
     setDetails(EMPTY_ADD_COURT_DETAILS);
     setError(null);
@@ -107,7 +111,9 @@ export function AddCourtView() {
   }
 
   function formIsDirty() {
-    return Boolean(name.trim() || address.trim() || email.trim() || addCourtDetailsDirty(details));
+    return Boolean(
+      name.trim() || addressEdited.current || email.trim() || addCourtDetailsDirty(details),
+    );
   }
 
   function requestCancel() {
@@ -153,11 +159,34 @@ export function AddCourtView() {
   }, [discardConfirm, draft, draftStep, infoOpen, mapAlert]);
 
   function placeDraft(coords: Coordinates) {
+    addressEdited.current = false;
+    setAddress("");
     setDraft(coords);
     setDraftStep("confirm");
     setMapAlert(null);
     setError(null);
   }
+
+  useEffect(() => {
+    if (!draft) return;
+    const controller = new AbortController();
+    setAddressLoading(true);
+    void fetch(`/api/places/reverse?lat=${draft.lat}&lon=${draft.lon}`, {
+      signal: controller.signal,
+    })
+      .then((response) => (response.ok ? response.json() : null))
+      .then((payload: { address?: string | null } | null) => {
+        const suggestion = payload?.address?.trim();
+        if (!controller.signal.aborted && !addressEdited.current && suggestion) {
+          setAddress(suggestion);
+        }
+      })
+      .catch(() => {})
+      .finally(() => {
+        if (!controller.signal.aborted) setAddressLoading(false);
+      });
+    return () => controller.abort();
+  }, [draft]);
 
   function showAlert(kind: AddCourtMapAlert) {
     if (kind !== "zoom") {
@@ -404,15 +433,30 @@ export function AddCourtView() {
                 <span className="mb-1 block text-sm text-ink/85">
                   {copy.addCourtAddress}
                 </span>
-                <input
-                  required
-                  maxLength={200}
-                  value={address}
-                  onChange={(event) => setAddress(event.target.value)}
-                  placeholder={copy.addCourtAddressPlaceholder}
-                  className={INPUT_CLASS}
-                  autoComplete="street-address"
-                />
+                <span className="relative block">
+                  <input
+                    required
+                    maxLength={200}
+                    value={address}
+                    onChange={(event) => {
+                      addressEdited.current = true;
+                      setAddress(event.target.value);
+                    }}
+                    placeholder={
+                      addressLoading
+                        ? copy.addCourtAddressLoading
+                        : copy.addCourtAddressPlaceholder
+                    }
+                    className={`${INPUT_CLASS} ${addressLoading ? "pr-10" : ""}`}
+                    autoComplete="street-address"
+                  />
+                  {addressLoading ? (
+                    <LoaderCircle
+                      className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 animate-spin text-gold"
+                      aria-label={copy.addCourtAddressLoading}
+                    />
+                  ) : null}
+                </span>
               </label>
               <label className="mt-2.5 block">
                 <span className="mb-1 block text-sm text-ink/85">

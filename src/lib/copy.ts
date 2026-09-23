@@ -274,6 +274,10 @@ const messages = {
     fi: "Paratiisitie 13, 00100 Helsinki",
     en: "Paratiisitie 13, 00100 Helsinki",
   },
+  addCourtAddressLoading: {
+    fi: "Haetaan osoitetta…",
+    en: "Looking up the address…",
+  },
   addCourtEmail: { fi: "Sähköposti", en: "Email" },
   addCourtEmailPlaceholder: {
     fi: "nimi@esimerkki.fi",

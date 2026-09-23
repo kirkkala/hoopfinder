@@ -13,6 +13,11 @@ export type PlaceMatch = {
 };
 
 const NOMINATIM = "https://nominatim.openstreetmap.org/search";
+const NOMINATIM_REVERSE = "https://nominatim.openstreetmap.org/reverse";
+const NOMINATIM_HEADERS = {
+  Accept: "application/json",
+  "User-Agent": "HoopFinder/0.1 (https://github.com/kirkkala/hoopfinder)",
+};
 
 /** Prefer real neighborhoods and towns over stations, shops, and roads. */
 const PLACE_RANK: Record<string, number> = {
@@ -54,10 +59,7 @@ export async function lookupPlace(query: string): Promise<PlaceMatch | null> {
   url.searchParams.set("countrycodes", "fi");
 
   const response = await fetch(url, {
-    headers: {
-      Accept: "application/json",
-      "User-Agent": "HoopFinder/0.1 (https://github.com/kirkkala/hoopfinder)",
-    },
+    headers: NOMINATIM_HEADERS,
     cache: "force-cache",
     next: { revalidate: COURT_DATA_REVALIDATE },
   });
@@ -87,4 +89,44 @@ export async function lookupPlace(query: string): Promise<PlaceMatch | null> {
         };
 
   return { bounds, camera: cameraBoundsForPlace(center, bounds) };
+}
+
+type ReverseAddress = {
+  house_number?: string;
+  road?: string;
+  postcode?: string;
+  city?: string;
+  town?: string;
+  village?: string;
+};
+
+/** Street address for a dropped pin, or null when Nominatim has nothing useful. */
+export async function reverseAddress(lat: number, lon: number): Promise<string | null> {
+  const url = new URL(NOMINATIM_REVERSE);
+  url.searchParams.set("lat", String(lat));
+  url.searchParams.set("lon", String(lon));
+  url.searchParams.set("format", "jsonv2");
+  url.searchParams.set("addressdetails", "1");
+  url.searchParams.set("zoom", "18");
+  url.searchParams.set("layer", "address");
+  url.searchParams.set("accept-language", "fi");
+
+  const response = await fetch(url, {
+    headers: NOMINATIM_HEADERS,
+    cache: "force-cache",
+    next: { revalidate: COURT_DATA_REVALIDATE },
+  });
+  if (!response.ok) return null;
+
+  const hit = (await response.json()) as { address?: ReverseAddress };
+  return formatReverseAddress(hit.address);
+}
+
+function formatReverseAddress(address: ReverseAddress | undefined): string | null {
+  if (!address) return null;
+  const street = [address.road, address.house_number].filter(Boolean).join(" ");
+  const city = address.city || address.town || address.village;
+  const place = [address.postcode, city].filter(Boolean).join(" ");
+  const line = [street, place].filter(Boolean).join(", ");
+  return line || null;
 }
