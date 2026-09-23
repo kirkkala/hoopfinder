@@ -124,22 +124,14 @@ export function IntroDialog({
             {copy.introCreatedBy1}
           </p>
           <p className="mt-2 block text-base text-ink/85">{copy.introCreatedBy2}</p>
-          <div className="mt-4 flex flex-wrap items-center gap-x-1.5">
+          <div className="mt-6 flex flex-wrap items-center gap-x-1.5">
             <BuyMeCoffeeButton size="md" />
             <p className="text-base text-ink/85">👈 {copy.introSupport}</p>
           </div>
-          <a
-            href="https://github.com/kirkkala/hoopfinder"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-2 inline-flex items-center gap-2 text-base text-ink/85 underline hover:text-gold"
-          >
-            {copy.introCreatedBySourceCode}
-          </a>
           <button
             type="button"
             onClick={onClose}
-            className="mt-6 w-full rounded-full bg-gold px-4 py-3 text-base font-bold text-asphalt hover:bg-[#ffe0a3]"
+            className="mt-10 w-full rounded-full bg-gold px-4 py-3 text-base font-bold text-asphalt hover:bg-[#ffe0a3]"
           >
             {copy.okBroCta}
           </button>

@@ -1,3 +1,6 @@
+/** Safe-harbour credit: the word OpenStreetMap links here, which states the ODbL. */
+export const OSM_COPYRIGHT_URL = "https://www.openstreetmap.org/copyright";
+
 export type OsmElementType = "node" | "way" | "relation";
 
 export function parseOsmCourtId(
@@ -11,8 +14,8 @@ export function parseOsmCourtId(
 export const COURT_SOURCES = [
   {
     id: "lipas",
-    label: "LIPAS",
-    shortLabel: "LIPAS",
+    label: "Lipas.fi",
+    shortLabel: "Lipas",
     href: "https://www.lipas.fi",
     required: true,
     listingUrl: (id: string) => `https://www.lipas.fi/liikuntapaikat/${id}`,
@@ -21,7 +24,7 @@ export const COURT_SOURCES = [
     id: "osm",
     label: "OpenStreetMap",
     shortLabel: "OSM",
-    href: "https://www.openstreetmap.org/about",
+    href: OSM_COPYRIGHT_URL,
     required: false,
     listingUrl: (id: string) => {
       const parsed = parseOsmCourtId(id);

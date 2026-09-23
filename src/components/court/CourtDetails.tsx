@@ -54,7 +54,7 @@ import {
 } from "@/lib/courts";
 import { haversineKm } from "@/lib/geo";
 import { useLocationStatus } from "@/lib/origin";
-import { courtSource, sourceListingUrl } from "@/lib/sources";
+import { courtSource, OSM_COPYRIGHT_URL, sourceListingUrl } from "@/lib/sources";
 import { formatFetchedAt } from "@/lib/time";
 import { split } from "@/lib/layout";
 import type { FetchedAtBySource } from "@/lib/catalog";
@@ -352,51 +352,56 @@ export function CourtDetails({
                 value={formatOwner(court.owner, copy)}
               />
             ) : null}
-            {court.source === "submitted" ? (
+            {court.source === "submitted" || source ? (
               <Fact
                 icon={Database}
                 label={copy.dataFromSource}
                 value={
                   <div className="space-y-1">
-                    <p>
-                      {copy.source}: {copy.sourceSubmitted}
-                    </p>
-                    {sourceFetchedAt ? (
-                      <p className="text-xs text-ink-muted">
-                        {copy.dataFetchedAt}:{" "}
-                        <time dateTime={sourceFetchedAt}>
-                          {formatFetchedAt(sourceFetchedAt)}
-                        </time>
-                      </p>
+                    {court.source === "submitted" ? (
+                      <p>{copy.sourceSubmitted}</p>
                     ) : null}
-                  </div>
-                }
-              />
-            ) : source ? (
-              <Fact
-                icon={Database}
-                label={copy.dataFromSource}
-                value={
-                  <div className="space-y-1">
-                    <ul>
-                      <li>{copy.source}: {source.label}</li>
-                      {listingUrl ? (
-                        <li>
-                          <a
-                            href={listingUrl}
-                            className="inline-flex items-center gap-1 break-all text-gold hover:text-white"
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            {websiteLabel(listingUrl)}
-                            <ExternalLink className="size-3.5 shrink-0" aria-hidden />
-                          </a>
-                        </li>
-                      ) : null}
-                    </ul>
+                    {court.source === "osm" || listingUrl ? (
+                      <ul>
+                        {court.source === "osm" ? (
+                          <li className="text-sm leading-5 text-ink-muted">
+                            <span className="block">
+                              © OpenStreetMap {copy.osmContributors}.
+                            </span>
+                            <span className="block">
+                              {copy.osmLicenseLead}:{" "}
+                              <a
+                                href={OSM_COPYRIGHT_URL}
+                                className="text-gold hover:text-white"
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                {copy.osmLicense}
+                              </a>
+                            </span>
+                          </li>
+                        ) : null}
+                        {listingUrl ? (
+                          <li>
+                            <a
+                              href={listingUrl}
+                              className="inline-flex items-center gap-1 break-all text-gold hover:text-white"
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              {websiteLabel(listingUrl)}
+                              <ExternalLink className="size-3.5 shrink-0" aria-hidden />
+                            </a>
+                          </li>
+                        ) : null}
+                      </ul>
+                    ) : null}
                     {sourceFetchedAt ? (
                       <p className="text-xs text-ink-muted">
-                        {copy.dataFetchedAt}:{" "}
+                        {court.source === "submitted"
+                          ? copy.addedAt
+                          : copy.dataFetchedAt}
+                        :{" "}
                         <time dateTime={sourceFetchedAt}>
                           {formatFetchedAt(sourceFetchedAt)}
                         </time>

@@ -44,8 +44,8 @@ const messages = {
   backToMap: { fi: "Takaisin kartalle", en: "Back to the map" },
   dataFrom: { fi: "Kenttädata päivitetty:", en: "Court data updated:" },
   dataFromSource: { fi: "Rajapintatieto", en: "API information" },
-  source: { fi: "Lähde", en: "Source" },
   dataFetchedAt: { fi: "Tiedot haettu", en: "Data fetched" },
+  addedAt: { fi: "Lisätty", en: "Added" },
   betaTooltip: {
     fi: "Varhainen beta-versio. Ei valmis, saattaa sisältää bugeja.",
     en: "Early beta preview. Not ready yet, might contain bugs.",
@@ -55,8 +55,8 @@ const messages = {
   info: { fi: "Tietoa palvelusta", en: "About the service" },
   introTitle: { fi: "Koripallokentät suomessa", en: "Basketball courts in Finland" },
   introLead: {
-    fi: "Hoop Finderissa on {count} ulkokoripallokenttää. Olit sitten reissussa, mökillä, sukulaisten luona tai haluat löytää uuden kentän kodin läheltä — täältä löydät paikan heittää.",
-    en: "Hoop Finder has {count} outdoor basketball courts. Whether you're on a trip, at the cottage, visiting relatives or want to find a new court close to home — here you can find a place to hoop.",
+    fi: "Hoop Finderin kartalla on {count} Suomen ulkokoripallokenttää. Olit sitten reissussa, mökillä, sukulaisten luona tai haluat tsekata kodin läheltä uuden kentän, täältä niitä löytyy!",
+    en: "Hoop Finder has {count} outdoor basketball courts in Finland. Whether you're on a trip, at the cottage, visiting relatives or want to check a new court close to home — here you can find them!",
   },
   introLocationBenefit: {
     fi: "Salli sijaintisi, niin näet kuinka kaukana kukin kenttä sijaitsee.",
@@ -75,24 +75,34 @@ const messages = {
     en: "Who built this and why"
   },
   introCreatedBy1: {
-    fi: "koodaili sivuston harrasteprojektina hakien kenttien tiedot Lipas.fi, OpenStreetMaps sekä Nominatim avoimista rajapintoista. Lisäksi käyttäjät voivat itse lisätä palveluun puuttuvia kenttiä.",
-    en: "built this site as a side project by fetching court data from the open APIs of Lipas.fi, OpenStreetMaps and Nominatim. Additionally, users can add missing courts to the service.",
+    fi: "koodaili tämän sivuston harrasteprojektina AI:n kanssa, hakien kenttien tiedot avoimista rajapinnoista sekä käyttäjien palveluun lisäämistä tiedoista.",
+    en: "built this site as a side project with AI, fetching court data from the open APIs and users adding missing courts to the service.",
   },
   introCreatedBy2: {
     fi: "Motivaationa oli saada isot ja pienet ihmiset ulos liikkumaan enemmän koripallon kanssa.",
     en: "The motivation was to get big and small humans out of the house and move more with a basketball."
-  },
-  introCreatedBySourceCode: {
-    fi: "Lähdekoodi löytyy Githubista",
-    en: "Source code is on Github"
   },
   introSupport: { fi: "Tue kehittäjää", en: "Support the developer" },
   okBroCta: { fi: "ok bro", en: "ok bro" },
   madeWith: { fi: 'Made with', en: "Made with" },
   love: { fi: "love", en: "love" },
   courtDataFrom: {
-    fi: "Kenttätiedot lähteistä",
-    en: "Court data from",
+    fi: "Lähdedata:",
+    en: "Sources:",
+  },
+  footerHide: { fi: "Piilota alapalkki", en: "Hide footer" },
+  footerShow: { fi: "Näytä alapalkki", en: "Show footer" },
+  osmContributors: {
+    fi: "contributors",
+    en: "contributors",
+  },
+  osmLicenseLead: {
+    fi: "Lisenssi",
+    en: "License",
+  },
+  osmLicense: {
+    fi: "Open Database License",
+    en: "Open Database License",
   },
   sourceListAnd: { fi: " ja ", en: " and " },
   sourceCodeOn: { fi: "Lähdekoodi", en: "Source code" },
@@ -237,7 +247,7 @@ const messages = {
   no: { fi: "Ei", en: "No" },
   notReported: { fi: "Ei ilmoitettu", en: "Not reported" },
   addCourt: { fi: "Lisää kenttä", en: "Add court" },
-  addCourtConfirmHere: { fi: "Lisää tähän", en: "Lisää tähän" },
+  addCourtConfirmHere: { fi: "Lisää kenttä", en: "Add court" },
   addCourtInfoTitle: { fi: "Lisää kenttä Hoop Finderiin", en: "Add court to Hoop Finder" },
   addCourtExit: { fi: "Poistu", en: "Exit" },
   addCourtLead: {

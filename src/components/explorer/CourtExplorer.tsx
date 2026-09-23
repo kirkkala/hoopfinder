@@ -279,7 +279,7 @@ export function CourtExplorer({
         </section>
       </div>
 
-      <AppFooter />
+      <AppFooter collapsible />
     </div>
   );
 }
