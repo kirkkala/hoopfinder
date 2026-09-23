@@ -75,12 +75,12 @@ const messages = {
     en: "Who built this and why"
   },
   introCreatedBy1: {
-    fi: "koodaili tämän sivuston harrasteprojektina AI:n kanssa, hakien kenttien tiedot avoimista rajapinnoista sekä käyttäjien palveluun lisäämistä tiedoista.",
-    en: "built this site as a side project with AI, fetching court data from the open APIs and users adding missing courts to the service.",
+    fi: "koodaili sivuston omana harrasteprojektina, hakien kenttien tiedot parista avoimesta rajapinnasta ja antamalla käyttäjien itse lisätä palveluun puuttuvia kenttiä.",
+    en: "built this site as a side project, fetching the court data from a few open APIs and allowing users to add missing courts to the service.",
   },
   introCreatedBy2: {
-    fi: "Motivaationa oli saada isot ja pienet ihmiset ulos liikkumaan enemmän koripallon kanssa.",
-    en: "The motivation was to get big and small humans out of the house and move more with a basketball."
+    fi: "Motivaationa tähän oli saada isot ja pienet ihmiset ulos liikkumaan enemmän koripallon kanssa.",
+    en: "The motivation for this is to get big and small humans out of the house and move more with a basketball."
   },
   introSupport: { fi: "Tue kehittäjää", en: "Support the developer" },
   okBroCta: { fi: "ok bro", en: "ok bro" },
