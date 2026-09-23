@@ -1,4 +1,5 @@
 import { randomBytes } from "node:crypto";
+import { cache } from "react";
 import { z } from "zod";
 import { getCourtCatalog } from "@/lib/catalog";
 import {
@@ -112,6 +113,18 @@ export async function listSubmittedCourts(): Promise<ExplorerCourt[]> {
     .filter((row) => !isTooCloseToCourt(row, courts))
     .map(toExplorerCourt);
 }
+
+/** Catalog courts plus submitted courts that are not already covered by it. */
+export const countPublicCourts = cache(async (): Promise<number> => {
+  const { courts } = await getCourtCatalog();
+  try {
+    const submitted = await listSubmittedCourts();
+    return courts.length + submitted.length;
+  } catch (error) {
+    console.error(error);
+    return courts.length;
+  }
+});
 
 export async function listAdminSubmittedCourts(): Promise<
   AdminSubmittedCourt[] | null

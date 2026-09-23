@@ -4,7 +4,7 @@ import { AdminCourtsView } from "@/components/admin/AdminCourtsView";
 import { getAuthSession } from "@/auth";
 import { getCourtCatalog } from "@/lib/catalog";
 import { getCopy } from "@/lib/copy";
-import { listAdminSubmittedCourts } from "@/lib/submitted-courts";
+import { countPublicCourts, listAdminSubmittedCourts } from "@/lib/submitted-courts";
 
 export const dynamic = "force-dynamic";
 
@@ -22,14 +22,15 @@ export default async function AdminPage() {
     redirect("/login?callbackUrl=/admin");
   }
 
-  const [{ courts, fetchedAtBySource }, submitted] = await Promise.all([
+  const [{ fetchedAtBySource }, submitted, courtCount] = await Promise.all([
     getCourtCatalog(),
     listAdminSubmittedCourts(),
+    countPublicCourts(),
   ]);
 
   return (
     <AdminCourtsView
-      courtCount={courts.length}
+      courtCount={courtCount}
       fetchedAtBySource={fetchedAtBySource}
       courts={submitted}
     />

@@ -432,7 +432,7 @@ const messages = {
   },
   adminStatusPublished: { fi: "Julkaistu", en: "Published" },
   adminStatusPending: { fi: "Odottaa julkaisua", en: "Pending publication" },
-  adminStatusConfirmed: { fi: "Vahvistettu", en: "Confirmed" },
+  adminStatusConfirmed: { fi: "Käyttäjän vahvistama", en: "Confirmed by user" },
   adminStatusUnconfirmed: { fi: "Odottaa sähköpostivahvistusta", en: "Waiting for email confirmation" },
   adminPublish: { fi: "Julkaise", en: "Publish" },
   adminUnpublish: { fi: "Piilota", en: "Unpublish" },

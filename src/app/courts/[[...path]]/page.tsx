@@ -14,7 +14,7 @@ import {
   isAwaitingEmail,
   parseCourtPath,
 } from "@/lib/courts";
-import { getSubmittedCourt } from "@/lib/submitted-courts";
+import { countPublicCourts, getSubmittedCourt } from "@/lib/submitted-courts";
 
 export const dynamic = "force-dynamic";
 
@@ -78,13 +78,16 @@ export default async function CourtPage({
   if (isAwaitingEmail(result.court)) {
     redirect(homeCourtHref({ id: result.court.id, source: "pending" }));
   }
-  const { courts, fetchedAtBySource } = await getCourtCatalog();
+  const [{ fetchedAtBySource }, courtCount] = await Promise.all([
+    getCourtCatalog(),
+    countPublicCourts(),
+  ]);
   return (
     <CourtDetails
       court={result.court}
       fetchedAtBySource={fetchedAtBySource}
       sourceFetchedAt={result.sourceFetchedAt}
-      courtCount={courts.length}
+      courtCount={courtCount}
     />
   );
 }

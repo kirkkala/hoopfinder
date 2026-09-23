@@ -6,7 +6,7 @@ import { getCourtCatalog } from "@/lib/catalog";
 import { courtHref } from "@/lib/courts";
 import { getCopy } from "@/lib/copy";
 import { siteOrigin } from "@/lib/site-origin";
-import { confirmSubmittedCourt } from "@/lib/submitted-courts";
+import { confirmSubmittedCourt, countPublicCourts } from "@/lib/submitted-courts";
 
 export const dynamic = "force-dynamic";
 
@@ -34,11 +34,14 @@ export default async function ConfirmCourtPage({
     );
   }
 
-  const { courts, fetchedAtBySource } = await getCourtCatalog();
+  const [{ fetchedAtBySource }, courtCount] = await Promise.all([
+    getCourtCatalog(),
+    countPublicCourts(),
+  ]);
   return (
     <ConfirmCourtView
       notifyFailed={result?.error === "email"}
-      courtCount={courts.length}
+      courtCount={courtCount}
       fetchedAtBySource={fetchedAtBySource}
     />
   );

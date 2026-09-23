@@ -80,7 +80,7 @@ function syncCourtUrl(path: string | null) {
 }
 
 export function CourtExplorer({
-  courtCount: catalogCount,
+  courtCount: totalCourtCount,
   fetchedAtBySource,
   focusId,
   thanks: thanksFromUrl = false,
@@ -229,7 +229,7 @@ export function CourtExplorer({
       <AppHeader
         home
         fetchedAtBySource={fetchedAtBySource}
-        courtCount={catalogCount}
+        courtCount={totalCourtCount}
       />
 
       <div className={`flex min-h-0 flex-1 flex-col overflow-hidden ${split.row}`}>

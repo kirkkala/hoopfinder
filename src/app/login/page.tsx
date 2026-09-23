@@ -7,6 +7,7 @@ import {
   safeCallbackUrl,
 } from "@/auth";
 import { getCourtCatalog } from "@/lib/catalog";
+import { countPublicCourts } from "@/lib/submitted-courts";
 import { getCopy } from "@/lib/copy";
 
 export const dynamic = "force-dynamic";
@@ -32,7 +33,10 @@ export default async function LoginPage({
   const session = await getAuthSession();
   if (session?.user?.isAdmin) redirect(callbackUrl);
 
-  const { courts, fetchedAtBySource } = await getCourtCatalog();
+  const [{ fetchedAtBySource }, courtCount] = await Promise.all([
+    getCourtCatalog(),
+    countPublicCourts(),
+  ]);
   const error = params.error;
   return (
     <LoginView
@@ -40,7 +44,7 @@ export default async function LoginPage({
       callbackUrl={callbackUrl}
       signedInEmail={session?.user?.email ?? null}
       error={Array.isArray(error) ? error.length > 0 : Boolean(error)}
-      courtCount={courts.length}
+      courtCount={courtCount}
       fetchedAtBySource={fetchedAtBySource}
     />
   );
