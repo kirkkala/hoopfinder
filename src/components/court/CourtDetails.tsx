@@ -20,6 +20,7 @@ import {
   Map,
   MapPin,
   MoveVertical,
+  Pencil,
   Route,
   Ruler,
   School,
@@ -35,6 +36,7 @@ import { AppFooter } from "@/components/brand/AppFooter";
 import { CourtDistance } from "@/components/CourtDistance";
 import { LocateMeButton, locationHint } from "@/components/LocateMeButton";
 import { useCopy } from "@/components/brand/LocaleProvider";
+import { AdminCourtEditor } from "@/components/admin/AdminCourtEditor";
 import { useIsAdmin } from "@/components/admin/AdminProvider";
 import { AdminStatusButton } from "@/components/admin/AdminStatusButton";
 import { CourtMiniMap } from "@/components/court/CourtMiniMap";
@@ -65,14 +67,17 @@ export function CourtDetails({
   fetchedAtBySource,
   sourceFetchedAt,
   courtCount,
+  visitorEmail = null,
 }: {
   court: Court;
   fetchedAtBySource: FetchedAtBySource;
   sourceFetchedAt: string | null;
   courtCount: number;
+  visitorEmail?: string | null;
 }) {
   const copy = useCopy();
   const isAdmin = useIsAdmin();
+  const [editing, setEditing] = useState(false);
   const address = formatAddress([
     court.address,
     court.neighborhood,
@@ -88,8 +93,10 @@ export function CourtDetails({
     sessionStorage.removeItem(COURT_THANKS_KEY);
     setThanks(true);
   }, [court.id]);
-  const showAdminStatus =
-    isAdmin && court.source === "submitted";
+  const awaitingEmail = isAdmin && court.emailConfirmed === false;
+  const hideUnpublishedFacts = pending && !isAdmin;
+  const showAdminStatus = isAdmin && court.source === "submitted";
+  const canEdit = showAdminStatus && visitorEmail !== null;
   const dimensions =
     amenities.lengthM && amenities.widthM
       ? `${amenities.lengthM} × ${amenities.widthM} m`
@@ -119,9 +126,8 @@ export function CourtDetails({
                   copy.pendingComingSoon
                 )}
               </p>
-            ) : (
-              <CourtDistanceBlock court={court} />
-            )}
+            ) : null}
+            <CourtDistanceBlock court={court} />
           </div>
 
           {thanks ? (
@@ -131,29 +137,62 @@ export function CourtDetails({
             </div>
           ) : null}
 
-          <dl className="grid gap-3 rounded-3xl border border-white/10 bg-panel p-5">
+          <dl
+            className={`relative grid gap-3 rounded-3xl border border-white/10 bg-panel p-5 ${
+              showAdminStatus ? "pr-40" : ""
+            }`}
+          >
+            {showAdminStatus ? (
+              <div className="absolute top-3 right-3 flex items-start gap-1">
+                <AdminStatusButton
+                  compact
+                  id={court.id}
+                  name={court.name}
+                  published={!pending}
+                />
+                {canEdit ? (
+                  <button
+                    type="button"
+                    aria-pressed={editing}
+                    onClick={() => setEditing((open) => !open)}
+                    aria-label={copy.adminEdit}
+                    title={copy.adminEdit}
+                    className={`inline-flex size-8 items-center justify-center rounded-full ${
+                      editing
+                        ? "bg-gold text-asphalt"
+                        : "bg-white/15 text-white hover:bg-white/25"
+                    }`}
+                  >
+                    <Pencil className="size-4" aria-hidden />
+                  </button>
+                ) : null}
+              </div>
+            ) : null}
             <Fact
               icon={court.status === "active" ? CircleCheck : CirclePause}
               label={copy.status}
               value={
                 pending ? (
                   <>
-                    {copy.statusUnderReview}
-                    <span className="mt-1 block text-sm text-ink-muted">
-                      {copy.pendingPublishAfterReview}
-                    </span>
+                    {awaitingEmail
+                      ? copy.adminStatusUnconfirmed
+                      : copy.statusUnderReview}
+                    {awaitingEmail ? (
+                      <span className="mt-2 block rounded-2xl border border-gold/50 bg-gold/15 px-3 py-2 text-sm font-medium text-white">
+                        {copy.adminUnconfirmedNotice}
+                      </span>
+                    ) : (
+                      <span className="mt-1 block text-sm text-ink-muted">
+                        {copy.pendingPublishAfterReview}
+                      </span>
+                    )}
                   </>
                 ) : (
                   formatStatus(court.status, copy)
                 )
               }
             />
-            {showAdminStatus ? (
-              <div className="mt-3">
-                <AdminStatusButton id={court.id} published={!pending} />
-              </div>
-            ) : null}
-            {!pending && (
+            {!hideUnpublishedFacts && (
               <>
                 <Fact
                   icon={MapPin}
@@ -169,7 +208,7 @@ export function CourtDetails({
             )}
           </dl>
 
-          {pending ? (
+          {hideUnpublishedFacts ? (
             <div className="relative overflow-hidden" aria-hidden>
               <div className="space-y-5">
                 <div className="rounded-3xl border border-white/10 bg-panel p-5">
@@ -195,12 +234,21 @@ export function CourtDetails({
             <h2 className="font-display text-2xl tracking-wide text-white">
               {copy.courtFacts}
             </h2>
-            <dl className="mt-4 grid gap-3 sm:grid-cols-2">
-              <Fact
-                icon={Lightbulb}
-                label={copy.lights}
-                value={formatReportedBoolean(amenities.lighting, copy)}
-              />
+            <dl className="mt-4 grid grid-cols-[max-content_minmax(0,1fr)] gap-x-6 gap-y-3 max-sm:[&>div]:col-span-2 max-sm:[&>div]:grid max-sm:[&>div]:grid-cols-subgrid max-sm:[&>div]:items-start max-sm:[&>div]:border-b max-sm:[&>div]:border-white/10 max-sm:[&>div]:pb-2 max-sm:[&_dt]:mt-0 max-sm:[&_dt]:translate-y-[3px] max-sm:[&_dd]:mt-0 sm:grid-cols-2 sm:gap-3">
+              {amenities.hoopHeight ? (
+                <Fact
+                  icon={Ruler}
+                  label={copy.hoopHeight}
+                  value={copy.hoopHeights[amenities.hoopHeight]}
+                />
+              ) : null}
+              {amenities.heightAdjustable !== null ? (
+                <Fact
+                  icon={MoveVertical}
+                  label={copy.adjustableRim}
+                  value={formatReportedBoolean(amenities.heightAdjustable, copy)}
+                />
+              ) : null}
               <Fact
                 icon={Unlock}
                 label={copy.freeUse}
@@ -253,13 +301,11 @@ export function CourtDetails({
                   value={formatReportedBoolean(amenities.toilet, copy)}
                 />
               ) : null}
-              {amenities.heightAdjustable !== null ? (
-                <Fact
-                  icon={MoveVertical}
-                  label={copy.adjustableRim}
-                  value={formatReportedBoolean(amenities.heightAdjustable, copy)}
-                />
-              ) : null}
+              <Fact
+                icon={Lightbulb}
+                label={copy.lights}
+                value={formatReportedBoolean(amenities.lighting, copy)}
+              />
               {amenities.lightingInfo ? (
                 <Fact
                   icon={Lightbulb}
@@ -306,13 +352,20 @@ export function CourtDetails({
                   ? copy.notesFrom(source.label)
                   : copy.notesFromListing}
               </h2>
-              <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-ink-muted">
+              <p className="mt-2 whitespace-pre-wrap text-md leading-6 text-ink-muted">
                 {court.comment}
               </p>
             </section>
           ) : null}
           </>
           )}
+          {editing && visitorEmail ? (
+            <AdminCourtEditor
+              court={court}
+              email={visitorEmail}
+              onClose={() => setEditing(false)}
+            />
+          ) : null}
         </section>
 
         <aside className="overflow-hidden rounded-3xl border border-white/10 bg-panel">
@@ -359,7 +412,17 @@ export function CourtDetails({
                 value={
                   <div className="space-y-1">
                     {court.source === "submitted" ? (
-                      <p>{copy.sourceSubmitted}</p>
+                      <p>
+                        {copy.sourceSubmitted}
+                        {visitorEmail ? (
+                          <a
+                            href={`mailto:${visitorEmail}`}
+                            className="mt-1 block text-gold hover:text-white"
+                          >
+                            {visitorEmail}
+                          </a>
+                        ) : null}
+                      </p>
                     ) : null}
                     {court.source === "osm" || listingUrl ? (
                       <ul>
@@ -505,12 +568,12 @@ function Fact({
   value: ReactNode;
 }) {
   return (
-    <div>
-      <dt className="flex items-center mt-2 gap-1.5 text-sm font-bold uppercase tracking-wide text-gold/80">
+    <div className="min-w-0">
+      <dt className="mt-2 flex items-center gap-1.5 text-sm font-bold uppercase tracking-wide text-gold/80">
         <FactIcon className="size-3.5 shrink-0" aria-hidden />
         {label}
       </dt>
-      <dd className="mt-1 text-base text-ink">{value}</dd>
+      <dd className="mt-1 min-w-0 hyphens-auto text-base text-ink">{value}</dd>
     </div>
   );
 }

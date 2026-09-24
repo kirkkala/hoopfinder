@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { notFound, permanentRedirect, redirect } from "next/navigation";
 import { CourtDetails } from "@/components/court/CourtDetails";
+import { getAuthSession } from "@/auth";
 import { getBasketballCourt, getCourtCatalog } from "@/lib/catalog";
 import { SITE_URL } from "@/lib/constants";
 import { getCopy } from "@/lib/copy";
@@ -28,7 +29,7 @@ export async function generateMetadata({
   if (!result) {
     return { title: finnish.courtNotFound, robots: { index: false } };
   }
-  if (isAwaitingEmail(result.court)) {
+  if (isAwaitingEmail(result.court) && !(await viewerIsAdmin())) {
     return { title: finnish.statusAwaitingEmail, robots: { index: false, follow: false } };
   }
 
@@ -75,7 +76,8 @@ export default async function CourtPage({
 }) {
   const result = await courtFromParams(params);
   if (!result) notFound();
-  if (isAwaitingEmail(result.court)) {
+  const isAdmin = await viewerIsAdmin();
+  if (isAwaitingEmail(result.court) && !isAdmin) {
     redirect(homeCourtHref({ id: result.court.id, source: "pending" }));
   }
   const [{ fetchedAtBySource }, courtCount] = await Promise.all([
@@ -88,8 +90,14 @@ export default async function CourtPage({
       fetchedAtBySource={fetchedAtBySource}
       sourceFetchedAt={result.sourceFetchedAt}
       courtCount={courtCount}
+      visitorEmail={isAdmin && "email" in result ? result.email : null}
     />
   );
+}
+
+async function viewerIsAdmin() {
+  const session = await getAuthSession();
+  return session?.user?.isAdmin === true;
 }
 
 async function courtFromParams(params: Promise<{ path?: string[] }>) {
@@ -101,7 +109,11 @@ async function courtFromParams(params: Promise<{ path?: string[] }>) {
   if (catalogCourt) return catalogCourt;
   const submitted = await getSubmittedCourt(parsed.id);
   if (!submitted) return null;
-  return { court: submitted.court, sourceFetchedAt: submitted.createdAt };
+  return {
+    court: submitted.court,
+    sourceFetchedAt: submitted.createdAt,
+    email: submitted.email,
+  };
 }
 
 async function requestOrigin(): Promise<URL> {

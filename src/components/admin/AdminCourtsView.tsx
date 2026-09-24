@@ -4,15 +4,15 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { basketball } from "@lucide/lab";
-import { Icon, Map, MapPin, Trash2 } from "lucide-react";
+import { Icon, Pencil, Trash2 } from "lucide-react";
+import { AdminCourtEditor } from "@/components/admin/AdminCourtEditor";
 import { AdminStatusButton } from "@/components/admin/AdminStatusButton";
 import { AppFooter } from "@/components/brand/AppFooter";
 import { AppHeader } from "@/components/brand/AppHeader";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import type { FetchedAtBySource } from "@/lib/catalog";
-import { homeCourtHref } from "@/lib/courts";
+import { courtHref } from "@/lib/courts";
 import type { AdminSubmittedCourt } from "@/lib/submitted-courts";
-import { formatFetchedAt } from "@/lib/time";
 
 export function AdminCourtsView({
   courtCount,
@@ -57,6 +57,7 @@ function SubmittedList({
   const [filter, setFilter] = useState<StatusFilter>("all");
   const [savingId, setSavingId] = useState<string | null>(null);
   const [errorId, setErrorId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   useEffect(() => {
     setCourts(initialCourts);
@@ -96,6 +97,7 @@ function SubmittedList({
     filter === "all"
       ? courts
       : courts.filter((court) => court.status === filter);
+  const editing = courts.find((court) => court.id === editingId) ?? null;
 
   return (
     <>
@@ -114,7 +116,7 @@ function SubmittedList({
           return (
             <li
               key={court.id}
-              className={`relative rounded-2xl border p-4 pr-24 ${
+              className={`rounded-2xl border p-4 text-sm ${
                 published
                   ? "border-emerald-400/40 bg-emerald-400/10"
                   : confirmed
@@ -122,84 +124,76 @@ function SubmittedList({
                     : "border-white/15 bg-white/5"
               }`}
             >
-              <button
-                type="button"
-                disabled={saving}
-                onClick={() => void remove(court.id, court.name)}
-                className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium text-ink/70 hover:bg-red-500/15 hover:text-red-300 disabled:cursor-wait disabled:opacity-70"
-              >
-                <Trash2 className="size-3.5" aria-hidden />
-                {copy.adminDelete}
-              </button>
-              <div className="flex flex-col gap-3">
-                <div className="min-w-0">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <h2 className="max-w-full font-semibold text-white">
-                      {court.name}
-                    </h2>
-                    <StatusBadge status={court.status} />
-                  </div>
-                  <p className="mt-1 text-sm text-ink-muted">{court.address}</p>
-                  <p className="mt-1 text-sm text-ink-muted">
-                    <a
-                      href={`mailto:${court.email}`}
-                      className="text-gold hover:text-white"
-                    >
-                      {court.email}
-                    </a>
-                  </p>
-                  <p className="mt-2 text-xs text-ink-muted">
-                    {copy.adminSubmittedAt}{" "}
-                    <time dateTime={court.createdAt}>
-                      {formatFetchedAt(court.createdAt)}
-                    </time>
-                  </p>
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex flex-wrap items-center gap-2">
+                  <StatusBadge status={court.status} />
+                  <AdminStatusButton
+                    id={court.id}
+                    name={court.name}
+                    published={published}
+                    onStatusChange={(status) => {
+                      setCourts((current) =>
+                        current.map((item) =>
+                          item.id === court.id ? { ...item, status } : item,
+                        ),
+                      );
+                    }}
+                  />
                 </div>
-                <div className="flex shrink-0 flex-wrap items-center gap-2">
-                  <Link
-                    href={homeCourtHref({
-                      id: court.id,
-                      source: published ? "submitted" : "pending",
-                    })}
-                    className="inline-flex items-center gap-1 rounded-full px-3 py-2 text-sm font-medium text-ink/80 hover:bg-white/10 hover:text-white"
+                <div className="flex shrink-0 items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => setEditingId(court.id)}
+                    className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium text-ink/70 hover:bg-white/10 hover:text-white"
                   >
-                    <Map className="size-3.5" aria-hidden />
-                    {copy.adminShowOnMap}
-                  </Link>
-                  <a
-                    href={`https://www.google.com/maps?q=${court.lat},${court.lon}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-1 rounded-full px-3 py-2 text-sm font-medium text-ink/80 hover:bg-white/10 hover:text-white"
+                    <Pencil className="size-3.5" aria-hidden />
+                    {copy.adminEdit}
+                  </button>
+                  <button
+                    type="button"
+                    disabled={saving}
+                    onClick={() => void remove(court.id, court.name)}
+                    className="inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium text-ink/70 hover:bg-red-500/15 hover:text-red-300 disabled:cursor-wait disabled:opacity-70"
                   >
-                    <MapPin className="size-3.5" aria-hidden />
-                    {copy.adminShowOnGoogleMaps}
-                  </a>
-                  {confirmed || published ? (
-                    <AdminStatusButton
-                      id={court.id}
-                      published={published}
-                      onStatusChange={(status) => {
-                        setCourts((current) =>
-                          current.map((item) =>
-                            item.id === court.id ? { ...item, status } : item,
-                          ),
-                        );
-                      }}
-                    />
-                  ) : null}
+                    <Trash2 className="size-3.5" aria-hidden />
+                    {copy.adminDelete}
+                  </button>
                 </div>
               </div>
-              {errorId === court.id ? (
-                <p className="mt-3 text-sm text-red-400">
-                  {copy.adminDeleteError}
+              <Link
+                href={courtHref({ id: court.id, source: "submitted" })}
+                className="mt-2 inline-block font-semibold text-gold hover:text-white"
+              >
+                {court.name}
+              </Link>
+              <p className="mt-1 text-ink-muted">{court.address}</p>
+              <a
+                href={`mailto:${court.email}`}
+                className="mt-1 text-gold hover:text-white"
+              >
+                {court.email}
+              </a>
+              {court.greeting ? (
+                <p className="mt-2 whitespace-pre-wrap text-ink">
+                  <span className="text-ink-muted">{copy.addCourtGreeting}: </span>
+                  {court.greeting}
                 </p>
+              ) : null}
+              {errorId === court.id ? (
+                <p className="mt-3 text-sm text-red-400">{copy.adminDeleteError}</p>
               ) : null}
             </li>
           );
         })}
       </ul>
       )}
+      {editing ? (
+        <AdminCourtEditor
+          court={editing.court}
+          email={editing.email}
+          onClose={() => setEditingId(null)}
+        />
+      ) : null}
     </>
   );
 }

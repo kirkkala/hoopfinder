@@ -2,13 +2,17 @@
 
 import { ChevronDown } from "lucide-react";
 import { useCopy } from "@/components/brand/LocaleProvider";
+import type { Copy } from "@/lib/copy";
 import {
   ADMIN_CODES,
   COURT_STATUS_CODES,
   FIELD_TYPE_CODES,
   OWNER_CODES,
+  COMMON_SURFACE_CODES,
   SURFACE_CODES,
+  HOOP_HEIGHT_CODES,
   WATER_POINT_CODES,
+  type Court,
 } from "@/lib/courts";
 
 const SELECT_CLASS =
@@ -33,6 +37,7 @@ export type AddCourtDetails = {
   areaM2: string;
   toilet: Tri;
   heightAdjustable: Tri;
+  hoopHeight: "" | (typeof HOOP_HEIGHT_CODES)[number];
   waterPoint: string;
   matchClock: Tri;
   scoreboard: Tri;
@@ -55,10 +60,49 @@ export const EMPTY_ADD_COURT_DETAILS: AddCourtDetails = {
   areaM2: "",
   toilet: "",
   heightAdjustable: "",
+  hoopHeight: "",
   waterPoint: "",
   matchClock: "",
   scoreboard: "",
 };
+
+function triFromBool(value: boolean | null | undefined): Tri {
+  if (value === true) return "yes";
+  if (value === false) return "no";
+  return "";
+}
+
+function knownCode<T extends string>(codes: readonly T[], value: string | null | undefined): T | "" {
+  return codes.find((code) => code === value) ?? "";
+}
+
+export function addCourtDetailsFromCourt(court: Court): AddCourtDetails {
+  const { amenities } = court;
+  return {
+    courtStatus:
+      knownCode(COURT_STATUS_CODES, court.status) ||
+      knownCode(COURT_STATUS_CODES, court.reportedStatus),
+    website: court.website ?? "",
+    comment: court.comment ?? "",
+    owner: knownCode(OWNER_CODES, court.owner),
+    admin: knownCode(ADMIN_CODES, court.admin),
+    lighting: triFromBool(amenities.lighting),
+    lightingInfo: amenities.lightingInfo ?? "",
+    freeUse: triFromBool(amenities.freeUse),
+    schoolUse: triFromBool(amenities.schoolUse),
+    fieldType: knownCode(FIELD_TYPE_CODES, amenities.fieldType),
+    surfaceMaterial: knownCode(SURFACE_CODES, amenities.surfaceMaterial[0]),
+    lengthM: amenities.lengthM?.toString() ?? "",
+    widthM: amenities.widthM?.toString() ?? "",
+    areaM2: amenities.areaM2?.toString() ?? "",
+    toilet: triFromBool(amenities.toilet),
+    heightAdjustable: triFromBool(amenities.heightAdjustable),
+    hoopHeight: knownCode(HOOP_HEIGHT_CODES, amenities.hoopHeight),
+    waterPoint: knownCode(WATER_POINT_CODES, amenities.waterPoint),
+    matchClock: triFromBool(amenities.matchClock),
+    scoreboard: triFromBool(amenities.scoreboard),
+  };
+}
 
 export function addCourtDetailsDirty(details: AddCourtDetails): boolean {
   return Object.values(details).some((value) =>
@@ -92,15 +136,66 @@ export function addCourtDetailsPayload(
     areaM2,
     toilet: details.toilet || null,
     heightAdjustable: details.heightAdjustable || null,
+    hoopHeight: details.hoopHeight || null,
     waterPoint: details.waterPoint || null,
     matchClock: details.matchClock || null,
     scoreboard: details.scoreboard || null,
   };
 }
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+export function requiredFieldIssues(input: { name: string; address: string; email: string }) {
+  return {
+    name: !input.name.trim(),
+    address: !input.address.trim(),
+    email: !EMAIL_PATTERN.test(input.email.trim()),
+  };
+}
+
+export function addCourtFormPayload(
+  copy: Copy,
+  input: { name: string; address: string; email: string; details: AddCourtDetails },
+): Record<string, unknown> | string {
+  const issues = requiredFieldIssues(input);
+  const missing = [
+    issues.name ? copy.addCourtName : null,
+    issues.address ? copy.addCourtAddress : null,
+    input.email.trim() ? null : copy.addCourtEmail,
+  ].filter((field) => field !== null);
+  if (missing.length > 0) return copy.addCourtMissing(missing.join(", "));
+  if (issues.email) return copy.addCourtInvalid;
+  const extra = addCourtDetailsPayload(input.details);
+  if (extra === "invalid") return copy.addCourtMeasure;
+  return extra;
+}
+
+export function FieldLabel({
+  required = false,
+  invalid = false,
+  children,
+}: {
+  required?: boolean;
+  invalid?: boolean;
+  children: string;
+}) {
+  const copy = useCopy();
+  return (
+    <span className={`mb-1 block text-sm ${invalid ? "text-red-400" : "text-ink/85"}`}>
+      {children}
+      {required ? (
+        <>
+          <span aria-hidden className="text-gold"> *</span>
+          <span className="sr-only"> ({copy.addCourtRequiredMark})</span>
+        </>
+      ) : null}
+    </span>
+  );
+}
+
 function parseMeasure(value: string, max: number): number | null | "invalid" {
-  const trimmed = value.trim().replace(",", ".");
-  if (!trimmed) return null;
+  const trimmed = value.trim().replaceAll(",", ".");
+  if (!trimmed || trimmed === ".") return null;
   const number = Number(trimmed);
   if (!Number.isFinite(number) || number <= 0 || number > max) return "invalid";
   return number;
@@ -127,7 +222,6 @@ export function AddCourtFields({
   return (
     <div className="mt-5 border-t border-white/10 pt-4">
       <p className="font-display text-lg tracking-wide text-gold">{copy.courtFacts}</p>
-      <p className="mt-1 text-xs text-ink-muted">{copy.addCourtOptional}</p>
 
       <ChoiceSelect
         label={copy.status}
@@ -148,12 +242,24 @@ export function AddCourtFields({
         }))}
         onChange={(fieldType) => patch({ fieldType })}
       />
+      <ChoiceSelect
+        label={copy.hoopHeight}
+        value={details.hoopHeight}
+        emptyLabel={copy.addCourtUnknown}
+        options={HOOP_HEIGHT_CODES.map((code) => ({
+          value: code,
+          label: copy.hoopHeights[code],
+        }))}
+        onChange={(hoopHeight) =>
+          patch({ hoopHeight: hoopHeight as AddCourtDetails["hoopHeight"] })
+        }
+      />
 
-      <p className="mt-3 text-xs text-ink-muted">{copy.addCourtYesNoHint}</p>
+      <p className="mt-6 text-xs text-ink-muted">{copy.addCourtYesNoHint}</p>
       <YesNoField
-        label={copy.lights}
-        value={details.lighting}
-        onChange={(lighting) => patch({ lighting })}
+        label={copy.adjustableRim}
+        value={details.heightAdjustable}
+        onChange={(heightAdjustable) => patch({ heightAdjustable })}
       />
       <YesNoField
         label={copy.freeUse}
@@ -171,11 +277,6 @@ export function AddCourtFields({
         onChange={(toilet) => patch({ toilet })}
       />
       <YesNoField
-        label={copy.adjustableRim}
-        value={details.heightAdjustable}
-        onChange={(heightAdjustable) => patch({ heightAdjustable })}
-      />
-      <YesNoField
         label={copy.matchClock}
         value={details.matchClock}
         onChange={(matchClock) => patch({ matchClock })}
@@ -185,7 +286,11 @@ export function AddCourtFields({
         value={details.scoreboard}
         onChange={(scoreboard) => patch({ scoreboard })}
       />
-
+      <YesNoField
+        label={copy.lights}
+        value={details.lighting}
+        onChange={(lighting) => patch({ lighting })}
+      />
       <TextField
         label={copy.lightingNotes}
         value={details.lightingInfo}
@@ -196,7 +301,7 @@ export function AddCourtFields({
         label={copy.surface}
         value={details.surfaceMaterial}
         emptyLabel={copy.addCourtUnknown}
-        options={SURFACE_CODES.map((code) => ({
+        options={COMMON_SURFACE_CODES.map((code) => ({
           value: code,
           label: copy.surfaces[code],
         }))}
@@ -347,6 +452,15 @@ function ChoiceSelect({
   );
 }
 
+function digitsOnly(value: string) {
+  const cleaned = value.replace(/[^\d.,]/g, "");
+  const separator = cleaned.search(/[.,]/);
+  if (separator === -1) return cleaned;
+  const whole = cleaned.slice(0, separator);
+  const fraction = cleaned.slice(separator + 1).replace(/[.,]/g, "");
+  return `${whole}.${fraction}`;
+}
+
 function TextField({
   label,
   value,
@@ -378,7 +492,9 @@ function TextField({
           value={value}
           inputMode={inputMode}
           maxLength={inputMode ? 8 : 300}
-          onChange={(event) => onChange(event.target.value)}
+          onChange={(event) =>
+            onChange(inputMode ? digitsOnly(event.target.value) : event.target.value)
+          }
           className={`${className} h-11`}
         />
       )}

@@ -1,8 +1,10 @@
 import { siteOrigin } from "@/lib/site-origin";
 import {
+  courtSubmissionIp,
   createSubmittedCourt,
   listSubmittedCourts,
   SubmittedCourtSchema,
+  takeCourtSubmissionSlot,
 } from "@/lib/submitted-courts";
 
 export async function GET() {
@@ -26,6 +28,20 @@ export async function POST(request: Request) {
   const parsed = SubmittedCourtSchema.safeParse(json);
   if (!parsed.success) {
     return Response.json({ error: "invalid" }, { status: 400 });
+  }
+
+  // `next dev` is one shared address, and local testing often exceeds five an hour.
+  if (process.env.NODE_ENV !== "development") {
+    const allowed = await takeCourtSubmissionSlot(courtSubmissionIp(request));
+    if (allowed === null) {
+      return Response.json({ error: "unavailable" }, { status: 503 });
+    }
+    if (!allowed) {
+      return Response.json(
+        { error: "rate-limited" },
+        { status: 429, headers: { "Retry-After": "3600" } },
+      );
+    }
   }
 
   try {

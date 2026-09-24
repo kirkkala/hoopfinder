@@ -9,6 +9,7 @@ import {
   courtPlacementBlocked,
   emptyAmenities,
   FIELD_TYPE_CODES,
+  HOOP_HEIGHT_CODES,
   isTooCloseToCourt,
   OWNER_CODES,
   submittedCourtKey,
@@ -56,9 +57,11 @@ export const SubmittedCourtSchema = z.object({
   areaM2: z.number().positive().max(20000).nullable().optional(),
   toilet: triState,
   heightAdjustable: triState,
+  hoopHeight: z.enum(HOOP_HEIGHT_CODES).nullable().optional(),
   waterPoint: z.enum(WATER_POINT_CODES).nullable().optional(),
   matchClock: triState,
   scoreboard: triState,
+  greeting: optionalText(1000),
 });
 
 export type SubmittedCourtInput = z.infer<typeof SubmittedCourtSchema>;
@@ -81,6 +84,8 @@ export type AdminSubmittedCourt = {
   lon: number;
   status: SubmittedStatus;
   createdAt: string;
+  greeting: string | null;
+  court: Court;
 };
 
 type SubmittedRow = {
@@ -131,7 +136,7 @@ export async function listAdminSubmittedCourts(): Promise<
 > {
   const rows = await withDb((sql) => {
     return sql<AdminRow[]>`
-      SELECT id, name, address, email, lat, lon, status, created_at
+      SELECT id, name, address, email, lat, lon, status, created_at, details
       FROM submitted_courts
       ORDER BY created_at DESC
     `;
@@ -146,12 +151,14 @@ export async function listAdminSubmittedCourts(): Promise<
     lon: row.lon,
     status: asSubmittedStatus(row.status),
     createdAt: toIso(row.created_at),
+    greeting: readDetails(row.details).greeting ?? null,
+    court: toCourt(row),
   }));
 }
 
 export async function getSubmittedCourt(
   id: string,
-): Promise<{ court: Court; createdAt: string } | null> {
+): Promise<{ court: Court; createdAt: string; email: string } | null> {
   const key = submittedCourtKey(id);
   if (!/^\d+$/.test(key)) return null;
   const rows = await withDb((sql) => {
@@ -164,7 +171,32 @@ export async function getSubmittedCourt(
   });
   const row = rows?.[0];
   if (!row) return null;
-  return { court: toCourt(row), createdAt: toIso(row.created_at) };
+  return { court: toCourt(row), createdAt: toIso(row.created_at), email: row.email };
+}
+
+const COURT_SUBMISSIONS_PER_HOUR = 5;
+
+/** Five new courts per address per hour. Counts the attempt, including a failed email send. */
+export async function takeCourtSubmissionSlot(ip: string): Promise<boolean | null> {
+  return withDb(async (sql) => {
+    await sql`
+      DELETE FROM court_submission_limits
+      WHERE created_at < NOW() - INTERVAL '1 day'
+    `;
+    const rows = await sql<{ count: string }[]>`
+      SELECT COUNT(*)::text AS count
+      FROM court_submission_limits
+      WHERE ip = ${ip} AND created_at > NOW() - INTERVAL '1 hour'
+    `;
+    if (Number(rows[0]?.count ?? 0) >= COURT_SUBMISSIONS_PER_HOUR) return false;
+    await sql`INSERT INTO court_submission_limits (ip) VALUES (${ip})`;
+    return true;
+  });
+}
+
+export function courtSubmissionIp(request: Request): string {
+  const forwarded = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
+  return forwarded || "unknown";
 }
 
 export async function createSubmittedCourt(
@@ -305,16 +337,29 @@ export async function setSubmittedCourtStatus(
   const key = submittedCourtKey(id);
   if (!/^\d+$/.test(key)) return { error: "not-found" };
   const updated = await withDb(async (sql) => {
-    const rows = await sql<(SubmittedRow & { email: string })[]>`
-      UPDATE submitted_courts
+    const rows = await sql<(SubmittedRow & { email: string; previous_status: string })[]>`
+      UPDATE submitted_courts AS court
       SET status = ${status}
-      WHERE id = ${key}
-        AND status = ${status === "published" ? "pending" : "published"}
-      RETURNING id, name, address, email, lat, lon, status, created_at
+      FROM (
+        SELECT id, status
+        FROM submitted_courts
+        WHERE id = ${key}
+      ) AS previous
+      WHERE court.id = previous.id
+        AND (
+          (${status} = 'published' AND previous.status IN ('unconfirmed', 'pending'))
+          OR (${status} = 'pending' AND previous.status = 'published')
+        )
+      RETURNING court.id, court.name, court.address, court.email, court.lat, court.lon,
+        court.status, court.created_at, previous.status AS previous_status
     `;
     const row = rows[0];
     return row
-      ? { court: toExplorerCourt(row), email: row.email }
+      ? {
+          court: toExplorerCourt(row),
+          email: row.email,
+          previousStatus: asSubmittedStatus(row.previous_status),
+        }
       : { error: "not-found" as const };
   });
 
@@ -333,7 +378,7 @@ export async function setSubmittedCourtStatus(
     await withDb(
       (sql) => sql`
         UPDATE submitted_courts
-        SET status = 'pending'
+        SET status = ${updated.previousStatus}
         WHERE id = ${key} AND status = 'published'
       `,
     );
@@ -433,11 +478,13 @@ function toCourt(row: SubmittedRow): Court {
       areaM2: details.areaM2 ?? null,
       toilet: triToBool(details.toilet),
       heightAdjustable: triToBool(details.heightAdjustable),
+      hoopHeight: details.hoopHeight ?? null,
       waterPoint: details.waterPoint ?? null,
       matchClock: triToBool(details.matchClock),
       scoreboard: triToBool(details.scoreboard),
     },
     emailConfirmed: asSubmittedStatus(row.status) !== "unconfirmed",
+    reportedStatus: details.status ?? null,
   };
 }
 
@@ -459,14 +506,55 @@ const StoredDetailsSchema = SubmittedCourtSchema.pick({
   areaM2: true,
   toilet: true,
   heightAdjustable: true,
+  hoopHeight: true,
   waterPoint: true,
   matchClock: true,
   scoreboard: true,
+  greeting: true,
 }).extend({
   status: z.enum(COURT_STATUS_CODES).nullable().optional(),
 });
 
-function storedDetails(input: SubmittedCourtInput) {
+export async function updateSubmittedCourt(
+  id: string,
+  input: Omit<SubmittedCourtInput, "lat" | "lon">,
+): Promise<{ ok: true } | { error: "unavailable" | "not-found" }> {
+  const key = submittedCourtKey(id);
+  if (!/^\d+$/.test(key)) return { error: "not-found" };
+  const updated = await withDb(async (sql) => {
+    const existing = await sql<SubmittedRow[]>`
+      SELECT id, details
+      FROM submitted_courts
+      WHERE id = ${key}
+      LIMIT 1
+    `;
+    const row = existing[0];
+    if (!row) return { error: "not-found" as const };
+    const previous = readDetails(row.details);
+    const details = {
+      ...storedDetails(input),
+      constructionYear: previous.constructionYear ?? null,
+      surfaceMaterialInfo: previous.surfaceMaterialInfo ?? null,
+      greeting: input.greeting ?? previous.greeting ?? null,
+    };
+    const rows = await sql<{ id: number | string }[]>`
+      UPDATE submitted_courts
+      SET
+        name = ${input.name},
+        address = ${input.address},
+        email = ${input.email},
+        details = ${sql.json(details)}
+      WHERE id = ${key}
+      RETURNING id
+    `;
+    return rows[0] ? { ok: true as const } : { error: "not-found" as const };
+  });
+  return updated ?? { error: "unavailable" };
+}
+
+function storedDetails(
+  input: Omit<SubmittedCourtInput, "name" | "address" | "email" | "lat" | "lon">,
+) {
   return {
     status: input.courtStatus ?? null,
     website: input.website ?? null,
@@ -486,9 +574,11 @@ function storedDetails(input: SubmittedCourtInput) {
     areaM2: input.areaM2 ?? null,
     toilet: input.toilet ?? null,
     heightAdjustable: input.heightAdjustable ?? null,
+    hoopHeight: input.hoopHeight ?? null,
     waterPoint: input.waterPoint ?? null,
     matchClock: input.matchClock ?? null,
     scoreboard: input.scoreboard ?? null,
+    greeting: input.greeting ?? null,
   };
 }
 
@@ -500,6 +590,7 @@ function readDetails(value: unknown): z.infer<typeof StoredDetailsSchema> {
     comment: null,
     lightingInfo: null,
     surfaceMaterialInfo: null,
+    greeting: null,
   };
 }
 

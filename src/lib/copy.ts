@@ -82,8 +82,8 @@ const messages = {
     fi: "Motivaationa tähän oli saada isot ja pienet ihmiset ulos liikkumaan enemmän koripallon kanssa.",
     en: "The motivation for this is to get big and small humans out of the house and move more with a basketball."
   },
-  introSupport: { fi: "Tue kehittäjää", en: "Support the developer" },
-  okBroCta: { fi: "ok bro", en: "ok bro" },
+  supportDeveloper: { fi: "Tue kehittäjää", en: "Support the developer" },
+  okBroCta: { fi: "Tämä selvä!", en: "Understood!" },
   madeWith: { fi: 'Made with', en: "Made with" },
   love: { fi: "love", en: "love" },
   courtDataFrom: {
@@ -207,7 +207,7 @@ const messages = {
   schoolUse: { fi: "Koulukäyttö", en: "School use" },
   fieldType: { fi: "Kenttätyyppi", en: "Field type" },
   fieldTypes: {
-    full: { fi: "Normaali koripallokenttä", en: "Full court" },
+    full: { fi: "Normaali koripallo\u00adkenttä", en: "Full court" },
     "one-hoop": { fi: "Yhden korin kenttä", en: "One hoop" },
     mini: { fi: "Minikoripallokenttä", en: "Mini court" },
     street: { fi: "Katukoris", en: "Streetball" },
@@ -219,14 +219,10 @@ const messages = {
   } satisfies Record<string, Pair<string>>,
   lengthM: { fi: "Pituus (m)", en: "Length (m)" },
   widthM: { fi: "Leveys (m)", en: "Width (m)" },
-  addCourtOptional: {
-    fi: "Vapaaehtoiset. Jätä tyhjäksi, jos et tiedä.",
-    en: "Optional. Leave blank if you don't know.",
-  },
   addCourtUnknown: { fi: "Ei tietoa", en: "Not known" },
   addCourtYesNoHint: {
-    fi: "Jos et tiedä, jätä valitsematta.",
-    en: "If you don't know, leave it unselected.",
+    fi: "Jätä valitsematta jos et tiedä:",
+    en: "If you don't know, leave it unselected:",
   },
   surface: { fi: "Pinta", en: "Surface" },
   surfaceNotes: { fi: "Pintatiedot", en: "Surface notes" },
@@ -234,6 +230,11 @@ const messages = {
   area: { fi: "Pinta-ala", en: "Area" },
   toilet: { fi: "WC", en: "Toilet" },
   adjustableRim: { fi: "Säädettävä kori", en: "Adjustable rim" },
+  hoopHeight: { fi: "Korin korkeus", en: "Hoop height" },
+  hoopHeights: {
+    official: { fi: "305 cm", en: "305 cm" },
+    lower: { fi: "Alle 305 cm", en: "Under 305 cm" },
+  },
   lightingNotes: { fi: "Valaistustiedot", en: "Lighting notes" },
   waterPoint: { fi: "Vesipiste", en: "Water point" },
   matchClock: { fi: "Pelikello", en: "Match clock" },
@@ -248,15 +249,14 @@ const messages = {
   notReported: { fi: "Ei ilmoitettu", en: "Not reported" },
   addCourt: { fi: "Lisää kenttä", en: "Add court" },
   addCourtConfirmHere: { fi: "Lisää kenttä", en: "Add court" },
-  addCourtInfoTitle: { fi: "Lisää kenttä Hoop Finderiin", en: "Add court to Hoop Finder" },
   addCourtExit: { fi: "Poistu", en: "Exit" },
   addCourtLead: {
-    fi: "Tee palvelusta parempi lisäämällä puuttuva kenttä.",
+    fi: "Puuttuko Hoop Finderistä kenttä? Täällä voit lisätä sen.",
     en: "Make the service better by adding a missing court.",
   },
   addCourtHint: {
-    fi: "Liikuta karttaa ja zoomaa tai paikanna itsesi ja napsauta karttaa lisätäksesi kentän.",
-    en: "Pan and zoom the map or locate yourself and tap the map to add a missing court.",
+    fi: "Paikanna itsesi kartalta tai zoomaa lähemmäs ja napsauta lisätäksesi kentän.",
+    en: "Locate yourself on the map or zoom in closer and tap the map to add it.",
   },
   addCourtInfoOpen: { fi: "Ohje", en: "Help" },
   addCourtHintZoom: {
@@ -280,18 +280,28 @@ const messages = {
   },
   addCourtEmail: { fi: "Sähköposti", en: "Email" },
   addCourtEmailHelp: {
-    fi: "Lähetämme sähköpostiisi linkin jolla sinun tulee vahvistaa kentän lisääminen palveluun.",
-    en: "We'll email you a link to confirm adding this court. You'll need to click it to complete the process.",
+    fi: "Lähetämme sähköpostiisi vahvistuslinkin.",
+    en: "We'll send a confirmation link to your email.",
   },
   addCourtEmailUpdates: {
-    fi: "Ylläpito voi tarvittaessa kysyä lisätietoja tai ilmoittaa päivityksistä. Emme spammaa.",
-    en: "An admin may ask for extra details if needed, or tell you about updates. We won't spam you.",
-  },
-  addCourtEmailPrivacy: {
-    fi: "Sähköpostiosoitettasi ei näytetä palvelussa.",
-    en: "Your email address is not shown in the service.",
+    fi: "Ylläpito voi tarvittaessa myös kysyä lisätietoja tai ilmoittaa päivityksistä. Emme lähetä spammia eikä sähköpostiosoitettasi näytetä palvelussa.",
+    en: "An admin may also ask for extra details, or tell you about updates. We won't spam you and your email address is not shown in the service.",
   },
   addCourtSubmit: { fi: "Tallenna", en: "Save" },
+  addCourtRequiredMark: { fi: "pakollinen", en: "required" },
+  addCourtMissing: {
+    fi: (fields: string) => `Täytä vielä: ${fields}.`,
+    en: (fields: string) => `Still needed: ${fields}.`,
+  },
+  addCourtMeasure: {
+    fi: "Mitat ja pinta-ala kirjoitetaan numeroina.",
+    en: "Enter dimensions and area as numbers.",
+  },
+  addCourtGreeting: { fi: "Terveiset kehittäjälle", en: "A note for the developer" },
+  addCourtGreetingHint: {
+    fi: "Palaute tai terveiset. Ei näy muille käyttäjille, vain ylläpito näkee tämän.",
+    en: "Feedback or greetings. Hidden from other visitors. Only an admin can see this.",
+  },
   addCourtCancel: { fi: "Sulje", en: "Close" },
   addCourtShowMap: { fi: "Näytä kartta", en: "Show map" },
   addCourtShowForm: { fi: "Näytä lomake", en: "Show form" },
@@ -305,6 +315,10 @@ const messages = {
   addCourtError: {
     fi: "Lähetys epäonnistui. Kokeile uudelleen.",
     en: "Could not send. Try again.",
+  },
+  addCourtRateLimit: {
+    fi: "Liian monta lähetystä. Kokeile myöhemmin uudelleen.",
+    en: "Too many submissions. Try again later.",
   },
   addCourtEmailError: {
     fi: "Vahvistusviestin lähetys epäonnistui. Kokeile uudelleen.",
@@ -440,17 +454,35 @@ const messages = {
   },
   adminStatusPublished: { fi: "Julkaistu", en: "Published" },
   adminStatusPending: { fi: "Odottaa julkaisua", en: "Pending publication" },
-  adminStatusConfirmed: { fi: "Käyttäjän vahvistama", en: "Confirmed by user" },
-  adminStatusUnconfirmed: { fi: "Odottaa sähköpostivahvistusta", en: "Waiting for email confirmation" },
+  adminStatusConfirmed: { fi: "Vahvistettu", en: "Confirmed" },
+  adminStatusUnconfirmed: { fi: "Vahvistamatta", en: "Unconfirmed" },
+  adminUnconfirmedNotice: {
+    fi: "Käyttäjä ei ole vielä vahvistanut kentän lisäystä.",
+    en: "The visitor has not confirmed the email link yet.",
+  },
+  adminEdit: { fi: "Muokkaa", en: "Edit" },
+  adminEditCancel: { fi: "Peruuta", en: "Cancel" },
+  adminEditError: {
+    fi: "Tallennus epäonnistui. Kokeile uudelleen.",
+    en: "Could not save. Try again.",
+  },
   adminPublish: { fi: "Julkaise", en: "Publish" },
+  adminPublishConfirm: {
+    fi: (name: string) =>
+      `Julkaistaanko “${name}”? Käyttäjälle lähetetään sähköposti.`,
+    en: (name: string) =>
+      `Publish “${name}”? An email will be sent to the visitor.`,
+  },
   adminUnpublish: { fi: "Piilota", en: "Unpublish" },
+  adminUnpublishConfirm: {
+    fi: (name: string) => `Piilotetaanko “${name}”?`,
+    en: (name: string) => `Hide “${name}”?`,
+  },
   adminSaving: { fi: "Tallennetaan…", en: "Saving…" },
   adminStatusError: {
     fi: "Tilan vaihto epäonnistui. Kokeile uudelleen.",
     en: "Could not update status. Try again.",
   },
-  adminShowOnMap: { fi: "Katso kartalla", en: "View on map" },
-  adminShowOnGoogleMaps: { fi: "Google Maps", en: "Google Maps" },
   adminSubmittedAt: { fi: "Lähetetty", en: "Submitted" },
   adminDelete: { fi: "Poista", en: "Delete" },
   adminDeleteConfirm: {
@@ -480,7 +512,7 @@ const messages = {
     synthetic: { fi: "Synteettinen", en: "Synthetic" },
     "artificial-turf": { fi: "Tekonurmi", en: "Artificial turf" },
     "sand-infilled-artificial-turf": {
-      fi: "Hiekkatekonurmi",
+      fi: "Hiekka\u00adteko\u00adnurmi",
       en: "Sand-infilled turf",
     },
     sand: { fi: "Hiekka", en: "Sand" },
@@ -488,6 +520,7 @@ const messages = {
     "rock-dust": { fi: "Kivituhka", en: "Rock dust" },
     gravel: { fi: "Sora", en: "Gravel" },
     fine_gravel: { fi: "Hieno sora", en: "Fine gravel" },
+    other: { fi: "Muu", en: "Other" },
   } satisfies Record<string, Pair<string>>,
   courtCount: {
     fi: (count: number) => {

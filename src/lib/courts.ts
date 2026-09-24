@@ -19,6 +19,8 @@ export type Court = {
   website: string | null;
   /** Visitor submission whose email link has been opened. */
   emailConfirmed?: boolean;
+  /** Open or closed status stored on a submission, including before it is published. */
+  reportedStatus?: string | null;
   constructionYear: number | null;
   owner: string | null;
   admin: string | null;
@@ -35,6 +37,8 @@ export type Court = {
     areaM2: number | null;
     toilet: boolean | null;
     heightAdjustable: boolean | null;
+    /** Visitor-reported rim height. Catalog sources do not have this. */
+    hoopHeight: "official" | "lower" | null;
     waterPoint: string | null;
     matchClock: boolean | null;
     scoreboard: boolean | null;
@@ -94,6 +98,7 @@ export function emptyAmenities(): Court["amenities"] {
     areaM2: null,
     toilet: null,
     heightAdjustable: null,
+    hoopHeight: null,
     waterPoint: null,
     matchClock: null,
     scoreboard: null,
@@ -223,6 +228,9 @@ export const COURT_STATUS_CODES = [
 
 export const FIELD_TYPE_CODES = ["full", "one-hoop", "mini", "street"] as const;
 
+/** Official rim is 305 cm. Visitors only say whether it is that or lower. */
+export const HOOP_HEIGHT_CODES = ["official", "lower"] as const;
+
 export const WATER_POINT_CODES = ["yes", "no", "seasonal"] as const;
 
 export const SURFACE_CODES = [
@@ -236,7 +244,16 @@ export const SURFACE_CODES = [
   "rock-dust",
   "gravel",
   "fine_gravel",
+  "other",
 ] as const;
+
+export const COMMON_SURFACE_CODES = [
+  "asphalt",
+  "artificial-turf",
+  "synthetic",
+  "fine_gravel",
+  "other",
+] as const satisfies readonly (typeof SURFACE_CODES)[number][];
 
 export const OWNER_CODES = [
   "city",
