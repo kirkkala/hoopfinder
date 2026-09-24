@@ -20,6 +20,7 @@ import { mq, split, useMinWidth } from "@/lib/layout";
 import { useLocationStatus } from "@/lib/origin";
 import type { PlaceMatch } from "@/lib/places";
 import type { FetchedAtBySource } from "@/lib/catalog";
+import { fetchMapCourts } from "@/lib/map-courts";
 
 const CourtMap = dynamic(
   () => import("@/components/explorer/CourtMap").then((mod) => mod.CourtMap),
@@ -74,19 +75,23 @@ function syncCourtUrl(path: string | null) {
   } else {
     url.searchParams.delete("court");
   }
+  url.searchParams.delete("thanks");
   if (url.href !== window.location.href) window.history.replaceState(null, "", url);
 }
 
 export function CourtExplorer({
-  courtCount: catalogCount,
+  courtCount: totalCourtCount,
   fetchedAtBySource,
   focusId,
+  thanks: thanksFromUrl = false,
 }: {
   courtCount: number;
   fetchedAtBySource: FetchedAtBySource;
   focusId: string | null;
+  thanks?: boolean;
 }) {
   const copy = useCopy();
+  const [thanks, setThanks] = useState(thanksFromUrl);
   const [courts, setCourts] = useState<ExplorerCourt[]>([]);
   const [query, setQuery] = useState("");
   const { origin, status: locationStatus, request } = useLocationStatus();
@@ -111,13 +116,9 @@ export function CourtExplorer({
 
   useEffect(() => {
     const controller = new AbortController();
-    void fetch("/api/courts", { signal: controller.signal })
-      .then((response) => {
-        if (!response.ok) throw new Error("court list failed");
-        return response.json() as Promise<{ courts: ExplorerCourt[] }>;
-      })
-      .then((payload) => {
-        setCourts(payload.courts);
+    void fetchMapCourts(controller.signal)
+      .then((loaded) => {
+        if (!controller.signal.aborted) setCourts(loaded);
       })
       .catch((error: unknown) => {
         if (error instanceof DOMException && error.name === "AbortError") return;
@@ -193,13 +194,19 @@ export function CourtExplorer({
 
   function selectCourt(id: string) {
     setPickedId(id);
+    setThanks(false);
     writeSelectedCourt(id);
     const court = courts.find((item) => item.id === id);
-    syncCourtUrl(court ? courtParam(court) : null);
+    if (!court) {
+      syncCourtUrl(null);
+      return;
+    }
+    syncCourtUrl(courtParam(court));
   }
 
   function clearCourt() {
     setPickedId(null);
+    setThanks(false);
     clearSelectedCourt();
     syncCourtUrl(null);
   }
@@ -222,7 +229,7 @@ export function CourtExplorer({
       <AppHeader
         home
         fetchedAtBySource={fetchedAtBySource}
-        courtCount={catalogCount}
+        courtCount={totalCourtCount}
       />
 
       <div className={`flex min-h-0 flex-1 flex-col overflow-hidden ${split.row}`}>
@@ -266,12 +273,13 @@ export function CourtExplorer({
               onSelect={selectCourt}
               onClose={clearCourt}
               onBoundsChange={setMapBounds}
+              thanks={thanks}
             />
           </div>
         </section>
       </div>
 
-      <AppFooter />
+      <AppFooter collapsible />
     </div>
   );
 }

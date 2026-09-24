@@ -35,21 +35,26 @@ import { AppFooter } from "@/components/brand/AppFooter";
 import { CourtDistance } from "@/components/CourtDistance";
 import { LocateMeButton, locationHint } from "@/components/LocateMeButton";
 import { useCopy } from "@/components/brand/LocaleProvider";
+import { useIsAdmin } from "@/components/admin/AdminProvider";
+import { AdminStatusButton } from "@/components/admin/AdminStatusButton";
 import { CourtMiniMap } from "@/components/court/CourtMiniMap";
 import {
-  courtParam,
+  COURT_THANKS_KEY,
   courtTitle,
   formatAddress,
   formatAdmin,
   formatOwner,
+  formatFieldType,
   formatReportedBoolean,
   formatStatus,
   formatSurface,
+  formatWaterPoint,
+  homeCourtHref,
   type Court,
 } from "@/lib/courts";
 import { haversineKm } from "@/lib/geo";
 import { useLocationStatus } from "@/lib/origin";
-import { courtSource, sourceListingUrl } from "@/lib/sources";
+import { courtSource, OSM_COPYRIGHT_URL, sourceListingUrl } from "@/lib/sources";
 import { formatFetchedAt } from "@/lib/time";
 import { split } from "@/lib/layout";
 import type { FetchedAtBySource } from "@/lib/catalog";
@@ -67,6 +72,7 @@ export function CourtDetails({
   courtCount: number;
 }) {
   const copy = useCopy();
+  const isAdmin = useIsAdmin();
   const address = formatAddress([
     court.address,
     court.neighborhood,
@@ -75,6 +81,15 @@ export function CourtDetails({
   const source = courtSource(court.source);
   const listingUrl = sourceListingUrl(court.source, court.id);
   const { amenities } = court;
+  const pending = court.status === "pending";
+  const [thanks, setThanks] = useState(false);
+  useEffect(() => {
+    if (sessionStorage.getItem(COURT_THANKS_KEY) !== court.id) return;
+    sessionStorage.removeItem(COURT_THANKS_KEY);
+    setThanks(true);
+  }, [court.id]);
+  const showAdminStatus =
+    isAdmin && court.source === "submitted";
   const dimensions =
     amenities.lengthM && amenities.widthM
       ? `${amenities.lengthM} × ${amenities.widthM} m`
@@ -94,27 +109,88 @@ export function CourtDetails({
             <h1 className="mt-1 font-display text-4xl tracking-wide text-white md:text-5xl">
               {courtTitle(court, copy)}
             </h1>
-            <CourtDistanceBlock court={court} />
+            {pending ? (
+              <p className="mt-2 text-sm font-medium text-gold">
+                {sourceFetchedAt ? (
+                  <time dateTime={sourceFetchedAt}>
+                    {copy.pendingAddedOn(formatFetchedAt(sourceFetchedAt, true))}
+                  </time>
+                ) : (
+                  copy.pendingComingSoon
+                )}
+              </p>
+            ) : (
+              <CourtDistanceBlock court={court} />
+            )}
           </div>
+
+          {thanks ? (
+            <div className="rounded-3xl border border-gold/40 bg-gold/10 p-5">
+              <p className="font-bold text-white">{copy.confirmThanksTitle}</p>
+              <p className="mt-1 text-sm text-ink-muted">{copy.confirmThanksBody}</p>
+            </div>
+          ) : null}
 
           <dl className="grid gap-3 rounded-3xl border border-white/10 bg-panel p-5">
             <Fact
               icon={court.status === "active" ? CircleCheck : CirclePause}
               label={copy.status}
-              value={formatStatus(court.status, copy)}
+              value={
+                pending ? (
+                  <>
+                    {copy.statusUnderReview}
+                    <span className="mt-1 block text-sm text-ink-muted">
+                      {copy.pendingPublishAfterReview}
+                    </span>
+                  </>
+                ) : (
+                  formatStatus(court.status, copy)
+                )
+              }
             />
-            <Fact
-              icon={MapPin}
-              label={copy.address}
-              value={address || copy.notReported}
-            />
-            <Fact
-              icon={Route}
-              label={copy.showDirections}
-              value={googleMapsDirectionsLink(court.lat, court.lon, copy)}
-            />
+            {showAdminStatus ? (
+              <div className="mt-3">
+                <AdminStatusButton id={court.id} published={!pending} />
+              </div>
+            ) : null}
+            {!pending && (
+              <>
+                <Fact
+                  icon={MapPin}
+                  label={copy.address}
+                  value={address || copy.notReported}
+                />
+                <Fact
+                  icon={Route}
+                  label={copy.showDirections}
+                  value={googleMapsDirectionsLink(court.lat, court.lon, copy)}
+                />
+              </>
+            )}
           </dl>
 
+          {pending ? (
+            <div className="relative overflow-hidden" aria-hidden>
+              <div className="space-y-5">
+                <div className="rounded-3xl border border-white/10 bg-panel p-5">
+                  <div className="space-y-3 blur-md">
+                    <div className="h-3 w-24 rounded bg-gold/40" />
+                    <div className="h-3 w-40 rounded bg-white/20" />
+                    <div className="h-3 w-32 rounded bg-white/20" />
+                  </div>
+                </div>
+                <div className="rounded-3xl border border-white/10 bg-panel p-5">
+                  <div className="space-y-3 blur-md">
+                    <div className="h-5 w-36 rounded bg-white/20" />
+                    <div className="h-3 w-28 rounded bg-gold/40" />
+                    <div className="h-3 w-24 rounded bg-white/20" />
+                  </div>
+                </div>
+              </div>
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent to-asphalt" />
+            </div>
+          ) : (
+          <>
           <section className="rounded-3xl border border-white/10 bg-panel p-5">
             <h2 className="font-display text-2xl tracking-wide text-white">
               {copy.courtFacts}
@@ -141,7 +217,7 @@ export function CourtDetails({
                 <Fact
                   icon={LayoutGrid}
                   label={copy.fieldType}
-                  value={amenities.fieldType[0].toUpperCase() + amenities.fieldType.slice(1)}
+                  value={formatFieldType(amenities.fieldType, copy)}
                 />
               ) : null}
               {amenities.surfaceMaterial.length ? (
@@ -195,7 +271,7 @@ export function CourtDetails({
                 <Fact
                   icon={Droplets}
                   label={copy.waterPoint}
-                  value={amenities.waterPoint}
+                  value={formatWaterPoint(amenities.waterPoint, copy)}
                 />
               ) : null}
               {amenities.matchClock !== null ? (
@@ -235,6 +311,8 @@ export function CourtDetails({
               </p>
             </section>
           ) : null}
+          </>
+          )}
         </section>
 
         <aside className="overflow-hidden rounded-3xl border border-white/10 bg-panel">
@@ -274,31 +352,56 @@ export function CourtDetails({
                 value={formatOwner(court.owner, copy)}
               />
             ) : null}
-            {source ? (
+            {court.source === "submitted" || source ? (
               <Fact
                 icon={Database}
                 label={copy.dataFromSource}
                 value={
                   <div className="space-y-1">
-                    <ul>
-                      <li>{copy.source}: {source.label}</li>
-                      {listingUrl ? (
-                        <li>
-                          <a
-                            href={listingUrl}
-                            className="inline-flex items-center gap-1 break-all text-gold hover:text-white"
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            {websiteLabel(listingUrl)}
-                            <ExternalLink className="size-3.5 shrink-0" aria-hidden />
-                          </a>
-                        </li>
-                      ) : null}
-                    </ul>
+                    {court.source === "submitted" ? (
+                      <p>{copy.sourceSubmitted}</p>
+                    ) : null}
+                    {court.source === "osm" || listingUrl ? (
+                      <ul>
+                        {court.source === "osm" ? (
+                          <li className="text-sm leading-5 text-ink-muted">
+                            <span className="block">
+                              © OpenStreetMap {copy.osmContributors}.
+                            </span>
+                            <span className="block">
+                              {copy.osmLicenseLead}:{" "}
+                              <a
+                                href={OSM_COPYRIGHT_URL}
+                                className="text-gold hover:text-white"
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                {copy.osmLicense}
+                              </a>
+                            </span>
+                          </li>
+                        ) : null}
+                        {listingUrl ? (
+                          <li>
+                            <a
+                              href={listingUrl}
+                              className="inline-flex items-center gap-1 break-all text-gold hover:text-white"
+                              target="_blank"
+                              rel="noreferrer"
+                            >
+                              {websiteLabel(listingUrl)}
+                              <ExternalLink className="size-3.5 shrink-0" aria-hidden />
+                            </a>
+                          </li>
+                        ) : null}
+                      </ul>
+                    ) : null}
                     {sourceFetchedAt ? (
                       <p className="text-xs text-ink-muted">
-                        {copy.dataFetchedAt}:{" "}
+                        {court.source === "submitted"
+                          ? copy.addedAt
+                          : copy.dataFetchedAt}
+                        :{" "}
                         <time dateTime={sourceFetchedAt}>
                           {formatFetchedAt(sourceFetchedAt)}
                         </time>
@@ -374,7 +477,7 @@ function BackToMap({
   const copy = useCopy();
   return (
     <Link
-      href={`/?court=${encodeURIComponent(courtParam(court))}`}
+      href={homeCourtHref(court)}
       className={`inline-flex shrink-0 items-center gap-1 text-md font-medium text-gold hover:text-white ${className ?? ""}`}
     >
       <Map aria-hidden />

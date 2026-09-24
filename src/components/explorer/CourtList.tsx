@@ -7,7 +7,8 @@ import { ArrowRight, Icon } from "lucide-react";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { CourtBadges } from "@/components/explorer/CourtBadges";
 import { CourtHeading } from "@/components/explorer/CourtHeading";
-import { courtHref, type CourtWithDistance } from "@/lib/courts";
+import { PendingCourtNote } from "@/components/explorer/PendingCourtNote";
+import { courtHref, isAwaitingEmail, isPendingCourt, type CourtWithDistance } from "@/lib/courts";
 
 export function CourtList({
   courts,
@@ -63,13 +64,21 @@ export function CourtList({
               </button>
               <div className="flex flex-wrap items-center gap-2 text-sm">
                 <CourtBadges court={court} />
-                <Link
-                  href={courtHref(court)}
-                  className="ml-auto inline-flex items-center gap-1 font-bold text-gold hover:text-white"
-                >
-                  {copy.letsGo}
-                  <ArrowRight className="size-3.5" aria-hidden />
-                </Link>
+                {isPendingCourt(court) ? (
+                  <PendingCourtNote
+                    createdAt={court.createdAt}
+                    className="w-full"
+                  />
+                ) : null}
+                {isAwaitingEmail(court) ? null : (
+                  <Link
+                    href={courtHref(court)}
+                    className="ml-auto inline-flex items-center gap-1 font-bold text-gold hover:text-white"
+                  >
+                    {copy.letsGo}
+                    <ArrowRight className="size-3.5" aria-hidden />
+                  </Link>
+                )}
               </div>
             </div>
           </li>

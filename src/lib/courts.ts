@@ -5,7 +5,7 @@ import { parseOsmCourtId, type CourtSourceId } from "@/lib/sources";
 
 export type Court = {
   id: string;
-  source: CourtSourceId;
+  source: CourtSourceId | "submitted";
   name: string;
   nameFi: string;
   status: string;
@@ -17,6 +17,8 @@ export type Court = {
   lon: number;
   comment: string | null;
   website: string | null;
+  /** Visitor submission whose email link has been opened. */
+  emailConfirmed?: boolean;
   constructionYear: number | null;
   owner: string | null;
   admin: string | null;
@@ -39,21 +41,21 @@ export type Court = {
   };
 };
 
-export type ExplorerCourt = Pick<
-  Court,
-  | "id"
-  | "source"
-  | "name"
-  | "nameFi"
-  | "status"
-  | "address"
-  | "city"
-  | "neighborhood"
-  | "lat"
-  | "lon"
-> & {
+export type ExplorerCourt = {
+  id: string;
+  name: string;
+  nameFi: string;
+  status: string;
+  address: string | null;
+  city: string | null;
+  neighborhood: string | null;
+  lat: number;
+  lon: number;
   amenities: Pick<Court["amenities"], "lighting" | "freeUse">;
-};
+} & (
+  | { source: CourtSourceId | "submitted" }
+  | { source: "pending"; createdAt: string; emailConfirmed: boolean }
+);
 
 export type CourtWithDistance = ExplorerCourt & {
   distanceKm: number | null;
@@ -98,7 +100,40 @@ export function emptyAmenities(): Court["amenities"] {
   };
 }
 
-const DUPLICATE_KM = 0.08;
+/** Same pad as LIPAS/OSM merge — pending pins drop off once a source court lands here. */
+export const COURT_MATCH_KM = 0.08;
+
+/** Unconfirmed pins may sit nearby, but not on top of each other. */
+export const SAME_SPOT_KM = 0.015;
+
+export function isTooCloseToCourt(
+  point: Coordinates,
+  courts: Coordinates[],
+): boolean {
+  return courts.some(
+    (court) => haversineKm(point, { lat: court.lat, lon: court.lon }) < COURT_MATCH_KM,
+  );
+}
+
+/** Catalog and email-confirmed courts block 80 m. Unconfirmed courts block the same spot only. */
+export function courtPlacementBlocked(
+  point: Coordinates,
+  courts: Array<
+    Coordinates & {
+      source?: ExplorerCourt["source"];
+      emailConfirmed?: boolean;
+      status?: string;
+    }
+  >,
+): boolean {
+  return courts.some((court) => {
+    const unconfirmed =
+      court.status === "unconfirmed" ||
+      (court.source === "pending" && court.emailConfirmed === false);
+    const km = unconfirmed ? SAME_SPOT_KM : COURT_MATCH_KM;
+    return haversineKm(point, court) < km;
+  });
+}
 
 export function mergeCourts(batches: Court[][]): Court[] {
   const merged: Court[] = [];
@@ -120,7 +155,7 @@ function isNearDuplicate(existing: Court, candidate: Court): boolean {
     haversineKm(
       { lat: existing.lat, lon: existing.lon },
       { lat: candidate.lat, lon: candidate.lon },
-    ) < DUPLICATE_KM
+    ) < COURT_MATCH_KM
   );
 }
 
@@ -180,8 +215,65 @@ export function withDistance(
     });
 }
 
+export const COURT_STATUS_CODES = [
+  "active",
+  "out-of-service-temporarily",
+  "out-of-service-permanently",
+] as const;
+
+export const FIELD_TYPE_CODES = ["full", "one-hoop", "mini", "street"] as const;
+
+export const WATER_POINT_CODES = ["yes", "no", "seasonal"] as const;
+
+export const SURFACE_CODES = [
+  "asphalt",
+  "concrete",
+  "synthetic",
+  "artificial-turf",
+  "sand-infilled-artificial-turf",
+  "sand",
+  "stone",
+  "rock-dust",
+  "gravel",
+  "fine_gravel",
+] as const;
+
+export const OWNER_CODES = [
+  "city",
+  "city-main-owner",
+  "company-ltd",
+  "foundation",
+  "municipal-consortium",
+  "other",
+  "registered-association",
+  "state",
+  "unknown",
+] as const;
+
+export const ADMIN_CODES = [
+  "city-education",
+  "city-other",
+  "city-sports",
+  "city-technical-services",
+  "municipal-consortium",
+  "other",
+  "private-association",
+  "private-company",
+  "private-foundation",
+  "state",
+  "unknown",
+] as const;
+
 export function formatSurface(code: string, copy: Copy = getCopy()): string {
   return formatCodedLabel(code, copy.surfaces as Record<string, string>);
+}
+
+export function formatFieldType(code: string, copy: Copy = getCopy()): string {
+  return formatCodedLabel(code, copy.fieldTypes as Record<string, string>);
+}
+
+export function formatWaterPoint(code: string, copy: Copy = getCopy()): string {
+  return formatCodedLabel(code, copy.waterPoints as Record<string, string>);
 }
 
 export function formatOwner(value: string, copy: Copy = getCopy()): string {
@@ -203,9 +295,23 @@ export function formatReportedBoolean(
 
 export function formatStatus(status: string, copy: Copy = getCopy()): string {
   if (status === "active") return copy.statusOpen;
+  if (status === "pending") return copy.statusPending;
   if (status === "out-of-service-temporarily") return copy.statusTemporarilyClosed;
   if (status === "out-of-service-permanently") return copy.statusPermanentlyClosed;
   return copy.statusUnknown;
+}
+
+/** Set before leaving the email link, so the court page can say thanks without a query param. */
+export const COURT_THANKS_KEY = "hf-court-thanks";
+
+export function isAwaitingEmail(court: ExplorerCourt | Court): boolean {
+  return "emailConfirmed" in court && court.emailConfirmed === false;
+}
+
+export function isPendingCourt(
+  court: Pick<ExplorerCourt, "source">,
+): court is Extract<ExplorerCourt, { source: "pending" }> {
+  return court.source === "pending";
 }
 
 export function formatAddress(
@@ -238,7 +344,7 @@ function isOsmType(segment: string): boolean {
   return segment === "node" || segment === "way" || segment === "relation";
 }
 
-function courtSegments(court: Pick<Court, "id" | "source">): string[] {
+function courtSegments(court: Pick<ExplorerCourt, "id" | "source">): string[] {
   switch (court.source) {
     case "osm": {
       const osm = parseOsmCourtId(court.id);
@@ -246,25 +352,42 @@ function courtSegments(court: Pick<Court, "id" | "source">): string[] {
     }
     case "lipas":
       return ["lipas", court.id];
+    case "pending":
+    case "submitted":
+      return ["submitted", submittedCourtKey(court.id)];
   }
 }
 
+/** Numeric id in `submitted_courts`; `submitted-` is only for the merged map list. */
+export function submittedCourtKey(id: string): string {
+  return id.startsWith("submitted-") ? id.slice("submitted-".length) : id;
+}
+
 /** `lipas/82547` or `osm/way/1095396325` — court page path after `/courts/`. */
-export function courtPath(court: Pick<Court, "id" | "source">): string {
+export function courtPath(court: Pick<ExplorerCourt, "id" | "source">): string {
   return courtSegments(court).join("/");
 }
 
 /** `lipas-82547` or `osm-way-1095396325` — hyphen form for `?court=` (no `%2F`). */
-export function courtParam(court: Pick<Court, "id" | "source">): string {
+export function courtParam(court: Pick<ExplorerCourt, "id" | "source">): string {
   return courtSegments(court).join("-");
 }
 
-export function courtHref(court: Pick<Court, "id" | "source">): string {
+export function courtHref(court: Pick<ExplorerCourt, "id" | "source">): string {
   return `/courts/${courtPath(court)}`;
 }
 
+/** Home map with that court’s popup open. Works for published and pending pins. */
+export function homeCourtHref(
+  court: Pick<ExplorerCourt, "id" | "source">,
+  options?: { thanks?: boolean },
+): string {
+  const href = `/?court=${encodeURIComponent(courtParam(court))}`;
+  return options?.thanks ? `${href}&thanks=1` : href;
+}
+
 export function courtOgHref(
-  court: Pick<Court, "id" | "source">,
+  court: Pick<ExplorerCourt, "id" | "source">,
   fetchedAt?: string | null,
 ): string {
   const path = `/images/og/${courtParam(court)}`;
@@ -283,6 +406,12 @@ export function parseCourtPath(
   segments: string[],
 ): "index" | { id: string } | null {
   if (segments.length === 0) return "index";
+  if (segments[0] === "submitted") {
+    if (segments.length === 1) return "index";
+    return segments.length === 2 && /^\d+$/.test(segments[1])
+      ? { id: `submitted-${segments[1]}` }
+      : null;
+  }
   if (segments.length === 1) {
     return segments[0] === "lipas" ||
       segments[0] === "osm" ||

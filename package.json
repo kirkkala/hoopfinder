@@ -1,6 +1,6 @@
 {
   "name": "hoopfinder",
-  "version": "0.1.0-beta.15.1",
+  "version": "0.1.0-beta.2.0",
   "private": true,
   "license": "AGPL-3.0-only",
   "scripts": {
@@ -20,9 +20,12 @@
     "lucide-react": "^1.45.0",
     "maplibre-gl": "^6.9.0",
     "next": "16.3.5",
+    "next-auth": "^4.24.15",
+    "postgres": "^3.4.9",
     "react": "19.2.8",
     "react-dom": "19.2.8",
     "react-map-gl": "^8.1.3",
+    "resend": "^6.28.1",
     "zod": "^4.6.2"
   },
   "devDependencies": {

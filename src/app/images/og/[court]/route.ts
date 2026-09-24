@@ -10,6 +10,7 @@ import {
   generateHomeOgImage,
   HOME_OG_ID,
 } from "@/lib/og";
+import { getSubmittedCourt } from "@/lib/submitted-courts";
 
 export const dynamic = "force-dynamic";
 
@@ -21,7 +22,7 @@ export async function GET(
   if (param === HOME_OG_ID) return generateHomeOgImage();
 
   const id = courtIdFromParam(param);
-  const result = id ? await getBasketballCourt(id) : null;
+  const result = id ? await getCourtById(id) : null;
   if (!result) return new Response("Not Found", { status: 404 });
 
   const copy = getCopy("fi");
@@ -34,4 +35,12 @@ export async function GET(
     ]) || copy.addressMissing;
 
   return generateCourtOgImage({ name, place });
+}
+
+async function getCourtById(id: string) {
+  const catalogCourt = await getBasketballCourt(id);
+  if (catalogCourt) return catalogCourt;
+  const submitted = await getSubmittedCourt(id);
+  if (!submitted) return null;
+  return { court: submitted.court, sourceFetchedAt: submitted.createdAt };
 }

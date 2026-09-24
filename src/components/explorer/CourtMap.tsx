@@ -7,7 +7,6 @@ import {
   LngLatBounds,
   setWorkerUrl,
   type ExpressionSpecification,
-  type GeoJSONSource,
 } from "maplibre-gl";
 import Map, {
   Layer,
@@ -22,7 +21,14 @@ import { MAP_STYLE } from "@/lib/constants";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { CourtBadges } from "@/components/explorer/CourtBadges";
 import { CourtHeading } from "@/components/explorer/CourtHeading";
-import { courtHref, courtTitle, type CourtWithDistance } from "@/lib/courts";
+import { PendingCourtNote } from "@/components/explorer/PendingCourtNote";
+import {
+  courtHref,
+  courtTitle,
+  isAwaitingEmail,
+  isPendingCourt,
+  type CourtWithDistance,
+} from "@/lib/courts";
 import {
   DEFAULT_MAP_CENTER,
   DEFAULT_MAP_ZOOM,
@@ -35,7 +41,7 @@ import {
 setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
 
 const MAP_VIEW_KEY = "hoopfinder-map-view";
-const CLICKABLE_LAYERS = ["clusters", "cluster-count", "court-points", "court-labels"];
+const CLICKABLE_LAYERS = ["court-points", "court-labels"];
 const HOVER: ExpressionSpecification = [
   "boolean",
   ["feature-state", "hover"],
@@ -99,6 +105,7 @@ export function CourtMap({
   onSelect,
   onClose,
   onBoundsChange,
+  thanks = false,
 }: {
   courts: CourtWithDistance[];
   selectedId: string | null;
@@ -109,6 +116,7 @@ export function CourtMap({
   onSelect: (id: string) => void;
   onClose: () => void;
   onBoundsChange: (bounds: MapBounds) => void;
+  thanks?: boolean;
 }) {
   const copy = useCopy();
   const mapRef = useRef<MapRef>(null);
@@ -139,6 +147,7 @@ export function CourtMap({
         properties: {
           id: court.id,
           name: courtTitle(court, copy),
+          pending: isPendingCourt(court) ? 1 : 0,
         },
       })),
     }),
@@ -252,7 +261,7 @@ export function CourtMap({
   function handleMouseMove(event: MapLayerMouseEvent) {
     const feature = event.features?.[0];
     setCursor(feature ? "pointer" : "");
-    const id = feature && !feature.properties?.cluster ? String(feature.properties?.id ?? "") : "";
+    const id = feature ? String(feature.properties?.id ?? "") : "";
     pointerId.current = id || null;
     paintHover();
   }
@@ -261,26 +270,6 @@ export function CourtMap({
     const feature = event.features?.[0];
     if (!feature || feature.geometry.type !== "Point") {
       if (selectedRef.current) onClose();
-      return;
-    }
-
-    const coordinates = feature.geometry.coordinates as [number, number];
-
-    if (feature.properties?.cluster) {
-      if (selectedRef.current) onClose();
-      const map = mapRef.current;
-      const clusterId = Number(feature.properties.cluster_id);
-      const source = map?.getSource("courts");
-      if (map && Number.isFinite(clusterId) && source) {
-        void (source as GeoJSONSource)
-          .getClusterExpansionZoom(clusterId)
-          .then((zoom) => {
-            map.easeTo({ center: coordinates, zoom });
-          })
-          .catch(() => {
-            map.easeTo({ center: coordinates, zoom: map.getZoom() + 2 });
-          });
-      }
       return;
     }
 
@@ -319,79 +308,31 @@ export function CourtMap({
       attributionControl={{ compact: true }}
     >
       <NavigationControl position="top-right" />
-      <Source
-        id="courts"
-        type="geojson"
-        data={data}
-        promoteId="id"
-        cluster
-        clusterMaxZoom={14}
-        clusterRadius={48}
-      >
-        <Layer
-          id="clusters"
-          type="circle"
-          filter={["has", "point_count"]}
-          paint={{
-            "circle-color": [
-              "step",
-              ["get", "point_count"],
-              "#ffd482",
-              10,
-              "#ff4339",
-              30,
-              "#8299e0",
-            ],
-            "circle-radius": [
-              "step",
-              ["get", "point_count"],
-              18,
-              10,
-              24,
-              30,
-              32,
-            ],
-            "circle-stroke-width": 3,
-            "circle-stroke-color": "#ffffff",
-          }}
-        />
-        <Layer
-          id="cluster-count"
-          type="symbol"
-          filter={["has", "point_count"]}
-          layout={{
-            "text-field": ["get", "point_count_abbreviated"],
-            "text-size": [
-              "step",
-              ["get", "point_count"],
-              16,
-              10,
-              15,
-              30,
-              18,
-            ],
-            "text-font": ["Noto Sans Regular"],
-            "text-allow-overlap": true,
-            "text-ignore-placement": true,
-          }}
-          paint={{ "text-color": "#111111" }}
-        />
+      <Source id="courts" type="geojson" data={data} promoteId="id">
         <Layer
           id="court-points"
           type="circle"
-          filter={["!", ["has", "point_count"]]}
           paint={{
-            "circle-color": "#ff4339",
+            "circle-color": [
+              "case",
+              ["==", ["to-number", ["get", "pending"]], 1],
+              "#ffd482",
+              "#ff4339",
+            ],
             "circle-radius": ["case", HOVER, 9, 8],
             "circle-stroke-width": ["case", HOVER, 2.5, 2],
-            "circle-stroke-color": "#ffffff",
+            "circle-stroke-color": [
+              "case",
+              ["==", ["to-number", ["get", "pending"]], 1],
+              "#111111",
+              "#ffffff",
+            ],
           }}
         />
         <Layer
           id="court-labels"
           type="symbol"
           minzoom={12}
-          filter={["!", ["has", "point_count"]]}
           layout={{
             "text-field": ["get", "name"],
             "text-font": ["Noto Sans Regular"],
@@ -441,13 +382,27 @@ export function CourtMap({
             <div className="flex flex-wrap items-center gap-1.5 text-xs">
               <CourtBadges court={selected} />
             </div>
-            <Link
-              href={courtHref(selected)}
-              className="inline-flex items-center gap-1 self-end pt-2 pb-1 text-sm font-bold text-gold hover:text-white"
-            >
-              {copy.letsGo}
-              <ArrowRight className="size-3.5" aria-hidden />
-            </Link>
+            {thanks && isPendingCourt(selected) ? (
+              <div className="pt-1">
+                <p className="text-sm font-bold leading-5 text-ink/90">
+                  {copy.addCourtSuccessLead}
+                </p>
+                <p className="mt-1 text-sm leading-5 text-ink-muted">
+                  {copy.addCourtSuccess}
+                </p>
+              </div>
+            ) : isPendingCourt(selected) ? (
+              <PendingCourtNote createdAt={selected.createdAt} className="pt-1" />
+            ) : null}
+            {!thanks && !isAwaitingEmail(selected) ? (
+              <Link
+                href={courtHref(selected)}
+                className="inline-flex items-center gap-1 self-end pt-2 pb-1 text-sm font-bold text-gold hover:text-white"
+              >
+                {copy.letsGo}
+                <ArrowRight className="size-3.5" aria-hidden />
+              </Link>
+            ) : null}
           </div>
         </Popup>
       ) : null}

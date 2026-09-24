@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
-import { notFound, permanentRedirect } from "next/navigation";
+import { notFound, permanentRedirect, redirect } from "next/navigation";
 import { CourtDetails } from "@/components/court/CourtDetails";
 import { getBasketballCourt, getCourtCatalog } from "@/lib/catalog";
 import { SITE_URL } from "@/lib/constants";
@@ -10,8 +10,11 @@ import {
   courtOgHref,
   courtTitle,
   formatAddress,
+  homeCourtHref,
+  isAwaitingEmail,
   parseCourtPath,
 } from "@/lib/courts";
+import { countPublicCourts, getSubmittedCourt } from "@/lib/submitted-courts";
 
 export const dynamic = "force-dynamic";
 
@@ -25,6 +28,9 @@ export async function generateMetadata({
   if (!result) {
     return { title: finnish.courtNotFound, robots: { index: false } };
   }
+  if (isAwaitingEmail(result.court)) {
+    return { title: finnish.statusAwaitingEmail, robots: { index: false, follow: false } };
+  }
 
   const name = courtTitle(result.court, finnish);
   const place =
@@ -35,11 +41,13 @@ export async function generateMetadata({
     ]) || finnish.addressMissing;
   const description = finnish.metaCourtDescription(name, place);
   const canonical = courtHref(result.court);
+  const pending = result.court.status === "pending";
 
   return {
     metadataBase: await requestOrigin(),
     title: name,
     description,
+    robots: pending ? { index: false, follow: false } : undefined,
     alternates: {
       canonical,
     },
@@ -67,13 +75,19 @@ export default async function CourtPage({
 }) {
   const result = await courtFromParams(params);
   if (!result) notFound();
-  const { courts, fetchedAtBySource } = await getCourtCatalog();
+  if (isAwaitingEmail(result.court)) {
+    redirect(homeCourtHref({ id: result.court.id, source: "pending" }));
+  }
+  const [{ fetchedAtBySource }, courtCount] = await Promise.all([
+    getCourtCatalog(),
+    countPublicCourts(),
+  ]);
   return (
     <CourtDetails
       court={result.court}
       fetchedAtBySource={fetchedAtBySource}
       sourceFetchedAt={result.sourceFetchedAt}
-      courtCount={courts.length}
+      courtCount={courtCount}
     />
   );
 }
@@ -83,7 +97,11 @@ async function courtFromParams(params: Promise<{ path?: string[] }>) {
   const parsed = parseCourtPath(path ?? []);
   if (parsed === "index") permanentRedirect("/");
   if (!parsed) return null;
-  return getBasketballCourt(parsed.id);
+  const catalogCourt = await getBasketballCourt(parsed.id);
+  if (catalogCourt) return catalogCourt;
+  const submitted = await getSubmittedCourt(parsed.id);
+  if (!submitted) return null;
+  return { court: submitted.court, sourceFetchedAt: submitted.createdAt };
 }
 
 async function requestOrigin(): Promise<URL> {

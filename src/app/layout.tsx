@@ -3,7 +3,10 @@ import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Bebas_Neue, Outfit } from "next/font/google";
 import type { Metadata, Viewport } from "next";
+import { AdminProvider } from "@/components/admin/AdminProvider";
+import { AuthProvider } from "@/components/auth/AuthProvider";
 import { LocaleProvider } from "@/components/brand/LocaleProvider";
+import { getAuthSession } from "@/auth";
 import { SITE_URL } from "@/lib/constants";
 import { getCopy } from "@/lib/copy";
 
@@ -81,11 +84,20 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export const dynamic = "force-dynamic";
+
+export default async function RootLayout({ children }: LayoutProps<"/">) {
+  const session = await getAuthSession();
   return (
     <html lang="fi" className={`${outfit.variable} ${bebas.variable}`}>
       <body className="min-h-dvh bg-asphalt font-sans text-ink antialiased">
-        <LocaleProvider>{children}</LocaleProvider>
+        <LocaleProvider>
+          <AuthProvider session={session}>
+            <AdminProvider isAdmin={session?.user?.isAdmin === true}>
+              {children}
+            </AdminProvider>
+          </AuthProvider>
+        </LocaleProvider>
         <Analytics />
         <SpeedInsights />
       </body>

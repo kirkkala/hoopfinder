@@ -2,14 +2,17 @@
 
 import { Fragment, useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { basketball } from "@lucide/lab";
-import { Icon } from "lucide-react";
+import { Icon, X } from "lucide-react";
 import { IntroDialog } from "@/components/brand/IntroDialog";
 import { LanguageToggle } from "@/components/brand/LanguageToggle";
 import { BuyMeCoffeeButton } from "@/components/brand/BuyMeCoffeeButton";
 import { SourceCredits } from "@/components/brand/AppFooter";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { AppWordmark } from "@/components/brand/AppWordmark";
+import { useIsAdmin } from "@/components/admin/AdminProvider";
+import { AuthControl } from "@/components/auth/AuthControl";
 import { APP_VERSION } from "@/lib/constants";
 import type { FetchedAtBySource } from "@/lib/catalog";
 import { mq, useMinWidth, wide } from "@/lib/layout";
@@ -28,6 +31,7 @@ export function AppHeader({
   home?: boolean;
 }) {
   const copy = useCopy();
+  const isAdmin = useIsAdmin();
   const headerRef = useRef<HTMLElement>(null);
   const [introOpen, setIntroOpen] = useState(false);
 
@@ -75,7 +79,7 @@ export function AppHeader({
   return (
     <header
       ref={headerRef}
-      className={`z-20 shrink-0 border-b border-white/10 bg-asphalt ${
+      className={`z-40 shrink-0 border-b border-white/10 bg-asphalt ${
         home ? "relative" : "sticky top-0"
       }`}
     >
@@ -110,19 +114,24 @@ export function AppHeader({
             </span>
           </Link>
           <BetaBadge />
-        </div>
-        <nav className="flex shrink-0 items-center gap-1.5">
-          <LanguageToggle />
           <div className={wide.flex}>
             <InfoMenuButton
               introOpen={introOpen}
               onOpenInfo={() => setIntroOpen(true)}
             />
           </div>
+          <AddCourtNavLink />
+          {isAdmin ? <AdminNavLink /> : null}
+        </div>
+        <nav className="flex shrink-0 items-center gap-1.5">
+          <div className={wide.flex}>
+            <LanguageToggle short />
+          </div>
         </nav>
         <HeaderMenu
           fetchedAtBySource={fetchedAtBySource}
           introOpen={introOpen}
+          isAdmin={isAdmin}
           onOpenInfo={() => setIntroOpen(true)}
         />
       </div>
@@ -173,10 +182,12 @@ function SourceFetchedAt({
 function HeaderMenu({
   fetchedAtBySource,
   introOpen,
+  isAdmin,
   onOpenInfo,
 }: {
   fetchedAtBySource?: FetchedAtBySource;
   introOpen: boolean;
+  isAdmin: boolean;
   onOpenInfo: () => void;
 }) {
   const copy = useCopy();
@@ -203,25 +214,6 @@ function HeaderMenu({
     };
   }, [open]);
 
-  const items: {
-    id: string;
-    label: string;
-    onSelect: () => void;
-    hasPopup?: "dialog";
-    expanded?: boolean;
-  }[] = [
-    {
-      id: "info",
-      label: copy.info,
-      onSelect: () => {
-        setOpen(false);
-        onOpenInfo();
-      },
-      hasPopup: "dialog",
-      expanded: introOpen,
-    },
-  ];
-
   return (
     <div className="relative">
       <button
@@ -231,14 +223,14 @@ function HeaderMenu({
         aria-haspopup="true"
         aria-label={open ? copy.close : copy.menu}
         onClick={() => setOpen((value) => !value)}
-        className={`relative z-30 grid size-10 shrink-0 place-items-center rounded-full outline-none transition-colors duration-200 hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-gold/60 ${
+        className={`relative z-50 grid size-10 shrink-0 place-items-center rounded-full outline-none transition-colors duration-200 hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-gold/60 ${
           open ? "bg-white/10 text-gold" : "text-ink"
         }`}
       >
         <HamburgerIcon open={open} />
       </button>
       <div
-        className={`fixed inset-x-0 bottom-0 z-20 overflow-hidden top-[calc(var(--app-header-height,3.5rem)-1px)] ${
+        className={`fixed inset-x-0 bottom-0 z-40 overflow-hidden top-[calc(var(--app-header-height,3.5rem)-1px)] ${
           open ? "" : "pointer-events-none"
         }`}
       >
@@ -268,21 +260,46 @@ function HeaderMenu({
                 <p className="mt-1 text-sm leading-5 text-ink-muted">
                   {copy.betaTooltip}
                 </p>
+                <div className="mt-4">
+                  <LanguageToggle stretch />
+                </div>
               </div>
               <ul className="border-y border-white/10">
-                {items.map((item) => (
-                  <li key={item.id}>
-                    <button
-                      type="button"
-                      onClick={item.onSelect}
-                      aria-haspopup={item.hasPopup}
-                      aria-expanded={item.expanded}
+                <li>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setOpen(false);
+                      onOpenInfo();
+                    }}
+                    aria-haspopup="dialog"
+                    aria-expanded={introOpen}
+                    className="flex w-full items-center px-4 py-3.5 text-left text-base font-medium text-white outline-none hover:bg-white/5 focus-visible:bg-white/5 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-gold/60"
+                  >
+                    {copy.info}
+                  </button>
+                </li>
+                <li>
+                  <Link
+                    href="/add"
+                    onClick={() => setOpen(false)}
+                    className="flex w-full items-center px-4 py-3.5 text-left text-base font-medium text-white outline-none hover:bg-white/5 focus-visible:bg-white/5 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-gold/60"
+                  >
+                    {copy.addCourt}
+                  </Link>
+                </li>
+                {isAdmin ? (
+                  <li>
+                    <Link
+                      href="/admin"
+                      onClick={() => setOpen(false)}
                       className="flex w-full items-center px-4 py-3.5 text-left text-base font-medium text-white outline-none hover:bg-white/5 focus-visible:bg-white/5 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-gold/60"
                     >
-                      {item.label}
-                    </button>
+                      {copy.adminNav}
+                    </Link>
                   </li>
-                ))}
+                ) : null}
+                <AuthControl onAction={() => setOpen(false)} />
               </ul>
               <div className="px-4">
                 <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1 pt-4">
@@ -353,6 +370,51 @@ function HamburgerIcon({ open }: { open: boolean }) {
   );
 }
 
+function AdminNavLink() {
+  const copy = useCopy();
+  const onAdminPage = usePathname() === "/admin";
+
+  return (
+    <Link
+      href="/admin"
+      aria-current={onAdminPage ? "page" : undefined}
+      className={`hidden wide:inline-flex shrink-0 items-center whitespace-nowrap rounded-sm px-2.5 py-1.5 text-sm font-medium outline-none focus-visible:ring-2 focus-visible:ring-gold/60 ${
+        onAdminPage
+          ? "text-gold"
+          : "text-ink/80 hover:bg-white/10 hover:text-white"
+      }`}
+    >
+      {copy.adminNav}
+    </Link>
+  );
+}
+
+function AddCourtNavLink() {
+  const copy = useCopy();
+  const onAddPage = usePathname() === "/add";
+
+  return (
+    <Link
+      href={onAddPage ? "/" : "/add"}
+      aria-current={onAddPage ? "page" : undefined}
+      aria-label={onAddPage ? copy.addCourtExit : undefined}
+      className={`group inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-sm px-2.5 py-1.5 text-sm font-medium outline-none focus-visible:ring-2 focus-visible:ring-gold/60 ${
+        onAddPage
+          ? "text-gold"
+          : "text-ink/80 hover:bg-white/10 hover:text-white"
+      }`}
+    >
+      {copy.addCourt}
+      {onAddPage ? (
+        <X
+          aria-hidden
+          className="size-3.5 stroke-2 opacity-70 transition duration-150 group-hover:stroke-[3] group-hover:opacity-100 group-hover:text-white group-focus-visible:stroke-[3] group-focus-visible:opacity-100 group-focus-visible:text-white"
+        />
+      ) : null}
+    </Link>
+  );
+}
+
 function InfoMenuButton({
   introOpen,
   onOpenInfo,
@@ -368,7 +430,7 @@ function InfoMenuButton({
       onClick={onOpenInfo}
       aria-haspopup="dialog"
       aria-expanded={introOpen}
-      className="rounded-sm px-2.5 py-1.5 text-sm font-medium text-ink/80 outline-none hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-gold/60"
+      className="shrink-0 whitespace-nowrap rounded-sm px-2.5 py-1.5 text-sm font-medium text-ink/80 outline-none hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-gold/60"
     >
       {copy.info}
     </button>

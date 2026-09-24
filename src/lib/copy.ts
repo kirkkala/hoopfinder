@@ -44,19 +44,19 @@ const messages = {
   backToMap: { fi: "Takaisin kartalle", en: "Back to the map" },
   dataFrom: { fi: "Kenttädata päivitetty:", en: "Court data updated:" },
   dataFromSource: { fi: "Rajapintatieto", en: "API information" },
-  source: { fi: "Lähde", en: "Source" },
   dataFetchedAt: { fi: "Tiedot haettu", en: "Data fetched" },
+  addedAt: { fi: "Lisätty", en: "Added" },
   betaTooltip: {
     fi: "Varhainen beta-versio. Ei valmis, saattaa sisältää bugeja.",
     en: "Early beta preview. Not ready yet, might contain bugs.",
   },
   language: { fi: "Language", en: "Language" },
   menu: { fi: "Valikko", en: "Menu" },
-  info: { fi: "Info", en: "Info" },
+  info: { fi: "Tietoa palvelusta", en: "About the service" },
   introTitle: { fi: "Koripallokentät suomessa", en: "Basketball courts in Finland" },
   introLead: {
-    fi: "Hoop Finderissa on {count} ulkokoripallokenttää. Olit sitten reissussa, mökillä, sukulaisten luona tai haluat löytää uuden kentän kodin läheltä — täältä löydät paikan heittää.",
-    en: "Hoop Finder has {count} outdoor basketball courts. Whether you're on a trip, at the cottage, visiting relatives or want to find a new court close to home — here you can find a place to hoop.",
+    fi: "Hoop Finderin kartalla on {count} Suomen ulkokoripallokenttää. Olit sitten reissussa, mökillä, sukulaisten luona tai haluat tsekata kodin läheltä uuden kentän, täältä niitä löytyy!",
+    en: "Hoop Finder has {count} outdoor basketball courts in Finland. Whether you're on a trip, at the cottage, visiting relatives or want to check a new court close to home — here you can find them!",
   },
   introLocationBenefit: {
     fi: "Salli sijaintisi, niin näet kuinka kaukana kukin kenttä sijaitsee.",
@@ -75,24 +75,34 @@ const messages = {
     en: "Who built this and why"
   },
   introCreatedBy1: {
-    fi: "koodaili sivuston harrasteprojektina käyttäen Lipas ja OpenStreetMaps avoimia rajapintoja.",
-    en: "built this site as a side project using the open APIs of Lipas and OpenStreetMaps.",
+    fi: "koodaili sivuston omana harrasteprojektina, hakien kenttien tiedot parista avoimesta rajapinnasta ja antamalla käyttäjien itse lisätä palveluun puuttuvia kenttiä.",
+    en: "built this site as a side project, fetching the court data from a few open APIs and allowing users to add missing courts to the service.",
   },
   introCreatedBy2: {
-    fi: "Motivaationa saada isot ja pienet ihmiset liikkumaan koripallon kanssa.",
-    en: "With a motivation to get big and small humans to move more with a basketball." 
-  },
-  introCreatedBySourceCode: {
-    fi: "Lähdekoodi löytyy Githubista",
-    en: "Source code is on Github"
+    fi: "Motivaationa tähän oli saada isot ja pienet ihmiset ulos liikkumaan enemmän koripallon kanssa.",
+    en: "The motivation for this is to get big and small humans out of the house and move more with a basketball."
   },
   introSupport: { fi: "Tue kehittäjää", en: "Support the developer" },
-  introCta: { fi: "ok bro", en: "ok bro" },
+  okBroCta: { fi: "ok bro", en: "ok bro" },
   madeWith: { fi: 'Made with', en: "Made with" },
   love: { fi: "love", en: "love" },
   courtDataFrom: {
-    fi: "Kenttätiedot lähteistä",
-    en: "Court data from",
+    fi: "Lähdedata:",
+    en: "Sources:",
+  },
+  footerHide: { fi: "Piilota alapalkki", en: "Hide footer" },
+  footerShow: { fi: "Näytä alapalkki", en: "Show footer" },
+  osmContributors: {
+    fi: "contributors",
+    en: "contributors",
+  },
+  osmLicenseLead: {
+    fi: "Lisenssi",
+    en: "License",
+  },
+  osmLicense: {
+    fi: "Open Database License",
+    en: "Open Database License",
   },
   sourceListAnd: { fi: " ja ", en: " and " },
   sourceCodeOn: { fi: "Lähdekoodi", en: "Source code" },
@@ -117,7 +127,7 @@ const messages = {
   nearMe: {
     idle: { fi: "Paikanna", en: "Locate me" },
     pending: { fi: "Paikannetaan…", en: "Locating…" },
-    granted: { fi: "Sijaintisi", en: "Near you" },
+    granted: { fi: "Sijaintisi", en: "Locate" },
     denied: { fi: "Sijainti estetty", en: "Location blocked" },
     unavailable: { fi: "Ei GPS:ää", en: "No GPS" },
   },
@@ -196,6 +206,28 @@ const messages = {
   courtFacts: { fi: "Kentän tiedot", en: "Court scouting" },
   schoolUse: { fi: "Koulukäyttö", en: "School use" },
   fieldType: { fi: "Kenttätyyppi", en: "Field type" },
+  fieldTypes: {
+    full: { fi: "Normaali koripallokenttä", en: "Full court" },
+    "one-hoop": { fi: "Yhden korin kenttä", en: "One hoop" },
+    mini: { fi: "Minikoripallokenttä", en: "Mini court" },
+    street: { fi: "Katukoris", en: "Streetball" },
+  } satisfies Record<string, Pair<string>>,
+  waterPoints: {
+    yes: { fi: "On", en: "Yes" },
+    no: { fi: "Ei ole", en: "No" },
+    seasonal: { fi: "Kausittainen", en: "Seasonal" },
+  } satisfies Record<string, Pair<string>>,
+  lengthM: { fi: "Pituus (m)", en: "Length (m)" },
+  widthM: { fi: "Leveys (m)", en: "Width (m)" },
+  addCourtOptional: {
+    fi: "Vapaaehtoiset. Jätä tyhjäksi, jos et tiedä.",
+    en: "Optional. Leave blank if you don't know.",
+  },
+  addCourtUnknown: { fi: "Ei tietoa", en: "Not known" },
+  addCourtYesNoHint: {
+    fi: "Jos et tiedä, jätä valitsematta.",
+    en: "If you don't know, leave it unselected.",
+  },
   surface: { fi: "Pinta", en: "Surface" },
   surfaceNotes: { fi: "Pintatiedot", en: "Surface notes" },
   dimensions: { fi: "Mitat", en: "Dimensions" },
@@ -214,6 +246,224 @@ const messages = {
   yes: { fi: "Kyllä", en: "Yes" },
   no: { fi: "Ei", en: "No" },
   notReported: { fi: "Ei ilmoitettu", en: "Not reported" },
+  addCourt: { fi: "Lisää kenttä", en: "Add court" },
+  addCourtConfirmHere: { fi: "Lisää kenttä", en: "Add court" },
+  addCourtInfoTitle: { fi: "Lisää kenttä Hoop Finderiin", en: "Add court to Hoop Finder" },
+  addCourtExit: { fi: "Poistu", en: "Exit" },
+  addCourtLead: {
+    fi: "Tee palvelusta parempi lisäämällä puuttuva kenttä.",
+    en: "Make the service better by adding a missing court.",
+  },
+  addCourtHint: {
+    fi: "Liikuta karttaa ja zoomaa tai paikanna itsesi ja napsauta karttaa lisätäksesi kentän.",
+    en: "Pan and zoom the map or locate yourself and tap the map to add a missing court.",
+  },
+  addCourtInfoOpen: { fi: "Ohje", en: "Help" },
+  addCourtHintZoom: {
+    fi: "Zoomaa lähemmäs merkitäksesi korin sijainnin mahdollisimman tarkasti.",
+    en: "Zoom in closer to mark the hoop location as accurately as possible.",
+  },
+  addCourtZoomTitle: { fi: "Zoomaa lähemmäs", en: "Zoom in closer" },
+  addCourtName: { fi: "Kentän nimi", en: "Court name" },
+  addCourtNamePlaceholder: {
+    fi: "Esim. Puiston koripallokenttä",
+    en: "e.g. Park basketball court",
+  },
+  addCourtAddress: { fi: "Osoite", en: "Address" },
+  addCourtAddressPlaceholder: {
+    fi: "Paratiisitie 13, 00100 Helsinki",
+    en: "Paratiisitie 13, 00100 Helsinki",
+  },
+  addCourtAddressLoading: {
+    fi: "Haetaan osoitetta…",
+    en: "Looking up the address…",
+  },
+  addCourtEmail: { fi: "Sähköposti", en: "Email" },
+  addCourtEmailHelp: {
+    fi: "Lähetämme sähköpostiisi linkin jolla sinun tulee vahvistaa kentän lisääminen palveluun.",
+    en: "We'll email you a link to confirm adding this court. You'll need to click it to complete the process.",
+  },
+  addCourtEmailUpdates: {
+    fi: "Ylläpito voi tarvittaessa kysyä lisätietoja tai ilmoittaa päivityksistä. Emme spammaa.",
+    en: "An admin may ask for extra details if needed, or tell you about updates. We won't spam you.",
+  },
+  addCourtEmailPrivacy: {
+    fi: "Sähköpostiosoitettasi ei näytetä palvelussa.",
+    en: "Your email address is not shown in the service.",
+  },
+  addCourtSubmit: { fi: "Tallenna", en: "Save" },
+  addCourtCancel: { fi: "Sulje", en: "Close" },
+  addCourtShowMap: { fi: "Näytä kartta", en: "Show map" },
+  addCourtShowForm: { fi: "Näytä lomake", en: "Show form" },
+  addCourtDiscardAsk: {
+    fi: "Sulje ja poista syöttämäsi tiedot?",
+    en: "Close and delete what you entered?",
+  },
+  addCourtDiscardConfirm: { fi: "Sulje", en: "Close" },
+  addCourtDiscardKeep: { fi: "Palaa lomakkeeseen", en: "Back to the form" },
+  addCourtSending: { fi: "Lähetetään…", en: "Sending…" },
+  addCourtError: {
+    fi: "Lähetys epäonnistui. Kokeile uudelleen.",
+    en: "Could not send. Try again.",
+  },
+  addCourtEmailError: {
+    fi: "Vahvistusviestin lähetys epäonnistui. Kokeile uudelleen.",
+    en: "Could not send the confirmation email. Try again.",
+  },
+  addCourtInvalid: {
+    fi: "Tarkista tiedot. Sähköpostin pitää olla kelvollinen.",
+    en: "Check the details. Email must be valid.",
+  },
+  addCourtUnavailable: {
+    fi: "Kenttien lisääminen ei ole juuri nyt käytössä.",
+    en: "Adding courts is not available right now.",
+  },
+  addCourtTooClose: {
+    fi: "Tässä on jo kenttä ihan lähellä",
+    en: "There is already a court close by",
+  },
+  addCourtTooCloseBody: {
+    fi: "Valitse toinen paikka kartalta.",
+    en: "Pick another place on the map.",
+  },
+  addCourtSuccessLead: {
+    fi: "Kiitos kun autat tekemään palvelusta paremman!",
+    en: "Thank you for contributing with making the service better!",
+  },
+  addCourtSuccess: {
+    fi: "Sait sähköpostiisi vahvistuslinkin, klikkaa sitä ja kenttä julkaistaan pian!",
+    en: "You received a confirmation link in your email, click it and the court will be published soon!",
+  },
+  confirmThanksTitle: { fi: "Kiitos!", en: "Thank you!" },
+  confirmThanksBody: {
+    fi: "Ylläpito sai ilmotuksen vahvistuksesta, tarkistaa tiedot ja hyväksyy lisäyksesi pian!",
+    en: "Administrator was notified of the confirmation. They will check the details and approve it soon!",
+  },
+  confirmCourtInvalidTitle: {
+    fi: "Linkki ei kelpaa",
+    en: "Link is not valid",
+  },
+  confirmCourtInvalid: {
+    fi: "Vahvistuslinkki ei ole voimassa.",
+    en: "This confirmation link is not valid.",
+  },
+  confirmNotifyFailedTitle: {
+    fi: "Ilmoitus ei lähtenyt",
+    en: "The notification didn't send",
+  },
+  confirmNotifyFailed: {
+    fi: "Avaa vahvistuslinkki uudelleen.",
+    en: "Open the confirmation link again.",
+  },
+  addCourtOutsideFinland: {
+    fi: "Valitse paikka Suomesta.",
+    en: "Pick a place in Finland.",
+  },
+  addCourtOnWater: {
+    fi: "Älä laita kenttää veteen",
+    en: "Don't place the court in the water",
+  },
+  addCourtOnWaterBody: {
+    fi: "Hoop Finder ei ole vesipallokenttäpaikannin",
+    en: "Hoop Finder is not a water polo court locator.",
+  },
+  pendingComingSoon: {
+    fi: "Käyttäjän lisäämä kenttä.",
+    en: "Court added by a visitor.",
+  },
+  pendingAddedOn: {
+    fi: (date: string) => `Kenttä on lisätty käyttäjän toimesta ${date}`,
+    en: (date: string) => `Court added by a visitor on ${date}`,
+  },
+  statusUnderReview: { fi: "Odottaa tarkistusta", en: "Waiting to be checked" },
+  statusAwaitingEmail: {
+    fi: "Odottaa vahvistusta",
+    en: "Waiting for confirmation",
+  },
+  pendingPublishAfterReview: {
+    fi: "Kentän tiedot julkaistaan palvelussa kun ylläpito on tarkistanut sen.",
+    en: "The court information is published after an admin has reviewed it.",
+  },
+  sourceSubmitted: {
+    fi: "Käyttäjän lisäämä",
+    en: "Added by a visitor",
+  },
+  signIn: { fi: "Kirjaudu", en: "Sign in" },
+  signOut: { fi: "Kirjaudu ulos", en: "Sign out" },
+  signInNotRequired: {
+    fi: "Kirjautuminen on vain pääkäyttäjille. Voit käyttää Hoop Finderia täysin ilman kirjautumista.",
+    en: "Login is only for system administrators. You can use Hoop Finder fully without logging in.",
+  },
+  signInTitle: { fi: "Ylläpitäjän kirjautuminen", en: "Admin sign-in" },
+  signInGoogle: { fi: "Jatka Googlella", en: "Continue with Google" },
+  signInNotAdmin: {
+    fi: (email: string) =>
+      `Sähköpostiosoitteellasi ${email} ei ole ylläpito-oikeutta.`,
+    en: (email: string) =>
+      `Your email address ${email} does not have admin access.`,
+  },
+  signInUnavailable: {
+    fi: "Google-kirjautuminen ei ole vielä käytössä.",
+    en: "Google sign-in is not available yet.",
+  },
+  signInError: {
+    fi: "Kirjautuminen epäonnistui. Yritä uudelleen.",
+    en: "Sign-in failed. Try again.",
+  },
+  adminNav: { fi: "Hallinta", en: "Admin" },
+  adminTitle: { fi: "Hallintapaneeli", en: "Admin panel" },
+  adminEmpty: {
+    fi: "Ei käyttäjien lisäämiä kenttiä.",
+    en: "No visitor-submitted courts.",
+  },
+  adminUnavailable: {
+    fi: "Hallintapaneeli ei ole juuri nyt käytössä.",
+    en: "Admin panel is not available right now.",
+  },
+  adminCourtCount: {
+    fi: (count: number) => {
+      const noun = count === 1 ? "kenttä" : "kenttää";
+      return `${count} ${noun}`;
+    },
+    en: (count: number) => {
+      const noun = count === 1 ? "court" : "courts";
+      return `${count} ${noun}`;
+    },
+  },
+  adminFilter: { fi: "Suodatus", en: "Filter" },
+  adminFilterAll: { fi: "Kaikki", en: "All" },
+  adminFilterPending: { fi: "Odottaa", en: "Pending" },
+  adminFilterUnconfirmed: { fi: "Vahvistamatta", en: "Unconfirmed" },
+  adminFilterEmpty: {
+    fi: "Ei kenttiä tässä näkymässä.",
+    en: "No courts in this view.",
+  },
+  adminStatusPublished: { fi: "Julkaistu", en: "Published" },
+  adminStatusPending: { fi: "Odottaa julkaisua", en: "Pending publication" },
+  adminStatusConfirmed: { fi: "Käyttäjän vahvistama", en: "Confirmed by user" },
+  adminStatusUnconfirmed: { fi: "Odottaa sähköpostivahvistusta", en: "Waiting for email confirmation" },
+  adminPublish: { fi: "Julkaise", en: "Publish" },
+  adminUnpublish: { fi: "Piilota", en: "Unpublish" },
+  adminSaving: { fi: "Tallennetaan…", en: "Saving…" },
+  adminStatusError: {
+    fi: "Tilan vaihto epäonnistui. Kokeile uudelleen.",
+    en: "Could not update status. Try again.",
+  },
+  adminShowOnMap: { fi: "Katso kartalla", en: "View on map" },
+  adminShowOnGoogleMaps: { fi: "Google Maps", en: "Google Maps" },
+  adminSubmittedAt: { fi: "Lähetetty", en: "Submitted" },
+  adminDelete: { fi: "Poista", en: "Delete" },
+  adminDeleteConfirm: {
+    fi: (name: string) =>
+      `Poistetaanko “${name}” pysyvästi? Tätä ei voi perua.`,
+    en: (name: string) =>
+      `Delete “${name}” permanently? This cannot be undone.`,
+  },
+  adminDeleteError: {
+    fi: "Poisto epäonnistui. Kokeile uudelleen.",
+    en: "Could not delete the court. Try again.",
+  },
+  statusPending: { fi: "Tarkistettavana", en: "Pending review" },
   statusOpen: { fi: "Avoinna", en: "Open" },
   statusTemporarilyClosed: {
     fi: "Tilapäisesti kiinni",

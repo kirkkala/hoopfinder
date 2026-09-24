@@ -50,7 +50,10 @@ export async function getBasketballCourt(
   if (!court) return null;
   return {
     court,
-    sourceFetchedAt: catalog.fetchedAtBySource[court.source] ?? null,
+    sourceFetchedAt:
+      court.source === "submitted"
+        ? null
+        : (catalog.fetchedAtBySource[court.source] ?? null),
   };
 }
 
