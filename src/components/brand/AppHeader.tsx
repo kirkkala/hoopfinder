@@ -329,7 +329,7 @@ function HeaderMenu({
               <div className="px-4">
                 <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1 pt-4">
                   <BuyMeCoffeeButton />
-                  <p className="text-sm text-ink/85">👈 {copy.introSupport}</p>
+                  <p className="text-sm text-ink/85">👈 {copy.supportDeveloper}</p>
                 </div>
                 <SourceFetchedAt
                   fetchedAtBySource={fetchedAtBySource}

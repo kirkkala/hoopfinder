@@ -4,7 +4,6 @@ import { useEffect, useRef, useState } from "react";
 import { basketball } from "@lucide/lab";
 import { ChevronDown, Icon, X } from "lucide-react";
 import { LanguageToggle } from "@/components/brand/LanguageToggle";
-import { BuyMeCoffeeButton } from "@/components/brand/BuyMeCoffeeButton";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { LocateMeButton } from "@/components/LocateMeButton";
 import { AppWordmark } from "@/components/brand/AppWordmark";
@@ -124,10 +123,6 @@ export function IntroDialog({
             {copy.introCreatedBy1}
           </p>
           <p className="mt-2 block text-base text-ink/85">{copy.introCreatedBy2}</p>
-          <div className="mt-6 flex flex-wrap items-center gap-x-1.5">
-            <BuyMeCoffeeButton size="md" />
-            <p className="text-base text-ink/85">👈 {copy.introSupport}</p>
-          </div>
           <button
             type="button"
             onClick={onClose}

@@ -222,7 +222,6 @@ export function AddCourtFields({
   return (
     <div className="mt-5 border-t border-white/10 pt-4">
       <p className="font-display text-lg tracking-wide text-gold">{copy.courtFacts}</p>
-      <p className="mt-1 text-xs text-ink-muted">{copy.addCourtOptional}</p>
 
       <ChoiceSelect
         label={copy.status}
@@ -256,7 +255,7 @@ export function AddCourtFields({
         }
       />
 
-      <p className="mt-3 text-xs text-ink-muted">{copy.addCourtYesNoHint}</p>
+      <p className="mt-6 text-xs text-ink-muted">{copy.addCourtYesNoHint}</p>
       <YesNoField
         label={copy.adjustableRim}
         value={details.heightAdjustable}

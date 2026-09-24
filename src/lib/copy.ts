@@ -82,7 +82,7 @@ const messages = {
     fi: "Motivaationa tähän oli saada isot ja pienet ihmiset ulos liikkumaan enemmän koripallon kanssa.",
     en: "The motivation for this is to get big and small humans out of the house and move more with a basketball."
   },
-  introSupport: { fi: "Tue kehittäjää", en: "Support the developer" },
+  supportDeveloper: { fi: "Tue kehittäjää", en: "Support the developer" },
   okBroCta: { fi: "Tämä selvä!", en: "Understood!" },
   madeWith: { fi: 'Made with', en: "Made with" },
   love: { fi: "love", en: "love" },
@@ -219,14 +219,10 @@ const messages = {
   } satisfies Record<string, Pair<string>>,
   lengthM: { fi: "Pituus (m)", en: "Length (m)" },
   widthM: { fi: "Leveys (m)", en: "Width (m)" },
-  addCourtOptional: {
-    fi: "Vapaaehtoiset. Jätä tyhjäksi, jos et tiedä.",
-    en: "Optional. Leave blank if you don't know.",
-  },
   addCourtUnknown: { fi: "Ei tietoa", en: "Not known" },
   addCourtYesNoHint: {
-    fi: "Jos et tiedä, jätä valitsematta.",
-    en: "If you don't know, leave it unselected.",
+    fi: "Jätä valitsematta jos et tiedä:",
+    en: "If you don't know, leave it unselected:",
   },
   surface: { fi: "Pinta", en: "Surface" },
   surfaceNotes: { fi: "Pintatiedot", en: "Surface notes" },
@@ -284,16 +280,12 @@ const messages = {
   },
   addCourtEmail: { fi: "Sähköposti", en: "Email" },
   addCourtEmailHelp: {
-    fi: "Lähetämme sähköpostiisi linkin jolla sinun tulee vahvistaa kentän lisääminen palveluun.",
-    en: "We'll email you a link to confirm adding this court. You'll need to click it to complete the process.",
+    fi: "Lähetämme sähköpostiisi vahvistuslinkin.",
+    en: "We'll send a confirmation link to your email.",
   },
   addCourtEmailUpdates: {
-    fi: "Ylläpito voi tarvittaessa kysyä lisätietoja tai ilmoittaa päivityksistä. Emme spammaa.",
-    en: "An admin may ask for extra details if needed, or tell you about updates. We won't spam you.",
-  },
-  addCourtEmailPrivacy: {
-    fi: "Sähköpostiosoitettasi ei näytetä palvelussa.",
-    en: "Your email address is not shown in the service.",
+    fi: "Ylläpito voi tarvittaessa myös kysyä lisätietoja tai ilmoittaa päivityksistä. Emme lähetä spammia eikä sähköpostiosoitettasi näytetä palvelussa.",
+    en: "An admin may also ask for extra details, or tell you about updates. We won't spam you and your email address is not shown in the service.",
   },
   addCourtSubmit: { fi: "Tallenna", en: "Save" },
   addCourtRequiredMark: { fi: "pakollinen", en: "required" },
