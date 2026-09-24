@@ -126,6 +126,7 @@ function SubmittedList({
                   <StatusBadge status={court.status} />
                   <AdminStatusButton
                     id={court.id}
+                    name={court.name}
                     published={published}
                     onStatusChange={(status) => {
                       setCourts((current) =>

@@ -7,11 +7,13 @@ import type { SubmittedStatus } from "@/lib/submitted-courts";
 
 export function AdminStatusButton({
   id,
+  name,
   published,
   compact = false,
   onStatusChange,
 }: {
   id: string;
+  name: string;
   published: boolean;
   compact?: boolean;
   onStatusChange?: (status: SubmittedStatus) => void;
@@ -22,6 +24,11 @@ export function AdminStatusButton({
   const [error, setError] = useState(false);
 
   async function setStatus(status: SubmittedStatus) {
+    const message =
+      status === "published"
+        ? copy.adminPublishConfirm(name)
+        : copy.adminUnpublishConfirm(name);
+    if (!window.confirm(message)) return;
     setSaving(true);
     setError(false);
     try {

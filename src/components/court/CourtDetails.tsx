@@ -144,7 +144,12 @@ export function CourtDetails({
           >
             {showAdminStatus ? (
               <div className="absolute top-3 right-3 flex items-start gap-1">
-                <AdminStatusButton compact id={court.id} published={!pending} />
+                <AdminStatusButton
+                  compact
+                  id={court.id}
+                  name={court.name}
+                  published={!pending}
+                />
                 {canEdit ? (
                   <button
                     type="button"

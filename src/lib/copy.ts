@@ -441,7 +441,7 @@ const messages = {
   adminStatusPublished: { fi: "Julkaistu", en: "Published" },
   adminStatusPending: { fi: "Odottaa julkaisua", en: "Pending publication" },
   adminStatusConfirmed: { fi: "Vahvistettu", en: "Confirmed" },
-  adminStatusUnconfirmed: { fi: "Odottaa sähköpostivahvistusta", en: "Waiting for email confirmation" },
+  adminStatusUnconfirmed: { fi: "Vahvistamatta", en: "Unconfirmed" },
   adminUnconfirmedNotice: {
     fi: "Käyttäjä ei ole vielä vahvistanut kentän lisäystä.",
     en: "The visitor has not confirmed the email link yet.",
@@ -453,7 +453,17 @@ const messages = {
     en: "Could not save. Try again.",
   },
   adminPublish: { fi: "Julkaise", en: "Publish" },
+  adminPublishConfirm: {
+    fi: (name: string) =>
+      `Julkaistaanko “${name}”? Käyttäjälle lähetetään sähköposti.`,
+    en: (name: string) =>
+      `Publish “${name}”? An email will be sent to the visitor.`,
+  },
   adminUnpublish: { fi: "Piilota", en: "Unpublish" },
+  adminUnpublishConfirm: {
+    fi: (name: string) => `Piilotetaanko “${name}”?`,
+    en: (name: string) => `Hide “${name}”?`,
+  },
   adminSaving: { fi: "Tallennetaan…", en: "Saving…" },
   adminStatusError: {
     fi: "Tilan vaihto epäonnistui. Kokeile uudelleen.",
