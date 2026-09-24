@@ -173,6 +173,12 @@ function SubmittedList({
               >
                 {court.email}
               </a>
+              {court.greeting ? (
+                <p className="mt-2 whitespace-pre-wrap text-ink">
+                  <span className="text-ink-muted">{copy.addCourtGreeting}: </span>
+                  {court.greeting}
+                </p>
+              ) : null}
               {errorId === court.id ? (
                 <p className="mt-3 text-sm text-red-400">{copy.adminDeleteError}</p>
               ) : null}

@@ -297,6 +297,11 @@ const messages = {
     fi: "Mitat ja pinta-ala kirjoitetaan numeroina.",
     en: "Enter dimensions and area as numbers.",
   },
+  addCourtGreeting: { fi: "Terveiset kehittäjälle", en: "A note for the developer" },
+  addCourtGreetingHint: {
+    fi: "Palaute tai terveiset. Ei näy muille käyttäjille, vain ylläpito näkee tämän.",
+    en: "Feedback or greetings. Hidden from other visitors. Only an admin can see this.",
+  },
   addCourtCancel: { fi: "Sulje", en: "Close" },
   addCourtShowMap: { fi: "Näytä kartta", en: "Show map" },
   addCourtShowForm: { fi: "Näytä lomake", en: "Show form" },

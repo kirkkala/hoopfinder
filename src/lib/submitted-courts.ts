@@ -61,6 +61,7 @@ export const SubmittedCourtSchema = z.object({
   waterPoint: z.enum(WATER_POINT_CODES).nullable().optional(),
   matchClock: triState,
   scoreboard: triState,
+  greeting: optionalText(1000),
 });
 
 export type SubmittedCourtInput = z.infer<typeof SubmittedCourtSchema>;
@@ -83,6 +84,7 @@ export type AdminSubmittedCourt = {
   lon: number;
   status: SubmittedStatus;
   createdAt: string;
+  greeting: string | null;
   court: Court;
 };
 
@@ -149,6 +151,7 @@ export async function listAdminSubmittedCourts(): Promise<
     lon: row.lon,
     status: asSubmittedStatus(row.status),
     createdAt: toIso(row.created_at),
+    greeting: readDetails(row.details).greeting ?? null,
     court: toCourt(row),
   }));
 }
@@ -507,6 +510,7 @@ const StoredDetailsSchema = SubmittedCourtSchema.pick({
   waterPoint: true,
   matchClock: true,
   scoreboard: true,
+  greeting: true,
 }).extend({
   status: z.enum(COURT_STATUS_CODES).nullable().optional(),
 });
@@ -531,6 +535,7 @@ export async function updateSubmittedCourt(
       ...storedDetails(input),
       constructionYear: previous.constructionYear ?? null,
       surfaceMaterialInfo: previous.surfaceMaterialInfo ?? null,
+      greeting: input.greeting ?? previous.greeting ?? null,
     };
     const rows = await sql<{ id: number | string }[]>`
       UPDATE submitted_courts
@@ -573,6 +578,7 @@ function storedDetails(
     waterPoint: input.waterPoint ?? null,
     matchClock: input.matchClock ?? null,
     scoreboard: input.scoreboard ?? null,
+    greeting: input.greeting ?? null,
   };
 }
 
@@ -584,6 +590,7 @@ function readDetails(value: unknown): z.infer<typeof StoredDetailsSchema> {
     comment: null,
     lightingInfo: null,
     surfaceMaterialInfo: null,
+    greeting: null,
   };
 }
 

@@ -67,6 +67,7 @@ export function AddCourtView({
   const [addressLoading, setAddressLoading] = useState(false);
   const addressEdited = useRef(false);
   const [email, setEmail] = useState("");
+  const [greeting, setGreeting] = useState("");
   const [details, setDetails] = useState<AddCourtDetails>(EMPTY_ADD_COURT_DETAILS);
   const [error, setError] = useState<string | null>(null);
   const [showIssues, setShowIssues] = useState(false);
@@ -110,6 +111,7 @@ export function AddCourtView({
     setAddress("");
     setAddressLoading(false);
     setEmail("");
+    setGreeting("");
     setDetails(EMPTY_ADD_COURT_DETAILS);
     setError(null);
     setShowIssues(false);
@@ -120,7 +122,11 @@ export function AddCourtView({
 
   function formIsDirty() {
     return Boolean(
-      name.trim() || addressEdited.current || email.trim() || addCourtDetailsDirty(details),
+      name.trim() ||
+        addressEdited.current ||
+        email.trim() ||
+        greeting.trim() ||
+        addCourtDetailsDirty(details),
     );
   }
 
@@ -230,6 +236,7 @@ export function AddCourtView({
           lat: draft.lat,
           lon: draft.lon,
           ...extra,
+          greeting,
         }),
       });
       const payload = (await response.json()) as
@@ -491,6 +498,17 @@ export function AddCourtView({
                 </span>
               </label>
               <AddCourtFields details={details} onChange={setDetails} />
+              <label className="mt-2.5 block">
+                <span className="mb-1 block text-sm text-ink/85">{copy.addCourtGreeting}</span>
+                <textarea
+                  value={greeting}
+                  rows={3}
+                  maxLength={1000}
+                  onChange={(event) => setGreeting(event.target.value)}
+                  className="w-full rounded-xl border border-white/25 bg-asphalt px-3 py-2 text-base text-white outline-none placeholder:text-white/55 focus:border-gold/50 focus:ring-2 focus:ring-gold/60 sm:text-sm"
+                />
+                <span className="mt-1 block text-xs text-ink-muted">{copy.addCourtGreetingHint}</span>
+              </label>
             </form>
           </AddCourtFormPanel>
         ) : mapAlert && alertCopy ? (
