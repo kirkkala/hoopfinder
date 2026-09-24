@@ -96,7 +96,7 @@ export function AdminCourtEditor({
         title={copy.adminEdit}
         collapsed={false}
         header={
-          <div className="mt-2 flex justify-end pb-3">
+          <div className="flex items-center">
             <button
               type="button"
               onClick={onClose}

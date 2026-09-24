@@ -112,6 +112,7 @@ export function AddCourtView({
     setEmail("");
     setDetails(EMPTY_ADD_COURT_DETAILS);
     setError(null);
+    setShowIssues(false);
     setSending(false);
     setFormCollapsed(false);
     setDiscardConfirm(false);
@@ -356,7 +357,7 @@ export function AddCourtView({
             title={copy.addCourt}
             header={
               discardConfirm ? (
-                <div className="mt-2 pb-3">
+                <div className="basis-full">
                   <p role="status" className="text-sm text-ink/90">
                     {copy.addCourtDiscardAsk}
                   </p>
@@ -378,7 +379,7 @@ export function AddCourtView({
                   </div>
                 </div>
               ) : (
-                <div className="mt-2 flex flex-wrap items-center justify-end gap-1 pb-3">
+                <div className="flex items-center gap-1">
                   <button
                     ref={showFormRef}
                     type="button"

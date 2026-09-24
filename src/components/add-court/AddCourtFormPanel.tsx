@@ -34,7 +34,7 @@ export function AddCourtFormPanel({
         className="pointer-events-auto flex max-h-full w-full max-w-sm flex-col overflow-hidden rounded-2xl border border-white/10 bg-panel/95 shadow-[0_12px_32px_rgb(0_0_0_/_0.45)]"
       >
         <div
-          className={`shrink-0 px-3 pt-3 ${collapsed ? "" : "border-b border-white/10"}`}
+          className={`flex shrink-0 flex-wrap items-center justify-between gap-x-2 gap-y-2 px-3 py-2.5 ${collapsed ? "" : "border-b border-white/10"}`}
         >
           <p
             id="add-court-form-title"
