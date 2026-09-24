@@ -234,12 +234,21 @@ export function CourtDetails({
             <h2 className="font-display text-2xl tracking-wide text-white">
               {copy.courtFacts}
             </h2>
-            <dl className="mt-4 grid gap-3 sm:grid-cols-2">
-              <Fact
-                icon={Lightbulb}
-                label={copy.lights}
-                value={formatReportedBoolean(amenities.lighting, copy)}
-              />
+            <dl className="mt-4 grid grid-cols-[max-content_minmax(0,1fr)] gap-x-6 gap-y-3 max-sm:[&>div]:col-span-2 max-sm:[&>div]:grid max-sm:[&>div]:grid-cols-subgrid max-sm:[&>div]:items-start max-sm:[&>div]:border-b max-sm:[&>div]:border-white/10 max-sm:[&>div]:pb-2 max-sm:[&_dt]:mt-0 max-sm:[&_dt]:translate-y-[3px] max-sm:[&_dd]:mt-0 sm:grid-cols-2 sm:gap-3">
+              {amenities.hoopHeight ? (
+                <Fact
+                  icon={Ruler}
+                  label={copy.hoopHeight}
+                  value={copy.hoopHeights[amenities.hoopHeight]}
+                />
+              ) : null}
+              {amenities.heightAdjustable !== null ? (
+                <Fact
+                  icon={MoveVertical}
+                  label={copy.adjustableRim}
+                  value={formatReportedBoolean(amenities.heightAdjustable, copy)}
+                />
+              ) : null}
               <Fact
                 icon={Unlock}
                 label={copy.freeUse}
@@ -292,13 +301,11 @@ export function CourtDetails({
                   value={formatReportedBoolean(amenities.toilet, copy)}
                 />
               ) : null}
-              {amenities.heightAdjustable !== null ? (
-                <Fact
-                  icon={MoveVertical}
-                  label={copy.adjustableRim}
-                  value={formatReportedBoolean(amenities.heightAdjustable, copy)}
-                />
-              ) : null}
+              <Fact
+                icon={Lightbulb}
+                label={copy.lights}
+                value={formatReportedBoolean(amenities.lighting, copy)}
+              />
               {amenities.lightingInfo ? (
                 <Fact
                   icon={Lightbulb}
@@ -345,7 +352,7 @@ export function CourtDetails({
                   ? copy.notesFrom(source.label)
                   : copy.notesFromListing}
               </h2>
-              <p className="mt-2 whitespace-pre-wrap text-sm leading-6 text-ink-muted">
+              <p className="mt-2 whitespace-pre-wrap text-md leading-6 text-ink-muted">
                 {court.comment}
               </p>
             </section>
@@ -561,12 +568,12 @@ function Fact({
   value: ReactNode;
 }) {
   return (
-    <div>
-      <dt className="flex items-center mt-2 gap-1.5 text-sm font-bold uppercase tracking-wide text-gold/80">
+    <div className="min-w-0">
+      <dt className="mt-2 flex items-center gap-1.5 text-sm font-bold uppercase tracking-wide text-gold/80">
         <FactIcon className="size-3.5 shrink-0" aria-hidden />
         {label}
       </dt>
-      <dd className="mt-1 text-base text-ink">{value}</dd>
+      <dd className="mt-1 min-w-0 hyphens-auto text-base text-ink">{value}</dd>
     </div>
   );
 }

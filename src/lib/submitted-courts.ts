@@ -9,6 +9,7 @@ import {
   courtPlacementBlocked,
   emptyAmenities,
   FIELD_TYPE_CODES,
+  HOOP_HEIGHT_CODES,
   isTooCloseToCourt,
   OWNER_CODES,
   submittedCourtKey,
@@ -56,9 +57,11 @@ export const SubmittedCourtSchema = z.object({
   areaM2: z.number().positive().max(20000).nullable().optional(),
   toilet: triState,
   heightAdjustable: triState,
+  hoopHeight: z.enum(HOOP_HEIGHT_CODES).nullable().optional(),
   waterPoint: z.enum(WATER_POINT_CODES).nullable().optional(),
   matchClock: triState,
   scoreboard: triState,
+  greeting: optionalText(1000),
 });
 
 export type SubmittedCourtInput = z.infer<typeof SubmittedCourtSchema>;
@@ -81,6 +84,8 @@ export type AdminSubmittedCourt = {
   lon: number;
   status: SubmittedStatus;
   createdAt: string;
+  greeting: string | null;
+  court: Court;
 };
 
 type SubmittedRow = {
@@ -131,7 +136,7 @@ export async function listAdminSubmittedCourts(): Promise<
 > {
   const rows = await withDb((sql) => {
     return sql<AdminRow[]>`
-      SELECT id, name, address, email, lat, lon, status, created_at
+      SELECT id, name, address, email, lat, lon, status, created_at, details
       FROM submitted_courts
       ORDER BY created_at DESC
     `;
@@ -146,6 +151,8 @@ export async function listAdminSubmittedCourts(): Promise<
     lon: row.lon,
     status: asSubmittedStatus(row.status),
     createdAt: toIso(row.created_at),
+    greeting: readDetails(row.details).greeting ?? null,
+    court: toCourt(row),
   }));
 }
 
@@ -471,6 +478,7 @@ function toCourt(row: SubmittedRow): Court {
       areaM2: details.areaM2 ?? null,
       toilet: triToBool(details.toilet),
       heightAdjustable: triToBool(details.heightAdjustable),
+      hoopHeight: details.hoopHeight ?? null,
       waterPoint: details.waterPoint ?? null,
       matchClock: triToBool(details.matchClock),
       scoreboard: triToBool(details.scoreboard),
@@ -498,9 +506,11 @@ const StoredDetailsSchema = SubmittedCourtSchema.pick({
   areaM2: true,
   toilet: true,
   heightAdjustable: true,
+  hoopHeight: true,
   waterPoint: true,
   matchClock: true,
   scoreboard: true,
+  greeting: true,
 }).extend({
   status: z.enum(COURT_STATUS_CODES).nullable().optional(),
 });
@@ -525,6 +535,7 @@ export async function updateSubmittedCourt(
       ...storedDetails(input),
       constructionYear: previous.constructionYear ?? null,
       surfaceMaterialInfo: previous.surfaceMaterialInfo ?? null,
+      greeting: input.greeting ?? previous.greeting ?? null,
     };
     const rows = await sql<{ id: number | string }[]>`
       UPDATE submitted_courts
@@ -563,9 +574,11 @@ function storedDetails(
     areaM2: input.areaM2 ?? null,
     toilet: input.toilet ?? null,
     heightAdjustable: input.heightAdjustable ?? null,
+    hoopHeight: input.hoopHeight ?? null,
     waterPoint: input.waterPoint ?? null,
     matchClock: input.matchClock ?? null,
     scoreboard: input.scoreboard ?? null,
+    greeting: input.greeting ?? null,
   };
 }
 
@@ -577,6 +590,7 @@ function readDetails(value: unknown): z.infer<typeof StoredDetailsSchema> {
     comment: null,
     lightingInfo: null,
     surfaceMaterialInfo: null,
+    greeting: null,
   };
 }
 

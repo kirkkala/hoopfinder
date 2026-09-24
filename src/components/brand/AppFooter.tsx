@@ -10,15 +10,15 @@ const FOOTER_COLLAPSED_KEY = "hoopfinder-footer-collapsed";
 
 export function AppFooter({ collapsible = false }: { collapsible?: boolean }) {
   const copy = useCopy();
-  const [collapsed, setCollapsed] = useState(false);
+  const [collapsed, setCollapsed] = useState(collapsible);
   const showCollapsed = collapsible && collapsed;
 
   useLayoutEffect(() => {
     if (!collapsible) return;
     try {
-      setCollapsed(sessionStorage.getItem(FOOTER_COLLAPSED_KEY) === "1");
+      setCollapsed(sessionStorage.getItem(FOOTER_COLLAPSED_KEY) !== "0");
     } catch {
-      // Private browsing can block storage. The footer stays open.
+      // Private browsing can block storage. The footer stays collapsed.
     }
   }, [collapsible]);
 
@@ -59,9 +59,7 @@ export function AppFooter({ collapsible = false }: { collapsible?: boolean }) {
       ) : null}
       <div className={`wide:hidden ${collapsible ? "pr-10" : ""}`}>
         {showCollapsed ? (
-          <p>
-            <CreditLinks />
-          </p>
+          <MadeWith />
         ) : (
           <>
             <MadeWith />
@@ -102,7 +100,7 @@ function MadeWith() {
         target="_blank"
         rel="noreferrer"
       >
-        Timo Kirkkala
+        Kirkkala
       </a>
     </p>
   );

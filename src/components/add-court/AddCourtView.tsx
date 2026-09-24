@@ -9,25 +9,28 @@ import {
   type RefObject,
 } from "react";
 import dynamic from "next/dynamic";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CircleHelp, LoaderCircle, X } from "lucide-react";
 import { LocateMeButton } from "@/components/LocateMeButton";
+import { AppHeader } from "@/components/brand/AppHeader";
 import { useCopy } from "@/components/brand/LocaleProvider";
+import type { FetchedAtBySource } from "@/lib/catalog";
 import type { Copy } from "@/lib/copy";
 import { homeCourtHref, type ExplorerCourt } from "@/lib/courts";
 import { AddCourtFormPanel } from "@/components/add-court/AddCourtFormPanel";
 import {
   AddCourtFields,
+  FieldLabel,
   addCourtDetailsDirty,
-  addCourtDetailsPayload,
+  addCourtFormPayload,
+  requiredFieldIssues,
   EMPTY_ADD_COURT_DETAILS,
   type AddCourtDetails,
 } from "@/components/add-court/AddCourtFields";
 import type { AddCourtMapAlert } from "@/components/add-court/AddCourtMap";
 import type { Coordinates } from "@/lib/geo";
 import { fetchMapCourts } from "@/lib/map-courts";
-import { useLocationStatus, type LocationStatus } from "@/lib/origin";
+import { useLocationStatus } from "@/lib/origin";
 
 const AddCourtMap = dynamic(
   () => import("@/components/add-court/AddCourtMap").then((mod) => mod.AddCourtMap),
@@ -46,7 +49,13 @@ const GOLD_BUTTON_CLASS =
 const MAP_CHROME_OFFSET =
   "calc(max(0.75rem, env(safe-area-inset-top)) + 4.25rem)";
 
-export function AddCourtView() {
+export function AddCourtView({
+  courtCount,
+  fetchedAtBySource,
+}: {
+  courtCount: number;
+  fetchedAtBySource: FetchedAtBySource;
+}) {
   const copy = useCopy();
   const router = useRouter();
   const infoCtaRef = useRef<HTMLButtonElement>(null);
@@ -58,8 +67,10 @@ export function AddCourtView() {
   const [addressLoading, setAddressLoading] = useState(false);
   const addressEdited = useRef(false);
   const [email, setEmail] = useState("");
+  const [greeting, setGreeting] = useState("");
   const [details, setDetails] = useState<AddCourtDetails>(EMPTY_ADD_COURT_DETAILS);
   const [error, setError] = useState<string | null>(null);
+  const [showIssues, setShowIssues] = useState(false);
   const [sending, setSending] = useState(false);
   const [mapAlert, setMapAlert] = useState<AddCourtMapAlert | null>(null);
   const { origin, status: locationStatus, request } = useLocationStatus();
@@ -100,8 +111,10 @@ export function AddCourtView() {
     setAddress("");
     setAddressLoading(false);
     setEmail("");
+    setGreeting("");
     setDetails(EMPTY_ADD_COURT_DETAILS);
     setError(null);
+    setShowIssues(false);
     setSending(false);
     setFormCollapsed(false);
     setDiscardConfirm(false);
@@ -109,7 +122,11 @@ export function AddCourtView() {
 
   function formIsDirty() {
     return Boolean(
-      name.trim() || addressEdited.current || email.trim() || addCourtDetailsDirty(details),
+      name.trim() ||
+        addressEdited.current ||
+        email.trim() ||
+        greeting.trim() ||
+        addCourtDetailsDirty(details),
     );
   }
 
@@ -200,9 +217,10 @@ export function AddCourtView() {
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
     if (!draft || draftStep !== "form" || sending) return;
-    const extra = addCourtDetailsPayload(details);
-    if (extra === "invalid") {
-      setError(copy.addCourtInvalid);
+    const extra = addCourtFormPayload(copy, { name, address, email, details });
+    if (typeof extra === "string") {
+      setShowIssues(true);
+      setError(extra);
       return;
     }
     setSending(true);
@@ -218,6 +236,7 @@ export function AddCourtView() {
           lat: draft.lat,
           lon: draft.lon,
           ...extra,
+          greeting,
         }),
       });
       const payload = (await response.json()) as
@@ -243,6 +262,10 @@ export function AddCourtView() {
     }
   }
 
+  const issues = showIssues
+    ? requiredFieldIssues({ name, address, email })
+    : { name: false, address: false, email: false };
+
   const alertCopy = mapAlert
     ? {
         zoom: {
@@ -266,6 +289,11 @@ export function AddCourtView() {
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden overscroll-none bg-asphalt">
+      <AppHeader
+        title={copy.addCourt}
+        courtCount={courtCount}
+        fetchedAtBySource={fetchedAtBySource}
+      />
       <section className="relative min-h-0 flex-1 bg-asphalt">
         <div className="add-court-map absolute inset-0" inert={infoOpen}>
           <AddCourtMap
@@ -296,32 +324,23 @@ export function AddCourtView() {
         </div>
 
         <div className="pointer-events-none absolute inset-x-0 top-0 z-40 flex justify-start p-3 pt-[max(0.75rem,env(safe-area-inset-top))] pl-[max(0.75rem,env(safe-area-inset-left))]">
-          <div className="pointer-events-auto flex items-center gap-2 drop-shadow-[0_8px_20px_rgb(0_0_0_/_0.35)]">
+          <div className="pointer-events-auto flex max-w-full flex-wrap items-center gap-2 drop-shadow-[0_8px_20px_rgb(0_0_0_/_0.35)]">
             <LocateMeButton
               iconOnly
               status={locationStatus}
               onClick={requestLocation}
             />
-            <button
-              type="button"
-              onClick={() => setInfoOpen((open) => !open)}
-              aria-expanded={infoOpen}
-              aria-controls="add-court-info"
-              aria-label={copy.addCourtInfoOpen}
-              className={`inline-flex h-12 shrink-0 items-center gap-1.5 rounded-full bg-asphalt/95 px-3 ring-1 ring-white/15 outline-none hover:bg-gold hover:text-asphalt focus-visible:ring-2 focus-visible:ring-gold/60 ${
-                infoOpen ? "text-gold" : "text-white"
-              }`}
-            >
-              <CircleHelp aria-hidden className="size-5" />
-              <span className="text-sm font-bold">{copy.addCourtInfoOpen}</span>
-            </button>
-            <Link
-              href="/"
-              className="inline-flex h-12 shrink-0 items-center gap-1.5 rounded-full bg-white px-3.5 text-sm font-bold text-asphalt outline-none hover:bg-gold hover:text-asphalt focus-visible:ring-2 focus-visible:ring-gold/60"
-            >
-              <X aria-hidden className="size-6 stroke-[2.5]" />
-              {copy.addCourtExit}
-            </Link>
+            {infoOpen ? null : (
+              <button
+                type="button"
+                onClick={() => setInfoOpen(true)}
+                aria-label={copy.addCourtInfoOpen}
+                className="inline-flex h-12 shrink-0 items-center gap-1.5 rounded-full bg-asphalt/95 px-3 text-white ring-1 ring-white/15 outline-none hover:bg-gold hover:text-asphalt focus-visible:ring-2 focus-visible:ring-gold/60"
+              >
+                <CircleHelp aria-hidden className="size-5" />
+                <span className="text-sm font-bold">{copy.addCourtInfoOpen}</span>
+              </button>
+            )}
           </div>
         </div>
 
@@ -333,8 +352,6 @@ export function AddCourtView() {
           >
             <AddCourtInfoDialog
               ctaRef={infoCtaRef}
-              locationStatus={locationStatus}
-              onLocate={requestLocation}
               onClose={() => setInfoOpen(false)}
             />
           </div>
@@ -347,7 +364,7 @@ export function AddCourtView() {
             title={copy.addCourt}
             header={
               discardConfirm ? (
-                <div className="mt-2 pb-3">
+                <div className="basis-full">
                   <p role="status" className="text-sm text-ink/90">
                     {copy.addCourtDiscardAsk}
                   </p>
@@ -369,7 +386,7 @@ export function AddCourtView() {
                   </div>
                 </div>
               ) : (
-                <div className="mt-2 flex flex-wrap items-center justify-end gap-1 pb-3">
+                <div className="flex items-center gap-1">
                   <button
                     ref={showFormRef}
                     type="button"
@@ -391,16 +408,16 @@ export function AddCourtView() {
               )
             }
             footer={
-              <div className="flex flex-wrap items-center justify-end gap-2">
+              <div className="flex flex-col items-end gap-2">
+                {error ? (
+                  <p role="alert" className="w-full text-sm text-red-400">
+                    {error}
+                  </p>
+                ) : null}
                 <button
                   type="submit"
                   form="add-court-form"
-                  disabled={
-                    sending ||
-                    !name.trim() ||
-                    !address.trim() ||
-                    !email.trim()
-                  }
+                  disabled={sending}
                   className="rounded-full bg-gold px-3 py-1.5 text-sm font-bold text-asphalt hover:bg-white disabled:cursor-default disabled:opacity-60"
                 >
                   {sending ? copy.addCourtSending : copy.addCourtSubmit}
@@ -413,31 +430,33 @@ export function AddCourtView() {
                 {draft.lat.toFixed(5)}, {draft.lon.toFixed(5)}
               </p>
               <label className="mt-3 block">
-                <span className="mb-1 block text-sm text-ink/85">
-                  {copy.addCourtName}
-                </span>
+                <FieldLabel required invalid={issues.name}>{copy.addCourtName}</FieldLabel>
                 <input
-                  required
+                  aria-required="true"
+                  aria-invalid={issues.name}
                   maxLength={120}
                   value={name}
-                  onChange={(event) => setName(event.target.value)}
+                  onChange={(event) => {
+                    setName(event.target.value);
+                    setError(null);
+                  }}
                   placeholder={copy.addCourtNamePlaceholder}
                   className={INPUT_CLASS}
                   autoComplete="off"
                 />
               </label>
               <label className="mt-2.5 block">
-                <span className="mb-1 block text-sm text-ink/85">
-                  {copy.addCourtAddress}
-                </span>
+                <FieldLabel required invalid={issues.address}>{copy.addCourtAddress}</FieldLabel>
                 <span className="relative block">
                   <input
-                    required
+                    aria-required="true"
+                    aria-invalid={issues.address}
                     maxLength={200}
                     value={address}
                     onChange={(event) => {
                       addressEdited.current = true;
                       setAddress(event.target.value);
+                      setError(null);
                     }}
                     placeholder={
                       addressLoading
@@ -456,31 +475,40 @@ export function AddCourtView() {
                 </span>
               </label>
               <label className="mt-2.5 block">
-                <span className="mb-1 block text-sm text-ink/85">
-                  {copy.addCourtEmail}
-                </span>
+                <FieldLabel required invalid={issues.email}>{copy.addCourtEmail}</FieldLabel>
                 <input
-                  required
+                  aria-required="true"
+                  aria-invalid={issues.email}
                   type="email"
                   inputMode="email"
                   maxLength={254}
                   value={email}
-                  onChange={(event) => setEmail(event.target.value)}
+                  onChange={(event) => {
+                    setEmail(event.target.value);
+                    setError(null);
+                  }}
                   className={INPUT_CLASS}
                   autoComplete="email"
                 />
-                <span className="mt-1 block text-xs text-ink-muted">
+                <span className="mt-1 block text-sm text-ink-muted">
                   {copy.addCourtEmailHelp}
                 </span>
                 <span className="mt-1 block text-xs text-ink-muted">
                   {copy.addCourtEmailUpdates}
                 </span>
-                <span className="mt-1 block text-xs text-ink-muted">
-                  {copy.addCourtEmailPrivacy}
-                </span>
               </label>
               <AddCourtFields details={details} onChange={setDetails} />
-              {error ? <p className="mt-2 text-sm text-red-400">{error}</p> : null}
+              <label className="mt-2.5 block">
+                <span className="mb-1 block text-sm text-ink/85">{copy.addCourtGreeting}</span>
+                <textarea
+                  value={greeting}
+                  rows={3}
+                  maxLength={1000}
+                  onChange={(event) => setGreeting(event.target.value)}
+                  className="w-full rounded-xl border border-white/25 bg-asphalt px-3 py-2 text-base text-white outline-none placeholder:text-white/55 focus:border-gold/50 focus:ring-2 focus:ring-gold/60 sm:text-sm"
+                />
+                <span className="mt-1 block text-xs text-ink-muted">{copy.addCourtGreetingHint}</span>
+              </label>
             </form>
           </AddCourtFormPanel>
         ) : mapAlert && alertCopy ? (
@@ -500,13 +528,9 @@ export function AddCourtView() {
 
 function AddCourtInfoDialog({
   ctaRef,
-  locationStatus,
-  onLocate,
   onClose,
 }: {
   ctaRef: RefObject<HTMLButtonElement | null>;
-  locationStatus: LocationStatus;
-  onLocate: () => void;
   onClose: () => void;
 }) {
   const copy = useCopy();
@@ -520,21 +544,9 @@ function AddCourtInfoDialog({
       className="relative mt-3 h-fit w-full max-w-md rounded-3xl border border-white/10 bg-panel shadow-[0_24px_64px_rgb(0_0_0_/_0.55)] sm:mt-0 sm:max-w-lg"
     >
       <div className="court-arc pointer-events-none absolute inset-0 rounded-3xl opacity-40" />
-      <div className="relative px-6 pt-6 pb-5">
-        <h2
-          id="add-court-info-title"
-          className="font-display text-4xl leading-none tracking-wide text-balance text-gold"
-        >
-          {copy.addCourtInfoTitle}
-        </h2>
+      <div className="relative px-6 pt-1 pb-5">
         <p className="mt-4 text-base leading-6 text-ink/90">{copy.addCourtLead}</p>
         <p className="mt-2 text-base leading-6 text-ink-muted">{copy.addCourtHint}</p>
-        <div className="mt-4">
-          <LocateMeButton status={locationStatus} onClick={onLocate} />
-          {locationStatus === "denied" ? (
-            <p className="mt-2 text-sm text-ink-muted">{copy.locationBlockedHelp}</p>
-          ) : null}
-        </div>
         <button
           ref={ctaRef}
           type="button"

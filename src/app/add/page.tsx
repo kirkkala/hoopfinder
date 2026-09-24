@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { AddCourtView } from "@/components/add-court/AddCourtView";
+import { getCourtCatalog } from "@/lib/catalog";
 import { getCopy } from "@/lib/copy";
+import { countPublicCourts } from "@/lib/submitted-courts";
 import { homeOgHref, OG_CONTENT_TYPE, OG_SIZE } from "@/lib/og";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -23,6 +25,16 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function AddCourtPage() {
-  return <AddCourtView />;
+export default async function AddCourtPage() {
+  const [{ fetchedAtBySource }, courtCount] = await Promise.all([
+    getCourtCatalog(),
+    countPublicCourts(),
+  ]);
+
+  return (
+    <AddCourtView
+      courtCount={courtCount}
+      fetchedAtBySource={fetchedAtBySource}
+    />
+  );
 }

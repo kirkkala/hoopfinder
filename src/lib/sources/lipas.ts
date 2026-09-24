@@ -125,6 +125,7 @@ function toCourt(site: z.infer<typeof LipasSiteSchema>): Court | null {
       areaM2: num(properties["area-m2"]),
       toilet: bool(properties["toilet?"]),
       heightAdjustable: bool(properties["height-of-basket-or-net-adjustable?"]),
+      hoopHeight: null,
       waterPoint: str(properties["water-point"]),
       matchClock: bool(properties["match-clock?"]),
       scoreboard: bool(properties["scoreboard?"]),

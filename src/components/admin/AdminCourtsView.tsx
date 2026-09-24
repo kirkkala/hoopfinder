@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { basketball } from "@lucide/lab";
-import { Icon, Trash2 } from "lucide-react";
+import { Icon, Pencil, Trash2 } from "lucide-react";
+import { AdminCourtEditor } from "@/components/admin/AdminCourtEditor";
 import { AdminStatusButton } from "@/components/admin/AdminStatusButton";
 import { AppFooter } from "@/components/brand/AppFooter";
 import { AppHeader } from "@/components/brand/AppHeader";
@@ -56,6 +57,7 @@ function SubmittedList({
   const [filter, setFilter] = useState<StatusFilter>("all");
   const [savingId, setSavingId] = useState<string | null>(null);
   const [errorId, setErrorId] = useState<string | null>(null);
+  const [editingId, setEditingId] = useState<string | null>(null);
 
   useEffect(() => {
     setCourts(initialCourts);
@@ -95,6 +97,7 @@ function SubmittedList({
     filter === "all"
       ? courts
       : courts.filter((court) => court.status === filter);
+  const editing = courts.find((court) => court.id === editingId) ?? null;
 
   return (
     <>
@@ -137,15 +140,25 @@ function SubmittedList({
                     }}
                   />
                 </div>
-                <button
-                  type="button"
-                  disabled={saving}
-                  onClick={() => void remove(court.id, court.name)}
-                  className="inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium text-ink/70 hover:bg-red-500/15 hover:text-red-300 disabled:cursor-wait disabled:opacity-70"
-                >
-                  <Trash2 className="size-3.5" aria-hidden />
-                  {copy.adminDelete}
-                </button>
+                <div className="flex shrink-0 items-center gap-1">
+                  <button
+                    type="button"
+                    onClick={() => setEditingId(court.id)}
+                    className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium text-ink/70 hover:bg-white/10 hover:text-white"
+                  >
+                    <Pencil className="size-3.5" aria-hidden />
+                    {copy.adminEdit}
+                  </button>
+                  <button
+                    type="button"
+                    disabled={saving}
+                    onClick={() => void remove(court.id, court.name)}
+                    className="inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium text-ink/70 hover:bg-red-500/15 hover:text-red-300 disabled:cursor-wait disabled:opacity-70"
+                  >
+                    <Trash2 className="size-3.5" aria-hidden />
+                    {copy.adminDelete}
+                  </button>
+                </div>
               </div>
               <Link
                 href={courtHref({ id: court.id, source: "submitted" })}
@@ -160,6 +173,12 @@ function SubmittedList({
               >
                 {court.email}
               </a>
+              {court.greeting ? (
+                <p className="mt-2 whitespace-pre-wrap text-ink">
+                  <span className="text-ink-muted">{copy.addCourtGreeting}: </span>
+                  {court.greeting}
+                </p>
+              ) : null}
               {errorId === court.id ? (
                 <p className="mt-3 text-sm text-red-400">{copy.adminDeleteError}</p>
               ) : null}
@@ -168,6 +187,13 @@ function SubmittedList({
         })}
       </ul>
       )}
+      {editing ? (
+        <AdminCourtEditor
+          court={editing.court}
+          email={editing.email}
+          onClose={() => setEditingId(null)}
+        />
+      ) : null}
     </>
   );
 }
