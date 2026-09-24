@@ -306,6 +306,10 @@ const messages = {
     fi: "Lähetys epäonnistui. Kokeile uudelleen.",
     en: "Could not send. Try again.",
   },
+  addCourtRateLimit: {
+    fi: "Liian monta lähetystä. Kokeile myöhemmin uudelleen.",
+    en: "Too many submissions. Try again later.",
+  },
   addCourtEmailError: {
     fi: "Vahvistusviestin lähetys epäonnistui. Kokeile uudelleen.",
     en: "Could not send the confirmation email. Try again.",

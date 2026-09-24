@@ -50,6 +50,9 @@ Restore with `psql postgres://hoopfinder:hoopfinder@localhost:5432/hoopfinder < 
 Visitors open `/add`, drop a pin in Finland (not next to an existing court), and submit a name, address, and email. Other court facts are optional.
 
 The pin shows on the map immediately. The visitor confirms by email, then an admin publishes it from `/admin`.
+
+One IP address can add five courts per hour. After that, the form asks them to try again later. `npm run dev` does not apply the limit.
+
 ## Admin
 
 `/admin` reviews visitor-submitted courts. Sign-in is with Google, NextAuth, a JWT session, and admin access from an environment variable.
