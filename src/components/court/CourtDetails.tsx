@@ -400,7 +400,17 @@ export function CourtDetails({
                 value={
                   <div className="space-y-1">
                     {court.source === "submitted" ? (
-                      <p>{copy.sourceSubmitted}</p>
+                      <p>
+                        {copy.sourceSubmitted}
+                        {visitorEmail ? (
+                          <a
+                            href={`mailto:${visitorEmail}`}
+                            className="mt-1 block text-gold hover:text-white"
+                          >
+                            {visitorEmail}
+                          </a>
+                        ) : null}
+                      </p>
                     ) : null}
                     {court.source === "osm" || listingUrl ? (
                       <ul>
