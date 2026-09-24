@@ -244,6 +244,7 @@ export const SURFACE_CODES = [
   "rock-dust",
   "gravel",
   "fine_gravel",
+  "other",
 ] as const;
 
 export const COMMON_SURFACE_CODES = [

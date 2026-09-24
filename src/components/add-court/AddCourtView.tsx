@@ -20,8 +20,10 @@ import { homeCourtHref, type ExplorerCourt } from "@/lib/courts";
 import { AddCourtFormPanel } from "@/components/add-court/AddCourtFormPanel";
 import {
   AddCourtFields,
+  FieldLabel,
   addCourtDetailsDirty,
-  addCourtDetailsPayload,
+  addCourtFormPayload,
+  requiredFieldIssues,
   EMPTY_ADD_COURT_DETAILS,
   type AddCourtDetails,
 } from "@/components/add-court/AddCourtFields";
@@ -67,6 +69,7 @@ export function AddCourtView({
   const [email, setEmail] = useState("");
   const [details, setDetails] = useState<AddCourtDetails>(EMPTY_ADD_COURT_DETAILS);
   const [error, setError] = useState<string | null>(null);
+  const [showIssues, setShowIssues] = useState(false);
   const [sending, setSending] = useState(false);
   const [mapAlert, setMapAlert] = useState<AddCourtMapAlert | null>(null);
   const { origin, status: locationStatus, request } = useLocationStatus();
@@ -207,9 +210,10 @@ export function AddCourtView({
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
     if (!draft || draftStep !== "form" || sending) return;
-    const extra = addCourtDetailsPayload(details);
-    if (extra === "invalid") {
-      setError(copy.addCourtInvalid);
+    const extra = addCourtFormPayload(copy, { name, address, email, details });
+    if (typeof extra === "string") {
+      setShowIssues(true);
+      setError(extra);
       return;
     }
     setSending(true);
@@ -249,6 +253,10 @@ export function AddCourtView({
       setSending(false);
     }
   }
+
+  const issues = showIssues
+    ? requiredFieldIssues({ name, address, email })
+    : { name: false, address: false, email: false };
 
   const alertCopy = mapAlert
     ? {
@@ -392,16 +400,16 @@ export function AddCourtView({
               )
             }
             footer={
-              <div className="flex flex-wrap items-center justify-end gap-2">
+              <div className="flex flex-col items-end gap-2">
+                {error ? (
+                  <p role="alert" className="w-full text-sm text-red-400">
+                    {error}
+                  </p>
+                ) : null}
                 <button
                   type="submit"
                   form="add-court-form"
-                  disabled={
-                    sending ||
-                    !name.trim() ||
-                    !address.trim() ||
-                    !email.trim()
-                  }
+                  disabled={sending}
                   className="rounded-full bg-gold px-3 py-1.5 text-sm font-bold text-asphalt hover:bg-white disabled:cursor-default disabled:opacity-60"
                 >
                   {sending ? copy.addCourtSending : copy.addCourtSubmit}
@@ -414,31 +422,33 @@ export function AddCourtView({
                 {draft.lat.toFixed(5)}, {draft.lon.toFixed(5)}
               </p>
               <label className="mt-3 block">
-                <span className="mb-1 block text-sm text-ink/85">
-                  {copy.addCourtName}
-                </span>
+                <FieldLabel required invalid={issues.name}>{copy.addCourtName}</FieldLabel>
                 <input
-                  required
+                  aria-required="true"
+                  aria-invalid={issues.name}
                   maxLength={120}
                   value={name}
-                  onChange={(event) => setName(event.target.value)}
+                  onChange={(event) => {
+                    setName(event.target.value);
+                    setError(null);
+                  }}
                   placeholder={copy.addCourtNamePlaceholder}
                   className={INPUT_CLASS}
                   autoComplete="off"
                 />
               </label>
               <label className="mt-2.5 block">
-                <span className="mb-1 block text-sm text-ink/85">
-                  {copy.addCourtAddress}
-                </span>
+                <FieldLabel required invalid={issues.address}>{copy.addCourtAddress}</FieldLabel>
                 <span className="relative block">
                   <input
-                    required
+                    aria-required="true"
+                    aria-invalid={issues.address}
                     maxLength={200}
                     value={address}
                     onChange={(event) => {
                       addressEdited.current = true;
                       setAddress(event.target.value);
+                      setError(null);
                     }}
                     placeholder={
                       addressLoading
@@ -457,16 +467,18 @@ export function AddCourtView({
                 </span>
               </label>
               <label className="mt-2.5 block">
-                <span className="mb-1 block text-sm text-ink/85">
-                  {copy.addCourtEmail}
-                </span>
+                <FieldLabel required invalid={issues.email}>{copy.addCourtEmail}</FieldLabel>
                 <input
-                  required
+                  aria-required="true"
+                  aria-invalid={issues.email}
                   type="email"
                   inputMode="email"
                   maxLength={254}
                   value={email}
-                  onChange={(event) => setEmail(event.target.value)}
+                  onChange={(event) => {
+                    setEmail(event.target.value);
+                    setError(null);
+                  }}
                   className={INPUT_CLASS}
                   autoComplete="email"
                 />
@@ -481,7 +493,6 @@ export function AddCourtView({
                 </span>
               </label>
               <AddCourtFields details={details} onChange={setDetails} />
-              {error ? <p className="mt-2 text-sm text-red-400">{error}</p> : null}
             </form>
           </AddCourtFormPanel>
         ) : mapAlert && alertCopy ? (

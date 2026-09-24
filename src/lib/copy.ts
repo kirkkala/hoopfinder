@@ -296,6 +296,15 @@ const messages = {
     en: "Your email address is not shown in the service.",
   },
   addCourtSubmit: { fi: "Tallenna", en: "Save" },
+  addCourtRequiredMark: { fi: "pakollinen", en: "required" },
+  addCourtMissing: {
+    fi: (fields: string) => `Täytä vielä: ${fields}.`,
+    en: (fields: string) => `Still needed: ${fields}.`,
+  },
+  addCourtMeasure: {
+    fi: "Mitat ja pinta-ala kirjoitetaan numeroina.",
+    en: "Enter dimensions and area as numbers.",
+  },
   addCourtCancel: { fi: "Sulje", en: "Close" },
   addCourtShowMap: { fi: "Näytä kartta", en: "Show map" },
   addCourtShowForm: { fi: "Näytä lomake", en: "Show form" },

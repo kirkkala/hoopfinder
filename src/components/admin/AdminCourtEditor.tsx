@@ -6,8 +6,10 @@ import { useCopy } from "@/components/brand/LocaleProvider";
 import { AddCourtFormPanel } from "@/components/add-court/AddCourtFormPanel";
 import {
   AddCourtFields,
+  FieldLabel,
   addCourtDetailsFromCourt,
-  addCourtDetailsPayload,
+  addCourtFormPayload,
+  requiredFieldIssues,
   type AddCourtDetails,
 } from "@/components/add-court/AddCourtFields";
 import type { Court } from "@/lib/courts";
@@ -33,7 +35,8 @@ export function AdminCourtEditor({
     addCourtDetailsFromCourt(court),
   );
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [showIssues, setShowIssues] = useState(false);
 
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
@@ -46,13 +49,19 @@ export function AdminCourtEditor({
   async function save(event: FormEvent) {
     event.preventDefault();
     if (saving) return;
-    const extra = addCourtDetailsPayload(details);
-    if (extra === "invalid") {
-      setError(true);
+    const extra = addCourtFormPayload(copy, {
+      name,
+      address,
+      email: visitorEmail,
+      details,
+    });
+    if (typeof extra === "string") {
+      setShowIssues(true);
+      setError(extra);
       return;
     }
     setSaving(true);
-    setError(false);
+    setError(null);
     try {
       const response = await fetch(
         `/api/admin/courts/${encodeURIComponent(court.id)}`,
@@ -66,11 +75,15 @@ export function AdminCourtEditor({
       onClose();
       router.refresh();
     } catch {
-      setError(true);
+      setError(copy.adminEditError);
     } finally {
       setSaving(false);
     }
   }
+
+  const issues = showIssues
+    ? requiredFieldIssues({ name, address, email: visitorEmail })
+    : { name: false, address: false, email: false };
 
   return (
     <div
@@ -95,11 +108,16 @@ export function AdminCourtEditor({
           </div>
         }
         footer={
-          <div className="flex justify-end">
+          <div className="flex flex-col items-end gap-2">
+            {error ? (
+              <p role="alert" className="w-full text-sm text-red-400">
+                {error}
+              </p>
+            ) : null}
             <button
               type="submit"
               form="admin-court-edit"
-              disabled={saving || !name.trim() || !address.trim() || !visitorEmail.trim()}
+              disabled={saving}
               className="rounded-full bg-gold px-3 py-1.5 text-sm font-bold text-asphalt hover:bg-white disabled:cursor-default disabled:opacity-60"
             >
               {saving ? copy.adminSaving : copy.addCourtSubmit}
@@ -109,42 +127,53 @@ export function AdminCourtEditor({
       >
         <form id="admin-court-edit" onSubmit={save}>
           <label className="mt-3 block">
-            <span className="mb-1 block text-sm text-ink/85">{copy.addCourtName}</span>
+            <FieldLabel required invalid={issues.name}>{copy.addCourtName}</FieldLabel>
             <input
-              required
+              aria-required="true"
+              aria-invalid={issues.name}
               maxLength={120}
               value={name}
-              onChange={(event) => setName(event.target.value)}
+              onChange={(event) => {
+                setName(event.target.value);
+                setError(null);
+              }}
               className={INPUT_CLASS}
               autoComplete="off"
             />
           </label>
           <label className="mt-2.5 block">
-            <span className="mb-1 block text-sm text-ink/85">{copy.addCourtAddress}</span>
+            <FieldLabel required invalid={issues.address}>{copy.addCourtAddress}</FieldLabel>
             <input
-              required
+              aria-required="true"
+              aria-invalid={issues.address}
               maxLength={200}
               value={address}
-              onChange={(event) => setAddress(event.target.value)}
+              onChange={(event) => {
+                setAddress(event.target.value);
+                setError(null);
+              }}
               className={INPUT_CLASS}
               autoComplete="street-address"
             />
           </label>
           <label className="mt-2.5 block">
-            <span className="mb-1 block text-sm text-ink/85">{copy.addCourtEmail}</span>
+            <FieldLabel required invalid={issues.email}>{copy.addCourtEmail}</FieldLabel>
             <input
-              required
+              aria-required="true"
+              aria-invalid={issues.email}
               type="email"
               inputMode="email"
               maxLength={254}
               value={visitorEmail}
-              onChange={(event) => setVisitorEmail(event.target.value)}
+              onChange={(event) => {
+                setVisitorEmail(event.target.value);
+                setError(null);
+              }}
               className={INPUT_CLASS}
               autoComplete="off"
             />
           </label>
           <AddCourtFields details={details} onChange={setDetails} />
-          {error ? <p className="mt-2 text-sm text-red-400">{copy.adminEditError}</p> : null}
         </form>
       </AddCourtFormPanel>
     </div>

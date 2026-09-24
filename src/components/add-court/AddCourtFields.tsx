@@ -2,6 +2,7 @@
 
 import { ChevronDown } from "lucide-react";
 import { useCopy } from "@/components/brand/LocaleProvider";
+import type { Copy } from "@/lib/copy";
 import {
   ADMIN_CODES,
   COURT_STATUS_CODES,
@@ -142,9 +143,59 @@ export function addCourtDetailsPayload(
   };
 }
 
+const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+export function requiredFieldIssues(input: { name: string; address: string; email: string }) {
+  return {
+    name: !input.name.trim(),
+    address: !input.address.trim(),
+    email: !EMAIL_PATTERN.test(input.email.trim()),
+  };
+}
+
+export function addCourtFormPayload(
+  copy: Copy,
+  input: { name: string; address: string; email: string; details: AddCourtDetails },
+): Record<string, unknown> | string {
+  const issues = requiredFieldIssues(input);
+  const missing = [
+    issues.name ? copy.addCourtName : null,
+    issues.address ? copy.addCourtAddress : null,
+    input.email.trim() ? null : copy.addCourtEmail,
+  ].filter((field) => field !== null);
+  if (missing.length > 0) return copy.addCourtMissing(missing.join(", "));
+  if (issues.email) return copy.addCourtInvalid;
+  const extra = addCourtDetailsPayload(input.details);
+  if (extra === "invalid") return copy.addCourtMeasure;
+  return extra;
+}
+
+export function FieldLabel({
+  required = false,
+  invalid = false,
+  children,
+}: {
+  required?: boolean;
+  invalid?: boolean;
+  children: string;
+}) {
+  const copy = useCopy();
+  return (
+    <span className={`mb-1 block text-sm ${invalid ? "text-red-400" : "text-ink/85"}`}>
+      {children}
+      {required ? (
+        <>
+          <span aria-hidden className="text-gold"> *</span>
+          <span className="sr-only"> ({copy.addCourtRequiredMark})</span>
+        </>
+      ) : null}
+    </span>
+  );
+}
+
 function parseMeasure(value: string, max: number): number | null | "invalid" {
-  const trimmed = value.trim().replace(",", ".");
-  if (!trimmed) return null;
+  const trimmed = value.trim().replaceAll(",", ".");
+  if (!trimmed || trimmed === ".") return null;
   const number = Number(trimmed);
   if (!Number.isFinite(number) || number <= 0 || number > max) return "invalid";
   return number;
@@ -402,6 +453,15 @@ function ChoiceSelect({
   );
 }
 
+function digitsOnly(value: string) {
+  const cleaned = value.replace(/[^\d.,]/g, "");
+  const separator = cleaned.search(/[.,]/);
+  if (separator === -1) return cleaned;
+  const whole = cleaned.slice(0, separator);
+  const fraction = cleaned.slice(separator + 1).replace(/[.,]/g, "");
+  return `${whole}.${fraction}`;
+}
+
 function TextField({
   label,
   value,
@@ -433,7 +493,9 @@ function TextField({
           value={value}
           inputMode={inputMode}
           maxLength={inputMode ? 8 : 300}
-          onChange={(event) => onChange(event.target.value)}
+          onChange={(event) =>
+            onChange(inputMode ? digitsOnly(event.target.value) : event.target.value)
+          }
           className={`${className} h-11`}
         />
       )}
