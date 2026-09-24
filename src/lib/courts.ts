@@ -246,6 +246,14 @@ export const SURFACE_CODES = [
   "fine_gravel",
 ] as const;
 
+export const COMMON_SURFACE_CODES = [
+  "asphalt",
+  "artificial-turf",
+  "synthetic",
+  "fine_gravel",
+  "other",
+] as const satisfies readonly (typeof SURFACE_CODES)[number][];
+
 export const OWNER_CODES = [
   "city",
   "city-main-owner",

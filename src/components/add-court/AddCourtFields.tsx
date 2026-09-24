@@ -7,6 +7,7 @@ import {
   COURT_STATUS_CODES,
   FIELD_TYPE_CODES,
   OWNER_CODES,
+  COMMON_SURFACE_CODES,
   SURFACE_CODES,
   HOOP_HEIGHT_CODES,
   WATER_POINT_CODES,
@@ -250,7 +251,7 @@ export function AddCourtFields({
         label={copy.surface}
         value={details.surfaceMaterial}
         emptyLabel={copy.addCourtUnknown}
-        options={SURFACE_CODES.map((code) => ({
+        options={COMMON_SURFACE_CODES.map((code) => ({
           value: code,
           label: copy.surfaces[code],
         }))}
