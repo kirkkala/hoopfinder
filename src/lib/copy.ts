@@ -440,7 +440,7 @@ const messages = {
   },
   adminStatusPublished: { fi: "Julkaistu", en: "Published" },
   adminStatusPending: { fi: "Odottaa julkaisua", en: "Pending publication" },
-  adminStatusConfirmed: { fi: "Käyttäjän vahvistama", en: "Confirmed by user" },
+  adminStatusConfirmed: { fi: "Vahvistettu", en: "Confirmed" },
   adminStatusUnconfirmed: { fi: "Odottaa sähköpostivahvistusta", en: "Waiting for email confirmation" },
   adminUnconfirmedNotice: {
     fi: "Käyttäjä ei ole vielä vahvistanut kentän lisäystä.",
@@ -459,8 +459,6 @@ const messages = {
     fi: "Tilan vaihto epäonnistui. Kokeile uudelleen.",
     en: "Could not update status. Try again.",
   },
-  adminShowOnMap: { fi: "Katso kartalla", en: "View on map" },
-  adminShowOnGoogleMaps: { fi: "Google Maps", en: "Google Maps" },
   adminSubmittedAt: { fi: "Lähetetty", en: "Submitted" },
   adminDelete: { fi: "Poista", en: "Delete" },
   adminDeleteConfirm: {
