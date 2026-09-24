@@ -28,7 +28,7 @@ import {
 import type { AddCourtMapAlert } from "@/components/add-court/AddCourtMap";
 import type { Coordinates } from "@/lib/geo";
 import { fetchMapCourts } from "@/lib/map-courts";
-import { useLocationStatus, type LocationStatus } from "@/lib/origin";
+import { useLocationStatus } from "@/lib/origin";
 
 const AddCourtMap = dynamic(
   () => import("@/components/add-court/AddCourtMap").then((mod) => mod.AddCourtMap),
@@ -314,19 +314,17 @@ export function AddCourtView({
               status={locationStatus}
               onClick={requestLocation}
             />
-            <button
-              type="button"
-              onClick={() => setInfoOpen((open) => !open)}
-              aria-expanded={infoOpen}
-              aria-controls="add-court-info"
-              aria-label={copy.addCourtInfoOpen}
-              className={`inline-flex h-12 shrink-0 items-center gap-1.5 rounded-full bg-asphalt/95 px-3 ring-1 ring-white/15 outline-none hover:bg-gold hover:text-asphalt focus-visible:ring-2 focus-visible:ring-gold/60 ${
-                infoOpen ? "text-gold" : "text-white"
-              }`}
-            >
-              <CircleHelp aria-hidden className="size-5" />
-              <span className="text-sm font-bold">{copy.addCourtInfoOpen}</span>
-            </button>
+            {infoOpen ? null : (
+              <button
+                type="button"
+                onClick={() => setInfoOpen(true)}
+                aria-label={copy.addCourtInfoOpen}
+                className="inline-flex h-12 shrink-0 items-center gap-1.5 rounded-full bg-asphalt/95 px-3 text-white ring-1 ring-white/15 outline-none hover:bg-gold hover:text-asphalt focus-visible:ring-2 focus-visible:ring-gold/60"
+              >
+                <CircleHelp aria-hidden className="size-5" />
+                <span className="text-sm font-bold">{copy.addCourtInfoOpen}</span>
+              </button>
+            )}
           </div>
         </div>
 
@@ -338,8 +336,6 @@ export function AddCourtView({
           >
             <AddCourtInfoDialog
               ctaRef={infoCtaRef}
-              locationStatus={locationStatus}
-              onLocate={requestLocation}
               onClose={() => setInfoOpen(false)}
             />
           </div>
@@ -505,13 +501,9 @@ export function AddCourtView({
 
 function AddCourtInfoDialog({
   ctaRef,
-  locationStatus,
-  onLocate,
   onClose,
 }: {
   ctaRef: RefObject<HTMLButtonElement | null>;
-  locationStatus: LocationStatus;
-  onLocate: () => void;
   onClose: () => void;
 }) {
   const copy = useCopy();
@@ -525,21 +517,9 @@ function AddCourtInfoDialog({
       className="relative mt-3 h-fit w-full max-w-md rounded-3xl border border-white/10 bg-panel shadow-[0_24px_64px_rgb(0_0_0_/_0.55)] sm:mt-0 sm:max-w-lg"
     >
       <div className="court-arc pointer-events-none absolute inset-0 rounded-3xl opacity-40" />
-      <div className="relative px-6 pt-6 pb-5">
-        <h2
-          id="add-court-info-title"
-          className="font-display text-4xl leading-none tracking-wide text-balance text-gold"
-        >
-          {copy.addCourtInfoTitle}
-        </h2>
+      <div className="relative px-6 pt-1 pb-5">
         <p className="mt-4 text-base leading-6 text-ink/90">{copy.addCourtLead}</p>
         <p className="mt-2 text-base leading-6 text-ink-muted">{copy.addCourtHint}</p>
-        <div className="mt-4">
-          <LocateMeButton status={locationStatus} onClick={onLocate} />
-          {locationStatus === "denied" ? (
-            <p className="mt-2 text-sm text-ink-muted">{copy.locationBlockedHelp}</p>
-          ) : null}
-        </div>
         <button
           ref={ctaRef}
           type="button"

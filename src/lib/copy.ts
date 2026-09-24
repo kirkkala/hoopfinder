@@ -83,7 +83,7 @@ const messages = {
     en: "The motivation for this is to get big and small humans out of the house and move more with a basketball."
   },
   introSupport: { fi: "Tue kehittäjää", en: "Support the developer" },
-  okBroCta: { fi: "ok bro", en: "ok bro" },
+  okBroCta: { fi: "Tämä selvä!", en: "Understood!" },
   madeWith: { fi: 'Made with', en: "Made with" },
   love: { fi: "love", en: "love" },
   courtDataFrom: {
@@ -248,15 +248,14 @@ const messages = {
   notReported: { fi: "Ei ilmoitettu", en: "Not reported" },
   addCourt: { fi: "Lisää kenttä", en: "Add court" },
   addCourtConfirmHere: { fi: "Lisää kenttä", en: "Add court" },
-  addCourtInfoTitle: { fi: "Lisää kenttä Hoop Finderiin", en: "Add court to Hoop Finder" },
   addCourtExit: { fi: "Poistu", en: "Exit" },
   addCourtLead: {
-    fi: "Tee palvelusta parempi lisäämällä puuttuva kenttä.",
+    fi: "Puuttuko Hoop Finderistä kenttä? Täällä voit lisätä sen.",
     en: "Make the service better by adding a missing court.",
   },
   addCourtHint: {
-    fi: "Liikuta karttaa ja zoomaa tai paikanna itsesi ja napsauta karttaa lisätäksesi kentän.",
-    en: "Pan and zoom the map or locate yourself and tap the map to add a missing court.",
+    fi: "Paikanna itsesi kartalta tai zoomaa lähemmäs ja napsauta lisätäksesi kentän.",
+    en: "Locate yourself on the map or zoom in closer and tap the map to add it.",
   },
   addCourtInfoOpen: { fi: "Ohje", en: "Help" },
   addCourtHintZoom: {
