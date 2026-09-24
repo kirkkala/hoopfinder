@@ -234,7 +234,7 @@ export function CourtDetails({
             <h2 className="font-display text-2xl tracking-wide text-white">
               {copy.courtFacts}
             </h2>
-            <dl className="mt-4 grid grid-cols-[max-content_minmax(0,1fr)] gap-x-6 gap-y-3 max-sm:[&>div]:col-span-2 max-sm:[&>div]:grid max-sm:[&>div]:grid-cols-subgrid max-sm:[&>div]:items-start max-sm:[&>div]:border-b max-sm:[&>div]:border-white/10 max-sm:[&>div]:pb-2 max-sm:[&_dt]:mt-0 max-sm:[&_dd]:mt-0 sm:grid-cols-2 sm:gap-3">
+            <dl className="mt-4 grid grid-cols-[max-content_minmax(0,1fr)] gap-x-6 gap-y-3 max-sm:[&>div]:col-span-2 max-sm:[&>div]:grid max-sm:[&>div]:grid-cols-subgrid max-sm:[&>div]:items-start max-sm:[&>div]:border-b max-sm:[&>div]:border-white/10 max-sm:[&>div]:pb-2 max-sm:[&_dt]:mt-0 max-sm:[&_dt]:translate-y-[3px] max-sm:[&_dd]:mt-0 sm:grid-cols-2 sm:gap-3">
               {amenities.hoopHeight ? (
                 <Fact
                   icon={Ruler}
@@ -249,11 +249,6 @@ export function CourtDetails({
                   value={formatReportedBoolean(amenities.heightAdjustable, copy)}
                 />
               ) : null}
-              <Fact
-                icon={Lightbulb}
-                label={copy.lights}
-                value={formatReportedBoolean(amenities.lighting, copy)}
-              />
               <Fact
                 icon={Unlock}
                 label={copy.freeUse}
@@ -306,6 +301,11 @@ export function CourtDetails({
                   value={formatReportedBoolean(amenities.toilet, copy)}
                 />
               ) : null}
+              <Fact
+                icon={Lightbulb}
+                label={copy.lights}
+                value={formatReportedBoolean(amenities.lighting, copy)}
+              />
               {amenities.lightingInfo ? (
                 <Fact
                   icon={Lightbulb}

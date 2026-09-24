@@ -211,11 +211,6 @@ export function AddCourtFields({
         onChange={(heightAdjustable) => patch({ heightAdjustable })}
       />
       <YesNoField
-        label={copy.lights}
-        value={details.lighting}
-        onChange={(lighting) => patch({ lighting })}
-      />
-      <YesNoField
         label={copy.freeUse}
         value={details.freeUse}
         onChange={(freeUse) => patch({ freeUse })}
@@ -240,7 +235,11 @@ export function AddCourtFields({
         value={details.scoreboard}
         onChange={(scoreboard) => patch({ scoreboard })}
       />
-
+      <YesNoField
+        label={copy.lights}
+        value={details.lighting}
+        onChange={(lighting) => patch({ lighting })}
+      />
       <TextField
         label={copy.lightingNotes}
         value={details.lightingInfo}
