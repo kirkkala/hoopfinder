@@ -207,7 +207,7 @@ const messages = {
   schoolUse: { fi: "Koulukäyttö", en: "School use" },
   fieldType: { fi: "Kenttätyyppi", en: "Field type" },
   fieldTypes: {
-    full: { fi: "Normaali koripallokenttä", en: "Full court" },
+    full: { fi: "Normaali koripallo\u00adkenttä", en: "Full court" },
     "one-hoop": { fi: "Yhden korin kenttä", en: "One hoop" },
     mini: { fi: "Minikoripallokenttä", en: "Mini court" },
     street: { fi: "Katukoris", en: "Streetball" },
@@ -506,7 +506,7 @@ const messages = {
     synthetic: { fi: "Synteettinen", en: "Synthetic" },
     "artificial-turf": { fi: "Tekonurmi", en: "Artificial turf" },
     "sand-infilled-artificial-turf": {
-      fi: "Hiekkatekonurmi",
+      fi: "Hiekka\u00adteko\u00adnurmi",
       en: "Sand-infilled turf",
     },
     sand: { fi: "Hiekka", en: "Sand" },
