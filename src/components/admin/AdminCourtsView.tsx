@@ -10,7 +10,7 @@ import { AppFooter } from "@/components/brand/AppFooter";
 import { AppHeader } from "@/components/brand/AppHeader";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import type { FetchedAtBySource } from "@/lib/catalog";
-import { homeCourtHref } from "@/lib/courts";
+import { courtHref, homeCourtHref } from "@/lib/courts";
 import type { AdminSubmittedCourt } from "@/lib/submitted-courts";
 import { formatFetchedAt } from "@/lib/time";
 
@@ -157,6 +157,12 @@ function SubmittedList({
                 </div>
                 <div className="flex shrink-0 flex-wrap items-center gap-2">
                   <Link
+                    href={courtHref({ id: court.id, source: "submitted" })}
+                    className="inline-flex items-center gap-1 rounded-full px-3 py-2 text-sm font-medium text-ink/80 hover:bg-white/10 hover:text-white"
+                  >
+                    {copy.letsGo}
+                  </Link>
+                  <Link
                     href={homeCourtHref({
                       id: court.id,
                       source: published ? "submitted" : "pending",
@@ -175,19 +181,17 @@ function SubmittedList({
                     <MapPin className="size-3.5" aria-hidden />
                     {copy.adminShowOnGoogleMaps}
                   </a>
-                  {confirmed || published ? (
-                    <AdminStatusButton
-                      id={court.id}
-                      published={published}
-                      onStatusChange={(status) => {
-                        setCourts((current) =>
-                          current.map((item) =>
-                            item.id === court.id ? { ...item, status } : item,
-                          ),
-                        );
-                      }}
-                    />
-                  ) : null}
+                  <AdminStatusButton
+                    id={court.id}
+                    published={published}
+                    onStatusChange={(status) => {
+                      setCourts((current) =>
+                        current.map((item) =>
+                          item.id === court.id ? { ...item, status } : item,
+                        ),
+                      );
+                    }}
+                  />
                 </div>
               </div>
               {errorId === court.id ? (

@@ -442,6 +442,10 @@ const messages = {
   adminStatusPending: { fi: "Odottaa julkaisua", en: "Pending publication" },
   adminStatusConfirmed: { fi: "Käyttäjän vahvistama", en: "Confirmed by user" },
   adminStatusUnconfirmed: { fi: "Odottaa sähköpostivahvistusta", en: "Waiting for email confirmation" },
+  adminUnconfirmedNotice: {
+    fi: "Käyttäjä ei ole vielä vahvistanut kentän lisäystä.",
+    en: "The visitor has not confirmed the email link yet.",
+  },
   adminPublish: { fi: "Julkaise", en: "Publish" },
   adminUnpublish: { fi: "Piilota", en: "Unpublish" },
   adminSaving: { fi: "Tallennetaan…", en: "Saving…" },
