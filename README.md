@@ -62,6 +62,8 @@ Set the same variables on Vercel. Production also needs `NEXTAUTH_URL=https://ww
 
 Transactional email uses [Resend](https://resend.com). Set `RESEND_API_KEY` and `EMAIL_FROM`.
 
+For local development, set `EMAIL_LOG_ONLY=1` to print the message to the terminal instead of calling Resend. Open the confirmation link from that log.
+
 ## License
 
 [GNU Affero General Public License v3.0](LICENSE).

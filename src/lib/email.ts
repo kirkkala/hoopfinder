@@ -5,6 +5,15 @@ export async function sendTemplateEmail(input: {
   template: string;
   variables: Record<string, string>;
 }): Promise<{ id: string } | { error: "unconfigured" | "failed" }> {
+  if (process.env.EMAIL_LOG_ONLY === "1") {
+    console.info("Email log only", {
+      to: input.to,
+      template: input.template,
+      variables: input.variables,
+    });
+    return { id: "log-only" };
+  }
+
   const apiKey = process.env.RESEND_API_KEY?.trim();
   const from = process.env.EMAIL_FROM?.trim();
   if (!apiKey || !from) {
