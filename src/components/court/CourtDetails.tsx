@@ -235,6 +235,20 @@ export function CourtDetails({
               {copy.courtFacts}
             </h2>
             <dl className="mt-4 grid gap-3 sm:grid-cols-2">
+              {amenities.hoopHeight ? (
+                <Fact
+                  icon={Ruler}
+                  label={copy.hoopHeight}
+                  value={copy.hoopHeights[amenities.hoopHeight]}
+                />
+              ) : null}
+              {amenities.heightAdjustable !== null ? (
+                <Fact
+                  icon={MoveVertical}
+                  label={copy.adjustableRim}
+                  value={formatReportedBoolean(amenities.heightAdjustable, copy)}
+                />
+              ) : null}
               <Fact
                 icon={Lightbulb}
                 label={copy.lights}
@@ -257,20 +271,6 @@ export function CourtDetails({
                   icon={LayoutGrid}
                   label={copy.fieldType}
                   value={formatFieldType(amenities.fieldType, copy)}
-                />
-              ) : null}
-              {amenities.hoopHeight ? (
-                <Fact
-                  icon={Ruler}
-                  label={copy.hoopHeight}
-                  value={copy.hoopHeights[amenities.hoopHeight]}
-                />
-              ) : null}
-              {amenities.heightAdjustable !== null ? (
-                <Fact
-                  icon={MoveVertical}
-                  label={copy.adjustableRim}
-                  value={formatReportedBoolean(amenities.heightAdjustable, copy)}
                 />
               ) : null}
               {amenities.surfaceMaterial.length ? (
