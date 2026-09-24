@@ -17,6 +17,7 @@ import Map, {
   type MapLayerMouseEvent,
   type MapRef,
 } from "react-map-gl/maplibre";
+import { useIsAdmin } from "@/components/admin/AdminProvider";
 import { MAP_STYLE } from "@/lib/constants";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { CourtBadges } from "@/components/explorer/CourtBadges";
@@ -119,6 +120,7 @@ export function CourtMap({
   thanks?: boolean;
 }) {
   const copy = useCopy();
+  const isAdmin = useIsAdmin();
   const mapRef = useRef<MapRef>(null);
   const [mapReady, setMapReady] = useState(false);
   const restoredView = useRef(false);
@@ -394,7 +396,7 @@ export function CourtMap({
             ) : isPendingCourt(selected) ? (
               <PendingCourtNote createdAt={selected.createdAt} className="pt-1" />
             ) : null}
-            {!thanks && !isAwaitingEmail(selected) ? (
+            {!thanks && (!isAwaitingEmail(selected) || isAdmin) ? (
               <Link
                 href={courtHref(selected)}
                 className="inline-flex items-center gap-1 self-end pt-2 pb-1 text-sm font-bold text-gold hover:text-white"

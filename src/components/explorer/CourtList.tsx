@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { basketball } from "@lucide/lab";
 import { ArrowRight, Icon } from "lucide-react";
+import { useIsAdmin } from "@/components/admin/AdminProvider";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { CourtBadges } from "@/components/explorer/CourtBadges";
 import { CourtHeading } from "@/components/explorer/CourtHeading";
@@ -20,6 +21,7 @@ export function CourtList({
   onSelect: (id: string) => void;
 }) {
   const copy = useCopy();
+  const isAdmin = useIsAdmin();
   useEffect(() => {
     if (selectedId === null) {
       return;
@@ -70,7 +72,7 @@ export function CourtList({
                     className="w-full"
                   />
                 ) : null}
-                {isAwaitingEmail(court) ? null : (
+                {isAwaitingEmail(court) && !isAdmin ? null : (
                   <Link
                     href={courtHref(court)}
                     className="ml-auto inline-flex items-center gap-1 font-bold text-gold hover:text-white"

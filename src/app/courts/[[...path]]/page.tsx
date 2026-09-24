@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { notFound, permanentRedirect, redirect } from "next/navigation";
 import { CourtDetails } from "@/components/court/CourtDetails";
+import { getAuthSession } from "@/auth";
 import { getBasketballCourt, getCourtCatalog } from "@/lib/catalog";
 import { SITE_URL } from "@/lib/constants";
 import { getCopy } from "@/lib/copy";
@@ -28,7 +29,7 @@ export async function generateMetadata({
   if (!result) {
     return { title: finnish.courtNotFound, robots: { index: false } };
   }
-  if (isAwaitingEmail(result.court)) {
+  if (isAwaitingEmail(result.court) && !(await viewerIsAdmin())) {
     return { title: finnish.statusAwaitingEmail, robots: { index: false, follow: false } };
   }
 
@@ -75,7 +76,7 @@ export default async function CourtPage({
 }) {
   const result = await courtFromParams(params);
   if (!result) notFound();
-  if (isAwaitingEmail(result.court)) {
+  if (isAwaitingEmail(result.court) && !(await viewerIsAdmin())) {
     redirect(homeCourtHref({ id: result.court.id, source: "pending" }));
   }
   const [{ fetchedAtBySource }, courtCount] = await Promise.all([
@@ -90,6 +91,11 @@ export default async function CourtPage({
       courtCount={courtCount}
     />
   );
+}
+
+async function viewerIsAdmin() {
+  const session = await getAuthSession();
+  return session?.user?.isAdmin === true;
 }
 
 async function courtFromParams(params: Promise<{ path?: string[] }>) {

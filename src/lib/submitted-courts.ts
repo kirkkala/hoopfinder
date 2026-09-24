@@ -305,16 +305,29 @@ export async function setSubmittedCourtStatus(
   const key = submittedCourtKey(id);
   if (!/^\d+$/.test(key)) return { error: "not-found" };
   const updated = await withDb(async (sql) => {
-    const rows = await sql<(SubmittedRow & { email: string })[]>`
-      UPDATE submitted_courts
+    const rows = await sql<(SubmittedRow & { email: string; previous_status: string })[]>`
+      UPDATE submitted_courts AS court
       SET status = ${status}
-      WHERE id = ${key}
-        AND status = ${status === "published" ? "pending" : "published"}
-      RETURNING id, name, address, email, lat, lon, status, created_at
+      FROM (
+        SELECT id, status
+        FROM submitted_courts
+        WHERE id = ${key}
+      ) AS previous
+      WHERE court.id = previous.id
+        AND (
+          (${status} = 'published' AND previous.status IN ('unconfirmed', 'pending'))
+          OR (${status} = 'pending' AND previous.status = 'published')
+        )
+      RETURNING court.id, court.name, court.address, court.email, court.lat, court.lon,
+        court.status, court.created_at, previous.status AS previous_status
     `;
     const row = rows[0];
     return row
-      ? { court: toExplorerCourt(row), email: row.email }
+      ? {
+          court: toExplorerCourt(row),
+          email: row.email,
+          previousStatus: asSubmittedStatus(row.previous_status),
+        }
       : { error: "not-found" as const };
   });
 
@@ -333,7 +346,7 @@ export async function setSubmittedCourtStatus(
     await withDb(
       (sql) => sql`
         UPDATE submitted_courts
-        SET status = 'pending'
+        SET status = ${updated.previousStatus}
         WHERE id = ${key} AND status = 'published'
       `,
     );

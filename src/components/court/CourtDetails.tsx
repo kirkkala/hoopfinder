@@ -88,8 +88,9 @@ export function CourtDetails({
     sessionStorage.removeItem(COURT_THANKS_KEY);
     setThanks(true);
   }, [court.id]);
-  const showAdminStatus =
-    isAdmin && court.source === "submitted";
+  const awaitingEmail = isAdmin && court.emailConfirmed === false;
+  const hideUnpublishedFacts = pending && !isAdmin;
+  const showAdminStatus = isAdmin && court.source === "submitted";
   const dimensions =
     amenities.lengthM && amenities.widthM
       ? `${amenities.lengthM} × ${amenities.widthM} m`
@@ -138,10 +139,18 @@ export function CourtDetails({
               value={
                 pending ? (
                   <>
-                    {copy.statusUnderReview}
-                    <span className="mt-1 block text-sm text-ink-muted">
-                      {copy.pendingPublishAfterReview}
-                    </span>
+                    {awaitingEmail
+                      ? copy.adminStatusUnconfirmed
+                      : copy.statusUnderReview}
+                    {awaitingEmail ? (
+                      <span className="mt-2 block rounded-2xl border border-gold/50 bg-gold/15 px-3 py-2 text-sm font-medium text-white">
+                        {copy.adminUnconfirmedNotice}
+                      </span>
+                    ) : (
+                      <span className="mt-1 block text-sm text-ink-muted">
+                        {copy.pendingPublishAfterReview}
+                      </span>
+                    )}
                   </>
                 ) : (
                   formatStatus(court.status, copy)
@@ -153,7 +162,7 @@ export function CourtDetails({
                 <AdminStatusButton id={court.id} published={!pending} />
               </div>
             ) : null}
-            {!pending && (
+            {!hideUnpublishedFacts && (
               <>
                 <Fact
                   icon={MapPin}
@@ -169,7 +178,7 @@ export function CourtDetails({
             )}
           </dl>
 
-          {pending ? (
+          {hideUnpublishedFacts ? (
             <div className="relative overflow-hidden" aria-hidden>
               <div className="space-y-5">
                 <div className="rounded-3xl border border-white/10 bg-panel p-5">
