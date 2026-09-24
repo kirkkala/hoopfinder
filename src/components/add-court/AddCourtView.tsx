@@ -648,5 +648,6 @@ function submitError(copy: Copy, error: string | undefined): string {
   if (error === "unavailable") return copy.addCourtUnavailable;
   if (error === "email") return copy.addCourtEmailError;
   if (error === "invalid") return copy.addCourtInvalid;
+  if (error === "rate-limited") return copy.addCourtRateLimit;
   return copy.addCourtError;
 }

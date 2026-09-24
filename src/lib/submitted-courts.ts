@@ -167,6 +167,31 @@ export async function getSubmittedCourt(
   return { court: toCourt(row), createdAt: toIso(row.created_at), email: row.email };
 }
 
+const COURT_SUBMISSIONS_PER_HOUR = 5;
+
+/** Five new courts per address per hour. Counts the attempt, including a failed email send. */
+export async function takeCourtSubmissionSlot(ip: string): Promise<boolean | null> {
+  return withDb(async (sql) => {
+    await sql`
+      DELETE FROM court_submission_limits
+      WHERE created_at < NOW() - INTERVAL '1 day'
+    `;
+    const rows = await sql<{ count: string }[]>`
+      SELECT COUNT(*)::text AS count
+      FROM court_submission_limits
+      WHERE ip = ${ip} AND created_at > NOW() - INTERVAL '1 hour'
+    `;
+    if (Number(rows[0]?.count ?? 0) >= COURT_SUBMISSIONS_PER_HOUR) return false;
+    await sql`INSERT INTO court_submission_limits (ip) VALUES (${ip})`;
+    return true;
+  });
+}
+
+export function courtSubmissionIp(request: Request): string {
+  const forwarded = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim();
+  return forwarded || "unknown";
+}
+
 export async function createSubmittedCourt(
   input: SubmittedCourtInput,
   origin: string,
