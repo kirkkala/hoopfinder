@@ -83,6 +83,7 @@ export type AdminSubmittedCourt = {
   lon: number;
   status: SubmittedStatus;
   createdAt: string;
+  court: Court;
 };
 
 type SubmittedRow = {
@@ -133,7 +134,7 @@ export async function listAdminSubmittedCourts(): Promise<
 > {
   const rows = await withDb((sql) => {
     return sql<AdminRow[]>`
-      SELECT id, name, address, email, lat, lon, status, created_at
+      SELECT id, name, address, email, lat, lon, status, created_at, details
       FROM submitted_courts
       ORDER BY created_at DESC
     `;
@@ -148,6 +149,7 @@ export async function listAdminSubmittedCourts(): Promise<
     lon: row.lon,
     status: asSubmittedStatus(row.status),
     createdAt: toIso(row.created_at),
+    court: toCourt(row),
   }));
 }
 
