@@ -151,7 +151,7 @@ export async function listAdminSubmittedCourts(): Promise<
 
 export async function getSubmittedCourt(
   id: string,
-): Promise<{ court: Court; createdAt: string } | null> {
+): Promise<{ court: Court; createdAt: string; email: string } | null> {
   const key = submittedCourtKey(id);
   if (!/^\d+$/.test(key)) return null;
   const rows = await withDb((sql) => {
@@ -164,7 +164,7 @@ export async function getSubmittedCourt(
   });
   const row = rows?.[0];
   if (!row) return null;
-  return { court: toCourt(row), createdAt: toIso(row.created_at) };
+  return { court: toCourt(row), createdAt: toIso(row.created_at), email: row.email };
 }
 
 export async function createSubmittedCourt(
@@ -451,6 +451,7 @@ function toCourt(row: SubmittedRow): Court {
       scoreboard: triToBool(details.scoreboard),
     },
     emailConfirmed: asSubmittedStatus(row.status) !== "unconfirmed",
+    reportedStatus: details.status ?? null,
   };
 }
 
@@ -479,7 +480,45 @@ const StoredDetailsSchema = SubmittedCourtSchema.pick({
   status: z.enum(COURT_STATUS_CODES).nullable().optional(),
 });
 
-function storedDetails(input: SubmittedCourtInput) {
+export async function updateSubmittedCourt(
+  id: string,
+  input: Omit<SubmittedCourtInput, "lat" | "lon">,
+): Promise<{ ok: true } | { error: "unavailable" | "not-found" }> {
+  const key = submittedCourtKey(id);
+  if (!/^\d+$/.test(key)) return { error: "not-found" };
+  const updated = await withDb(async (sql) => {
+    const existing = await sql<SubmittedRow[]>`
+      SELECT id, details
+      FROM submitted_courts
+      WHERE id = ${key}
+      LIMIT 1
+    `;
+    const row = existing[0];
+    if (!row) return { error: "not-found" as const };
+    const previous = readDetails(row.details);
+    const details = {
+      ...storedDetails(input),
+      constructionYear: previous.constructionYear ?? null,
+      surfaceMaterialInfo: previous.surfaceMaterialInfo ?? null,
+    };
+    const rows = await sql<{ id: number | string }[]>`
+      UPDATE submitted_courts
+      SET
+        name = ${input.name},
+        address = ${input.address},
+        email = ${input.email},
+        details = ${sql.json(details)}
+      WHERE id = ${key}
+      RETURNING id
+    `;
+    return rows[0] ? { ok: true as const } : { error: "not-found" as const };
+  });
+  return updated ?? { error: "unavailable" };
+}
+
+function storedDetails(
+  input: Omit<SubmittedCourtInput, "name" | "address" | "email" | "lat" | "lon">,
+) {
   return {
     status: input.courtStatus ?? null,
     website: input.website ?? null,

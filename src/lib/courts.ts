@@ -19,6 +19,8 @@ export type Court = {
   website: string | null;
   /** Visitor submission whose email link has been opened. */
   emailConfirmed?: boolean;
+  /** Open or closed status stored on a submission, including before it is published. */
+  reportedStatus?: string | null;
   constructionYear: number | null;
   owner: string | null;
   admin: string | null;

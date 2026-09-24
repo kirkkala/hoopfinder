@@ -2,17 +2,20 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Globe, GlobeOff } from "lucide-react";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import type { SubmittedStatus } from "@/lib/submitted-courts";
 
 export function AdminStatusButton({
   id,
+  name,
   published,
+  compact = false,
   onStatusChange,
 }: {
   id: string;
+  name: string;
   published: boolean;
+  compact?: boolean;
   onStatusChange?: (status: SubmittedStatus) => void;
 }) {
   const copy = useCopy();
@@ -21,6 +24,11 @@ export function AdminStatusButton({
   const [error, setError] = useState(false);
 
   async function setStatus(status: SubmittedStatus) {
+    const message =
+      status === "published"
+        ? copy.adminPublishConfirm(name)
+        : copy.adminUnpublishConfirm(name);
+    if (!window.confirm(message)) return;
     setSaving(true);
     setError(false);
     try {
@@ -42,31 +50,34 @@ export function AdminStatusButton({
     }
   }
 
+  const label = saving
+    ? copy.adminSaving
+    : published
+      ? copy.adminUnpublish
+      : copy.adminPublish;
+
   return (
-    <div>
-      {published ? (
-        <button
-          type="button"
-          disabled={saving}
-          onClick={() => void setStatus("pending")}
-          className="inline-flex items-center gap-1.5 rounded-full bg-yellow-400 px-4 py-2 text-sm font-bold text-asphalt hover:bg-yellow-300 disabled:cursor-wait disabled:opacity-70"
-        >
-          <GlobeOff className="size-4" aria-hidden />
-          {saving ? copy.adminSaving : copy.adminUnpublish}
-        </button>
-      ) : (
-        <button
-          type="button"
-          disabled={saving}
-          onClick={() => void setStatus("published")}
-          className="inline-flex items-center gap-1.5 rounded-full bg-white/15 px-4 py-2 text-sm font-bold text-white hover:bg-white/25 disabled:cursor-wait disabled:opacity-70"
-        >
-          <Globe className="size-4" aria-hidden />
-          {saving ? copy.adminSaving : copy.adminPublish}
-        </button>
-      )}
+    <div className={compact ? "flex flex-col items-end" : undefined}>
+      <button
+        type="button"
+        disabled={saving}
+        aria-label={label}
+        title={label}
+        onClick={() => void setStatus(published ? "pending" : "published")}
+        className={
+          compact
+            ? "inline-flex h-8 items-center rounded-full bg-white/15 px-2.5 text-xs font-bold text-white hover:bg-white/25 disabled:cursor-wait disabled:opacity-70"
+            : published
+              ? "rounded-full px-2 py-0.5 text-xs font-bold text-ink/70 hover:bg-white/10 hover:text-white disabled:cursor-wait disabled:opacity-70"
+              : "rounded-full bg-gold px-2.5 py-0.5 text-xs font-bold text-asphalt hover:bg-white disabled:cursor-wait disabled:opacity-70"
+        }
+      >
+        {label}
+      </button>
       {error ? (
-        <p className="mt-2 text-sm text-red-400">{copy.adminStatusError}</p>
+        <p className={compact ? "mt-1 max-w-40 text-right text-xs text-red-400" : "mt-2 text-sm text-red-400"}>
+          {copy.adminStatusError}
+        </p>
       ) : null}
     </div>
   );
