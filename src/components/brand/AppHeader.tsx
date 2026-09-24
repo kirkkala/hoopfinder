@@ -4,7 +4,7 @@ import { Fragment, useEffect, useId, useLayoutEffect, useRef, useState } from "r
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { basketball } from "@lucide/lab";
-import { Icon, X } from "lucide-react";
+import { Icon, Plus, X } from "lucide-react";
 import { IntroDialog } from "@/components/brand/IntroDialog";
 import { LanguageToggle } from "@/components/brand/LanguageToggle";
 import { BuyMeCoffeeButton } from "@/components/brand/BuyMeCoffeeButton";
@@ -25,10 +25,13 @@ export function AppHeader({
   fetchedAtBySource,
   courtCount,
   home = false,
+  title,
 }: {
   fetchedAtBySource?: FetchedAtBySource;
   courtCount: number;
   home?: boolean;
+  /** Replaces the nav cluster. The menu stays on the right. */
+  title?: string;
 }) {
   const copy = useCopy();
   const isAdmin = useIsAdmin();
@@ -79,7 +82,7 @@ export function AppHeader({
   return (
     <header
       ref={headerRef}
-      className={`z-40 shrink-0 border-b border-white/10 bg-asphalt ${
+      className={`z-50 shrink-0 border-b border-white/10 bg-asphalt ${
         home ? "relative" : "sticky top-0"
       }`}
     >
@@ -98,36 +101,57 @@ export function AppHeader({
               className="size-8 shrink-0 origin-center text-orange-500 drop-shadow-lg transition-transform duration-300 ease-out sm:size-10 group-hover:rotate-[18deg] group-focus-visible:rotate-[18deg]"
               aria-hidden
             />
-            <span className="min-w-0">
-              {home ? (
-                <h1 className={brandTitleClass}>
-                  <AppWordmark region={copy.region} />
-                </h1>
-              ) : (
-                <span className={brandTitleClass}>
-                  <AppWordmark region={copy.region} />
+            {title ? null : (
+              <span className="min-w-0">
+                {home ? (
+                  <h1 className={brandTitleClass}>
+                    <AppWordmark region={copy.region} />
+                  </h1>
+                ) : (
+                  <span className={brandTitleClass}>
+                    <AppWordmark region={copy.region} />
+                  </span>
+                )}
+                <span className="mt-0.5 hidden text-sm text-ink/70 sm:block">
+                  {copy.tagline}
                 </span>
-              )}
-              <span className="mt-0.5 hidden text-sm text-ink/70 sm:block">
-                {copy.tagline}
               </span>
-            </span>
+            )}
           </Link>
-          <BetaBadge />
-          <div className={wide.flex}>
-            <InfoMenuButton
-              introOpen={introOpen}
-              onOpenInfo={() => setIntroOpen(true)}
-            />
-          </div>
-          <AddCourtNavLink />
-          {isAdmin ? <AdminNavLink /> : null}
+          {title ? (
+            <>
+              <h1 className="min-w-0 truncate font-display text-xl leading-none tracking-wide text-gold sm:text-2xl">
+                {title}
+              </h1>
+              <Link
+                href="/"
+                className="inline-flex shrink-0 items-center gap-1 rounded-sm px-2 py-1.5 text-sm font-medium text-ink/80 outline-none hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-gold/60"
+              >
+                <X aria-hidden className="size-4" />
+                {copy.addCourtExit}
+              </Link>
+            </>
+          ) : (
+            <>
+              <BetaBadge />
+              <div className={wide.flex}>
+                <InfoMenuButton
+                  introOpen={introOpen}
+                  onOpenInfo={() => setIntroOpen(true)}
+                />
+              </div>
+              <AddCourtNavLink />
+              {isAdmin ? <AdminNavLink /> : null}
+            </>
+          )}
         </div>
-        <nav className="flex shrink-0 items-center gap-1.5">
-          <div className={wide.flex}>
-            <LanguageToggle short />
-          </div>
-        </nav>
+        {title ? null : (
+          <nav className="flex shrink-0 items-center gap-1.5">
+            <div className={wide.flex}>
+              <LanguageToggle short />
+            </div>
+          </nav>
+        )}
         <HeaderMenu
           fetchedAtBySource={fetchedAtBySource}
           introOpen={introOpen}
@@ -283,8 +307,9 @@ function HeaderMenu({
                   <Link
                     href="/add"
                     onClick={() => setOpen(false)}
-                    className="flex w-full items-center px-4 py-3.5 text-left text-base font-medium text-white outline-none hover:bg-white/5 focus-visible:bg-white/5 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-gold/60"
+                    className="flex w-full items-center gap-2 px-4 py-3.5 text-left text-base font-medium text-white outline-none hover:bg-white/5 focus-visible:bg-white/5 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-gold/60"
                   >
+                    <Plus aria-hidden className="size-4 stroke-[2.5]" />
                     {copy.addCourt}
                   </Link>
                 </li>
@@ -404,6 +429,9 @@ function AddCourtNavLink() {
           : "text-ink/80 hover:bg-white/10 hover:text-white"
       }`}
     >
+      {onAddPage ? null : (
+        <Plus aria-hidden className="size-3.5 stroke-[2.5]" />
+      )}
       {copy.addCourt}
       {onAddPage ? (
         <X

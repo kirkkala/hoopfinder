@@ -9,11 +9,12 @@ import {
   type RefObject,
 } from "react";
 import dynamic from "next/dynamic";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { CircleHelp, LoaderCircle, X } from "lucide-react";
 import { LocateMeButton } from "@/components/LocateMeButton";
+import { AppHeader } from "@/components/brand/AppHeader";
 import { useCopy } from "@/components/brand/LocaleProvider";
+import type { FetchedAtBySource } from "@/lib/catalog";
 import type { Copy } from "@/lib/copy";
 import { homeCourtHref, type ExplorerCourt } from "@/lib/courts";
 import { AddCourtFormPanel } from "@/components/add-court/AddCourtFormPanel";
@@ -46,7 +47,13 @@ const GOLD_BUTTON_CLASS =
 const MAP_CHROME_OFFSET =
   "calc(max(0.75rem, env(safe-area-inset-top)) + 4.25rem)";
 
-export function AddCourtView() {
+export function AddCourtView({
+  courtCount,
+  fetchedAtBySource,
+}: {
+  courtCount: number;
+  fetchedAtBySource: FetchedAtBySource;
+}) {
   const copy = useCopy();
   const router = useRouter();
   const infoCtaRef = useRef<HTMLButtonElement>(null);
@@ -266,6 +273,11 @@ export function AddCourtView() {
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden overscroll-none bg-asphalt">
+      <AppHeader
+        title={copy.addCourt}
+        courtCount={courtCount}
+        fetchedAtBySource={fetchedAtBySource}
+      />
       <section className="relative min-h-0 flex-1 bg-asphalt">
         <div className="add-court-map absolute inset-0" inert={infoOpen}>
           <AddCourtMap
@@ -296,7 +308,7 @@ export function AddCourtView() {
         </div>
 
         <div className="pointer-events-none absolute inset-x-0 top-0 z-40 flex justify-start p-3 pt-[max(0.75rem,env(safe-area-inset-top))] pl-[max(0.75rem,env(safe-area-inset-left))]">
-          <div className="pointer-events-auto flex items-center gap-2 drop-shadow-[0_8px_20px_rgb(0_0_0_/_0.35)]">
+          <div className="pointer-events-auto flex max-w-full flex-wrap items-center gap-2 drop-shadow-[0_8px_20px_rgb(0_0_0_/_0.35)]">
             <LocateMeButton
               iconOnly
               status={locationStatus}
@@ -315,13 +327,6 @@ export function AddCourtView() {
               <CircleHelp aria-hidden className="size-5" />
               <span className="text-sm font-bold">{copy.addCourtInfoOpen}</span>
             </button>
-            <Link
-              href="/"
-              className="inline-flex h-12 shrink-0 items-center gap-1.5 rounded-full bg-white px-3.5 text-sm font-bold text-asphalt outline-none hover:bg-gold hover:text-asphalt focus-visible:ring-2 focus-visible:ring-gold/60"
-            >
-              <X aria-hidden className="size-6 stroke-[2.5]" />
-              {copy.addCourtExit}
-            </Link>
           </div>
         </div>
 
