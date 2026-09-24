@@ -234,6 +234,11 @@ const messages = {
   area: { fi: "Pinta-ala", en: "Area" },
   toilet: { fi: "WC", en: "Toilet" },
   adjustableRim: { fi: "Säädettävä kori", en: "Adjustable rim" },
+  hoopHeight: { fi: "Korin korkeus", en: "Hoop height" },
+  hoopHeights: {
+    official: { fi: "305 cm", en: "305 cm" },
+    lower: { fi: "Alle 305 cm", en: "Under 305 cm" },
+  },
   lightingNotes: { fi: "Valaistustiedot", en: "Lighting notes" },
   waterPoint: { fi: "Vesipiste", en: "Water point" },
   matchClock: { fi: "Pelikello", en: "Match clock" },

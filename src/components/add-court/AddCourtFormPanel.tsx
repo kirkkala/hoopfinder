@@ -3,9 +3,7 @@ import type { ReactNode } from "react";
 const MAP_CHROME_OFFSET =
   "calc(max(0.75rem, env(safe-area-inset-top)) + 4.25rem)";
 
-/** Fill the map under the chrome, leaving the same inset used at the sides. */
-const MAP_PANEL_MAX_HEIGHT =
-  "calc(100dvh - max(0.75rem, env(safe-area-inset-top)) - 4.25rem - max(0.75rem, env(safe-area-inset-bottom)))";
+const MAP_PANEL_BOTTOM = "max(0.75rem, env(safe-area-inset-bottom))";
 
 export function AddCourtFormPanel({
   title,
@@ -25,16 +23,15 @@ export function AddCourtFormPanel({
   return (
     <div
       inert={inert}
-      className="pointer-events-none absolute inset-x-0 z-20 flex justify-center px-3 sm:px-4"
-      style={{ top: MAP_CHROME_OFFSET }}
+      className="pointer-events-none absolute inset-x-0 z-20 flex items-start justify-center px-3 sm:px-4"
+      style={{ top: MAP_CHROME_OFFSET, bottom: MAP_PANEL_BOTTOM }}
     >
       <div
         role="dialog"
         aria-modal="false"
         aria-labelledby="add-court-form-title"
         onClick={(event) => event.stopPropagation()}
-        className="pointer-events-auto flex w-full max-w-sm flex-col overflow-hidden rounded-2xl border border-white/10 bg-panel/95 shadow-[0_12px_32px_rgb(0_0_0_/_0.45)]"
-        style={{ maxHeight: MAP_PANEL_MAX_HEIGHT }}
+        className="pointer-events-auto flex max-h-full w-full max-w-sm flex-col overflow-hidden rounded-2xl border border-white/10 bg-panel/95 shadow-[0_12px_32px_rgb(0_0_0_/_0.45)]"
       >
         <div
           className={`shrink-0 px-3 pt-3 ${collapsed ? "" : "border-b border-white/10"}`}

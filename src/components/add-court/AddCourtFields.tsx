@@ -8,6 +8,7 @@ import {
   FIELD_TYPE_CODES,
   OWNER_CODES,
   SURFACE_CODES,
+  HOOP_HEIGHT_CODES,
   WATER_POINT_CODES,
   type Court,
 } from "@/lib/courts";
@@ -34,6 +35,7 @@ export type AddCourtDetails = {
   areaM2: string;
   toilet: Tri;
   heightAdjustable: Tri;
+  hoopHeight: "" | (typeof HOOP_HEIGHT_CODES)[number];
   waterPoint: string;
   matchClock: Tri;
   scoreboard: Tri;
@@ -56,6 +58,7 @@ export const EMPTY_ADD_COURT_DETAILS: AddCourtDetails = {
   areaM2: "",
   toilet: "",
   heightAdjustable: "",
+  hoopHeight: "",
   waterPoint: "",
   matchClock: "",
   scoreboard: "",
@@ -92,6 +95,7 @@ export function addCourtDetailsFromCourt(court: Court): AddCourtDetails {
     areaM2: amenities.areaM2?.toString() ?? "",
     toilet: triFromBool(amenities.toilet),
     heightAdjustable: triFromBool(amenities.heightAdjustable),
+    hoopHeight: knownCode(HOOP_HEIGHT_CODES, amenities.hoopHeight),
     waterPoint: knownCode(WATER_POINT_CODES, amenities.waterPoint),
     matchClock: triFromBool(amenities.matchClock),
     scoreboard: triFromBool(amenities.scoreboard),
@@ -130,6 +134,7 @@ export function addCourtDetailsPayload(
     areaM2,
     toilet: details.toilet || null,
     heightAdjustable: details.heightAdjustable || null,
+    hoopHeight: details.hoopHeight || null,
     waterPoint: details.waterPoint || null,
     matchClock: details.matchClock || null,
     scoreboard: details.scoreboard || null,
@@ -186,8 +191,25 @@ export function AddCourtFields({
         }))}
         onChange={(fieldType) => patch({ fieldType })}
       />
+      <ChoiceSelect
+        label={copy.hoopHeight}
+        value={details.hoopHeight}
+        emptyLabel={copy.addCourtUnknown}
+        options={HOOP_HEIGHT_CODES.map((code) => ({
+          value: code,
+          label: copy.hoopHeights[code],
+        }))}
+        onChange={(hoopHeight) =>
+          patch({ hoopHeight: hoopHeight as AddCourtDetails["hoopHeight"] })
+        }
+      />
 
       <p className="mt-3 text-xs text-ink-muted">{copy.addCourtYesNoHint}</p>
+      <YesNoField
+        label={copy.adjustableRim}
+        value={details.heightAdjustable}
+        onChange={(heightAdjustable) => patch({ heightAdjustable })}
+      />
       <YesNoField
         label={copy.lights}
         value={details.lighting}
@@ -207,11 +229,6 @@ export function AddCourtFields({
         label={copy.toilet}
         value={details.toilet}
         onChange={(toilet) => patch({ toilet })}
-      />
-      <YesNoField
-        label={copy.adjustableRim}
-        value={details.heightAdjustable}
-        onChange={(heightAdjustable) => patch({ heightAdjustable })}
       />
       <YesNoField
         label={copy.matchClock}

@@ -37,6 +37,8 @@ export type Court = {
     areaM2: number | null;
     toilet: boolean | null;
     heightAdjustable: boolean | null;
+    /** Visitor-reported rim height. Catalog sources do not have this. */
+    hoopHeight: "official" | "lower" | null;
     waterPoint: string | null;
     matchClock: boolean | null;
     scoreboard: boolean | null;
@@ -96,6 +98,7 @@ export function emptyAmenities(): Court["amenities"] {
     areaM2: null,
     toilet: null,
     heightAdjustable: null,
+    hoopHeight: null,
     waterPoint: null,
     matchClock: null,
     scoreboard: null,
@@ -224,6 +227,9 @@ export const COURT_STATUS_CODES = [
 ] as const;
 
 export const FIELD_TYPE_CODES = ["full", "one-hoop", "mini", "street"] as const;
+
+/** Official rim is 305 cm. Visitors only say whether it is that or lower. */
+export const HOOP_HEIGHT_CODES = ["official", "lower"] as const;
 
 export const WATER_POINT_CODES = ["yes", "no", "seasonal"] as const;
 

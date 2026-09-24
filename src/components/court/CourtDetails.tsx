@@ -259,6 +259,20 @@ export function CourtDetails({
                   value={formatFieldType(amenities.fieldType, copy)}
                 />
               ) : null}
+              {amenities.hoopHeight ? (
+                <Fact
+                  icon={Ruler}
+                  label={copy.hoopHeight}
+                  value={copy.hoopHeights[amenities.hoopHeight]}
+                />
+              ) : null}
+              {amenities.heightAdjustable !== null ? (
+                <Fact
+                  icon={MoveVertical}
+                  label={copy.adjustableRim}
+                  value={formatReportedBoolean(amenities.heightAdjustable, copy)}
+                />
+              ) : null}
               {amenities.surfaceMaterial.length ? (
                 <Fact
                   icon={Layers}
@@ -290,13 +304,6 @@ export function CourtDetails({
                   icon={Bath}
                   label={copy.toilet}
                   value={formatReportedBoolean(amenities.toilet, copy)}
-                />
-              ) : null}
-              {amenities.heightAdjustable !== null ? (
-                <Fact
-                  icon={MoveVertical}
-                  label={copy.adjustableRim}
-                  value={formatReportedBoolean(amenities.heightAdjustable, copy)}
                 />
               ) : null}
               {amenities.lightingInfo ? (
