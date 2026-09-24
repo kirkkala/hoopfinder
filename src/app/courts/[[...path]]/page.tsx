@@ -76,7 +76,8 @@ export default async function CourtPage({
 }) {
   const result = await courtFromParams(params);
   if (!result) notFound();
-  if (isAwaitingEmail(result.court) && !(await viewerIsAdmin())) {
+  const isAdmin = await viewerIsAdmin();
+  if (isAwaitingEmail(result.court) && !isAdmin) {
     redirect(homeCourtHref({ id: result.court.id, source: "pending" }));
   }
   const [{ fetchedAtBySource }, courtCount] = await Promise.all([
@@ -89,6 +90,7 @@ export default async function CourtPage({
       fetchedAtBySource={fetchedAtBySource}
       sourceFetchedAt={result.sourceFetchedAt}
       courtCount={courtCount}
+      visitorEmail={isAdmin && "email" in result ? result.email : null}
     />
   );
 }
@@ -107,7 +109,11 @@ async function courtFromParams(params: Promise<{ path?: string[] }>) {
   if (catalogCourt) return catalogCourt;
   const submitted = await getSubmittedCourt(parsed.id);
   if (!submitted) return null;
-  return { court: submitted.court, sourceFetchedAt: submitted.createdAt };
+  return {
+    court: submitted.court,
+    sourceFetchedAt: submitted.createdAt,
+    email: submitted.email,
+  };
 }
 
 async function requestOrigin(): Promise<URL> {

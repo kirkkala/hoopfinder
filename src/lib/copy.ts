@@ -446,6 +446,12 @@ const messages = {
     fi: "Käyttäjä ei ole vielä vahvistanut kentän lisäystä.",
     en: "The visitor has not confirmed the email link yet.",
   },
+  adminEdit: { fi: "Muokkaa", en: "Edit" },
+  adminEditCancel: { fi: "Peruuta", en: "Cancel" },
+  adminEditError: {
+    fi: "Tallennus epäonnistui. Kokeile uudelleen.",
+    en: "Could not save. Try again.",
+  },
   adminPublish: { fi: "Julkaise", en: "Publish" },
   adminUnpublish: { fi: "Piilota", en: "Unpublish" },
   adminSaving: { fi: "Tallennetaan…", en: "Saving…" },

@@ -20,6 +20,7 @@ import {
   Map,
   MapPin,
   MoveVertical,
+  Pencil,
   Route,
   Ruler,
   School,
@@ -35,6 +36,7 @@ import { AppFooter } from "@/components/brand/AppFooter";
 import { CourtDistance } from "@/components/CourtDistance";
 import { LocateMeButton, locationHint } from "@/components/LocateMeButton";
 import { useCopy } from "@/components/brand/LocaleProvider";
+import { AdminCourtEditor } from "@/components/admin/AdminCourtEditor";
 import { useIsAdmin } from "@/components/admin/AdminProvider";
 import { AdminStatusButton } from "@/components/admin/AdminStatusButton";
 import { CourtMiniMap } from "@/components/court/CourtMiniMap";
@@ -65,14 +67,17 @@ export function CourtDetails({
   fetchedAtBySource,
   sourceFetchedAt,
   courtCount,
+  visitorEmail = null,
 }: {
   court: Court;
   fetchedAtBySource: FetchedAtBySource;
   sourceFetchedAt: string | null;
   courtCount: number;
+  visitorEmail?: string | null;
 }) {
   const copy = useCopy();
   const isAdmin = useIsAdmin();
+  const [editing, setEditing] = useState(false);
   const address = formatAddress([
     court.address,
     court.neighborhood,
@@ -91,6 +96,7 @@ export function CourtDetails({
   const awaitingEmail = isAdmin && court.emailConfirmed === false;
   const hideUnpublishedFacts = pending && !isAdmin;
   const showAdminStatus = isAdmin && court.source === "submitted";
+  const canEdit = showAdminStatus && visitorEmail !== null;
   const dimensions =
     amenities.lengthM && amenities.widthM
       ? `${amenities.lengthM} × ${amenities.widthM} m`
@@ -120,9 +126,8 @@ export function CourtDetails({
                   copy.pendingComingSoon
                 )}
               </p>
-            ) : (
-              <CourtDistanceBlock court={court} />
-            )}
+            ) : null}
+            <CourtDistanceBlock court={court} />
           </div>
 
           {thanks ? (
@@ -132,7 +137,32 @@ export function CourtDetails({
             </div>
           ) : null}
 
-          <dl className="grid gap-3 rounded-3xl border border-white/10 bg-panel p-5">
+          <dl
+            className={`relative grid gap-3 rounded-3xl border border-white/10 bg-panel p-5 ${
+              showAdminStatus ? "pr-40" : ""
+            }`}
+          >
+            {showAdminStatus ? (
+              <div className="absolute top-3 right-3 flex items-start gap-1">
+                <AdminStatusButton compact id={court.id} published={!pending} />
+                {canEdit ? (
+                  <button
+                    type="button"
+                    aria-pressed={editing}
+                    onClick={() => setEditing((open) => !open)}
+                    aria-label={copy.adminEdit}
+                    title={copy.adminEdit}
+                    className={`inline-flex size-8 items-center justify-center rounded-full ${
+                      editing
+                        ? "bg-gold text-asphalt"
+                        : "bg-white/15 text-white hover:bg-white/25"
+                    }`}
+                  >
+                    <Pencil className="size-4" aria-hidden />
+                  </button>
+                ) : null}
+              </div>
+            ) : null}
             <Fact
               icon={court.status === "active" ? CircleCheck : CirclePause}
               label={copy.status}
@@ -157,11 +187,6 @@ export function CourtDetails({
                 )
               }
             />
-            {showAdminStatus ? (
-              <div className="mt-3">
-                <AdminStatusButton id={court.id} published={!pending} />
-              </div>
-            ) : null}
             {!hideUnpublishedFacts && (
               <>
                 <Fact
@@ -322,6 +347,13 @@ export function CourtDetails({
           ) : null}
           </>
           )}
+          {editing && visitorEmail ? (
+            <AdminCourtEditor
+              court={court}
+              email={visitorEmail}
+              onClose={() => setEditing(false)}
+            />
+          ) : null}
         </section>
 
         <aside className="overflow-hidden rounded-3xl border border-white/10 bg-panel">

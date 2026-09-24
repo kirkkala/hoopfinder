@@ -9,6 +9,7 @@ import {
   OWNER_CODES,
   SURFACE_CODES,
   WATER_POINT_CODES,
+  type Court,
 } from "@/lib/courts";
 
 const SELECT_CLASS =
@@ -59,6 +60,43 @@ export const EMPTY_ADD_COURT_DETAILS: AddCourtDetails = {
   matchClock: "",
   scoreboard: "",
 };
+
+function triFromBool(value: boolean | null | undefined): Tri {
+  if (value === true) return "yes";
+  if (value === false) return "no";
+  return "";
+}
+
+function knownCode<T extends string>(codes: readonly T[], value: string | null | undefined): T | "" {
+  return codes.find((code) => code === value) ?? "";
+}
+
+export function addCourtDetailsFromCourt(court: Court): AddCourtDetails {
+  const { amenities } = court;
+  return {
+    courtStatus:
+      knownCode(COURT_STATUS_CODES, court.status) ||
+      knownCode(COURT_STATUS_CODES, court.reportedStatus),
+    website: court.website ?? "",
+    comment: court.comment ?? "",
+    owner: knownCode(OWNER_CODES, court.owner),
+    admin: knownCode(ADMIN_CODES, court.admin),
+    lighting: triFromBool(amenities.lighting),
+    lightingInfo: amenities.lightingInfo ?? "",
+    freeUse: triFromBool(amenities.freeUse),
+    schoolUse: triFromBool(amenities.schoolUse),
+    fieldType: knownCode(FIELD_TYPE_CODES, amenities.fieldType),
+    surfaceMaterial: knownCode(SURFACE_CODES, amenities.surfaceMaterial[0]),
+    lengthM: amenities.lengthM?.toString() ?? "",
+    widthM: amenities.widthM?.toString() ?? "",
+    areaM2: amenities.areaM2?.toString() ?? "",
+    toilet: triFromBool(amenities.toilet),
+    heightAdjustable: triFromBool(amenities.heightAdjustable),
+    waterPoint: knownCode(WATER_POINT_CODES, amenities.waterPoint),
+    matchClock: triFromBool(amenities.matchClock),
+    scoreboard: triFromBool(amenities.scoreboard),
+  };
+}
 
 export function addCourtDetailsDirty(details: AddCourtDetails): boolean {
   return Object.values(details).some((value) =>
