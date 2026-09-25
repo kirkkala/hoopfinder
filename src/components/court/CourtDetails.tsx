@@ -39,6 +39,7 @@ import { useCopy } from "@/components/brand/LocaleProvider";
 import { AdminCourtEditor } from "@/components/admin/AdminCourtEditor";
 import { useIsAdmin } from "@/components/admin/AdminProvider";
 import { AdminStatusButton } from "@/components/admin/AdminStatusButton";
+import { CourtGallery } from "@/components/court/CourtGallery";
 import { CourtMiniMap } from "@/components/court/CourtMiniMap";
 import {
   COURT_THANKS_KEY,
@@ -60,6 +61,7 @@ import { courtSource, OSM_COPYRIGHT_URL, sourceListingUrl } from "@/lib/sources"
 import { formatFetchedAt } from "@/lib/time";
 import { split } from "@/lib/layout";
 import type { FetchedAtBySource } from "@/lib/catalog";
+import type { CourtPhoto } from "@/lib/court-photos";
 import type { Copy } from "@/lib/copy";
 
 export function CourtDetails({
@@ -67,12 +69,14 @@ export function CourtDetails({
   fetchedAtBySource,
   sourceFetchedAt,
   courtCount,
+  photos,
   visitorEmail = null,
 }: {
   court: Court;
   fetchedAtBySource: FetchedAtBySource;
   sourceFetchedAt: string | null;
   courtCount: number;
+  photos: CourtPhoto[];
   visitorEmail?: string | null;
 }) {
   const copy = useCopy();
@@ -370,6 +374,11 @@ export function CourtDetails({
 
         <aside className="overflow-hidden rounded-3xl border border-white/10 bg-panel">
           <BackToMap court={court} className="px-3 py-4" />
+          <CourtGallery
+            courtId={court.id}
+            courtName={courtTitle(court, copy)}
+            photos={photos}
+          />
           <div className="h-80">
             <CourtMiniMap court={court} />
           </div>
