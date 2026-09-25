@@ -211,6 +211,7 @@ const messages = {
     "one-hoop": { fi: "Yhden korin kenttä", en: "One hoop" },
     mini: { fi: "Minikoripallokenttä", en: "Mini court" },
     street: { fi: "Katukoris", en: "Streetball" },
+    "hoop-only": { fi: "Ei kenttää, pelkkä kori", en: "No court, just a hoop" },
   } satisfies Record<string, Pair<string>>,
   waterPoints: {
     yes: { fi: "On", en: "Yes" },
@@ -374,12 +375,12 @@ const messages = {
     en: "Pick a place in Finland.",
   },
   addCourtOnWater: {
-    fi: "Älä laita kenttää veteen",
-    en: "Don't place the court in the water",
+    fi: "Vesialue",
+    en: "Water",
   },
   addCourtOnWaterBody: {
-    fi: "Hoop Finder ei ole vesipallokenttäpaikannin",
-    en: "Hoop Finder is not a water polo court locator.",
+    fi: "Eihän laiteta kenttiä veteen, valitse toinen paikka.",
+    en: "Let'not put hoops in the water, pick another place.",
   },
   pendingComingSoon: {
     fi: "Käyttäjän lisäämä kenttä.",
@@ -405,11 +406,11 @@ const messages = {
   signIn: { fi: "Kirjaudu", en: "Sign in" },
   signOut: { fi: "Kirjaudu ulos", en: "Sign out" },
   signInNotRequired: {
-    fi: "Kirjautuminen on vain pääkäyttäjille. Voit käyttää Hoop Finderia täysin ilman kirjautumista.",
-    en: "Login is only for system administrators. You can use Hoop Finder fully without logging in.",
+    fi: "Kirjautuminen toistaiseksi vain pääkäyttäjille.",
+    en: "Only for system administrators for now.",
   },
-  signInTitle: { fi: "Ylläpitäjän kirjautuminen", en: "Admin sign-in" },
-  signInGoogle: { fi: "Jatka Googlella", en: "Continue with Google" },
+  signInTitle: { fi: "Kirjaudu", en: "Sign in" },
+  signInGoogle: { fi: "Google sign in", en: "Google sign in" },
   signInNotAdmin: {
     fi: (email: string) =>
       `Sähköpostiosoitteellasi ${email} ei ole ylläpito-oikeutta.`,
@@ -522,6 +523,7 @@ const messages = {
     fine_gravel: { fi: "Hieno sora", en: "Fine gravel" },
     other: { fi: "Muu", en: "Other" },
   } satisfies Record<string, Pair<string>>,
+  loadingCourts: { fi: "Haetaan kenttiä…", en: "Fetching courts…" },
   courtCount: {
     fi: (count: number) => {
       const noun = count === 1 ? "kenttä" : "kenttää";

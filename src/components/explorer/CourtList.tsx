@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
-import Link from "next/link";
+import { AppLink } from "@/components/brand/AppLink";
 import { basketball } from "@lucide/lab";
 import { ArrowRight, Icon } from "lucide-react";
 import { useIsAdmin } from "@/components/admin/AdminProvider";
@@ -73,13 +73,13 @@ export function CourtList({
                   />
                 ) : null}
                 {isAwaitingEmail(court) && !isAdmin ? null : (
-                  <Link
+                  <AppLink
                     href={courtHref(court)}
                     className="ml-auto inline-flex items-center gap-1 font-bold text-gold hover:text-white"
                   >
                     {copy.letsGo}
                     <ArrowRight className="size-3.5" aria-hidden />
-                  </Link>
+                  </AppLink>
                 )}
               </div>
             </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { AppLink } from "@/components/brand/AppLink";
 import { basketball } from "@lucide/lab";
 import { ArrowLeft, Icon } from "lucide-react";
 import { AppFooter } from "@/components/brand/AppFooter";
@@ -32,13 +32,13 @@ export function NotFoundView({
           {copy.notFoundTitle}
         </h1>
         <p className="text-sm text-ink-muted">{copy.notFoundHint}</p>
-        <Link
+        <AppLink
           href="/"
           className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-red-500 px-4 py-2 text-sm font-bold text-white"
         >
           <ArrowLeft className="size-4" aria-hidden />
           {copy.backToHoops}
-        </Link>
+        </AppLink>
       </main>
       <AppFooter />
     </div>

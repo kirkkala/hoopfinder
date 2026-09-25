@@ -226,7 +226,7 @@ export const COURT_STATUS_CODES = [
   "out-of-service-permanently",
 ] as const;
 
-export const FIELD_TYPE_CODES = ["full", "one-hoop", "mini", "street"] as const;
+export const FIELD_TYPE_CODES = ["full", "one-hoop", "mini", "street", "hoop-only"] as const;
 
 /** Official rim is 305 cm. Visitors only say whether it is that or lower. */
 export const HOOP_HEIGHT_CODES = ["official", "lower"] as const;
