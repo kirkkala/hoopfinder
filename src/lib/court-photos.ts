@@ -1,12 +1,13 @@
 import { randomUUID } from "node:crypto";
 import { getBasketballCourt } from "@/lib/catalog";
 import {
+  compressCourtImage,
   courtImageExtension,
   readCourtImage,
   saveCourtImage,
   type CourtImageType,
 } from "@/lib/court-image-store";
-import { courtHref, type Court } from "@/lib/courts";
+import { courtHref, courtPath, type Court } from "@/lib/courts";
 import { getSubmittedCourt } from "@/lib/submitted-courts";
 import { withDb } from "@/lib/db";
 
@@ -46,18 +47,20 @@ export async function readPublishedCourtPhoto(
 ): Promise<{ bytes: Uint8Array; contentType: string } | null> {
   if (!/^[0-9a-f-]{36}$/i.test(id)) return null;
   const rows = await withDb((sql) => {
-    return sql<{ content_type: string }[]>`
-      SELECT content_type
+    return sql<{ court_id: string; content_type: string }[]>`
+      SELECT court_id, content_type
       FROM court_photos
       WHERE id = ${id}
       LIMIT 1
     `;
   });
-  const contentType = rows?.[0]?.content_type;
-  if (!contentType) return null;
-  const bytes = await readCourtImage(id, contentType);
+  const row = rows?.[0];
+  if (!row) return null;
+  const court = await findCourt(row.court_id);
+  if (!court) return null;
+  const bytes = await readCourtImage(courtPath(court), id, row.content_type);
   if (!bytes) return null;
-  return { bytes, contentType };
+  return { bytes, contentType: row.content_type };
 }
 
 export async function addCourtPhoto(
@@ -70,19 +73,26 @@ export async function addCourtPhoto(
   if (!courtImageExtension(contentType)) return { error: "type" };
   if (file.size <= 0 || file.size > MAX_BYTES) return { error: "too-large" };
 
-  const bytes = new Uint8Array(await file.arrayBuffer());
-  if (!matchesImageType(bytes, contentType as CourtImageType)) return { error: "type" };
+  const original = new Uint8Array(await file.arrayBuffer());
+  if (!matchesImageType(original, contentType as CourtImageType)) return { error: "type" };
 
   const existing = await listCourtPhotos(court);
   if (existing.length >= MAX_PHOTOS) return { error: "full" };
 
+  let stored: { bytes: Uint8Array; contentType: CourtImageType };
+  try {
+    stored = await compressCourtImage(original);
+  } catch {
+    return { error: "type" };
+  }
+
   const id = randomUUID();
   try {
-    await saveCourtImage(id, bytes, contentType);
+    await saveCourtImage(courtPath(court), id, stored.bytes, stored.contentType);
     const saved = await withDb((sql) => {
       return sql`
         INSERT INTO court_photos (id, court_id, content_type)
-        VALUES (${id}, ${courtId}, ${contentType})
+        VALUES (${id}, ${courtId}, ${stored.contentType})
       `;
     });
     if (!saved) return { error: "unavailable" };
