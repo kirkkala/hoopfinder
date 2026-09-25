@@ -374,12 +374,12 @@ const messages = {
     en: "Pick a place in Finland.",
   },
   addCourtOnWater: {
-    fi: "Älä laita kenttää veteen",
-    en: "Don't place the court in the water",
+    fi: "Vesialue",
+    en: "Water",
   },
   addCourtOnWaterBody: {
-    fi: "Hoop Finder ei ole vesipallokenttäpaikannin",
-    en: "Hoop Finder is not a water polo court locator.",
+    fi: "Eihän laiteta kenttiä veteen, valitse toinen paikka.",
+    en: "Let'not put hoops in the water, pick another place.",
   },
   pendingComingSoon: {
     fi: "Käyttäjän lisäämä kenttä.",
