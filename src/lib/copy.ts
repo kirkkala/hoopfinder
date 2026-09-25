@@ -522,6 +522,7 @@ const messages = {
     fine_gravel: { fi: "Hieno sora", en: "Fine gravel" },
     other: { fi: "Muu", en: "Other" },
   } satisfies Record<string, Pair<string>>,
+  loadingCourts: { fi: "Haetaan kenttiä…", en: "Fetching courts…" },
   courtCount: {
     fi: (count: number) => {
       const noun = count === 1 ? "kenttä" : "kenttää";

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, type ReactNode } from "react";
-import Link from "next/link";
+import { AppLink } from "@/components/brand/AppLink";
 import {
   ArrowLeft,
   Bath,
@@ -539,14 +539,14 @@ function BackToMap({
 }) {
   const copy = useCopy();
   return (
-    <Link
+    <AppLink
       href={homeCourtHref(court)}
       className={`inline-flex shrink-0 items-center gap-1 text-md font-medium text-gold hover:text-white ${className ?? ""}`}
     >
       <Map aria-hidden />
       <ArrowLeft className="size-6" aria-hidden />
       {copy.backToMap}
-    </Link>
+    </AppLink>
   );
 }
 

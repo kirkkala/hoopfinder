@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { AppLink } from "@/components/brand/AppLink";
 import { signIn, signOut } from "next-auth/react";
 import { basketball } from "@lucide/lab";
 import { Icon } from "lucide-react";
@@ -68,12 +68,12 @@ export function LoginView({
         ) : (
           <p className="mt-2 text-sm text-ink-muted">{copy.signInUnavailable}</p>
         )}
-        <Link
+        <AppLink
           href="/"
-          className="text-sm font-medium text-ink/80 underline-offset-2 hover:text-white hover:underline"
+          className="inline-flex items-center gap-1 text-sm font-medium text-ink/80 underline-offset-2 hover:text-white hover:underline"
         >
           {copy.backToMap}
-        </Link>
+        </AppLink>
       </main>
       <AppFooter />
     </div>

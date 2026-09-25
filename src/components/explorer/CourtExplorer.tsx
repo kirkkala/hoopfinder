@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import dynamic from "next/dynamic";
 import { basketball } from "@lucide/lab";
-import { Icon } from "lucide-react";
+import { Icon, LoaderCircle } from "lucide-react";
 import { AppHeader } from "@/components/brand/AppHeader";
 import { AppFooter } from "@/components/brand/AppFooter";
 import { CourtList } from "@/components/explorer/CourtList";
@@ -93,6 +93,7 @@ export function CourtExplorer({
   const copy = useCopy();
   const [thanks, setThanks] = useState(thanksFromUrl);
   const [courts, setCourts] = useState<ExplorerCourt[]>([]);
+  const [courtsReady, setCourtsReady] = useState(false);
   const [query, setQuery] = useState("");
   const { origin, status: locationStatus, request } = useLocationStatus();
   const [locateSeq, setLocateSeq] = useState(0);
@@ -123,6 +124,9 @@ export function CourtExplorer({
       .catch((error: unknown) => {
         if (error instanceof DOMException && error.name === "AbortError") return;
         setCourts([]);
+      })
+      .finally(() => {
+        if (!controller.signal.aborted) setCourtsReady(true);
       });
     return () => controller.abort();
   }, []);
@@ -244,13 +248,20 @@ export function CourtExplorer({
               locationStatus={locationStatus}
               onUseLocation={requestLocation}
             />
-            <p className="mt-3 flex items-center gap-2 font-display text-lg tracking-wide text-gold">
-              <Icon iconNode={basketball} className="size-5 shrink-0" aria-hidden />
-              {copy.courtCount(courtCount)}
+            <p
+              className="mt-3 flex items-center gap-2 font-display text-lg tracking-wide text-gold"
+              role="status"
+            >
+              {courtsReady ? (
+                <Icon iconNode={basketball} className="size-5 shrink-0" aria-hidden />
+              ) : (
+                <LoaderCircle className="size-5 shrink-0 animate-spin" aria-hidden />
+              )}
+              {courtsReady ? copy.courtCount(courtCount) : copy.loadingCourts}
             </p>
           </div>
 
-          {showList ? (
+          {showList && courtsReady ? (
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain px-3">
               <CourtList
                 courts={courtsInView}
@@ -276,6 +287,12 @@ export function CourtExplorer({
               thanks={thanks}
             />
           </div>
+          {courtsReady ? null : (
+            <p className="pointer-events-none absolute top-3 left-1/2 z-10 inline-flex -translate-x-1/2 items-center gap-2 rounded-full bg-asphalt/90 px-3 py-1.5 text-sm font-medium text-white shadow-lg ring-1 ring-white/15">
+              <LoaderCircle className="size-4 animate-spin text-gold" aria-hidden />
+              {copy.loadingCourts}
+            </p>
+          )}
         </section>
       </div>
 

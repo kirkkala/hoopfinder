@@ -1,10 +1,10 @@
 "use client";
 
 import { Fragment, useEffect, useId, useLayoutEffect, useRef, useState } from "react";
-import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { basketball } from "@lucide/lab";
 import { Icon, Plus, X } from "lucide-react";
+import { AppLink } from "@/components/brand/AppLink";
 import { IntroDialog } from "@/components/brand/IntroDialog";
 import { LanguageToggle } from "@/components/brand/LanguageToggle";
 import { BuyMeCoffeeButton } from "@/components/brand/BuyMeCoffeeButton";
@@ -91,7 +91,7 @@ export function AppHeader({
       </div>
       <div className="relative flex items-center gap-3 px-3 py-2 sm:px-4 sm:py-3 lg:px-6">
         <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
-          <Link
+          <AppLink
             href="/"
             className="group flex min-w-0 items-center gap-2 rounded-sm outline-none sm:gap-3 focus-visible:ring-2 focus-visible:ring-gold/60"
             aria-label={copy.appName}
@@ -117,19 +117,19 @@ export function AppHeader({
                 </span>
               </span>
             )}
-          </Link>
+          </AppLink>
           {title ? (
             <>
               <h1 className="min-w-0 truncate font-display text-xl leading-none tracking-wide text-gold sm:text-2xl">
                 {title}
               </h1>
-              <Link
+              <AppLink
                 href="/"
                 className="inline-flex shrink-0 items-center gap-1 rounded-sm px-2 py-1.5 text-sm font-medium text-ink/80 outline-none hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-gold/60"
               >
                 <X aria-hidden className="size-4" />
                 {copy.addCourtExit}
-              </Link>
+              </AppLink>
             </>
           ) : (
             <>
@@ -304,24 +304,24 @@ function HeaderMenu({
                   </button>
                 </li>
                 <li>
-                  <Link
+                  <AppLink
                     href="/add"
-                    onClick={() => setOpen(false)}
+                    prefetch
                     className="flex w-full items-center gap-2 px-4 py-3.5 text-left text-base font-medium text-white outline-none hover:bg-white/5 focus-visible:bg-white/5 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-gold/60"
                   >
                     <Plus aria-hidden className="size-4 stroke-[2.5]" />
                     {copy.addCourt}
-                  </Link>
+                  </AppLink>
                 </li>
                 {isAdmin ? (
                   <li>
-                    <Link
+                    <AppLink
                       href="/admin"
                       onClick={() => setOpen(false)}
                       className="flex w-full items-center px-4 py-3.5 text-left text-base font-medium text-white outline-none hover:bg-white/5 focus-visible:bg-white/5 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-gold/60"
                     >
                       {copy.adminNav}
-                    </Link>
+                    </AppLink>
                   </li>
                 ) : null}
                 <AuthControl onAction={() => setOpen(false)} />
@@ -400,7 +400,7 @@ function AdminNavLink() {
   const onAdminPage = usePathname() === "/admin";
 
   return (
-    <Link
+    <AppLink
       href="/admin"
       aria-current={onAdminPage ? "page" : undefined}
       className={`hidden wide:inline-flex shrink-0 items-center whitespace-nowrap rounded-sm px-2.5 py-1.5 text-sm font-medium outline-none focus-visible:ring-2 focus-visible:ring-gold/60 ${
@@ -410,7 +410,7 @@ function AdminNavLink() {
       }`}
     >
       {copy.adminNav}
-    </Link>
+    </AppLink>
   );
 }
 
@@ -419,8 +419,9 @@ function AddCourtNavLink() {
   const onAddPage = usePathname() === "/add";
 
   return (
-    <Link
+    <AppLink
       href={onAddPage ? "/" : "/add"}
+      prefetch
       aria-current={onAddPage ? "page" : undefined}
       aria-label={onAddPage ? copy.addCourtExit : undefined}
       className={`group inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-sm px-2.5 py-1.5 text-sm font-medium outline-none focus-visible:ring-2 focus-visible:ring-gold/60 ${
@@ -439,7 +440,7 @@ function AddCourtNavLink() {
           className="size-3.5 stroke-2 opacity-70 transition duration-150 group-hover:stroke-[3] group-hover:opacity-100 group-hover:text-white group-focus-visible:stroke-[3] group-focus-visible:opacity-100 group-focus-visible:text-white"
         />
       ) : null}
-    </Link>
+    </AppLink>
   );
 }
 
