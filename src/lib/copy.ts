@@ -211,6 +211,7 @@ const messages = {
     "one-hoop": { fi: "Yhden korin kenttä", en: "One hoop" },
     mini: { fi: "Minikoripallokenttä", en: "Mini court" },
     street: { fi: "Katukoris", en: "Streetball" },
+    "hoop-only": { fi: "Ei kenttää, pelkkä kori", en: "No court, just a hoop" },
   } satisfies Record<string, Pair<string>>,
   waterPoints: {
     yes: { fi: "On", en: "Yes" },
