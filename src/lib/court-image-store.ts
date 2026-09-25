@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
+import { mkdir, readFile, unlink, writeFile } from "node:fs/promises";
 import path from "node:path";
 import sharp from "sharp";
 
@@ -73,6 +73,28 @@ export async function saveCourtImage(
   if (!file) throw new Error("invalid court image");
   await mkdir(path.dirname(file), { recursive: true });
   await writeFile(file, bytes);
+}
+
+export async function deleteCourtImage(
+  courtPath: string,
+  id: string,
+  contentType: string,
+): Promise<void> {
+  const file = imagePath(courtPath, id, contentType);
+  if (!file) return;
+  try {
+    await unlink(file);
+  } catch (error: unknown) {
+    if (
+      error &&
+      typeof error === "object" &&
+      "code" in error &&
+      error.code === "ENOENT"
+    ) {
+      return;
+    }
+    throw error;
+  }
 }
 
 export async function readCourtImage(

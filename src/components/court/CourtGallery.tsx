@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { ImagePlus, LoaderCircle } from "lucide-react";
+import { ImagePlus, LoaderCircle, Trash2 } from "lucide-react";
+import { useIsAdmin } from "@/components/admin/AdminProvider";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import type { CourtPhoto, CourtPhotoError } from "@/lib/court-photos";
 
@@ -15,8 +16,10 @@ export function CourtGallery({
   photos: CourtPhoto[];
 }) {
   const copy = useCopy();
+  const isAdmin = useIsAdmin();
   const [items, setItems] = useState(photos);
   const [uploading, setUploading] = useState(false);
+  const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   async function onFile(file: File | null) {
@@ -44,18 +47,48 @@ export function CourtGallery({
     }
   }
 
+  async function remove(id: string) {
+    if (busy || !window.confirm(copy.photoDeleteConfirm)) return;
+    setError(null);
+    setBusy(true);
+    try {
+      const response = await fetch(`/api/court-photos/${id}`, { method: "DELETE" });
+      if (!response.ok) {
+        setError(copy.photoChangeError);
+        return;
+      }
+      setItems((current) => current.filter((photo) => photo.id !== id));
+    } catch {
+      setError(copy.photoChangeError);
+    } finally {
+      setBusy(false);
+    }
+  }
+
   return (
     <section className="border-b border-white/10 px-3 pb-4">
       <h2 className="text-sm font-bold uppercase tracking-wide text-gold/80">{copy.photos}</h2>
       {items.length > 0 ? (
         <ul className="mt-2 flex flex-wrap gap-2">
           {items.map((photo) => (
-            <li key={photo.id}>
+            <li key={photo.id} className="relative">
               <img
                 src={photo.url}
                 alt={copy.photoAlt(courtName)}
                 className="size-16 rounded-lg object-cover"
               />
+              {isAdmin ? (
+                <button
+                  type="button"
+                  aria-label={copy.photoDelete}
+                  title={copy.photoDelete}
+                  disabled={busy}
+                  onClick={() => void remove(photo.id)}
+                  className="absolute -top-1.5 -right-1.5 inline-flex size-5 items-center justify-center rounded-full bg-asphalt text-white ring-1 ring-white/20 hover:bg-white hover:text-asphalt disabled:opacity-50"
+                >
+                  <Trash2 className="size-3" aria-hidden />
+                </button>
+              ) : null}
             </li>
           ))}
         </ul>

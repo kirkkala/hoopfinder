@@ -3,6 +3,7 @@ import { getBasketballCourt } from "@/lib/catalog";
 import {
   compressCourtImage,
   courtImageExtension,
+  deleteCourtImage,
   readCourtImage,
   saveCourtImage,
   type CourtImageType,
@@ -102,6 +103,25 @@ export async function addCourtPhoto(
   }
 
   return { photo: { id, url: courtPhotoUrl(court, id) } };
+}
+
+export async function deleteCourtPhoto(
+  id: string,
+): Promise<{ ok: true } | { error: "not-found" | "unavailable" }> {
+  if (!/^[0-9a-f-]{36}$/i.test(id)) return { error: "not-found" };
+  const removed = await withDb((sql) => {
+    return sql<{ court_id: string; content_type: string }[]>`
+      DELETE FROM court_photos
+      WHERE id = ${id}
+      RETURNING court_id, content_type
+    `;
+  });
+  if (!removed) return { error: "unavailable" };
+  const row = removed[0];
+  if (!row) return { error: "not-found" };
+  const court = await findCourt(row.court_id);
+  if (court) await deleteCourtImage(courtPath(court), id, row.content_type);
+  return { ok: true };
 }
 
 async function findCourt(courtId: string): Promise<Pick<Court, "id" | "source"> | null> {
