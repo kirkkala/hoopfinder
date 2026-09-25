@@ -1,6 +1,6 @@
 "use client";
 
-import Link from "next/link";
+import { AppLink } from "@/components/brand/AppLink";
 import { signOut, useSession } from "next-auth/react";
 import { useCopy } from "@/components/brand/LocaleProvider";
 
@@ -36,9 +36,9 @@ export function AuthControl({ onAction }: { onAction?: () => void }) {
 
   return (
     <li>
-      <Link href="/login" className={menuClass} onClick={onAction}>
+      <AppLink href="/login" className={menuClass} onClick={onAction}>
         {copy.signIn}
-      </Link>
+      </AppLink>
     </li>
   );
 }

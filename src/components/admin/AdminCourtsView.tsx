@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Link from "next/link";
+import { AppLink } from "@/components/brand/AppLink";
 import { useRouter } from "next/navigation";
 import { basketball } from "@lucide/lab";
 import { Icon, Pencil, Trash2 } from "lucide-react";
@@ -160,12 +160,12 @@ function SubmittedList({
                   </button>
                 </div>
               </div>
-              <Link
+              <AppLink
                 href={courtHref({ id: court.id, source: "submitted" })}
-                className="mt-2 inline-block font-semibold text-gold hover:text-white"
+                className="mt-2 inline-flex items-center gap-1 font-semibold text-gold hover:text-white"
               >
                 {court.name}
-              </Link>
+              </AppLink>
               <p className="mt-1 text-ink-muted">{court.address}</p>
               <a
                 href={`mailto:${court.email}`}
