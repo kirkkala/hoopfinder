@@ -245,6 +245,37 @@ const messages = {
     en: (source: string) => `Notes from ${source}`,
   },
   notesFromListing: { fi: "Lisätiedot", en: "Notes" },
+  photos: { fi: "Kentän kuvat", en: "Court photos" },
+  addPhoto: { fi: "Lisää kuva", en: "Add photo" },
+  photoAlt: {
+    fi: (name: string) => `Kuva kentästä ${name}`,
+    en: (name: string) => `Photo of ${name}`,
+  },
+  photoTooLarge: {
+    fi: "Kuva on liian suuri. Enimmäiskoko on 8 Mt.",
+    en: "That photo is too large. Maximum size is 8 MB.",
+  },
+  photoType: {
+    fi: "Käytä JPG-, PNG- tai WebP-kuvaa.",
+    en: "Use a JPG, PNG, or WebP image.",
+  },
+  photosFull: {
+    fi: "Tähän kenttään ei mahdu enempää kuvia.",
+    en: "This court can't take more photos.",
+  },
+  photoError: {
+    fi: "Kuvan lataus epäonnistui. Yritä uudelleen.",
+    en: "Could not upload the photo. Try again.",
+  },
+  photoDelete: { fi: "Poista kuva", en: "Delete photo" },
+  photoDeleteConfirm: {
+    fi: "Poistetaanko tämä kuva? Tätä ei voi perua.",
+    en: "Delete this photo? This cannot be undone.",
+  },
+  photoChangeError: {
+    fi: "Kuvan muutos epäonnistui. Yritä uudelleen.",
+    en: "Could not update the photo. Try again.",
+  },
   yes: { fi: "Kyllä", en: "Yes" },
   no: { fi: "Ei", en: "No" },
   notReported: { fi: "Ei ilmoitettu", en: "Not reported" },

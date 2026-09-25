@@ -15,6 +15,7 @@
 
 # database
 *.sql
+/data/court-images/
 
 # next.js
 /.next/
