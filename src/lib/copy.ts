@@ -405,11 +405,11 @@ const messages = {
   signIn: { fi: "Kirjaudu", en: "Sign in" },
   signOut: { fi: "Kirjaudu ulos", en: "Sign out" },
   signInNotRequired: {
-    fi: "Kirjautuminen on vain pääkäyttäjille. Voit käyttää Hoop Finderia täysin ilman kirjautumista.",
-    en: "Login is only for system administrators. You can use Hoop Finder fully without logging in.",
+    fi: "Kirjautuminen toistaiseksi vain pääkäyttäjille.",
+    en: "Only for system administrators for now.",
   },
-  signInTitle: { fi: "Ylläpitäjän kirjautuminen", en: "Admin sign-in" },
-  signInGoogle: { fi: "Jatka Googlella", en: "Continue with Google" },
+  signInTitle: { fi: "Kirjaudu", en: "Sign in" },
+  signInGoogle: { fi: "Google sign in", en: "Google sign in" },
   signInNotAdmin: {
     fi: (email: string) =>
       `Sähköpostiosoitteellasi ${email} ei ole ylläpito-oikeutta.`,

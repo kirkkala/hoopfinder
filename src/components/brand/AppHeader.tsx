@@ -309,7 +309,6 @@ function HeaderMenu({
                     prefetch
                     className="flex w-full items-center gap-2 px-4 py-3.5 text-left text-base font-medium text-white outline-none hover:bg-white/5 focus-visible:bg-white/5 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-gold/60"
                   >
-                    <Plus aria-hidden className="size-4 stroke-[2.5]" />
                     {copy.addCourt}
                   </AppLink>
                 </li>

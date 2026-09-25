@@ -49,11 +49,17 @@ export function LoginView({
         {error ? (
           <p className="text-sm text-red-400">{copy.signInError}</p>
         ) : null}
+        <AppLink
+          href="/"
+          className="mt-2 inline-flex items-center rounded-full bg-gold px-4 py-2 text-sm font-bold text-asphalt hover:bg-white"
+        >
+          {copy.backToMap}
+        </AppLink>
         {signedInEmail ? (
           <button
             type="button"
             onClick={() => void signOut({ callbackUrl: "/login" })}
-            className="mt-2 inline-flex items-center rounded-full bg-white/15 px-4 py-2 text-sm font-bold text-white hover:bg-white/25"
+            className="text-xs font-medium text-ink-muted underline-offset-2 hover:text-white hover:underline"
           >
             {copy.signOut}
           </button>
@@ -61,19 +67,13 @@ export function LoginView({
           <button
             type="button"
             onClick={() => void signIn("google", { callbackUrl })}
-            className="mt-2 inline-flex items-center rounded-full bg-gold px-4 py-2 text-sm font-bold text-asphalt hover:bg-white"
+            className="text-xs font-medium text-ink-muted underline-offset-2 mt-2 hover:text-white hover:underline"
           >
             {copy.signInGoogle}
           </button>
         ) : (
-          <p className="mt-2 text-sm text-ink-muted">{copy.signInUnavailable}</p>
+          <p className="text-xs text-ink-muted">{copy.signInUnavailable}</p>
         )}
-        <AppLink
-          href="/"
-          className="inline-flex items-center gap-1 text-sm font-medium text-ink/80 underline-offset-2 hover:text-white hover:underline"
-        >
-          {copy.backToMap}
-        </AppLink>
       </main>
       <AppFooter />
     </div>
