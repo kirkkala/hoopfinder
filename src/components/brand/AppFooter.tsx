@@ -130,7 +130,7 @@ export function SourceCredits({ row = false }: { row?: boolean }) {
       <Item>
         {copy.feedback}:{" "}
         <a
-          href={`mailto:feedback@hoopfinder.fi?subject=${copy.feedbackSubject}&body=${copy.feedbackBody}`}
+          href={`mailto:timo.kirkkala@gmail.com?subject=${copy.feedbackSubject}&body=${copy.feedbackBody}`}
           className="text-gold hover:text-white"
           target="_blank"
           rel="noreferrer"
