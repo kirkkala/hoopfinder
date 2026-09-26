@@ -245,7 +245,7 @@ const messages = {
     en: (source: string) => `Notes from ${source}`,
   },
   notesFromListing: { fi: "Lisätiedot", en: "Notes" },
-  photos: { fi: "Kentän kuvat", en: "Court photos" },
+  photos: { fi: "Kuvagalleria", en: "Photo gallery" },
   addPhoto: { fi: "Lisää kuva", en: "Add photo" },
   photoAlt: {
     fi: (name: string) => `Kuva kentästä ${name}`,

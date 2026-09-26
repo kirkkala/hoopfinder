@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import * as React from "react";
 import { ImagePlus, LoaderCircle, Trash2 } from "lucide-react";
 import { useIsAdmin } from "@/components/admin/AdminProvider";
 import { useCopy } from "@/components/brand/LocaleProvider";
+import Lightbox from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css";
 import type { CourtPhoto, CourtPhotoError } from "@/lib/court-photos";
 
 export function CourtGallery({
@@ -17,10 +19,12 @@ export function CourtGallery({
 }) {
   const copy = useCopy();
   const isAdmin = useIsAdmin();
-  const [items, setItems] = useState(photos);
-  const [uploading, setUploading] = useState(false);
-  const [busy, setBusy] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [items, setItems] = React.useState(photos);
+  const [uploading, setUploading] = React.useState(false);
+  const [busy, setBusy] = React.useState(false);
+  const [error, setError] = React.useState<string | null>(null);
+  const [open, setOpen] = React.useState(false);
+  const [index, setIndex] = React.useState(0);
 
   async function onFile(file: File | null) {
     if (!file || uploading) return;
@@ -69,29 +73,49 @@ export function CourtGallery({
     <section className="border-b border-white/10 px-3 pb-4">
       <h2 className="text-sm font-bold uppercase tracking-wide text-gold/80">{copy.photos}</h2>
       {items.length > 0 ? (
-        <ul className="mt-2 flex flex-wrap gap-2">
-          {items.map((photo) => (
-            <li key={photo.id} className="relative">
-              <img
-                src={photo.url}
-                alt={copy.photoAlt(courtName)}
-                className="size-16 rounded-lg object-cover"
-              />
-              {isAdmin ? (
+        <>
+          <ul className="mt-2 grid grid-cols-[repeat(auto-fill,minmax(5rem,1fr))] gap-2">
+            {items.map((photo, photoIndex) => (
+              <li key={photo.id} className="relative">
                 <button
                   type="button"
-                  aria-label={copy.photoDelete}
-                  title={copy.photoDelete}
-                  disabled={busy}
-                  onClick={() => void remove(photo.id)}
-                  className="absolute -top-1.5 -right-1.5 inline-flex size-5 items-center justify-center rounded-full bg-asphalt text-white ring-1 ring-white/20 hover:bg-white hover:text-asphalt disabled:opacity-50"
+                  onClick={() => {
+                    setIndex(photoIndex);
+                    setOpen(true);
+                  }}
+                  className="group block w-full rounded-lg outline-none ring-2 ring-transparent transition duration-150 hover:ring-gold focus-visible:ring-gold"
                 >
-                  <Trash2 className="size-3" aria-hidden />
+                  <img
+                    src={photo.url}
+                    alt={copy.photoAlt(courtName)}
+                    className="aspect-square w-full rounded-lg object-cover transition duration-150 group-hover:brightness-110 group-focus-visible:brightness-110"
+                  />
                 </button>
-              ) : null}
-            </li>
-          ))}
-        </ul>
+                {isAdmin ? (
+                  <button
+                    type="button"
+                    aria-label={copy.photoDelete}
+                    title={copy.photoDelete}
+                    disabled={busy}
+                    onClick={() => void remove(photo.id)}
+                    className="absolute -top-1.5 -right-1.5 inline-flex size-5 items-center justify-center rounded-full bg-asphalt text-white ring-1 ring-white/20 hover:bg-white hover:text-asphalt disabled:opacity-50"
+                  >
+                    <Trash2 className="size-3" aria-hidden />
+                  </button>
+                ) : null}
+              </li>
+            ))}
+          </ul>
+          <Lightbox
+            open={open}
+            index={index}
+            close={() => setOpen(false)}
+            slides={items.map((photo) => ({
+              src: photo.url,
+              alt: copy.photoAlt(courtName),
+            }))}
+          />
+        </>
       ) : null}
       <label
         className={`mt-3 inline-flex cursor-pointer items-center gap-1.5 rounded-full bg-gold px-3 py-1.5 text-xs font-bold text-asphalt hover:bg-white ${
