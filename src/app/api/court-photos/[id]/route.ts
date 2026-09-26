@@ -2,11 +2,12 @@ import { requireAdmin } from "@/auth";
 import { deleteCourtPhoto, readPublishedCourtPhoto } from "@/lib/court-photos";
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> },
 ) {
   const { id } = await params;
-  const photo = await readPublishedCourtPhoto(id);
+  const thumb = new URL(request.url).searchParams.has("thumb");
+  const photo = await readPublishedCourtPhoto(id, thumb ? "thumb" : "full");
   if (!photo) return new Response(null, { status: 404 });
   return new Response(Buffer.from(photo.bytes), {
     headers: {

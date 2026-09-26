@@ -5,6 +5,7 @@ import {
   courtImageExtension,
   deleteCourtImage,
   readCourtImage,
+  readCourtThumbnail,
   saveCourtImage,
   type CourtImageType,
 } from "@/lib/court-image-store";
@@ -18,12 +19,18 @@ const MAX_PHOTOS = 12;
 export type CourtPhoto = {
   id: string;
   url: string;
+  thumbUrl: string;
 };
 
 export type CourtPhotoError = "invalid" | "type" | "too-large" | "full" | "unavailable";
 
 export function courtPhotoUrl(court: Pick<Court, "id" | "source">, photoId: string): string {
   return `${courtHref(court)}/photos/${photoId}`;
+}
+
+function courtPhoto(court: Pick<Court, "id" | "source">, id: string): CourtPhoto {
+  const url = courtPhotoUrl(court, id);
+  return { id, url, thumbUrl: `${url}?thumb=1` };
 }
 
 export async function listCourtPhotos(
@@ -37,14 +44,12 @@ export async function listCourtPhotos(
       ORDER BY created_at ASC
     `;
   });
-  return (rows ?? []).map((row) => ({
-    id: row.id,
-    url: courtPhotoUrl(court, row.id),
-  }));
+  return (rows ?? []).map((row) => courtPhoto(court, row.id));
 }
 
 export async function readPublishedCourtPhoto(
   id: string,
+  kind: "full" | "thumb" = "full",
 ): Promise<{ bytes: Uint8Array; contentType: string } | null> {
   if (!/^[0-9a-f-]{36}$/i.test(id)) return null;
   const rows = await withDb((sql) => {
@@ -59,9 +64,12 @@ export async function readPublishedCourtPhoto(
   if (!row) return null;
   const court = await findCourt(row.court_id);
   if (!court) return null;
-  const bytes = await readCourtImage(courtPath(court), id, row.content_type);
+  const bytes =
+    kind === "thumb"
+      ? await readCourtThumbnail(courtPath(court), id)
+      : await readCourtImage(courtPath(court), id, row.content_type);
   if (!bytes) return null;
-  return { bytes, contentType: row.content_type };
+  return { bytes, contentType: kind === "thumb" ? "image/webp" : row.content_type };
 }
 
 export async function addCourtPhoto(
@@ -102,7 +110,7 @@ export async function addCourtPhoto(
     return { error: "unavailable" };
   }
 
-  return { photo: { id, url: courtPhotoUrl(court, id) } };
+  return { photo: courtPhoto(court, id) };
 }
 
 export async function deleteCourtPhoto(

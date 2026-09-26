@@ -86,7 +86,7 @@ export function CourtGallery({
                   className="group block w-full rounded-lg outline-none ring-2 ring-transparent transition duration-150 hover:ring-gold focus-visible:ring-gold"
                 >
                   <img
-                    src={photo.url}
+                    src={photo.thumbUrl}
                     alt={copy.photoAlt(courtName)}
                     className="aspect-square w-full rounded-lg object-cover transition duration-150 group-hover:brightness-110 group-focus-visible:brightness-110"
                   />

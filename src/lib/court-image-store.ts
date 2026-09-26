@@ -8,6 +8,7 @@ import sharp from "sharp";
  * The court path is the same one the page uses (`lipas/82547`, `osm/way/123`),
  * so a new catalog only needs a path of its own. The file name is the photo id:
  * camera names collide and are dropped when the file is re-encoded.
+ * Each save also writes `{id}.thumb.webp` for the gallery. The lightbox keeps the full file.
  * Swap this module for Vercel Blob when that store exists; callers stay the same.
  */
 const ROOT = path.join(process.cwd(), "data", "court-images");
@@ -46,6 +47,9 @@ function imagePath(courtPath: string, id: string, contentType: string): string |
  */
 const MAX_EDGE = 1200;
 
+/** Longest side of the gallery thumbnail. The grid shows about 100 CSS pixels. */
+const THUMB_EDGE = 320;
+
 /** Resize for phone screens and a later lightbox, and drop camera metadata. */
 export async function compressCourtImage(
   bytes: Uint8Array,
@@ -63,6 +67,21 @@ export async function compressCourtImage(
   return { bytes: new Uint8Array(output), contentType: "image/webp" };
 }
 
+/** Smaller copy for the gallery. Same shape as the source; nothing is cropped. */
+async function thumbnailBytes(bytes: Uint8Array): Promise<Uint8Array> {
+  const output = await sharp(bytes)
+    .rotate()
+    .resize({
+      width: THUMB_EDGE,
+      height: THUMB_EDGE,
+      fit: "inside",
+      withoutEnlargement: true,
+    })
+    .webp({ quality: 80 })
+    .toBuffer();
+  return new Uint8Array(output);
+}
+
 export async function saveCourtImage(
   courtPath: string,
   id: string,
@@ -71,8 +90,11 @@ export async function saveCourtImage(
 ): Promise<void> {
   const file = imagePath(courtPath, id, contentType);
   if (!file) throw new Error("invalid court image");
+  const thumb = thumbnailPath(courtPath, id);
+  if (!thumb) throw new Error("invalid court image");
   await mkdir(path.dirname(file), { recursive: true });
   await writeFile(file, bytes);
+  await writeFile(thumb, await thumbnailBytes(bytes));
 }
 
 export async function deleteCourtImage(
@@ -80,21 +102,8 @@ export async function deleteCourtImage(
   id: string,
   contentType: string,
 ): Promise<void> {
-  const file = imagePath(courtPath, id, contentType);
-  if (!file) return;
-  try {
-    await unlink(file);
-  } catch (error: unknown) {
-    if (
-      error &&
-      typeof error === "object" &&
-      "code" in error &&
-      error.code === "ENOENT"
-    ) {
-      return;
-    }
-    throw error;
-  }
+  await removeFile(imagePath(courtPath, id, contentType));
+  await removeFile(thumbnailPath(courtPath, id));
 }
 
 export async function readCourtImage(
@@ -117,4 +126,40 @@ export async function readCourtImage(
     }
     throw error;
   }
+}
+
+export async function readCourtThumbnail(
+  courtPath: string,
+  id: string,
+): Promise<Uint8Array | null> {
+  const file = thumbnailPath(courtPath, id);
+  if (!file) return null;
+  try {
+    return await readFile(file);
+  } catch (error: unknown) {
+    if (isMissing(error)) return null;
+    throw error;
+  }
+}
+
+function thumbnailPath(courtPath: string, id: string): string | null {
+  const full = imagePath(courtPath, id, "image/webp");
+  if (!full) return null;
+  return path.join(path.dirname(full), `${id}.thumb.webp`);
+}
+
+async function removeFile(file: string | null): Promise<void> {
+  if (!file) return;
+  try {
+    await unlink(file);
+  } catch (error: unknown) {
+    if (isMissing(error)) return;
+    throw error;
+  }
+}
+
+function isMissing(error: unknown): boolean {
+  return Boolean(
+    error && typeof error === "object" && "code" in error && error.code === "ENOENT",
+  );
 }
