@@ -10,6 +10,7 @@ import sharp from "sharp";
  * camera names collide and are dropped when the file is re-encoded.
  * Each save also writes `{id}.thumb.webp` for the gallery. The lightbox keeps the full file.
  * Swap this module for Vercel Blob when that store exists; callers stay the same.
+ * Reads never throw: a missing directory or a disk error is a missing photo.
  */
 const ROOT = path.join(process.cwd(), "data", "court-images");
 
@@ -92,9 +93,9 @@ export async function saveCourtImage(
   if (!file) throw new Error("invalid court image");
   const thumb = thumbnailPath(courtPath, id);
   if (!thumb) throw new Error("invalid court image");
-  await mkdir(path.dirname(file), { recursive: true });
-  await writeFile(file, bytes);
-  await writeFile(thumb, await thumbnailBytes(bytes));
+  await mkdir(/* turbopackIgnore: true */ path.dirname(file), { recursive: true });
+  await writeFile(/* turbopackIgnore: true */ file, bytes);
+  await writeFile(/* turbopackIgnore: true */ thumb, await thumbnailBytes(bytes));
 }
 
 export async function deleteCourtImage(
@@ -111,34 +112,29 @@ export async function readCourtImage(
   id: string,
   contentType: string,
 ): Promise<Uint8Array | null> {
-  const file = imagePath(courtPath, id, contentType);
-  if (!file) return null;
-  try {
-    return await readFile(file);
-  } catch (error: unknown) {
-    if (
-      error &&
-      typeof error === "object" &&
-      "code" in error &&
-      error.code === "ENOENT"
-    ) {
-      return null;
-    }
-    throw error;
-  }
+  return readIfPresent(imagePath(courtPath, id, contentType));
 }
 
 export async function readCourtThumbnail(
   courtPath: string,
   id: string,
 ): Promise<Uint8Array | null> {
-  const file = thumbnailPath(courtPath, id);
+  return readIfPresent(thumbnailPath(courtPath, id));
+}
+
+/**
+ * A missing store, a missing file, or any other disk error is an absent photo.
+ * Court pages keep rendering; the picture route answers 404.
+ */
+async function readIfPresent(file: string | null): Promise<Uint8Array | null> {
   if (!file) return null;
   try {
-    return await readFile(file);
+    // The path is built from the court id, so Turbopack cannot see that it
+    // stays under data/court-images and would otherwise trace the whole repo.
+    return await readFile(/* turbopackIgnore: true */ file);
   } catch (error: unknown) {
-    if (isMissing(error)) return null;
-    throw error;
+    if (!isMissing(error)) console.error(error);
+    return null;
   }
 }
 
@@ -151,10 +147,9 @@ function thumbnailPath(courtPath: string, id: string): string | null {
 async function removeFile(file: string | null): Promise<void> {
   if (!file) return;
   try {
-    await unlink(file);
+    await unlink(/* turbopackIgnore: true */ file);
   } catch (error: unknown) {
-    if (isMissing(error)) return;
-    throw error;
+    if (!isMissing(error)) console.error(error);
   }
 }
 
