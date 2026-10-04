@@ -1,4 +1,5 @@
 import { randomUUID } from "node:crypto";
+import { z } from "zod";
 import { getBasketballCourt } from "@/lib/catalog";
 import {
   compressCourtImage,
@@ -20,31 +21,48 @@ export type CourtPhoto = {
   id: string;
   url: string;
   thumbUrl: string;
+  description: string | null;
 };
 
-export type CourtPhotoError = "invalid" | "type" | "too-large" | "full" | "unavailable";
+export type CourtPhotoError = "invalid" | "email" | "type" | "too-large" | "full" | "unavailable";
+
+/** Lowercase, same form as a submitted court's email, so the two can be matched later. */
+const photoEmail = z.string().trim().toLowerCase().pipe(z.email().max(254));
+const photoDescription = z
+  .string()
+  .trim()
+  .max(200)
+  .transform((value) => value || null);
 
 export function courtPhotoUrl(court: Pick<Court, "id" | "source">, photoId: string): string {
   return `${courtHref(court)}/photos/${photoId}`;
 }
 
-function courtPhoto(court: Pick<Court, "id" | "source">, id: string): CourtPhoto {
-  const url = courtPhotoUrl(court, id);
-  return { id, url, thumbUrl: `${url}?thumb=1` };
+function courtPhoto(
+  court: Pick<Court, "id" | "source">,
+  row: { id: string; description: string | null },
+): CourtPhoto {
+  const url = courtPhotoUrl(court, row.id);
+  return {
+    id: row.id,
+    url,
+    thumbUrl: `${url}?thumb=1`,
+    description: row.description,
+  };
 }
 
 export async function listCourtPhotos(
   court: Pick<Court, "id" | "source">,
 ): Promise<CourtPhoto[]> {
   const rows = await withDb((sql) => {
-    return sql<{ id: string }[]>`
-      SELECT id
+    return sql<{ id: string; description: string | null }[]>`
+      SELECT id, description
       FROM court_photos
       WHERE court_id = ${court.id}
       ORDER BY created_at ASC
     `;
   });
-  return (rows ?? []).map((row) => courtPhoto(court, row.id));
+  return (rows ?? []).map((row) => courtPhoto(court, row));
 }
 
 export async function readPublishedCourtPhoto(
@@ -75,9 +93,15 @@ export async function readPublishedCourtPhoto(
 export async function addCourtPhoto(
   courtId: string,
   file: File,
+  email: string,
+  description: string,
 ): Promise<{ photo: CourtPhoto } | { error: CourtPhotoError }> {
   const court = await findCourt(courtId);
   if (!court) return { error: "invalid" };
+  const parsedEmail = photoEmail.safeParse(email);
+  if (!parsedEmail.success) return { error: "email" };
+  const parsedDescription = photoDescription.safeParse(description);
+  if (!parsedDescription.success) return { error: "invalid" };
   const contentType = file.type;
   if (!courtImageExtension(contentType)) return { error: "type" };
   if (file.size <= 0 || file.size > MAX_BYTES) return { error: "too-large" };
@@ -100,8 +124,14 @@ export async function addCourtPhoto(
     await saveCourtImage(courtPath(court), id, stored.bytes, stored.contentType);
     const saved = await withDb((sql) => {
       return sql`
-        INSERT INTO court_photos (id, court_id, content_type)
-        VALUES (${id}, ${courtId}, ${stored.contentType})
+        INSERT INTO court_photos (id, court_id, content_type, email, description)
+        VALUES (
+          ${id},
+          ${courtId},
+          ${stored.contentType},
+          ${parsedEmail.data},
+          ${parsedDescription.data}
+        )
       `;
     });
     if (!saved) return { error: "unavailable" };
@@ -110,7 +140,9 @@ export async function addCourtPhoto(
     return { error: "unavailable" };
   }
 
-  return { photo: courtPhoto(court, id) };
+  return {
+    photo: courtPhoto(court, { id, description: parsedDescription.data }),
+  };
 }
 
 export async function deleteCourtPhoto(

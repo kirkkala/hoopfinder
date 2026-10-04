@@ -2,7 +2,7 @@ import postgres from "postgres";
 
 type Sql = postgres.Sql;
 
-const SCHEMA_VERSION = 13;
+const SCHEMA_VERSION = 15;
 
 const globalForDb = globalThis as typeof globalThis & {
   __hoopfinderSql?: Sql;
@@ -94,5 +94,17 @@ async function ensureSchema(sql: Sql) {
   await sql`
     CREATE INDEX IF NOT EXISTS court_photos_court_id_idx
     ON court_photos (court_id)
+  `;
+  // Same lowercase address as submitted_courts.email, repeated on the photo row
+  // so a later account can match courts and photos by that address.
+  await sql`ALTER TABLE court_photos ADD COLUMN IF NOT EXISTS email TEXT`;
+  await sql`ALTER TABLE court_photos ADD COLUMN IF NOT EXISTS description TEXT`;
+  await sql`
+    CREATE INDEX IF NOT EXISTS court_photos_email_idx
+    ON court_photos (email)
+  `;
+  await sql`
+    CREATE INDEX IF NOT EXISTS submitted_courts_email_idx
+    ON submitted_courts (email)
   `;
 }

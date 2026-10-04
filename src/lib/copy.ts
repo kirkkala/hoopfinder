@@ -247,6 +247,22 @@ const messages = {
   notesFromListing: { fi: "Lisätiedot", en: "Notes" },
   photos: { fi: "Kuvagalleria", en: "Photo gallery" },
   addPhoto: { fi: "Lisää kuva", en: "Add photo" },
+  photoGuide: {
+    fi: "Lisää kuvia kentästä. Älä lisää kuvia ihmisistä ellet ole saaneet heiltä kuvauslupaa. Ylläpito pidättää oikeuden poistaa sopimattomat kuvat.",
+    en: "Add photos of the court. No people, unless everyone in it has agreed or cannot be recognized. The admin can remove a photo that doesn't belong.",
+  },
+  photoEmailHidden: {
+    fi: "Sähköpostiosoitettasi ei näytetä palvelussa. Emme spammaa, mutta saatamme kiittää lisätyistä kuvista.",
+    en: "Your email address is not shown in the service. We don't spam, we might thank you for the photos.",
+  },
+  photoChoose: { fi: "Valitse kuva", en: "Choose a photo" },
+  photoFileMissing: { fi: "Valitse kuva.", en: "Choose a photo." },
+  photoDescription: { fi: "Kuvateksti", en: "Photo description" },
+  photoDescriptionPlaceholder: { fi: "Anna lyhyt kuvateksti", en: "Enter a short description" },
+  photoEmailInvalid: {
+    fi: "Tarkista sähköpostiosoite.",
+    en: "Check the email address.",
+  },
   photoAlt: {
     fi: (name: string) => `Kuva kentästä ${name}`,
     en: (name: string) => `Photo of ${name}`,
@@ -310,7 +326,7 @@ const messages = {
     fi: "Haetaan osoitetta…",
     en: "Looking up the address…",
   },
-  addCourtEmail: { fi: "Sähköposti", en: "Email" },
+  addCourtEmail: { fi: "Sähköpostiosoitteesi", en: "Your email address" },
   addCourtEmailHelp: {
     fi: "Lähetämme sähköpostiisi vahvistuslinkin.",
     en: "We'll send a confirmation link to your email.",
