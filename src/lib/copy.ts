@@ -267,6 +267,18 @@ const messages = {
     fi: (name: string) => `Kuva kentästä ${name}`,
     en: (name: string) => `Photo of ${name}`,
   },
+  photoPrevious: { fi: "Edellinen kuva", en: "Previous photo" },
+  photoNext: { fi: "Seuraava kuva", en: "Next photo" },
+  photoCarousel: { fi: "karuselli", en: "carousel" },
+  photoCarouselSlide: { fi: "kuva", en: "slide" },
+  photoSlide: {
+    fi: (current: number, total: number, description: string | null) =>
+      description ? `Kuva ${current}/${total}. ${description}` : `Kuva ${current}/${total}`,
+    en: (current: number, total: number, description: string | null) =>
+      description
+        ? `Photo ${current} of ${total}. ${description}`
+        : `Photo ${current} of ${total}`,
+  },
   photoTooLarge: {
     fi: "Kuva on liian suuri. Enimmäiskoko on 8 Mt.",
     en: "That photo is too large. Maximum size is 8 MB.",

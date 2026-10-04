@@ -375,6 +375,7 @@ export function CourtDetails({
         <aside className="overflow-hidden rounded-3xl border border-white/10 bg-panel">
           <BackToMap court={court} className="px-3 py-4" />
           <CourtGallery
+            key={court.id}
             courtId={court.id}
             courtName={courtTitle(court, copy)}
             photos={photos}
