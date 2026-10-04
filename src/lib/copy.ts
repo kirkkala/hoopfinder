@@ -494,6 +494,15 @@ const messages = {
     fi: "Hallintapaneeli ei ole juuri nyt käytössä.",
     en: "Admin panel is not available right now.",
   },
+  adminPhotosTitle: { fi: "Kentät, joihin lisätty kuvia", en: "Courts with photos" },
+  adminPhotosEmpty: {
+    fi: "Yhdelläkään kentällä ei ole kuvia.",
+    en: "No court has photos yet.",
+  },
+  adminPhotoCount: {
+    fi: (count: number) => (count === 1 ? "1 kuva" : `${count} kuvaa`),
+    en: (count: number) => (count === 1 ? "1 photo" : `${count} photos`),
+  },
   adminCourtCount: {
     fi: (count: number) => {
       const noun = count === 1 ? "kenttä" : "kenttää";

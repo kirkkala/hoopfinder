@@ -124,22 +124,22 @@ export function CourtGallery({
 
   React.useEffect(() => {
     if (!emblaApi || items.length === 0) return;
+    const api = emblaApi;
     const startIndex =
-      pendingIndex.current ??
-      Math.min(emblaApi.selectedScrollSnap(), items.length - 1);
+      pendingIndex.current ?? Math.min(api.selectedScrollSnap(), items.length - 1);
     pendingIndex.current = null;
-    emblaApi.reInit({
+    api.reInit({
       loop: items.length > 1,
       watchDrag: items.length > 1,
       startIndex,
     });
     function onSelect() {
-      setIndex(emblaApi.selectedScrollSnap());
+      setIndex(api.selectedScrollSnap());
     }
-    emblaApi.on("select", onSelect);
+    api.on("select", onSelect);
     onSelect();
     return () => {
-      emblaApi.off("select", onSelect);
+      api.off("select", onSelect);
     };
   }, [emblaApi, items]);
 

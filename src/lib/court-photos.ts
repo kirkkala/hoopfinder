@@ -51,6 +51,44 @@ function courtPhoto(
   };
 }
 
+export type AdminCourtWithPhotos = {
+  id: string;
+  href: string | null;
+  name: string;
+  nameFi: string;
+  neighborhood: string | null;
+  city: string | null;
+  photoCount: number;
+};
+
+/** Courts that have at least one photo, newest photo first. */
+export async function listAdminCourtsWithPhotos(): Promise<AdminCourtWithPhotos[] | null> {
+  const rows = await withDb((sql) => {
+    return sql<{ court_id: string; photo_count: number | string }[]>`
+      SELECT court_id, COUNT(*)::int AS photo_count
+      FROM court_photos
+      GROUP BY court_id
+      ORDER BY MAX(created_at) DESC
+    `;
+  });
+  if (!rows) return null;
+
+  return Promise.all(
+    rows.map(async (row) => {
+      const court = await findCourt(row.court_id);
+      return {
+        id: row.court_id,
+        href: court ? courtHref(court) : null,
+        name: court?.name ?? row.court_id,
+        nameFi: court?.nameFi ?? row.court_id,
+        neighborhood: court?.neighborhood ?? null,
+        city: court?.city ?? null,
+        photoCount: Number(row.photo_count),
+      };
+    }),
+  );
+}
+
 export async function listCourtPhotos(
   court: Pick<Court, "id" | "source">,
 ): Promise<CourtPhoto[]> {
@@ -164,7 +202,7 @@ export async function deleteCourtPhoto(
   return { ok: true };
 }
 
-async function findCourt(courtId: string): Promise<Pick<Court, "id" | "source"> | null> {
+async function findCourt(courtId: string): Promise<Court | null> {
   const catalog = await getBasketballCourt(courtId);
   if (catalog) return catalog.court;
   const submitted = await getSubmittedCourt(courtId);
