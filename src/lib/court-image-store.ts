@@ -37,7 +37,12 @@ function courtSegments(courtPath: string): string[] | null {
   if (
     segments.length < 2 ||
     segments.length > 4 ||
-    segments.some((segment) => !/^[\w.-]{1,80}$/.test(segment))
+    segments.some(
+      (segment) =>
+        segment === "." ||
+        segment === ".." ||
+        !/^[\w.-]{1,80}$/.test(segment),
+    )
   ) {
     return null;
   }
