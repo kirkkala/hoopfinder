@@ -31,7 +31,7 @@ test("asks Nominatim for a Finnish place and prefers a neighborhood over a stati
   expect(place!.bounds.south).toBeCloseTo(60.1);
   expect(place!.camera.north - place!.camera.south).toBeLessThan(place!.bounds.north - place!.bounds.south);
 
-  const [calledUrl, init] = fetchMock.mock.calls[0] as [URL, RequestInit];
+  const [calledUrl, init] = fetchMock.mock.calls[0] as unknown as [URL, RequestInit];
   const url = String(calledUrl);
   expect(url).toContain("Kallio%2C+Finland");
   expect(url).toContain("countrycodes=fi");
