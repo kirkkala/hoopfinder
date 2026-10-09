@@ -297,6 +297,10 @@ const messages = {
     fi: "Tähän kenttään ei mahdu enempää kuvia.",
     en: "This court can't take more photos.",
   },
+  photoRateLimit: {
+    fi: "Liian monta lähetystä. Kokeile myöhemmin uudelleen.",
+    en: "Too many submissions. Try again later.",
+  },
   photoError: {
     fi: "Kuvan lataus epäonnistui. Yritä uudelleen.",
     en: "Could not upload the photo. Try again.",

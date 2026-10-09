@@ -2,7 +2,7 @@ import postgres from "postgres";
 
 type Sql = postgres.Sql;
 
-const SCHEMA_VERSION = 15;
+const SCHEMA_VERSION = 16;
 
 const globalForDb = globalThis as typeof globalThis & {
   __hoopfinderSql?: Sql;
@@ -123,5 +123,15 @@ async function ensureSchema(sql: Sql) {
   await sql`
     CREATE INDEX IF NOT EXISTS submitted_courts_email_idx
     ON submitted_courts (email)
+  `;
+  await sql`
+    CREATE TABLE IF NOT EXISTS court_photo_limits (
+      ip TEXT NOT NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    )
+  `;
+  await sql`
+    CREATE INDEX IF NOT EXISTS court_photo_limits_ip_created_idx
+    ON court_photo_limits (ip, created_at)
   `;
 }

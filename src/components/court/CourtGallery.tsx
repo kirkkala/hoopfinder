@@ -397,6 +397,7 @@ function messageFor(
   if (error === "too-large") return copy.photoTooLarge;
   if (error === "type") return copy.photoType;
   if (error === "full") return copy.photosFull;
+  if (error === "rate-limited") return copy.photoRateLimit;
   if (error === "email") return copy.photoEmailInvalid;
   return copy.photoError;
 }

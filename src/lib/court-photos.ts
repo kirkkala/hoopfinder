@@ -24,7 +24,14 @@ export type CourtPhoto = {
   description: string | null;
 };
 
-export type CourtPhotoError = "invalid" | "email" | "type" | "too-large" | "full" | "unavailable";
+export type CourtPhotoError =
+  | "invalid"
+  | "email"
+  | "type"
+  | "too-large"
+  | "full"
+  | "rate-limited"
+  | "unavailable";
 
 /** Lowercase, same form as a submitted court's email, so the two can be matched later. */
 const photoEmail = z.string().trim().toLowerCase().pipe(z.email().max(254));
@@ -128,6 +135,40 @@ export async function readPublishedCourtPhoto(
   return { bytes, contentType: kind === "thumb" ? "image/webp" : row.content_type };
 }
 
+const PHOTOS_PER_IP_PER_HOUR = 10;
+const PHOTOS_PER_IP_PER_DAY = 25;
+const PHOTOS_PER_DAY = 100;
+
+/** Ten tries per address each hour, 25 each day, and 100 new photos for the whole site each day. */
+export async function takeCourtPhotoSlot(ip: string): Promise<boolean | null> {
+  return withDb(async (sql) => {
+    await sql`
+      DELETE FROM court_photo_limits
+      WHERE created_at < NOW() - INTERVAL '1 day'
+    `;
+    const hour = await sql<{ count: string }[]>`
+      SELECT COUNT(*)::text AS count
+      FROM court_photo_limits
+      WHERE ip = ${ip} AND created_at > NOW() - INTERVAL '1 hour'
+    `;
+    const day = await sql<{ count: string }[]>`
+      SELECT COUNT(*)::text AS count
+      FROM court_photo_limits
+      WHERE ip = ${ip} AND created_at > NOW() - INTERVAL '1 day'
+    `;
+    const site = await sql<{ count: string }[]>`
+      SELECT COUNT(*)::text AS count
+      FROM court_photos
+      WHERE created_at > NOW() - INTERVAL '1 day'
+    `;
+    if (Number(hour[0]?.count ?? 0) >= PHOTOS_PER_IP_PER_HOUR) return false;
+    if (Number(day[0]?.count ?? 0) >= PHOTOS_PER_IP_PER_DAY) return false;
+    if (Number(site[0]?.count ?? 0) >= PHOTOS_PER_DAY) return false;
+    await sql`INSERT INTO court_photo_limits (ip) VALUES (${ip})`;
+    return true;
+  });
+}
+
 export async function addCourtPhoto(
   courtId: string,
   file: File,
@@ -144,11 +185,11 @@ export async function addCourtPhoto(
   if (!courtImageExtension(contentType)) return { error: "type" };
   if (file.size <= 0 || file.size > COURT_PHOTO_MAX_BYTES) return { error: "too-large" };
 
-  const original = new Uint8Array(await file.arrayBuffer());
-  if (!matchesImageType(original, contentType as CourtImageType)) return { error: "type" };
-
   const existing = await listCourtPhotos(court);
   if (existing.length >= MAX_PHOTOS) return { error: "full" };
+
+  const original = new Uint8Array(await file.arrayBuffer());
+  if (!matchesImageType(original, contentType as CourtImageType)) return { error: "type" };
 
   let stored: { bytes: Uint8Array; contentType: CourtImageType };
   try {
