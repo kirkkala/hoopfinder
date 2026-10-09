@@ -245,7 +245,9 @@ const messages = {
     en: (source: string) => `Notes from ${source}`,
   },
   notesFromListing: { fi: "Lisätiedot", en: "Notes" },
-  photos: { fi: "Kuvagalleria", en: "Photo gallery" },
+  photogallery: { fi: "Kuvagalleria", en: "Photo gallery" },
+  courtLocation: { fi: "Sijainti kartalla", en: "Location on the map" },
+  noPhotos: { fi: "Ei kuvia.", en: "No photos." },
   addPhoto: { fi: "Lisää kuva", en: "Add photo" },
   photoGuide: {
     fi: "Lisää kuvia kentästä. Älä lisää kuvia ihmisistä ellet ole saaneet heiltä kuvauslupaa. Ylläpito pidättää oikeuden poistaa sopimattomat kuvat.",

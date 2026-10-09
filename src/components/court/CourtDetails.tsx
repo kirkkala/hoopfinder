@@ -112,7 +112,7 @@ export function CourtDetails({
 
       <main className="mx-auto grid w-full max-w-5xl flex-1 gap-6 px-4 py-8 split:grid-cols-[1.1fr_0.9fr]">
         <section className="space-y-5">
-          <BackToMap court={court} className={split.hidden} />
+          <BackToMap court={court} />
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">
               {copy.courtKind}
@@ -373,16 +373,13 @@ export function CourtDetails({
         </section>
 
         <aside className="overflow-hidden rounded-3xl border border-white/10 bg-panel">
-          <BackToMap court={court} className="px-3 py-4" />
           <CourtGallery
             key={court.id}
             courtId={court.id}
             courtName={courtTitle(court, copy)}
             photos={photos}
           />
-          <div className="h-80">
-            <CourtMiniMap court={court} />
-          </div>
+          <CourtMiniMap court={court} />
           <dl className="grid gap-3 border-t border-white/10 p-5">
             {court.website ? (
               <Fact

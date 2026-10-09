@@ -2,7 +2,14 @@
 
 import * as React from "react";
 import useEmblaCarousel from "embla-carousel-react";
-import { ChevronLeft, ChevronRight, ImagePlus, LoaderCircle, Trash2 } from "lucide-react";
+import {
+  ChevronLeft,
+  ChevronRight,
+  Image as ImageIcon,
+  ImagePlus,
+  LoaderCircle,
+  Trash2,
+} from "lucide-react";
 import { useIsAdmin } from "@/components/admin/AdminProvider";
 import { AddCourtFormPanel } from "@/components/add-court/AddCourtFormPanel";
 import { FieldLabel } from "@/components/add-court/AddCourtFields";
@@ -158,13 +165,17 @@ export function CourtGallery({
 
   return (
     <section
-      className="border-b border-white/10 px-3 pb-4"
+      className="border-b border-white/10 px-3 py-4"
       aria-roledescription={copy.photoCarousel}
       aria-labelledby={headingId}
       onKeyDown={onGalleryKeyDown}
     >
-      <h2 id={headingId} className="text-sm font-bold uppercase tracking-wide text-gold/80">
-        {copy.photos}
+      <h2
+        id={headingId}
+        className="flex items-center gap-1.5 text-sm font-bold uppercase tracking-wide text-gold/80"
+      >
+        <ImageIcon className="size-4 shrink-0" aria-hidden />
+        {copy.photogallery}
       </h2>
       {selected ? (
         <figure className="group relative mt-2">
@@ -211,7 +222,7 @@ export function CourtGallery({
             />
           ) : null}
           {selected.description ? (
-            <figcaption className="pointer-events-none absolute inset-x-0 bottom-0 line-clamp-2 rounded-b-xl bg-gradient-to-t from-black/80 to-transparent px-12 pt-6 pb-2 text-sm leading-snug text-white">
+            <figcaption className="pointer-events-none absolute inset-x-0 bottom-0 line-clamp-2 rounded-b-xl bg-gradient-to-t from-black/80 to-transparent px-3 pt-6 pb-2 text-sm leading-snug text-white">
               {selected.description}
             </figcaption>
           ) : null}
@@ -251,7 +262,9 @@ export function CourtGallery({
             </li>
           ))}
         </ul>
-      ) : null}
+      ) : (
+        <p className="text-ink-muted">{copy.noPhotos}</p>
+      )}
       <button
         type="button"
         onClick={() => {
