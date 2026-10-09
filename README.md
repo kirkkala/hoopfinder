@@ -33,17 +33,21 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000). The public map does not need API keys.
 
-Postgres is only for visitor-submitted courts on `/add`. Copy `DATABASE_URL` from `.env.example` into `.env.local` if needed. The `submitted_courts` table is created on first request. Stop the database with `docker compose down`.
+Postgres is for visitor-submitted courts on `/add`. Copy `DATABASE_URL` from `.env.example` into `.env.local` if needed. The `submitted_courts` table is created on first request. Stop the database with `docker compose down`.
 
-Dump the database `npm run dev` uses (`DATABASE_URL` in `.env.local`), not the Docker container:
+Dump the database `npm run dev` uses (`DATABASE_URL` in `.env.local`):
 
 ```bash
 pg_dump postgres://hoopfinder:hoopfinder@localhost:5432/hoopfinder > hoopfinder.sql
 ```
 
-`docker compose exec … pg_dump` dumps Compose Postgres. If another Postgres is already on localhost:5432 (Homebrew, Postgres.app), the app writes there and the Compose dump is empty.
-
 Restore with `psql postgres://hoopfinder:hoopfinder@localhost:5432/hoopfinder < hoopfinder.sql`.
+
+Dump production from Neon with the direct URL (no `-pooler` in the host):
+
+```bash
+pg_dump "postgres://…" --no-owner --no-acl > hoopfinder.sql
+```
 
 ## Suggest a court
 
