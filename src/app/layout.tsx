@@ -6,9 +6,12 @@ import type { Metadata, Viewport } from "next";
 import { AdminProvider } from "@/components/admin/AdminProvider";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import { LocaleProvider } from "@/components/brand/LocaleProvider";
+import { SiteBanner, type SiteBannerMessage } from "@/components/brand/SiteBanner";
 import { getAuthSession } from "@/auth";
 import { SITE_URL } from "@/lib/constants";
 import { getCopy } from "@/lib/copy";
+import { isDatabaseUnavailable, withDb } from "@/lib/db";
+import { siteAnnouncements } from "@/lib/site-announcements";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -87,16 +90,31 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
-  const session = await getAuthSession();
+  const [session] = await Promise.all([
+    getAuthSession(),
+    withDb((sql) => sql`select 1`),
+  ]);
+  const databaseUnavailable = isDatabaseUnavailable();
+  const messages: SiteBannerMessage[] = databaseUnavailable
+    ? [
+        {
+          tone: "error",
+          fi: getCopy("fi").databaseUnavailable,
+          en: getCopy("en").databaseUnavailable,
+        },
+      ]
+    : siteAnnouncements;
   return (
     <html lang="fi" className={`${outfit.variable} ${bebas.variable}`}>
       <body className="min-h-dvh bg-asphalt font-sans text-ink antialiased">
         <LocaleProvider>
-          <AuthProvider session={session}>
-            <AdminProvider isAdmin={session?.user?.isAdmin === true}>
-              {children}
-            </AdminProvider>
-          </AuthProvider>
+          <SiteBanner messages={messages} databaseUnavailable={databaseUnavailable}>
+            <AuthProvider session={session}>
+              <AdminProvider isAdmin={session?.user?.isAdmin === true}>
+                {children}
+              </AdminProvider>
+            </AuthProvider>
+          </SiteBanner>
         </LocaleProvider>
         <Analytics />
         <SpeedInsights />

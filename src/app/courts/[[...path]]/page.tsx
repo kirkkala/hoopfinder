@@ -15,6 +15,8 @@ import {
   isAwaitingEmail,
   parseCourtPath,
 } from "@/lib/courts";
+import { listCourtPhotos } from "@/lib/court-photos";
+import { isDatabaseUnavailable } from "@/lib/db";
 import { countPublicCourts, getSubmittedCourt } from "@/lib/submitted-courts";
 
 export const dynamic = "force-dynamic";
@@ -80,9 +82,10 @@ export default async function CourtPage({
   if (isAwaitingEmail(result.court) && !isAdmin) {
     redirect(homeCourtHref({ id: result.court.id, source: "pending" }));
   }
-  const [{ fetchedAtBySource }, courtCount] = await Promise.all([
+  const [{ fetchedAtBySource }, courtCount, photos] = await Promise.all([
     getCourtCatalog(),
     countPublicCourts(),
+    listCourtPhotos(result.court),
   ]);
   return (
     <CourtDetails
@@ -90,6 +93,7 @@ export default async function CourtPage({
       fetchedAtBySource={fetchedAtBySource}
       sourceFetchedAt={result.sourceFetchedAt}
       courtCount={courtCount}
+      photos={photos}
       visitorEmail={isAdmin && "email" in result ? result.email : null}
     />
   );
@@ -108,7 +112,10 @@ async function courtFromParams(params: Promise<{ path?: string[] }>) {
   const catalogCourt = await getBasketballCourt(parsed.id);
   if (catalogCourt) return catalogCourt;
   const submitted = await getSubmittedCourt(parsed.id);
-  if (!submitted) return null;
+  if (!submitted) {
+    if (isDatabaseUnavailable()) throw new Error("database unavailable");
+    return null;
+  }
   return {
     court: submitted.court,
     sourceFetchedAt: submitted.createdAt,

@@ -4,6 +4,10 @@ Outdoor basketball courts across Finland — find a hoop, go out and play.
 
 Map, search, and a page per court. UI defaults to Finnish; English is a toggle. Copy lives in [`src/lib/copy.ts`](src/lib/copy.ts).
 
+## Announcements
+
+Banners are the list in [`src/lib/site-announcements.ts`](src/lib/site-announcements.ts). Add an entry to show one, delete it to hide it. `dismissible: true` lets a visitor close it for the rest of that browser tab.
+
 ## Data
 
 Courts are the committed snapshot in [`data/courts.json`](data/courts.json). Runtime does not call the source APIs.
@@ -33,17 +37,21 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000). The public map does not need API keys.
 
-Postgres is only for visitor-submitted courts on `/add`. Copy `DATABASE_URL` from `.env.example` into `.env.local` if needed. The `submitted_courts` table is created on first request. Stop the database with `docker compose down`.
+Postgres is for visitor-submitted courts on `/add`. Copy `DATABASE_URL` from `.env.example` into `.env.local` if needed. The `submitted_courts` table is created on first request. Stop the database with `docker compose down`.
 
-Dump the database `npm run dev` uses (`DATABASE_URL` in `.env.local`), not the Docker container:
+Dump the database `npm run dev` uses (`DATABASE_URL` in `.env.local`):
 
 ```bash
 pg_dump postgres://hoopfinder:hoopfinder@localhost:5432/hoopfinder > hoopfinder.sql
 ```
 
-`docker compose exec … pg_dump` dumps Compose Postgres. If another Postgres is already on localhost:5432 (Homebrew, Postgres.app), the app writes there and the Compose dump is empty.
-
 Restore with `psql postgres://hoopfinder:hoopfinder@localhost:5432/hoopfinder < hoopfinder.sql`.
+
+Dump production from Neon with the direct URL (no `-pooler` in the host):
+
+```bash
+pg_dump "postgres://…" --no-owner --no-acl > hoopfinder.sql
+```
 
 ## Suggest a court
 

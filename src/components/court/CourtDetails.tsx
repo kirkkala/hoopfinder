@@ -39,6 +39,7 @@ import { useCopy } from "@/components/brand/LocaleProvider";
 import { AdminCourtEditor } from "@/components/admin/AdminCourtEditor";
 import { useIsAdmin } from "@/components/admin/AdminProvider";
 import { AdminStatusButton } from "@/components/admin/AdminStatusButton";
+import { CourtGallery } from "@/components/court/CourtGallery";
 import { CourtMiniMap } from "@/components/court/CourtMiniMap";
 import {
   COURT_THANKS_KEY,
@@ -60,6 +61,7 @@ import { courtSource, OSM_COPYRIGHT_URL, sourceListingUrl } from "@/lib/sources"
 import { formatFetchedAt } from "@/lib/time";
 import { split } from "@/lib/layout";
 import type { FetchedAtBySource } from "@/lib/catalog";
+import type { CourtPhoto } from "@/lib/court-photos";
 import type { Copy } from "@/lib/copy";
 
 export function CourtDetails({
@@ -67,12 +69,14 @@ export function CourtDetails({
   fetchedAtBySource,
   sourceFetchedAt,
   courtCount,
+  photos,
   visitorEmail = null,
 }: {
   court: Court;
   fetchedAtBySource: FetchedAtBySource;
   sourceFetchedAt: string | null;
   courtCount: number;
+  photos: CourtPhoto[];
   visitorEmail?: string | null;
 }) {
   const copy = useCopy();
@@ -108,7 +112,7 @@ export function CourtDetails({
 
       <main className="mx-auto grid w-full max-w-5xl flex-1 gap-6 px-4 py-8 split:grid-cols-[1.1fr_0.9fr]">
         <section className="space-y-5">
-          <BackToMap court={court} className={split.hidden} />
+          <BackToMap court={court} />
           <div>
             <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">
               {copy.courtKind}
@@ -369,10 +373,13 @@ export function CourtDetails({
         </section>
 
         <aside className="overflow-hidden rounded-3xl border border-white/10 bg-panel">
-          <BackToMap court={court} className="px-3 py-4" />
-          <div className="h-80">
-            <CourtMiniMap court={court} />
-          </div>
+          <CourtGallery
+            key={court.id}
+            courtId={court.id}
+            courtName={courtTitle(court, copy)}
+            photos={photos}
+          />
+          <CourtMiniMap court={court} />
           <dl className="grid gap-3 border-t border-white/10 p-5">
             {court.website ? (
               <Fact
