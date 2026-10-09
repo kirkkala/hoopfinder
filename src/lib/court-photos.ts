@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { z } from "zod";
 import { getBasketballCourt } from "@/lib/catalog";
+import { COURT_PHOTO_MAX_BYTES } from "@/lib/constants";
 import {
   compressCourtImage,
   courtImageExtension,
@@ -14,7 +15,6 @@ import { courtHref, courtPath, type Court } from "@/lib/courts";
 import { getSubmittedCourt } from "@/lib/submitted-courts";
 import { withDb } from "@/lib/db";
 
-const MAX_BYTES = 8 * 1024 * 1024;
 const MAX_PHOTOS = 12;
 
 export type CourtPhoto = {
@@ -142,7 +142,7 @@ export async function addCourtPhoto(
   if (!parsedDescription.success) return { error: "invalid" };
   const contentType = file.type;
   if (!courtImageExtension(contentType)) return { error: "type" };
-  if (file.size <= 0 || file.size > MAX_BYTES) return { error: "too-large" };
+  if (file.size <= 0 || file.size > COURT_PHOTO_MAX_BYTES) return { error: "too-large" };
 
   const original = new Uint8Array(await file.arrayBuffer());
   if (!matchesImageType(original, contentType as CourtImageType)) return { error: "type" };

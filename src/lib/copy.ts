@@ -282,8 +282,8 @@ const messages = {
         : `Photo ${current} of ${total}`,
   },
   photoTooLarge: {
-    fi: "Kuva on liian suuri. Enimmäiskoko on 8 Mt.",
-    en: "That photo is too large. Maximum size is 8 MB.",
+    fi: "Kuva on liian suuri. Enimmäiskoko on 4 Mt.",
+    en: "That photo is too large. Maximum size is 4 MB.",
   },
   photoType: {
     fi: "Käytä JPG-, PNG- tai WebP-kuvaa.",

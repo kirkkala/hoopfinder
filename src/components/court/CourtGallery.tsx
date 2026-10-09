@@ -14,6 +14,7 @@ import { useIsAdmin } from "@/components/admin/AdminProvider";
 import { AddCourtFormPanel } from "@/components/add-court/AddCourtFormPanel";
 import { FieldLabel } from "@/components/add-court/AddCourtFields";
 import { useCopy } from "@/components/brand/LocaleProvider";
+import { COURT_PHOTO_MAX_BYTES } from "@/lib/constants";
 import type { CourtPhoto, CourtPhotoError } from "@/lib/court-photos";
 
 const INPUT_CLASS =
@@ -66,6 +67,10 @@ export function CourtGallery({
     if (uploading) return;
     if (!file) {
       setError(copy.photoFileMissing);
+      return;
+    }
+    if (file.size > COURT_PHOTO_MAX_BYTES) {
+      setError(copy.photoTooLarge);
       return;
     }
     if (!emailLooksValid(email)) {
