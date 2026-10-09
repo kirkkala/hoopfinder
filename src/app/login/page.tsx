@@ -1,14 +1,10 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import { getAuthSession, googleAuthConfigured, safeCallbackUrl } from "@/auth";
 import { LoginView } from "@/components/auth/LoginView";
-import {
-  getAuthSession,
-  googleAuthConfigured,
-  safeCallbackUrl,
-} from "@/auth";
 import { getCourtCatalog } from "@/lib/catalog";
-import { countPublicCourts } from "@/lib/submitted-courts";
 import { getCopy } from "@/lib/copy";
+import { countPublicCourts } from "@/lib/submitted-courts";
 
 export const dynamic = "force-dynamic";
 

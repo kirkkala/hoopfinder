@@ -1,5 +1,5 @@
 import { afterEach, expect, test, vi } from "vitest";
-import { emptyAmenities, type Court } from "@/lib/courts";
+import { type Court, emptyAmenities } from "@/lib/courts";
 import { enrichOsmPlaces } from "./osm-places";
 
 afterEach(() => {

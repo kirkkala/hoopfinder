@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import type { SubmittedStatus } from "@/lib/submitted-courts";
 
@@ -25,21 +25,16 @@ export function AdminStatusButton({
 
   async function setStatus(status: SubmittedStatus) {
     const message =
-      status === "published"
-        ? copy.adminPublishConfirm(name)
-        : copy.adminUnpublishConfirm(name);
+      status === "published" ? copy.adminPublishConfirm(name) : copy.adminUnpublishConfirm(name);
     if (!window.confirm(message)) return;
     setSaving(true);
     setError(false);
     try {
-      const response = await fetch(
-        `/api/admin/courts/${encodeURIComponent(id)}`,
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ status }),
-        },
-      );
+      const response = await fetch(`/api/admin/courts/${encodeURIComponent(id)}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      });
       if (!response.ok) throw new Error("status update failed");
       onStatusChange?.(status);
       router.refresh();
@@ -50,11 +45,7 @@ export function AdminStatusButton({
     }
   }
 
-  const label = saving
-    ? copy.adminSaving
-    : published
-      ? copy.adminUnpublish
-      : copy.adminPublish;
+  const label = saving ? copy.adminSaving : published ? copy.adminUnpublish : copy.adminPublish;
 
   return (
     <div className={compact ? "flex flex-col items-end" : undefined}>
@@ -75,7 +66,11 @@ export function AdminStatusButton({
         {label}
       </button>
       {error ? (
-        <p className={compact ? "mt-1 max-w-40 text-right text-xs text-red-400" : "mt-2 text-sm text-red-400"}>
+        <p
+          className={
+            compact ? "mt-1 max-w-40 text-right text-xs text-red-400" : "mt-2 text-sm text-red-400"
+          }
+        >
           {copy.adminStatusError}
         </p>
       ) : null}

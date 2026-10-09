@@ -13,9 +13,7 @@ async function fetchPendingCourts(signal?: AbortSignal): Promise<ExplorerCourt[]
 }
 
 /** Catalog plus pending pins for map UIs. */
-export async function fetchMapCourts(
-  signal?: AbortSignal,
-): Promise<ExplorerCourt[]> {
+export async function fetchMapCourts(signal?: AbortSignal): Promise<ExplorerCourt[]> {
   const [catalogResponse, pending] = await Promise.all([
     fetch("/api/courts", { signal }),
     fetchPendingCourts(signal),

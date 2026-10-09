@@ -30,8 +30,14 @@ beforeEach(() => {
 
 test("rejects a form that is missing a court, an email, or a file", async () => {
   expect((await POST(upload({}))).status).toBe(400);
-  expect((await POST(upload({ courtId: "x".repeat(81), email: "a@b.fi", description: "", file }))).status).toBe(400);
-  expect((await POST(upload({ courtId: "82547", email: "a@b.fi", description: "", file: "nope" }))).status).toBe(400);
+  expect(
+    (await POST(upload({ courtId: "x".repeat(81), email: "a@b.fi", description: "", file })))
+      .status,
+  ).toBe(400);
+  expect(
+    (await POST(upload({ courtId: "82547", email: "a@b.fi", description: "", file: "nope" })))
+      .status,
+  ).toBe(400);
   expect(photos.takeCourtPhotoSlot).not.toHaveBeenCalled();
 });
 
@@ -42,11 +48,17 @@ test("maps a full gallery, a down database, and the hourly limit", async () => {
   expect(limited.headers.get("Retry-After")).toBe("3600");
 
   photos.addCourtPhoto.mockResolvedValueOnce({ error: "full" });
-  expect((await POST(upload({ courtId: "82547", email: "a@b.fi", description: "", file }))).status).toBe(409);
+  expect(
+    (await POST(upload({ courtId: "82547", email: "a@b.fi", description: "", file }))).status,
+  ).toBe(409);
 
   photos.addCourtPhoto.mockResolvedValueOnce({ error: "unavailable" });
-  expect((await POST(upload({ courtId: "82547", email: "a@b.fi", description: "", file }))).status).toBe(503);
+  expect(
+    (await POST(upload({ courtId: "82547", email: "a@b.fi", description: "", file }))).status,
+  ).toBe(503);
 
   photos.addCourtPhoto.mockResolvedValueOnce({ error: "type" });
-  expect((await POST(upload({ courtId: "82547", email: "a@b.fi", description: "", file }))).status).toBe(400);
+  expect(
+    (await POST(upload({ courtId: "82547", email: "a@b.fi", description: "", file }))).status,
+  ).toBe(400);
 });

@@ -2,20 +2,14 @@
 
 import {
   createContext,
+  type ReactNode,
   useCallback,
   useContext,
   useEffect,
   useMemo,
   useSyncExternalStore,
-  type ReactNode,
 } from "react";
-import {
-  DEFAULT_LOCALE,
-  getCopy,
-  isLocale,
-  type Copy,
-  type Locale,
-} from "@/lib/copy";
+import { type Copy, DEFAULT_LOCALE, getCopy, isLocale, type Locale } from "@/lib/copy";
 
 const STORAGE_KEY = "hoopfinder-locale";
 const CHANGE_EVENT = "hoopfinder-locale";
@@ -70,9 +64,7 @@ export function LocaleProvider({ children }: { children: ReactNode }) {
     [locale, setLocale],
   );
 
-  return (
-    <LocaleContext.Provider value={value}>{children}</LocaleContext.Provider>
-  );
+  return <LocaleContext.Provider value={value}>{children}</LocaleContext.Provider>;
 }
 
 export function useCopy(): Copy {

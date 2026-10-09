@@ -38,10 +38,7 @@ function courtSegments(courtPath: string): string[] | null {
     segments.length < 2 ||
     segments.length > 4 ||
     segments.some(
-      (segment) =>
-        segment === "." ||
-        segment === ".." ||
-        !/^[\w.-]{1,80}$/.test(segment),
+      (segment) => segment === "." || segment === ".." || !/^[\w.-]{1,80}$/.test(segment),
     )
   ) {
     return null;
@@ -194,7 +191,7 @@ async function readBlob(key: string | null): Promise<Uint8Array | null> {
   if (!key) return null;
   try {
     const result = await get(key, { access: "private" });
-    if (!result || result.statusCode !== 200) return null;
+    if (result?.statusCode !== 200) return null;
     return new Uint8Array(await new Response(result.stream).arrayBuffer());
   } catch (error: unknown) {
     console.error(error);
@@ -238,7 +235,5 @@ async function removeFile(file: string | null): Promise<void> {
 }
 
 function isMissing(error: unknown): boolean {
-  return Boolean(
-    error && typeof error === "object" && "code" in error && error.code === "ENOENT",
-  );
+  return Boolean(error && typeof error === "object" && "code" in error && error.code === "ENOENT");
 }

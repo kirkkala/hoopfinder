@@ -55,7 +55,14 @@ test("drops indoor and foreign pitches, and reads names, lights, and access from
       id: 2,
       lat: 60.18,
       lon: 24.95,
-      tags: { name: "Basketball court", "name:en": "Basketball court", lit: "maybe", access: "customers", hoops: "1", ...place },
+      tags: {
+        name: "Basketball court",
+        "name:en": "Basketball court",
+        lit: "maybe",
+        access: "customers",
+        hoops: "1",
+        ...place,
+      },
     },
     {
       type: "way",

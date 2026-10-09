@@ -33,13 +33,7 @@ function basketballSvg(size: number, color: string) {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 24 24" fill="none" stroke="${color}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M2.1 13.4A10.1 10.1 0 0 0 13.4 2.1"/><path d="m5 4.9 14 14.2"/><path d="M21.9 10.6a10.1 10.1 0 0 0-11.3 11.3"/></svg>`;
 }
 
-export function BasketballMark({
-  size,
-  color = ORANGE,
-}: {
-  size: number;
-  color?: string;
-}) {
+export function BasketballMark({ size, color = ORANGE }: { size: number; color?: string }) {
   return (
     <img
       alt=""
@@ -62,8 +56,7 @@ export async function loadOgFonts() {
 }
 
 async function loadGoogleFont(family: string, weight: number) {
-  const familyParam =
-    weight === 400 ? family : `${family}:wght@${weight}`;
+  const familyParam = weight === 400 ? family : `${family}:wght@${weight}`;
   const css = await fetch(
     `https://fonts.googleapis.com/css2?family=${encodeURIComponent(familyParam)}`,
     {
@@ -83,6 +76,8 @@ async function loadGoogleFont(family: string, weight: number) {
   return font.arrayBuffer();
 }
 
+const COURT_ARC_LINES = [36, 100, 164, 228, 292, 356, 420, 484, 548, 612];
+
 function CourtArc() {
   return (
     <div
@@ -94,14 +89,14 @@ function CourtArc() {
           "radial-gradient(circle at 78% 118%, transparent 32%, rgba(255, 212, 130, 0.14) 33%, transparent 34%)",
       }}
     >
-      {Array.from({ length: 10 }, (_, index) => (
+      {COURT_ARC_LINES.map((top) => (
         <div
-          key={index}
+          key={top}
           style={{
             position: "absolute",
             left: 0,
             right: 0,
-            top: 36 + index * 64,
+            top,
             height: 1,
             background: "rgba(255, 212, 130, 0.08)",
           }}
@@ -324,13 +319,7 @@ export async function generateHomeOgImage() {
   );
 }
 
-export async function generateCourtOgImage({
-  name,
-  place,
-}: {
-  name: string;
-  place: string;
-}) {
+export async function generateCourtOgImage({ name, place }: { name: string; place: string }) {
   const copy = getCopy("fi");
   const fonts = await loadOgFonts();
 

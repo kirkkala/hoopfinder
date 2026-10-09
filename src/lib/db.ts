@@ -30,9 +30,7 @@ export function isDatabaseUnavailable(): boolean {
   return globalForDb.__hoopfinderDbDown === true;
 }
 
-export async function withDb<T>(
-  fn: (sql: Sql) => Promise<T>,
-): Promise<T | null> {
+export async function withDb<T>(fn: (sql: Sql) => Promise<T>): Promise<T | null> {
   const sql = getSql();
   if (!sql) {
     globalForDb.__hoopfinderDbDown = true;

@@ -53,7 +53,9 @@ test("rejects a missing court, a bad email, a long caption, the wrong type, and 
   });
 
   catalog.getBasketballCourt.mockResolvedValue({ court, sourceFetchedAt: null });
-  await expect(addCourtPhoto(court.id, file([1], "image/jpeg"), "not-an-email", "")).resolves.toEqual({
+  await expect(
+    addCourtPhoto(court.id, file([1], "image/jpeg"), "not-an-email", ""),
+  ).resolves.toEqual({
     error: "email",
   });
   await expect(
@@ -72,7 +74,9 @@ test("rejects a missing court, a bad email, a long caption, the wrong type, and 
   db.withDb.mockResolvedValue(
     Array.from({ length: 12 }, (_, index) => ({ id: String(index), description: null })),
   );
-  await expect(addCourtPhoto(court.id, file([0xff, 0xd8, 0xff], "image/jpeg"), "a@b.fi", "")).resolves.toEqual({
+  await expect(
+    addCourtPhoto(court.id, file([0xff, 0xd8, 0xff], "image/jpeg"), "a@b.fi", ""),
+  ).resolves.toEqual({
     error: "full",
   });
   expect(images.compressCourtImage).not.toHaveBeenCalled();
@@ -88,14 +92,16 @@ test("rejects bytes that do not match the declared image type", async () => {
 
 test("stores a lowercase email and a blank caption as no caption", async () => {
   const inserts: unknown[][] = [];
-  db.withDb.mockImplementation(async (fn: (sql: (...args: unknown[]) => Promise<unknown[]>) => Promise<unknown>) => {
-    const sql = async (...args: unknown[]) => {
-      const values = args.slice(1);
-      if (values.length > 2) inserts.push(values);
-      return [];
-    };
-    return fn(sql);
-  });
+  db.withDb.mockImplementation(
+    async (fn: (sql: (...args: unknown[]) => Promise<unknown[]>) => Promise<unknown>) => {
+      const sql = async (...args: unknown[]) => {
+        const values = args.slice(1);
+        if (values.length > 2) inserts.push(values);
+        return [];
+      };
+      return fn(sql);
+    },
+  );
 
   const result = await addCourtPhoto(
     court.id,

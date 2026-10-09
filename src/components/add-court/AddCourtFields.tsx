@@ -5,14 +5,14 @@ import { useCopy } from "@/components/brand/LocaleProvider";
 import type { Copy } from "@/lib/copy";
 import {
   ADMIN_CODES,
-  COURT_STATUS_CODES,
-  FIELD_TYPE_CODES,
-  OWNER_CODES,
   COMMON_SURFACE_CODES,
-  SURFACE_CODES,
-  HOOP_HEIGHT_CODES,
-  WATER_POINT_CODES,
+  COURT_STATUS_CODES,
   type Court,
+  FIELD_TYPE_CODES,
+  HOOP_HEIGHT_CODES,
+  OWNER_CODES,
+  SURFACE_CODES,
+  WATER_POINT_CODES,
 } from "@/lib/courts";
 
 const SELECT_CLASS =
@@ -72,7 +72,10 @@ function triFromBool(value: boolean | null | undefined): Tri {
   return "";
 }
 
-function knownCode<T extends string>(codes: readonly T[], value: string | null | undefined): T | "" {
+function knownCode<T extends string>(
+  codes: readonly T[],
+  value: string | null | undefined,
+): T | "" {
   return codes.find((code) => code === value) ?? "";
 }
 
@@ -185,7 +188,10 @@ export function FieldLabel({
       {children}
       {required ? (
         <>
-          <span aria-hidden className="text-gold"> *</span>
+          <span aria-hidden className="text-gold">
+            {" "}
+            *
+          </span>
           <span className="sr-only"> ({copy.addCourtRequiredMark})</span>
         </>
       ) : null}
@@ -477,6 +483,7 @@ function TextField({
   const className =
     "w-full rounded-xl border border-white/25 bg-asphalt px-3 text-base text-white outline-none placeholder:text-white/55 focus:border-gold/50 focus:ring-2 focus:ring-gold/60 sm:text-sm";
   return (
+    // biome-ignore lint/a11y/noLabelWithoutControl: the label wraps the input or textarea in either branch
     <label className="mt-2.5 block">
       <span className="mb-1 block text-sm text-ink/85">{label}</span>
       {multiline ? (

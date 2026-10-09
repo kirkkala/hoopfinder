@@ -1,7 +1,7 @@
 "use client";
 
-import { useLayoutEffect, useState } from "react";
 import { ChevronDown, ChevronUp, Heart } from "lucide-react";
+import { useLayoutEffect, useState } from "react";
 import { BuyMeCoffeeButton } from "@/components/brand/BuyMeCoffeeButton";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { DATA_CREDITS } from "@/lib/sources";
@@ -89,10 +89,7 @@ function MadeWith() {
   return (
     <p className="whitespace-nowrap">
       {copy.madeWith}{" "}
-      <Heart
-        className="inline size-4 fill-red-500 text-red-500 align-text-bottom"
-        aria-hidden
-      />
+      <Heart className="inline size-4 fill-red-500 text-red-500 align-text-bottom" aria-hidden />
       <span className="sr-only"> {copy.love}</span> by{" "}
       <a
         href="https://kirkkala.com"
@@ -143,9 +140,7 @@ export function SourceCredits({ row = false }: { row?: boolean }) {
 }
 
 function CreditDivider() {
-  return (
-    <span aria-hidden>|</span>
-  );
+  return <span aria-hidden>|</span>;
 }
 
 function CreditLinks() {
@@ -154,12 +149,7 @@ function CreditLinks() {
   return DATA_CREDITS.map((source, index) => (
     <span key={source.id}>
       {sourceSeparator(index, DATA_CREDITS.length, copy.sourceListAnd)}
-      <a
-        href={source.href}
-        className="text-gold hover:text-white"
-        target="_blank"
-        rel="noreferrer"
-      >
+      <a href={source.href} className="text-gold hover:text-white" target="_blank" rel="noreferrer">
         {source.label}
       </a>
     </span>

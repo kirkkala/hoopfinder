@@ -2,6 +2,7 @@ import { expect, test } from "vitest";
 import { getCopy } from "@/lib/copy";
 import {
   COURT_MATCH_KM,
+  type Court,
   courtHref,
   courtIdFromParam,
   courtName,
@@ -10,6 +11,7 @@ import {
   courtPath,
   courtPlacementBlocked,
   courtTitle,
+  type ExplorerCourt,
   emptyAmenities,
   formatAddress,
   formatReportedBoolean,
@@ -22,8 +24,6 @@ import {
   parseCourtPath,
   submittedCourtKey,
   withDistance,
-  type Court,
-  type ExplorerCourt,
 } from "@/lib/courts";
 import { haversineKm } from "@/lib/geo";
 
@@ -77,11 +77,12 @@ test("keeps adjacent pads from the same registry and drops a later source within
   const osmOnTop = court({ id: "way-9", source: "osm", ...withinPad });
   const osmApart = court({ id: "way-10", source: "osm", ...clearOfPad });
 
-  expect(mergeCourts([[lipas, lipasNeighbor], [osmOnTop, osmApart]]).map((item) => item.id)).toEqual([
-    "1",
-    "2",
-    "way-10",
-  ]);
+  expect(
+    mergeCourts([
+      [lipas, lipasNeighbor],
+      [osmOnTop, osmApart],
+    ]).map((item) => item.id),
+  ).toEqual(["1", "2", "way-10"]);
   expect(mergeCourts([[osmOnTop], [lipasNeighbor]]).map((item) => item.id)).toEqual(["way-9"]);
 });
 
@@ -94,10 +95,9 @@ test("blocks a new pin at 80 m from a catalog court, and only the same spot for 
     courtPlacementBlocked(withinPad, [{ ...here, source: "pending", emailConfirmed: false }]),
   ).toBe(false);
   expect(
-    courtPlacementBlocked(
-      { lat: here.lat + 0.00005, lon: here.lon },
-      [{ ...here, status: "unconfirmed" }],
-    ),
+    courtPlacementBlocked({ lat: here.lat + 0.00005, lon: here.lon }, [
+      { ...here, status: "unconfirmed" },
+    ]),
   ).toBe(true);
   expect(
     courtPlacementBlocked(withinPad, [{ ...here, source: "pending", emailConfirmed: true }]),
@@ -196,7 +196,15 @@ test("labels known codes, title-cases an unknown hyphenated code, and joins an a
 });
 
 test("treats a court as awaiting email only before the link is opened", () => {
-  expect(isAwaitingEmail(pin({ id: "1", source: "pending", emailConfirmed: false, createdAt: "2026-01-01" }))).toBe(true);
-  expect(isAwaitingEmail(pin({ id: "1", source: "pending", emailConfirmed: true, createdAt: "2026-01-01" }))).toBe(false);
+  expect(
+    isAwaitingEmail(
+      pin({ id: "1", source: "pending", emailConfirmed: false, createdAt: "2026-01-01" }),
+    ),
+  ).toBe(true);
+  expect(
+    isAwaitingEmail(
+      pin({ id: "1", source: "pending", emailConfirmed: true, createdAt: "2026-01-01" }),
+    ),
+  ).toBe(false);
   expect(isAwaitingEmail(pin({ id: "1" }))).toBe(false);
 });

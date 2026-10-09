@@ -3,12 +3,7 @@
 import { useCallback, useState, useSyncExternalStore } from "react";
 import type { Coordinates } from "@/lib/geo";
 
-export type LocationStatus =
-  | "idle"
-  | "pending"
-  | "granted"
-  | "denied"
-  | "unavailable";
+export type LocationStatus = "idle" | "pending" | "granted" | "denied" | "unavailable";
 
 const ORIGIN_KEY = "hoopfinder-origin";
 const listeners = new Set<() => void>();
@@ -60,9 +55,7 @@ export function useOrigin(): Coordinates | null {
   return useSyncExternalStore(subscribeOrigin, readOrigin, () => null);
 }
 
-export function requestOrigin(
-  onStatus: (status: Exclude<LocationStatus, "idle">) => void,
-) {
+export function requestOrigin(onStatus: (status: Exclude<LocationStatus, "idle">) => void) {
   if (!navigator.geolocation) {
     onStatus("unavailable");
     return;
@@ -85,8 +78,7 @@ export function requestOrigin(
 export function useLocationStatus() {
   const origin = useOrigin();
   const [status, setStatus] = useState<LocationStatus>("idle");
-  const resolved: LocationStatus =
-    status === "idle" && origin ? "granted" : status;
+  const resolved: LocationStatus = status === "idle" && origin ? "granted" : status;
 
   const request = useCallback(() => {
     requestOrigin(setStatus);

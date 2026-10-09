@@ -1,10 +1,7 @@
 import { requireAdmin } from "@/auth";
 import { deleteCourtPhoto, readPublishedCourtPhoto } from "@/lib/court-photos";
 
-export async function GET(
-  request: Request,
-  { params }: { params: Promise<{ id: string }> },
-) {
+export async function GET(request: Request, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const thumb = new URL(request.url).searchParams.has("thumb");
   const photo = await readPublishedCourtPhoto(id, thumb ? "thumb" : "full");
@@ -17,10 +14,7 @@ export async function GET(
   });
 }
 
-export async function DELETE(
-  _request: Request,
-  { params }: { params: Promise<{ id: string }> },
-) {
+export async function DELETE(_request: Request, { params }: { params: Promise<{ id: string }> }) {
   const denied = await requireAdmin();
   if (denied) return denied;
   const { id } = await params;

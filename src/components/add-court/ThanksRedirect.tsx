@@ -1,16 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 import { COURT_THANKS_KEY } from "@/lib/courts";
 
-export function ThanksRedirect({
-  href,
-  courtId,
-}: {
-  href: string;
-  courtId: string;
-}) {
+export function ThanksRedirect({ href, courtId }: { href: string; courtId: string }) {
   const router = useRouter();
 
   useEffect(() => {

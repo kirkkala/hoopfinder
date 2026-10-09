@@ -30,10 +30,16 @@ test("shows pending pins with the catalog, and still shows the catalog when pend
 });
 
 test("fails when the catalog cannot be loaded, and rethrows a cancelled request", async () => {
-  vi.stubGlobal("fetch", vi.fn(async () => new Response("", { status: 500 })));
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () => new Response("", { status: 500 })),
+  );
   await expect(fetchMapCourts()).rejects.toThrow("court list failed");
 
   const abort = new DOMException("The operation was aborted.", "AbortError");
-  vi.stubGlobal("fetch", vi.fn(async () => Promise.reject(abort)));
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () => Promise.reject(abort)),
+  );
   await expect(fetchMapCourts()).rejects.toBe(abort);
 });

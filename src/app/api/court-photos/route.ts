@@ -1,4 +1,4 @@
-import { addCourtPhoto, takeCourtPhotoSlot, type CourtPhotoError } from "@/lib/court-photos";
+import { addCourtPhoto, type CourtPhotoError, takeCourtPhotoSlot } from "@/lib/court-photos";
 import { courtSubmissionIp } from "@/lib/submitted-courts";
 
 export async function POST(request: Request) {

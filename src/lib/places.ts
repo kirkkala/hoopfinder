@@ -1,9 +1,5 @@
 import { COURT_DATA_REVALIDATE } from "@/lib/constants";
-import {
-  cameraBoundsForPlace,
-  expandTinyBounds,
-  type MapBounds,
-} from "@/lib/geo";
+import { cameraBoundsForPlace, expandTinyBounds, type MapBounds } from "@/lib/geo";
 
 export type PlaceMatch = {
   /** Full place area — used to filter courts. */
@@ -72,7 +68,7 @@ export async function lookupPlace(query: string): Promise<PlaceMatch | null> {
     placeScore(candidate) > placeScore(best) ? candidate : best,
   );
   const box = hit.boundingbox?.map(Number);
-  if (!box || box.length !== 4 || box.some((value) => !Number.isFinite(value))) {
+  if (box?.length !== 4 || box?.some((value) => !Number.isFinite(value))) {
     return null;
   }
 

@@ -1,21 +1,21 @@
 "use client";
 
-import { Fragment, useEffect, useId, useLayoutEffect, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
 import { basketball } from "@lucide/lab";
 import { Icon, Plus, X } from "lucide-react";
-import { AppLink } from "@/components/brand/AppLink";
-import { IntroDialog } from "@/components/brand/IntroDialog";
-import { LanguageToggle } from "@/components/brand/LanguageToggle";
-import { BuyMeCoffeeButton } from "@/components/brand/BuyMeCoffeeButton";
-import { SourceCredits } from "@/components/brand/AppFooter";
-import { useCopy } from "@/components/brand/LocaleProvider";
-import { ShowAnnouncementButton, useDatabaseUnavailable } from "@/components/brand/SiteBanner";
-import { AppWordmark } from "@/components/brand/AppWordmark";
+import { usePathname } from "next/navigation";
+import { Fragment, useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import { useIsAdmin } from "@/components/admin/AdminProvider";
 import { AuthControl } from "@/components/auth/AuthControl";
-import { APP_VERSION } from "@/lib/constants";
+import { SourceCredits } from "@/components/brand/AppFooter";
+import { AppLink } from "@/components/brand/AppLink";
+import { AppWordmark } from "@/components/brand/AppWordmark";
+import { BuyMeCoffeeButton } from "@/components/brand/BuyMeCoffeeButton";
+import { IntroDialog } from "@/components/brand/IntroDialog";
+import { LanguageToggle } from "@/components/brand/LanguageToggle";
+import { useCopy } from "@/components/brand/LocaleProvider";
+import { ShowAnnouncementButton, useDatabaseUnavailable } from "@/components/brand/SiteBanner";
 import type { FetchedAtBySource } from "@/lib/catalog";
+import { APP_VERSION } from "@/lib/constants";
 import { mq, useMinWidth, wide } from "@/lib/layout";
 import { COURT_SOURCES } from "@/lib/sources";
 import { formatFetchedAt } from "@/lib/time";
@@ -113,9 +113,7 @@ export function AppHeader({
                     <AppWordmark region={copy.region} />
                   </span>
                 )}
-                <span className="mt-0.5 hidden text-sm text-ink/70 sm:block">
-                  {copy.tagline}
-                </span>
+                <span className="mt-0.5 hidden text-sm text-ink/70 sm:block">{copy.tagline}</span>
               </span>
             )}
           </AppLink>
@@ -136,10 +134,7 @@ export function AppHeader({
             <>
               <BetaBadge />
               <div className={wide.flex}>
-                <InfoMenuButton
-                  introOpen={introOpen}
-                  onOpenInfo={() => setIntroOpen(true)}
-                />
+                <InfoMenuButton introOpen={introOpen} onOpenInfo={() => setIntroOpen(true)} />
               </div>
               <AddCourtNavLink />
               {isAdmin ? <AdminNavLink /> : null}
@@ -160,11 +155,7 @@ export function AppHeader({
           onOpenInfo={() => setIntroOpen(true)}
         />
       </div>
-      <IntroDialog
-        open={introOpen}
-        onClose={closeIntro}
-        courtCount={courtCount}
-      />
+      <IntroDialog open={introOpen} onClose={closeIntro} courtCount={courtCount} />
     </header>
   );
 }
@@ -192,7 +183,7 @@ function SourceFetchedAt({
         {rows.map(({ source, iso }, index) => (
           <Fragment key={source.id}>
             {index > 0 ? " , " : null}
-              {source.shortLabel}
+            {source.shortLabel}
             {": "}
             <time dateTime={iso} className={timeClassName}>
               {formatFetchedAt(iso, true)}
@@ -284,9 +275,7 @@ function HeaderMenu({
             <div className="min-w-0 pr-[max(0px,env(safe-area-inset-right))]">
               <div className="px-4 pt-5 pb-4">
                 <p className="text-sm font-bold text-white">{APP_VERSION}</p>
-                <p className="mt-1 text-sm leading-5 text-ink-muted">
-                  {copy.betaTooltip}
-                </p>
+                <p className="mt-1 text-sm leading-5 text-ink-muted">{copy.betaTooltip}</p>
                 <div className="mt-4">
                   <LanguageToggle stretch />
                 </div>
@@ -363,8 +352,7 @@ function HamburgerIcon({ open }: { open: boolean }) {
     borderRadius: 999,
     background: "currentColor",
     transformOrigin: "center",
-    transition:
-      "transform 300ms cubic-bezier(.22, 1, .36, 1), opacity 200ms ease",
+    transition: "transform 300ms cubic-bezier(.22, 1, .36, 1), opacity 200ms ease",
   };
 
   return (
@@ -373,9 +361,7 @@ function HamburgerIcon({ open }: { open: boolean }) {
         style={{
           ...bar,
           top: 0,
-          transform: open
-            ? "translateY(6px) rotate(45deg)"
-            : "translateY(0) rotate(0deg)",
+          transform: open ? "translateY(6px) rotate(45deg)" : "translateY(0) rotate(0deg)",
         }}
       />
       <span
@@ -390,9 +376,7 @@ function HamburgerIcon({ open }: { open: boolean }) {
         style={{
           ...bar,
           top: 12,
-          transform: open
-            ? "translateY(-6px) rotate(-45deg)"
-            : "translateY(0) rotate(0deg)",
+          transform: open ? "translateY(-6px) rotate(-45deg)" : "translateY(0) rotate(0deg)",
         }}
       />
     </span>
@@ -408,9 +392,7 @@ function AdminNavLink() {
       href="/admin"
       aria-current={onAdminPage ? "page" : undefined}
       className={`hidden wide:inline-flex shrink-0 items-center whitespace-nowrap rounded-sm px-2.5 py-1.5 text-sm font-medium outline-none focus-visible:ring-2 focus-visible:ring-gold/60 ${
-        onAdminPage
-          ? "text-gold"
-          : "text-ink/80 hover:bg-white/10 hover:text-white"
+        onAdminPage ? "text-gold" : "text-ink/80 hover:bg-white/10 hover:text-white"
       }`}
     >
       {copy.adminNav}
@@ -431,14 +413,10 @@ function AddCourtNavLink() {
       aria-current={onAddPage ? "page" : undefined}
       aria-label={onAddPage ? copy.addCourtExit : undefined}
       className={`group inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-sm px-2.5 py-1.5 text-sm font-medium outline-none focus-visible:ring-2 focus-visible:ring-gold/60 ${
-        onAddPage
-          ? "text-gold"
-          : "text-ink/80 hover:bg-white/10 hover:text-white"
+        onAddPage ? "text-gold" : "text-ink/80 hover:bg-white/10 hover:text-white"
       }`}
     >
-      {onAddPage ? null : (
-        <Plus aria-hidden className="size-3.5 stroke-[2.5]" />
-      )}
+      {onAddPage ? null : <Plus aria-hidden className="size-3.5 stroke-[2.5]" />}
       {copy.addCourt}
       {onAddPage ? (
         <X
@@ -450,13 +428,7 @@ function AddCourtNavLink() {
   );
 }
 
-function InfoMenuButton({
-  introOpen,
-  onOpenInfo,
-}: {
-  introOpen: boolean;
-  onOpenInfo: () => void;
-}) {
+function InfoMenuButton({ introOpen, onOpenInfo }: { introOpen: boolean; onOpenInfo: () => void }) {
   const copy = useCopy();
 
   return (

@@ -3,9 +3,7 @@ export const OSM_COPYRIGHT_URL = "https://www.openstreetmap.org/copyright";
 
 export type OsmElementType = "node" | "way" | "relation";
 
-export function parseOsmCourtId(
-  id: string,
-): { type: OsmElementType; osmId: string } | null {
+export function parseOsmCourtId(id: string): { type: OsmElementType; osmId: string } | null {
   const match = /^(node|way|relation)-(\d+)$/.exec(id);
   if (!match) return null;
   return { type: match[1] as OsmElementType, osmId: match[2] };
@@ -28,9 +26,7 @@ export const COURT_SOURCES = [
     required: false,
     listingUrl: (id: string) => {
       const parsed = parseOsmCourtId(id);
-      return parsed
-        ? `https://www.openstreetmap.org/${parsed.type}/${parsed.osmId}`
-        : null;
+      return parsed ? `https://www.openstreetmap.org/${parsed.type}/${parsed.osmId}` : null;
     },
   },
 ] as const;

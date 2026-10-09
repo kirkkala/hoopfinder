@@ -1,15 +1,15 @@
 "use client";
 
-import { useEffect } from "react";
-import { AppLink } from "@/components/brand/AppLink";
 import { basketball } from "@lucide/lab";
 import { ArrowRight, Icon } from "lucide-react";
+import { useEffect } from "react";
 import { useIsAdmin } from "@/components/admin/AdminProvider";
+import { AppLink } from "@/components/brand/AppLink";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { CourtBadges } from "@/components/explorer/CourtBadges";
 import { CourtHeading } from "@/components/explorer/CourtHeading";
 import { PendingCourtNote } from "@/components/explorer/PendingCourtNote";
-import { courtHref, isAwaitingEmail, isPendingCourt, type CourtWithDistance } from "@/lib/courts";
+import { type CourtWithDistance, courtHref, isAwaitingEmail, isPendingCourt } from "@/lib/courts";
 
 export function CourtList({
   courts,
@@ -37,9 +37,7 @@ export function CourtList({
       <div className="flex flex-col items-center justify-center gap-2 px-6 py-12 text-center">
         <Icon iconNode={basketball} className="size-10 text-gold/70" aria-hidden />
         <p className="font-display text-2xl tracking-wide text-white">{copy.emptyTitle}</p>
-        <p className="max-w-sm text-sm text-ink-muted">
-          {copy.emptyHint}
-        </p>
+        <p className="max-w-sm text-sm text-ink-muted">{copy.emptyHint}</p>
       </div>
     );
   }
@@ -57,20 +55,13 @@ export function CourtList({
                   : "bg-white/5 hover:bg-white/10"
               }`}
             >
-              <button
-                type="button"
-                onClick={() => onSelect(court.id)}
-                className="w-full text-left"
-              >
+              <button type="button" onClick={() => onSelect(court.id)} className="w-full text-left">
                 <CourtHeading court={court} />
               </button>
               <div className="flex flex-wrap items-center gap-2 text-sm">
                 <CourtBadges court={court} />
                 {isPendingCourt(court) ? (
-                  <PendingCourtNote
-                    createdAt={court.createdAt}
-                    className="w-full"
-                  />
+                  <PendingCourtNote createdAt={court.createdAt} className="w-full" />
                 ) : null}
                 {isAwaitingEmail(court) && !isAdmin ? null : (
                   <AppLink

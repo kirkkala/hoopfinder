@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { notFound, permanentRedirect, redirect } from "next/navigation";
-import { CourtDetails } from "@/components/court/CourtDetails";
 import { getAuthSession } from "@/auth";
+import { CourtDetails } from "@/components/court/CourtDetails";
 import { getBasketballCourt, getCourtCatalog } from "@/lib/catalog";
 import { SITE_URL } from "@/lib/constants";
 import { getCopy } from "@/lib/copy";
+import { listCourtPhotos } from "@/lib/court-photos";
 import {
   courtHref,
   courtOgHref,
@@ -15,7 +16,6 @@ import {
   isAwaitingEmail,
   parseCourtPath,
 } from "@/lib/courts";
-import { listCourtPhotos } from "@/lib/court-photos";
 import { isDatabaseUnavailable } from "@/lib/db";
 import { countPublicCourts, getSubmittedCourt } from "@/lib/submitted-courts";
 
@@ -37,11 +37,8 @@ export async function generateMetadata({
 
   const name = courtTitle(result.court, finnish);
   const place =
-    formatAddress([
-      result.court.address,
-      result.court.neighborhood,
-      result.court.city,
-    ]) || finnish.addressMissing;
+    formatAddress([result.court.address, result.court.neighborhood, result.court.city]) ||
+    finnish.addressMissing;
   const description = finnish.metaCourtDescription(name, place);
   const canonical = courtHref(result.court);
   const pending = result.court.status === "pending";
@@ -71,11 +68,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function CourtPage({
-  params,
-}: {
-  params: Promise<{ path?: string[] }>;
-}) {
+export default async function CourtPage({ params }: { params: Promise<{ path?: string[] }> }) {
   const result = await courtFromParams(params);
   if (!result) notFound();
   const isAdmin = await viewerIsAdmin();

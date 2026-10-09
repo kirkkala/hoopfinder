@@ -1,26 +1,21 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
-import dynamic from "next/dynamic";
 import { basketball } from "@lucide/lab";
 import { Icon, LoaderCircle } from "lucide-react";
-import { AppHeader } from "@/components/brand/AppHeader";
+import dynamic from "next/dynamic";
+import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 import { AppFooter } from "@/components/brand/AppFooter";
+import { AppHeader } from "@/components/brand/AppHeader";
+import { useCopy } from "@/components/brand/LocaleProvider";
 import { CourtList } from "@/components/explorer/CourtList";
 import { SearchFilters } from "@/components/explorer/SearchFilters";
-import { useCopy } from "@/components/brand/LocaleProvider";
-import {
-  courtParam,
-  withDistance,
-  type CourtWithDistance,
-  type ExplorerCourt,
-} from "@/lib/courts";
+import type { FetchedAtBySource } from "@/lib/catalog";
+import { type CourtWithDistance, courtParam, type ExplorerCourt, withDistance } from "@/lib/courts";
 import { isInBounds, type MapBounds } from "@/lib/geo";
 import { mq, split, useMinWidth } from "@/lib/layout";
+import { fetchMapCourts } from "@/lib/map-courts";
 import { useLocationStatus } from "@/lib/origin";
 import type { PlaceMatch } from "@/lib/places";
-import type { FetchedAtBySource } from "@/lib/catalog";
-import { fetchMapCourts } from "@/lib/map-courts";
 
 const CourtMap = dynamic(
   () => import("@/components/explorer/CourtMap").then((mod) => mod.CourtMap),
@@ -103,15 +98,9 @@ export function CourtExplorer({
   const [place, setPlace] = useState<PlaceMatch | null>(null);
   const placeBounds = place?.bounds ?? null;
   const showList = useMinWidth(mq.split);
-  const savedId = useSyncExternalStore(
-    subscribeSelectedCourt,
-    readSelectedCourt,
-    () => null,
-  );
-  const restoredId =
-    savedId && courts.some((court) => court.id === savedId) ? savedId : null;
-  const focusedId =
-    focusId && courts.some((court) => court.id === focusId) ? focusId : null;
+  const savedId = useSyncExternalStore(subscribeSelectedCourt, readSelectedCourt, () => null);
+  const restoredId = savedId && courts.some((court) => court.id === savedId) ? savedId : null;
+  const focusedId = focusId && courts.some((court) => court.id === focusId) ? focusId : null;
   const selectedId = pickedId === undefined ? (focusedId ?? restoredId) : pickedId;
   const keepCamera = pickedId === undefined && restoredId !== null && !focusedId;
 
@@ -144,10 +133,7 @@ export function CourtExplorer({
   }, [origin]);
 
   const searching = query.trim().length >= 2;
-  const visibleCourts = useMemo(
-    () => withDistance(courts, origin),
-    [courts, origin],
-  );
+  const visibleCourts = useMemo(() => withDistance(courts, origin), [courts, origin]);
   const courtsInView = useMemo(() => {
     if (!showList) return EMPTY_COURTS;
     return visibleCourts.filter((court) =>
@@ -230,14 +216,12 @@ export function CourtExplorer({
 
   return (
     <div className="flex h-dvh flex-col overflow-hidden overscroll-none bg-asphalt">
-      <AppHeader
-        home
-        fetchedAtBySource={fetchedAtBySource}
-        courtCount={totalCourtCount}
-      />
+      <AppHeader home fetchedAtBySource={fetchedAtBySource} courtCount={totalCourtCount} />
 
       <div className={`flex min-h-0 flex-1 flex-col overflow-hidden ${split.row}`}>
-        <aside className={`flex w-full shrink-0 flex-col border-b border-white/10 bg-panel ${split.aside}`}>
+        <aside
+          className={`flex w-full shrink-0 flex-col border-b border-white/10 bg-panel ${split.aside}`}
+        >
           <div className={`p-3 sm:p-4 ${split.paneBorder}`}>
             <SearchFilters
               query={query}
@@ -263,11 +247,7 @@ export function CourtExplorer({
 
           {showList && courtsReady ? (
             <div className="min-h-0 flex-1 overflow-y-auto overscroll-y-contain px-3">
-              <CourtList
-                courts={courtsInView}
-                selectedId={selectedId}
-                onSelect={selectCourt}
-              />
+              <CourtList courts={courtsInView} selectedId={selectedId} onSelect={selectCourt} />
             </div>
           ) : null}
         </aside>

@@ -1,6 +1,6 @@
 import { z } from "zod";
 import { getCopy } from "@/lib/copy";
-import { emptyAmenities, isGenericCourtName, type Court } from "@/lib/courts";
+import { type Court, emptyAmenities, isGenericCourtName } from "@/lib/courts";
 import { isInFinland } from "@/lib/sources/finland";
 import { enrichOsmPlaces } from "@/lib/sources/osm-places";
 
@@ -68,11 +68,7 @@ export async function getOsmCourts(): Promise<Court[]> {
   return enrichOsmPlaces(courts);
 }
 
-async function fetchTile(
-  tile: Tile,
-  label: string,
-  interpreters: string[],
-): Promise<OsmElement[]> {
+async function fetchTile(tile: Tile, label: string, interpreters: string[]): Promise<OsmElement[]> {
   let lastError: unknown;
   for (let attempt = 0; attempt < TILE_ATTEMPTS; attempt++) {
     const interpreter = interpreters[attempt % interpreters.length];
@@ -84,7 +80,9 @@ async function fetchTile(
       lastError = error;
       const delayMs = retryDelayMs(error, attempt);
       const message = error instanceof Error ? error.message : "unknown error";
-      console.warn(`OSM tile ${label} failed (${message}); retry in ${Math.round(delayMs / 1000)}s`);
+      console.warn(
+        `OSM tile ${label} failed (${message}); retry in ${Math.round(delayMs / 1000)}s`,
+      );
       await sleep(delayMs);
     }
   }
@@ -200,12 +198,9 @@ function toCourt(element: OsmElement): Court | null {
 
   const taggedName = text(tags["name:fi"]) || text(tags.name);
   const nameFi =
-    taggedName && !isGenericCourtName(taggedName)
-      ? taggedName
-      : getCopy("fi").unnamedCourt;
+    taggedName && !isGenericCourtName(taggedName) ? taggedName : getCopy("fi").unnamedCourt;
   const taggedEn = text(tags["name:en"]);
-  const name =
-    taggedEn && !isGenericCourtName(taggedEn) ? taggedEn : nameFi;
+  const name = taggedEn && !isGenericCourtName(taggedEn) ? taggedEn : nameFi;
   const hoops = text(tags.hoops);
 
   return {

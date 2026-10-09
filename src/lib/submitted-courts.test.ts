@@ -2,7 +2,10 @@ import { afterEach, beforeEach, expect, test, vi } from "vitest";
 
 const catalog = vi.hoisted(() => ({
   getCourtCatalog: vi.fn(
-    async (): Promise<{ courts: Array<{ lat: number; lon: number }>; fetchedAtBySource: Record<string, never> }> => ({
+    async (): Promise<{
+      courts: Array<{ lat: number; lon: number }>;
+      fetchedAtBySource: Record<string, never>;
+    }> => ({
       courts: [],
       fetchedAtBySource: {},
     }),
@@ -26,10 +29,10 @@ import {
   deleteSubmittedCourt,
   getSubmittedCourt,
   listSubmittedCourts,
-  setSubmittedCourtStatus,
-  SubmittedCourtSchema,
-  updateSubmittedCourt,
   type SubmittedCourtInput,
+  SubmittedCourtSchema,
+  setSubmittedCourtStatus,
+  updateSubmittedCourt,
 } from "./submitted-courts";
 
 const helsinki = { lat: 60.1699, lon: 24.9384 };
@@ -139,7 +142,11 @@ test("maps published, confirmed, and unconfirmed rows onto the map list", async 
   scripts.push(
     fakeSql([
       () => [
-        row({ id: 10014, status: "published", details: { status: "out-of-service-temporarily", lighting: "yes" } }),
+        row({
+          id: 10014,
+          status: "published",
+          details: { status: "out-of-service-temporarily", lighting: "yes" },
+        }),
         row({ id: 10015, status: "pending", details: { freeUse: "no" } }),
         row({ id: 10016, status: "unconfirmed" }),
         row({ id: 10017, status: "anything-else" }),
@@ -177,9 +184,7 @@ test("refuses a pin outside Finland or on top of a catalog court before writing 
 });
 
 test("blocks a second unconfirmed pin on the same spot, and a confirmed pin within 80 m", async () => {
-  const sameSpot = fakeSql([
-    () => [row({ ...shift(0.00005), status: "unconfirmed" })],
-  ]);
+  const sameSpot = fakeSql([() => [row({ ...shift(0.00005), status: "unconfirmed" })]]);
   scripts.push(sameSpot);
   await expect(createSubmittedCourt(input(), "https://www.hoopfinder.fi")).resolves.toEqual({
     error: "too-close",
@@ -194,10 +199,7 @@ test("blocks a second unconfirmed pin on the same spot, and a confirmed pin with
 });
 
 test("sends the confirmation link, and deletes the row when that mail does not go out", async () => {
-  const created = fakeSql([
-    () => [],
-    () => [row({ status: "unconfirmed" })],
-  ]);
+  const created = fakeSql([() => [], () => [row({ status: "unconfirmed" })]]);
   const removed = fakeSql([() => []]);
   scripts.push(created, removed);
   email.sendTemplateEmail.mockResolvedValueOnce({ error: "failed" });
@@ -220,12 +222,7 @@ test("sends the confirmation link, and deletes the row when that mail does not g
 });
 
 test("returns the new pin after the confirmation mail is accepted", async () => {
-  scripts.push(
-    fakeSql([
-      () => [],
-      () => [row({ status: "unconfirmed" })],
-    ]),
-  );
+  scripts.push(fakeSql([() => [], () => [row({ status: "unconfirmed" })]]));
 
   const result = await createSubmittedCourt(input(), "https://www.hoopfinder.fi");
   expect(result).toMatchObject({
@@ -235,7 +232,9 @@ test("returns the new pin after the confirmation mail is accepted", async () => 
 
 test("ignores a confirmation token with the wrong shape", async () => {
   await expect(confirmSubmittedCourt("short", "https://www.hoopfinder.fi")).resolves.toBeNull();
-  await expect(confirmSubmittedCourt("a".repeat(129), "https://www.hoopfinder.fi")).resolves.toBeNull();
+  await expect(
+    confirmSubmittedCourt("a".repeat(129), "https://www.hoopfinder.fi"),
+  ).resolves.toBeNull();
   expect(db.withDb).not.toHaveBeenCalled();
 });
 
@@ -243,7 +242,9 @@ test("confirms a court once, tells the admins, and undoes it when that mail fail
   const token = "a".repeat(32);
   scripts.push(
     fakeSql([
-      () => [{ id: 10014, name: "Kallio", email: "visitor@example.com", previous_status: "unconfirmed" }],
+      () => [
+        { id: 10014, name: "Kallio", email: "visitor@example.com", previous_status: "unconfirmed" },
+      ],
     ]),
   );
   const undone = fakeSql([() => []]);
@@ -265,7 +266,9 @@ test("confirms a court once, tells the admins, and undoes it when that mail fail
 test("does not send another admin mail when the link was already opened", async () => {
   scripts.push(
     fakeSql([
-      () => [{ id: 10014, name: "Kallio", email: "visitor@example.com", previous_status: "pending" }],
+      () => [
+        { id: 10014, name: "Kallio", email: "visitor@example.com", previous_status: "pending" },
+      ],
     ]),
   );
 
@@ -314,7 +317,11 @@ test("rolls a published court back when the visitor mail fails, and skips mail w
     ]),
   );
   email.sendTemplateEmail.mockClear();
-  const unpublished = await setSubmittedCourtStatus("10014", "pending", "https://www.hoopfinder.fi");
+  const unpublished = await setSubmittedCourtStatus(
+    "10014",
+    "pending",
+    "https://www.hoopfinder.fi",
+  );
   expect(unpublished).toMatchObject({ court: { source: "pending" } });
   expect(email.sendTemplateEmail).not.toHaveBeenCalled();
 });
@@ -365,7 +372,9 @@ test("reports the database as down when the connection is missing", async () => 
     error: "unavailable",
   });
   scripts.push(null);
-  await expect(setSubmittedCourtStatus("10014", "published", "https://www.hoopfinder.fi")).resolves.toEqual({
+  await expect(
+    setSubmittedCourtStatus("10014", "published", "https://www.hoopfinder.fi"),
+  ).resolves.toEqual({
     error: "unavailable",
   });
   scripts.push(null);

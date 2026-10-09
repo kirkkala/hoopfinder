@@ -27,9 +27,11 @@ test("asks Nominatim for a Finnish place and prefers a neighborhood over a stati
   vi.stubGlobal("fetch", fetchMock);
 
   const place = await lookupPlace("  Kallio ");
-  expect(place).not.toBeNull();
-  expect(place!.bounds.south).toBeCloseTo(60.1);
-  expect(place!.camera.north - place!.camera.south).toBeLessThan(place!.bounds.north - place!.bounds.south);
+  if (!place) throw new Error("lookupPlace returned no place");
+  expect(place.bounds.south).toBeCloseTo(60.1);
+  expect(place.camera.north - place.camera.south).toBeLessThan(
+    place.bounds.north - place.bounds.south,
+  );
 
   const [calledUrl, init] = fetchMock.mock.calls[0] as unknown as [URL, RequestInit];
   const url = String(calledUrl);
@@ -49,7 +51,9 @@ test("ignores a short query, a failed lookup, and a hit without a box", async ()
   fetchMock.mockResolvedValueOnce(new Response("", { status: 503 }));
   await expect(lookupPlace("Kallio")).resolves.toBeNull();
 
-  fetchMock.mockResolvedValueOnce(Response.json([{ class: "place", type: "city", boundingbox: ["nope"] }]));
+  fetchMock.mockResolvedValueOnce(
+    Response.json([{ class: "place", type: "city", boundingbox: ["nope"] }]),
+  );
   await expect(lookupPlace("Kallio")).resolves.toBeNull();
 });
 
@@ -70,7 +74,8 @@ test("expands a point result so the map does not open on a single coordinate", a
   );
 
   const place = await lookupPlace("Kallio");
-  expect(place!.bounds.north - place!.bounds.south).toBeGreaterThan(0.01);
+  if (!place) throw new Error("lookupPlace returned no place");
+  expect(place.bounds.north - place.bounds.south).toBeGreaterThan(0.01);
 });
 
 test("formats a dropped-pin address and falls back through town and village", async () => {

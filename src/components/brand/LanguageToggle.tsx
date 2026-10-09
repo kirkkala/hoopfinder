@@ -40,11 +40,7 @@ export function LanguageToggle({
           aria-pressed={locale === option}
           className={`rounded-full px-2.5 py-1.5 ${short ? "uppercase" : ""} ${
             stretch ? "flex-1" : ""
-          } ${
-            locale === option
-              ? "bg-gold text-asphalt"
-              : "text-ink/70 hover:text-white"
-          }`}
+          } ${locale === option ? "bg-gold text-asphalt" : "text-ink/70 hover:text-white"}`}
         >
           {labels[option]}
         </button>

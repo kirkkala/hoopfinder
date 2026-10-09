@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { AdminCourtsView } from "@/components/admin/AdminCourtsView";
 import { getAuthSession } from "@/auth";
+import { AdminCourtsView } from "@/components/admin/AdminCourtsView";
 import { getCourtCatalog } from "@/lib/catalog";
 import { getCopy } from "@/lib/copy";
 import { listAdminCourtsWithPhotos } from "@/lib/court-photos";

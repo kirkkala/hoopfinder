@@ -1,12 +1,12 @@
 "use client";
 
-import Map, { Marker } from "react-map-gl/maplibre";
-import { setWorkerUrl } from "maplibre-gl";
 import { Map as MapIcon } from "lucide-react";
+import { setWorkerUrl } from "maplibre-gl";
+import MapView, { Marker } from "react-map-gl/maplibre";
 import { AppLink } from "@/components/brand/AppLink";
 import { useCopy } from "@/components/brand/LocaleProvider";
-import { homeCourtHref, type Court } from "@/lib/courts";
 import { MAP_STYLE } from "@/lib/constants";
+import { type Court, homeCourtHref } from "@/lib/courts";
 
 setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
 
@@ -27,7 +27,7 @@ export function CourtMiniMap({ court }: { court: Court }) {
           className="absolute inset-0 z-0 cursor-pointer rounded-xl"
         />
         <div className="pointer-events-none absolute inset-0 overflow-hidden rounded-xl [&_.maplibregl-control-container]:pointer-events-auto">
-          <Map
+          <MapView
             mapStyle={MAP_STYLE}
             initialViewState={{
               latitude: court.lat,
@@ -41,7 +41,7 @@ export function CourtMiniMap({ court }: { court: Court }) {
             <Marker latitude={court.lat} longitude={court.lon} anchor="center">
               <span className="block h-4 w-4 rounded-full bg-red-500 ring-4 ring-gold/80" />
             </Marker>
-          </Map>
+          </MapView>
         </div>
       </div>
     </section>

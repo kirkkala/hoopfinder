@@ -1,12 +1,12 @@
 import { expect, test } from "vitest";
 import { getCopy } from "@/lib/copy";
-import { emptyAmenities, type Court } from "@/lib/courts";
+import { type Court, emptyAmenities } from "@/lib/courts";
 import {
-  EMPTY_ADD_COURT_DETAILS,
   addCourtDetailsDirty,
   addCourtDetailsFromCourt,
   addCourtDetailsPayload,
   addCourtFormPayload,
+  EMPTY_ADD_COURT_DETAILS,
   requiredFieldIssues,
 } from "./AddCourtFields";
 
@@ -55,7 +55,12 @@ test("asks for the empty fields, and treats a filled but invalid email separatel
     copy.addCourtMissing([copy.addCourtName, copy.addCourtAddress, copy.addCourtEmail].join(", ")),
   );
   expect(
-    addCourtFormPayload(copy, { name: "Kallio", address: "Katu 1", email: "not-an-email", details }),
+    addCourtFormPayload(copy, {
+      name: "Kallio",
+      address: "Katu 1",
+      email: "not-an-email",
+      details,
+    }),
   ).toBe(copy.addCourtInvalid);
 });
 
@@ -78,7 +83,11 @@ test("accepts a Finnish decimal comma and rejects a length over 200 m", () => {
 
 test("sends one surface code and treats an untouched form as clean", () => {
   expect(addCourtDetailsDirty(EMPTY_ADD_COURT_DETAILS)).toBe(false);
-  const details = { ...EMPTY_ADD_COURT_DETAILS, surfaceMaterial: "asphalt" as const, website: "  " };
+  const details = {
+    ...EMPTY_ADD_COURT_DETAILS,
+    surfaceMaterial: "asphalt" as const,
+    website: "  ",
+  };
   expect(addCourtDetailsDirty(details)).toBe(true);
   expect(addCourtDetailsPayload(details)).toMatchObject({
     surfaceMaterial: ["asphalt"],
@@ -111,7 +120,9 @@ test("refills the form from a court and drops codes the form does not offer", ()
   expect(details.fieldType).toBe("");
   expect(details.lengthM).toBe("28");
 
-  expect(addCourtDetailsFromCourt(court({ status: "active", reportedStatus: "out-of-service-temporarily" })).courtStatus).toBe(
-    "active",
-  );
+  expect(
+    addCourtDetailsFromCourt(
+      court({ status: "active", reportedStatus: "out-of-service-temporarily" }),
+    ).courtStatus,
+  ).toBe("active");
 });

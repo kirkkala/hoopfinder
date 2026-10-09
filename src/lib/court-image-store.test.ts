@@ -68,9 +68,9 @@ test("stores a full photo and a thumbnail on disk, and refuses a path that leave
   await saveCourtImage(COURT, PHOTO, stored.bytes, stored.contentType);
   const full = await readCourtImage(COURT, PHOTO, stored.contentType);
   const thumb = await readCourtThumbnail(COURT, PHOTO);
-  expect(new Uint8Array(full!)).toEqual(stored.bytes);
-  expect(thumb).not.toBeNull();
-  const thumbMeta = await sharp(Buffer.from(thumb!)).metadata();
+  if (!full || !thumb) throw new Error("expected a stored photo and thumbnail");
+  expect(new Uint8Array(full)).toEqual(stored.bytes);
+  const thumbMeta = await sharp(Buffer.from(thumb)).metadata();
   expect(thumbMeta.width).toBeLessThanOrEqual(320);
   expect(thumbMeta.format).toBe("webp");
 

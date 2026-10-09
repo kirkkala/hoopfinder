@@ -1,23 +1,12 @@
 import { getBasketballCourt } from "@/lib/catalog";
 import { getCopy } from "@/lib/copy";
-import {
-  courtIdFromParam,
-  courtTitle,
-  formatAddress,
-} from "@/lib/courts";
-import {
-  generateCourtOgImage,
-  generateHomeOgImage,
-  HOME_OG_ID,
-} from "@/lib/og";
+import { courtIdFromParam, courtTitle, formatAddress } from "@/lib/courts";
+import { generateCourtOgImage, generateHomeOgImage, HOME_OG_ID } from "@/lib/og";
 import { getSubmittedCourt } from "@/lib/submitted-courts";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(
-  _request: Request,
-  context: RouteContext<"/images/og/[court]">,
-) {
+export async function GET(_request: Request, context: RouteContext<"/images/og/[court]">) {
   const { court: param } = await context.params;
   if (param === HOME_OG_ID) return generateHomeOgImage();
 
@@ -28,11 +17,8 @@ export async function GET(
   const copy = getCopy("fi");
   const name = courtTitle(result.court, copy);
   const place =
-    formatAddress([
-      result.court.address,
-      result.court.neighborhood,
-      result.court.city,
-    ]) || copy.addressMissing;
+    formatAddress([result.court.address, result.court.neighborhood, result.court.city]) ||
+    copy.addressMissing;
 
   return generateCourtOgImage({ name, place });
 }

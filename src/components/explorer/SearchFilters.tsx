@@ -21,9 +21,7 @@ export function SearchFilters({
 
   return (
     <div className="space-y-3">
-      <p className="hidden text-sm text-ink-muted sm:block">
-        {copy.searchInstructions}
-      </p>
+      <p className="hidden text-sm text-ink-muted sm:block">{copy.searchInstructions}</p>
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-x-2 gap-y-3 sm:grid-cols-[auto_minmax(0,1fr)] sm:gap-x-3">
         <label className="relative min-w-0 sm:col-span-2">
           <span className="sr-only">{copy.searchLabel}</span>
@@ -40,16 +38,10 @@ export function SearchFilters({
           />
         </label>
 
-        <LocateMeButton
-          compact
-          status={locationStatus}
-          onClick={onUseLocation}
-        />
+        <LocateMeButton compact status={locationStatus} onClick={onUseLocation} />
 
         {hint ? (
-          <p className="col-span-2 min-w-0 text-sm text-ink-muted sm:col-span-1">
-            {hint}
-          </p>
+          <p className="col-span-2 min-w-0 text-sm text-ink-muted sm:col-span-1">{hint}</p>
         ) : null}
       </div>
     </div>

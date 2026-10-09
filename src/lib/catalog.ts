@@ -1,7 +1,7 @@
 import { cache } from "react";
-import bundled from "../../data/courts.json";
-import { mergeCourts, type Court } from "@/lib/courts";
+import { type Court, mergeCourts } from "@/lib/courts";
 import { COURT_SOURCES, type CourtSourceId } from "@/lib/sources";
+import bundled from "../../data/courts.json";
 
 type SourceSnapshot = {
   fetchedAt: string;
@@ -39,9 +39,7 @@ export const getCourtCatalog = cache(async (): Promise<CourtCatalog> => {
   };
 });
 
-export async function getBasketballCourt(
-  id: string,
-): Promise<{
+export async function getBasketballCourt(id: string): Promise<{
   court: Court;
   sourceFetchedAt: string | null;
 } | null> {
@@ -51,9 +49,7 @@ export async function getBasketballCourt(
   return {
     court,
     sourceFetchedAt:
-      court.source === "submitted"
-        ? null
-        : (catalog.fetchedAtBySource[court.source] ?? null),
+      court.source === "submitted" ? null : (catalog.fetchedAtBySource[court.source] ?? null),
   };
 }
 

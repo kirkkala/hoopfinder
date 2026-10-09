@@ -1,7 +1,7 @@
 "use client";
 
-import { AppLink } from "@/components/brand/AppLink";
 import { signOut, useSession } from "next-auth/react";
+import { AppLink } from "@/components/brand/AppLink";
 import { useCopy } from "@/components/brand/LocaleProvider";
 
 const menuClass =
@@ -17,9 +17,7 @@ export function AuthControl({ onAction }: { onAction?: () => void }) {
   if (user) {
     return (
       <li>
-        {user.email ? (
-          <p className="px-4 pt-3.5 text-sm text-ink-muted">{user.email}</p>
-        ) : null}
+        {user.email ? <p className="px-4 pt-3.5 text-sm text-ink-muted">{user.email}</p> : null}
         <button
           type="button"
           className={menuClass}

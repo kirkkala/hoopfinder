@@ -72,9 +72,15 @@ test("asks LIPAS for outdoor basketball sites and maps a page of them", async ()
 });
 
 test("fails the refresh when LIPAS does not return a court list", async () => {
-  vi.stubGlobal("fetch", vi.fn(async () => new Response("", { status: 503 })));
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () => new Response("", { status: 503 })),
+  );
   await expect(getLipasCourts()).rejects.toThrow("LIPAS list request failed with 503");
 
-  vi.stubGlobal("fetch", vi.fn(async () => Response.json({ items: [] })));
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async () => Response.json({ items: [] })),
+  );
   await expect(getLipasCourts()).rejects.toThrow("LIPAS list payload failed validation");
 });
