@@ -22,6 +22,12 @@ Keep the codebase boring and easy for another person to follow.
 - Keep client components and shared state small. Shared logic belongs in `src/lib`.
 - For a visible change, check small screens and that the page still works with the keyboard.
 
+## Testing
+
+- Use the vitest test setup
+- Whenever changing code change tests respectively
+- When introducing new functionalities add tests
+
 ## Data
 
 The public map reads `data/courts.json`. It does not call LIPAS, Overpass, or Nominatim while the app is running. Refresh that file with `npm run refresh-courts`.
