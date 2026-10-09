@@ -11,6 +11,7 @@ import { getAuthSession } from "@/auth";
 import { SITE_URL } from "@/lib/constants";
 import { getCopy } from "@/lib/copy";
 import { isDatabaseUnavailable, withDb } from "@/lib/db";
+import { siteAnnouncements } from "@/lib/site-announcements";
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -102,7 +103,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
           en: getCopy("en").databaseUnavailable,
         },
       ]
-    : [];
+    : siteAnnouncements;
   return (
     <html lang="fi" className={`${outfit.variable} ${bebas.variable}`}>
       <body className="min-h-dvh bg-asphalt font-sans text-ink antialiased">

@@ -32,10 +32,10 @@ export function SiteBanner({
         <p
           key={`${message.tone}:${message.fi}`}
           role="status"
-          className={`flex items-center justify-center gap-1.5 px-3 py-1 text-center text-sm leading-5 font-medium ${bannerClass(message.tone)}`}
+          className={`flex items-start justify-start gap-1.5 px-3 py-1 text-left text-sm leading-5 font-medium sm:justify-center sm:text-center ${bannerClass(message.tone)}`}
         >
           <BannerIcon tone={message.tone} />
-          {message[locale]}
+          <span className="min-w-0">{message[locale]}</span>
         </p>
       ))}
       {children}
@@ -51,7 +51,7 @@ function bannerClass(tone: SiteBannerMessage["tone"]) {
 }
 
 function BannerIcon({ tone }: { tone: SiteBannerMessage["tone"] }) {
-  const className = "size-4 shrink-0";
+  const className = "mt-0.5 size-4 shrink-0";
   if (tone === "error") return <Bug className={className} aria-hidden />;
   if (tone === "warning") return <TriangleAlert className={className} aria-hidden />;
   if (tone === "notice") return <Info className={className} aria-hidden />;

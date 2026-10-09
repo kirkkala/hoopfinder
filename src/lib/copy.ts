@@ -75,8 +75,8 @@ const messages = {
     en: "Who built this and why"
   },
   introCreatedBy1: {
-    fi: "koodaili sivuston omana harrasteprojektina, hakien kenttien tiedot parista avoimesta rajapinnasta ja antamalla käyttäjien itse lisätä palveluun puuttuvia kenttiä.",
-    en: "built this site as a side project, fetching the court data from a few open APIs and allowing users to add missing courts to the service.",
+    fi: "koodaili sivuston omana harrasteprojektina, hakien kenttien tiedot parista avoimesta rajapinnasta ja antamalla käyttäjien itse lisätä palveluun puuttuvia kenttiä sekä kuvia kentistä.",
+    en: "built this site as a side project, fetching the court data from a few open APIs and allowing users to add missing courts to the service and photos of the courts.",
   },
   introCreatedBy2: {
     fi: "Motivaationa tähän oli saada isot ja pienet ihmiset ulos liikkumaan enemmän koripallon kanssa.",
