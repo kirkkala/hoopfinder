@@ -10,7 +10,7 @@ import { LanguageToggle } from "@/components/brand/LanguageToggle";
 import { BuyMeCoffeeButton } from "@/components/brand/BuyMeCoffeeButton";
 import { SourceCredits } from "@/components/brand/AppFooter";
 import { useCopy } from "@/components/brand/LocaleProvider";
-import { useDatabaseUnavailable } from "@/components/brand/SiteBanner";
+import { ShowAnnouncementButton, useDatabaseUnavailable } from "@/components/brand/SiteBanner";
 import { AppWordmark } from "@/components/brand/AppWordmark";
 import { useIsAdmin } from "@/components/admin/AdminProvider";
 import { AuthControl } from "@/components/auth/AuthControl";
@@ -241,7 +241,8 @@ function HeaderMenu({
   }, [open]);
 
   return (
-    <div className="relative">
+    <div className="relative flex items-center gap-1">
+      <ShowAnnouncementButton />
       <button
         type="button"
         aria-expanded={open}

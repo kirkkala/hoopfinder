@@ -4,6 +4,10 @@ Outdoor basketball courts across Finland — find a hoop, go out and play.
 
 Map, search, and a page per court. UI defaults to Finnish; English is a toggle. Copy lives in [`src/lib/copy.ts`](src/lib/copy.ts).
 
+## Announcements
+
+Banners are the list in [`src/lib/site-announcements.ts`](src/lib/site-announcements.ts). Add an entry to show one, delete it to hide it. `dismissible: true` lets a visitor close it for the rest of that browser tab.
+
 ## Data
 
 Courts are the committed snapshot in [`data/courts.json`](data/courts.json). Runtime does not call the source APIs.

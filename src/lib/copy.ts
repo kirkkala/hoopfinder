@@ -153,6 +153,8 @@ const messages = {
   freeUse: { fi: "Ilmainen käyttö", en: "Free use" },
   letsGo: { fi: "Katso kentän tiedot", en: "See court info" },
   close: { fi: "Sulje", en: "Close" },
+  closeAnnouncement: { fi: "Sulje ilmoitus", en: "Close announcement" },
+  showAnnouncement: { fi: "Näytä ilmoitus", en: "Show announcement" },
   scrollForMore: { fi: "Vieritä alas", en: "Scroll for more" },
   courtKind: { fi: "Koripallokenttä", en: "Basketball court" },
   status: { fi: "Tila", en: "Status" },
