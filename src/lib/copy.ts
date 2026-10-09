@@ -75,8 +75,8 @@ const messages = {
     en: "Who built this and why"
   },
   introCreatedBy1: {
-    fi: "koodaili sivuston omana harrasteprojektina, hakien kenttien tiedot parista avoimesta rajapinnasta ja antamalla käyttäjien itse lisätä palveluun puuttuvia kenttiä.",
-    en: "built this site as a side project, fetching the court data from a few open APIs and allowing users to add missing courts to the service.",
+    fi: "koodaili sivuston omana harrasteprojektina, hakien kenttien tiedot parista avoimesta rajapinnasta ja antamalla käyttäjien itse lisätä palveluun puuttuvia kenttiä sekä kuvia kentistä.",
+    en: "built this site as a side project, fetching the court data from a few open APIs and allowing users to add missing courts to the service and photos of the courts.",
   },
   introCreatedBy2: {
     fi: "Motivaationa tähän oli saada isot ja pienet ihmiset ulos liikkumaan enemmän koripallon kanssa.",
@@ -153,6 +153,8 @@ const messages = {
   freeUse: { fi: "Ilmainen käyttö", en: "Free use" },
   letsGo: { fi: "Katso kentän tiedot", en: "See court info" },
   close: { fi: "Sulje", en: "Close" },
+  closeAnnouncement: { fi: "Sulje ilmoitus", en: "Close announcement" },
+  showAnnouncement: { fi: "Näytä ilmoitus", en: "Show announcement" },
   scrollForMore: { fi: "Vieritä alas", en: "Scroll for more" },
   courtKind: { fi: "Koripallokenttä", en: "Basketball court" },
   status: { fi: "Tila", en: "Status" },
@@ -245,6 +247,75 @@ const messages = {
     en: (source: string) => `Notes from ${source}`,
   },
   notesFromListing: { fi: "Lisätiedot", en: "Notes" },
+  photogallery: { fi: "Kuvagalleria", en: "Photo gallery" },
+  courtLocation: { fi: "Sijainti kartalla", en: "Location on the map" },
+  noPhotos: { fi: "Ei kuvia.", en: "No photos." },
+  databaseUnavailable: {
+    fi: "Tietokantaan ei saada yhteyttä.",
+    en: "Can't reach the database.",
+  },
+  addPhoto: { fi: "Lisää kuva", en: "Add photo" },
+  photoGuide: {
+    fi: "Lisää kuvia kentästä. Älä lisää kuvia ihmisistä ellet ole saaneet heiltä kuvauslupaa. Ylläpito pidättää oikeuden poistaa sopimattomat kuvat.",
+    en: "Add photos of the court. No people, unless everyone in it has agreed or cannot be recognized. The admin can remove a photo that doesn't belong.",
+  },
+  photoEmailHidden: {
+    fi: "Sähköpostiosoitettasi ei näytetä palvelussa. Emme spammaa, mutta saatamme kiittää lisätyistä kuvista.",
+    en: "Your email address is not shown in the service. We don't spam, we might thank you for the photos.",
+  },
+  photoChoose: { fi: "Valitse kuva", en: "Choose a photo" },
+  photoFileMissing: { fi: "Valitse kuva.", en: "Choose a photo." },
+  photoDescription: { fi: "Kuvateksti", en: "Photo description" },
+  photoDescriptionPlaceholder: { fi: "Anna lyhyt kuvateksti", en: "Enter a short description" },
+  photoEmailInvalid: {
+    fi: "Tarkista sähköpostiosoite.",
+    en: "Check the email address.",
+  },
+  photoAlt: {
+    fi: (name: string) => `Kuva kentästä ${name}`,
+    en: (name: string) => `Photo of ${name}`,
+  },
+  photoPrevious: { fi: "Edellinen kuva", en: "Previous photo" },
+  photoNext: { fi: "Seuraava kuva", en: "Next photo" },
+  photoCarousel: { fi: "karuselli", en: "carousel" },
+  photoCarouselSlide: { fi: "kuva", en: "slide" },
+  photoSlide: {
+    fi: (current: number, total: number, description: string | null) =>
+      description ? `Kuva ${current}/${total}. ${description}` : `Kuva ${current}/${total}`,
+    en: (current: number, total: number, description: string | null) =>
+      description
+        ? `Photo ${current} of ${total}. ${description}`
+        : `Photo ${current} of ${total}`,
+  },
+  photoTooLarge: {
+    fi: "Kuva on liian suuri. Enimmäiskoko on 4 Mt.",
+    en: "That photo is too large. Maximum size is 4 MB.",
+  },
+  photoType: {
+    fi: "Käytä JPG-, PNG- tai WebP-kuvaa.",
+    en: "Use a JPG, PNG, or WebP image.",
+  },
+  photosFull: {
+    fi: "Tähän kenttään ei mahdu enempää kuvia.",
+    en: "This court can't take more photos.",
+  },
+  photoRateLimit: {
+    fi: "Liian monta lähetystä. Kokeile myöhemmin uudelleen.",
+    en: "Too many submissions. Try again later.",
+  },
+  photoError: {
+    fi: "Kuvan lataus epäonnistui. Yritä uudelleen.",
+    en: "Could not upload the photo. Try again.",
+  },
+  photoDelete: { fi: "Poista kuva", en: "Delete photo" },
+  photoDeleteConfirm: {
+    fi: "Poistetaanko tämä kuva? Tätä ei voi perua.",
+    en: "Delete this photo? This cannot be undone.",
+  },
+  photoChangeError: {
+    fi: "Kuvan muutos epäonnistui. Yritä uudelleen.",
+    en: "Could not update the photo. Try again.",
+  },
   yes: { fi: "Kyllä", en: "Yes" },
   no: { fi: "Ei", en: "No" },
   notReported: { fi: "Ei ilmoitettu", en: "Not reported" },
@@ -279,7 +350,7 @@ const messages = {
     fi: "Haetaan osoitetta…",
     en: "Looking up the address…",
   },
-  addCourtEmail: { fi: "Sähköposti", en: "Email" },
+  addCourtEmail: { fi: "Sähköpostiosoitteesi", en: "Your email address" },
   addCourtEmailHelp: {
     fi: "Lähetämme sähköpostiisi vahvistuslinkin.",
     en: "We'll send a confirmation link to your email.",
@@ -434,6 +505,15 @@ const messages = {
   adminUnavailable: {
     fi: "Hallintapaneeli ei ole juuri nyt käytössä.",
     en: "Admin panel is not available right now.",
+  },
+  adminPhotosTitle: { fi: "Kentät, joihin lisätty kuvia", en: "Courts with photos" },
+  adminPhotosEmpty: {
+    fi: "Yhdelläkään kentällä ei ole kuvia.",
+    en: "No court has photos yet.",
+  },
+  adminPhotoCount: {
+    fi: (count: number) => (count === 1 ? "1 kuva" : `${count} kuvaa`),
+    en: (count: number) => (count === 1 ? "1 photo" : `${count} photos`),
   },
   adminCourtCount: {
     fi: (count: number) => {

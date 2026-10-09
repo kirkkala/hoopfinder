@@ -8,7 +8,32 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 <!-- END:nextjs-agent-rules -->
 
-# Git
+# Hoop Finder
+
+Outdoor basketball courts in Finland. The UI is Finnish by default, with an English toggle. User-facing copy is in `src/lib/copy.ts`.
+
+## Code
+
+Keep the codebase boring and easy for another person to follow.
+
+- Use the Next.js and React patterns already in this repo.
+- Prefer a small, explicit change. Add a dependency, abstraction, or extra file only when the current code cannot do the job.
+- Leave a component in one file until that file is hard to read. Reuse code when the same logic is already repeated.
+- Keep client components and shared state small. Shared logic belongs in `src/lib`.
+- For a visible change, check small screens and that the page still works with the keyboard.
+
+## Data
+
+The public map reads `data/courts.json`. It does not call LIPAS, Overpass, or Nominatim while the app is running. Refresh that file with `npm run refresh-courts`.
+
+Visitor submissions are rows in Postgres. Local court photos are files in `data/court-images`. Production photos use Vercel Blob.
+
+Keep the OpenStreetMap credit on court pages and in the footer.
+
+## Git
 
 Never create git commits. The maintainer commits locally.
 
+## Local setup
+
+Ask before starting Postgres or `npm run dev`. With `EMAIL_LOG_ONLY=1`, confirmation mail is printed in the terminal.

@@ -4,24 +4,27 @@ import { useEffect, useState } from "react";
 import { AppLink } from "@/components/brand/AppLink";
 import { useRouter } from "next/navigation";
 import { basketball } from "@lucide/lab";
-import { Icon, Pencil, Trash2 } from "lucide-react";
+import { Camera, Icon, Pencil, Trash2 } from "lucide-react";
 import { AdminCourtEditor } from "@/components/admin/AdminCourtEditor";
 import { AdminStatusButton } from "@/components/admin/AdminStatusButton";
 import { AppFooter } from "@/components/brand/AppFooter";
 import { AppHeader } from "@/components/brand/AppHeader";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import type { FetchedAtBySource } from "@/lib/catalog";
-import { courtHref } from "@/lib/courts";
+import type { AdminCourtWithPhotos } from "@/lib/court-photos";
+import { courtHref, courtTitle } from "@/lib/courts";
 import type { AdminSubmittedCourt } from "@/lib/submitted-courts";
 
 export function AdminCourtsView({
   courtCount,
   fetchedAtBySource,
   courts,
+  photoCourts,
 }: {
   courtCount: number;
   fetchedAtBySource: FetchedAtBySource;
   courts: AdminSubmittedCourt[] | null;
+  photoCourts: AdminCourtWithPhotos[] | null;
 }) {
   const copy = useCopy();
 
@@ -35,6 +38,7 @@ export function AdminCourtsView({
         <h1 className="font-display text-4xl tracking-wide text-white">
           {copy.adminTitle}
         </h1>
+        <PhotoCourts courts={photoCourts} />
         {courts === null ? (
           <p className="mt-6 text-sm text-ink-muted">{copy.adminUnavailable}</p>
         ) : (
@@ -43,6 +47,42 @@ export function AdminCourtsView({
       </main>
       <AppFooter />
     </div>
+  );
+}
+
+function PhotoCourts({ courts }: { courts: AdminCourtWithPhotos[] | null }) {
+  const copy = useCopy();
+
+  return (
+    <section className="mt-8">
+      <h2 className="font-display text-2xl tracking-wide text-white">{copy.adminPhotosTitle}</h2>
+      {courts === null ? (
+        <p className="mt-3 text-sm text-ink-muted">{copy.adminUnavailable}</p>
+      ) : courts.length === 0 ? (
+        <p className="mt-3 text-sm text-ink-muted">{copy.adminPhotosEmpty}</p>
+      ) : (
+        <ul className="mt-3 divide-y divide-white/10">
+          {courts.map((court) => (
+            <li key={court.id} className="flex items-center justify-between gap-3 py-2.5">
+              {court.href ? (
+                <AppLink href={court.href} className="font-semibold text-gold hover:text-white">
+                  {courtTitle(court, copy)}
+                </AppLink>
+              ) : (
+                <p className="font-semibold text-white">{courtTitle(court, copy)}</p>
+              )}
+              <span
+                className="inline-flex shrink-0 items-center gap-1.5 text-sm text-ink-muted"
+                aria-label={copy.adminPhotoCount(court.photoCount)}
+              >
+                <Camera className="size-4" aria-hidden />
+                {court.photoCount}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
   );
 }
 
