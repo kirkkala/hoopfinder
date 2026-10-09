@@ -267,9 +267,9 @@ export function CourtGallery({
             </li>
           ))}
         </ul>
-      ) : (
+      ) : items.length === 0 ? (
         <p className="text-ink-muted">{copy.noPhotos}</p>
-      )}
+      ) : null}
       <button
         type="button"
         onClick={() => {
