@@ -16,6 +16,7 @@ import {
   parseCourtPath,
 } from "@/lib/courts";
 import { listCourtPhotos } from "@/lib/court-photos";
+import { isDatabaseUnavailable } from "@/lib/db";
 import { countPublicCourts, getSubmittedCourt } from "@/lib/submitted-courts";
 
 export const dynamic = "force-dynamic";
@@ -111,7 +112,10 @@ async function courtFromParams(params: Promise<{ path?: string[] }>) {
   const catalogCourt = await getBasketballCourt(parsed.id);
   if (catalogCourt) return catalogCourt;
   const submitted = await getSubmittedCourt(parsed.id);
-  if (!submitted) return null;
+  if (!submitted) {
+    if (isDatabaseUnavailable()) throw new Error("database unavailable");
+    return null;
+  }
   return {
     court: submitted.court,
     sourceFetchedAt: submitted.createdAt,

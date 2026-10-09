@@ -8,6 +8,7 @@ const globalForDb = globalThis as typeof globalThis & {
   __hoopfinderSql?: Sql;
   __hoopfinderSchema?: Promise<void>;
   __hoopfinderSchemaVersion?: number;
+  __hoopfinderDbDown?: boolean;
 };
 
 export function getSql(): Sql | null {
@@ -24,24 +25,40 @@ export function getSql(): Sql | null {
   return globalForDb.__hoopfinderSql;
 }
 
+/** True after this process tried the database and could not use it. */
+export function isDatabaseUnavailable(): boolean {
+  return globalForDb.__hoopfinderDbDown === true;
+}
+
 export async function withDb<T>(
   fn: (sql: Sql) => Promise<T>,
 ): Promise<T | null> {
   const sql = getSql();
-  if (!sql) return null;
-  if (
-    !globalForDb.__hoopfinderSchema ||
-    globalForDb.__hoopfinderSchemaVersion !== SCHEMA_VERSION
-  ) {
-    globalForDb.__hoopfinderSchemaVersion = SCHEMA_VERSION;
-    globalForDb.__hoopfinderSchema = ensureSchema(sql).catch((error) => {
-      globalForDb.__hoopfinderSchema = undefined;
-      globalForDb.__hoopfinderSchemaVersion = undefined;
-      throw error;
-    });
+  if (!sql) {
+    globalForDb.__hoopfinderDbDown = true;
+    return null;
   }
-  await globalForDb.__hoopfinderSchema;
-  return fn(sql);
+  try {
+    if (
+      !globalForDb.__hoopfinderSchema ||
+      globalForDb.__hoopfinderSchemaVersion !== SCHEMA_VERSION
+    ) {
+      globalForDb.__hoopfinderSchemaVersion = SCHEMA_VERSION;
+      globalForDb.__hoopfinderSchema = ensureSchema(sql).catch((error) => {
+        globalForDb.__hoopfinderSchema = undefined;
+        globalForDb.__hoopfinderSchemaVersion = undefined;
+        throw error;
+      });
+    }
+    await globalForDb.__hoopfinderSchema;
+    const result = await fn(sql);
+    globalForDb.__hoopfinderDbDown = false;
+    return result;
+  } catch (error) {
+    console.error(error);
+    globalForDb.__hoopfinderDbDown = true;
+    return null;
+  }
 }
 
 async function ensureSchema(sql: Sql) {

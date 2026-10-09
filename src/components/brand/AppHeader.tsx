@@ -10,6 +10,7 @@ import { LanguageToggle } from "@/components/brand/LanguageToggle";
 import { BuyMeCoffeeButton } from "@/components/brand/BuyMeCoffeeButton";
 import { SourceCredits } from "@/components/brand/AppFooter";
 import { useCopy } from "@/components/brand/LocaleProvider";
+import { useDatabaseUnavailable } from "@/components/brand/SiteBanner";
 import { AppWordmark } from "@/components/brand/AppWordmark";
 import { useIsAdmin } from "@/components/admin/AdminProvider";
 import { AuthControl } from "@/components/auth/AuthControl";
@@ -215,6 +216,7 @@ function HeaderMenu({
   onOpenInfo: () => void;
 }) {
   const copy = useCopy();
+  const databaseUnavailable = useDatabaseUnavailable();
   const menuId = useId();
   const [open, setOpen] = useState(false);
 
@@ -303,15 +305,17 @@ function HeaderMenu({
                     {copy.info}
                   </button>
                 </li>
-                <li>
-                  <AppLink
-                    href="/add"
-                    prefetch
-                    className="flex w-full items-center gap-2 px-4 py-3.5 text-left text-base font-medium text-white outline-none hover:bg-white/5 focus-visible:bg-white/5 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-gold/60"
-                  >
-                    {copy.addCourt}
-                  </AppLink>
-                </li>
+                {databaseUnavailable ? null : (
+                  <li>
+                    <AppLink
+                      href="/add"
+                      prefetch
+                      className="flex w-full items-center gap-2 px-4 py-3.5 text-left text-base font-medium text-white outline-none hover:bg-white/5 focus-visible:bg-white/5 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-gold/60"
+                    >
+                      {copy.addCourt}
+                    </AppLink>
+                  </li>
+                )}
                 {isAdmin ? (
                   <li>
                     <AppLink
@@ -415,7 +419,9 @@ function AdminNavLink() {
 
 function AddCourtNavLink() {
   const copy = useCopy();
+  const databaseUnavailable = useDatabaseUnavailable();
   const onAddPage = usePathname() === "/add";
+  if (databaseUnavailable) return null;
 
   return (
     <AppLink

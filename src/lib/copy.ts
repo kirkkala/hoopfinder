@@ -248,6 +248,10 @@ const messages = {
   photogallery: { fi: "Kuvagalleria", en: "Photo gallery" },
   courtLocation: { fi: "Sijainti kartalla", en: "Location on the map" },
   noPhotos: { fi: "Ei kuvia.", en: "No photos." },
+  databaseUnavailable: {
+    fi: "Tietokantaan ei saada yhteyttä.",
+    en: "Can't reach the database.",
+  },
   addPhoto: { fi: "Lisää kuva", en: "Add photo" },
   photoGuide: {
     fi: "Lisää kuvia kentästä. Älä lisää kuvia ihmisistä ellet ole saaneet heiltä kuvauslupaa. Ylläpito pidättää oikeuden poistaa sopimattomat kuvat.",
