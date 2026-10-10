@@ -159,7 +159,7 @@ const messages = {
   courtKind: { fi: "Koripallokenttä", en: "Basketball court" },
   status: { fi: "Tila", en: "Status" },
   address: { fi: "Osoite", en: "Address" },
-  showDirections: { fi: "Reittiohjeet", en: "Directions" },
+  showDirections: { fi: "Reittiohjeet (Google Maps)", en: "Directions (Google Maps)" },
   website: { fi: "Verkkosivu", en: "Website" },
   googleMaps: { fi: "maps.google.fi", en: "maps.google.com" },
   administrator: { fi: "Ylläpitäjä", en: "Administrator" },
@@ -249,7 +249,7 @@ const messages = {
   notesFromListing: { fi: "Lisätiedot", en: "Notes" },
   photogallery: { fi: "Kuvagalleria", en: "Photo gallery" },
   courtLocation: { fi: "Sijainti kartalla", en: "Location on the map" },
-  otherCourts: { fi: "Muut kentät tällä paikalla", en: "Other courts at this location" },
+  otherCourts: { fi: "Muut kentät tässä osoitteessa", en: "Other courts at this address" },
   noPhotos: { fi: "Ei kuvia.", en: "No photos." },
   databaseUnavailable: {
     fi: "Tietokantaan ei saada yhteyttä.",

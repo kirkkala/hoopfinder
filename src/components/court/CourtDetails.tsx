@@ -20,7 +20,6 @@ import {
   MapPin,
   MoveVertical,
   Pencil,
-  Route,
   Ruler,
   School,
   Square,
@@ -192,11 +191,15 @@ export function CourtDetails({
             />
             {!hideUnpublishedFacts && (
               <>
-                <Fact icon={MapPin} label={copy.address} value={address || copy.notReported} />
                 <Fact
-                  icon={Route}
-                  label={copy.showDirections}
-                  value={googleMapsDirectionsLink(court.lat, court.lon, copy)}
+                  icon={MapPin}
+                  label={copy.address}
+                  value={
+                    <>
+                      <span className="block">{address || copy.notReported}</span>
+                      {googleMapsDirectionsLink(court.lat, court.lon, copy)}
+                    </>
+                  }
                 />
                 {otherCourts.length > 0 ? (
                   <Fact
@@ -481,11 +484,12 @@ function googleMapsDirectionsLink(lat: number, lon: number, copy: Copy) {
   return (
     <a
       href={`https://${copy.googleMaps}/maps/dir/?api=1&destination=${lat},${lon}`}
-      className="inline-flex items-center gap-1 break-all text-gold hover:text-white"
+      className="mt-1 inline-flex items-center gap-1 text-gold hover:text-white"
       target="_blank"
       rel="noreferrer"
     >
-      Google Maps <ExternalLink className="size-3.5 aria-hidden" />
+      {copy.showDirections}
+      <ExternalLink className="size-3.5" aria-hidden />
     </a>
   );
 }
