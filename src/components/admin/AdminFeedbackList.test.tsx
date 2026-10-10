@@ -1,5 +1,5 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { expect, test, vi } from "vitest";
+import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { afterEach, expect, test, vi } from "vitest";
 import type { AdminFeedback } from "@/lib/feedback";
 import { AdminFeedbackList } from "./AdminFeedbackList";
 
@@ -8,6 +8,11 @@ const refresh = vi.hoisted(() => vi.fn());
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ refresh }),
 }));
+
+afterEach(() => {
+  cleanup();
+  vi.unstubAllGlobals();
+});
 
 const item: AdminFeedback = {
   id: "4",
@@ -26,20 +31,43 @@ test("says when there is no feedback and when the database is down", () => {
   expect(screen.getByText("Hallintapaneeli ei ole juuri nyt käytössä.")).toBeInTheDocument();
 });
 
-test("saves notes from the dropdown", async () => {
+test("keeps each opened message open", () => {
+  const second: AdminFeedback = {
+    ...item,
+    id: "5",
+    title: "Toive",
+    body: "Lisää kenttiä.",
+    email: null,
+  };
+  render(<AdminFeedbackList items={[item, second]} />);
+
+  expect(screen.queryByText(item.body)).not.toBeInTheDocument();
+  expect(screen.queryByText(second.body)).not.toBeInTheDocument();
+
+  fireEvent.click(screen.getByRole("button", { name: /Bugi kartalla/ }));
+  expect(screen.getByText(item.body)).toBeInTheDocument();
+  expect(screen.queryByText(second.body)).not.toBeInTheDocument();
+
+  fireEvent.click(screen.getByRole("button", { name: /Toive/ }));
+  expect(screen.getByText(item.body)).toBeInTheDocument();
+  expect(screen.getByText(second.body)).toBeInTheDocument();
+  expect(screen.getByText("Lähettäjä: Anonyymi")).toBeInTheDocument();
+});
+
+test("saves notes from an open message", async () => {
   const fetchMock = vi
     .fn()
     .mockResolvedValue(new Response(JSON.stringify({ ok: true }), { status: 200 }));
   vi.stubGlobal("fetch", fetchMock);
   render(<AdminFeedbackList items={[item]} />);
 
+  expect(screen.queryByRole("link", { name: "visitor@example.com" })).not.toBeInTheDocument();
+  fireEvent.click(screen.getByRole("button", { name: /Bugi kartalla/ }));
+
   expect(screen.getByRole("link", { name: "visitor@example.com" })).toHaveAttribute(
     "href",
     "mailto:visitor@example.com",
   );
-  expect(screen.queryByRole("textbox", { name: "Muistiinpanot" })).not.toBeInTheDocument();
-
-  fireEvent.click(screen.getByRole("button", { name: "Muistiinpanot" }));
   fireEvent.change(screen.getByRole("textbox", { name: "Muistiinpanot" }), {
     target: { value: "Vastasin sähköpostilla." },
   });
@@ -53,6 +81,5 @@ test("saves notes from the dropdown", async () => {
     });
   });
   expect(refresh).toHaveBeenCalled();
-  expect(screen.getByRole("button", { name: /Tallennettu/ })).toBeInTheDocument();
-  vi.unstubAllGlobals();
+  expect(screen.getByText("Tallennettu")).toBeInTheDocument();
 });

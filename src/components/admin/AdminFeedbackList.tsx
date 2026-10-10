@@ -33,26 +33,39 @@ export function AdminFeedbackList({ items }: { items: AdminFeedback[] | null }) 
 
 function FeedbackItem({ item }: { item: AdminFeedback }) {
   const copy = useCopy();
+  const [open, setOpen] = useState(false);
+  const sender = item.email ?? copy.adminFeedbackNoEmail;
 
   return (
-    <li className="rounded-2xl border border-white/15 bg-white/5 p-4 text-sm">
-      <div className="flex flex-wrap items-baseline justify-between gap-x-3 gap-y-1">
-        <h3 className="font-semibold break-words text-white">{item.title}</h3>
-        <time dateTime={item.createdAt} className="text-xs text-ink-muted">
-          {formatFetchedAt(item.createdAt)}
-        </time>
-      </div>
-      <p className="mt-2 break-words whitespace-pre-wrap text-ink">{item.body}</p>
-      {item.email ? (
-        <p>
-        {copy.sentBy}:  <a href={`mailto:${item.email}`} className="mt-2 inline-block text-gold hover:text-white">
-          {item.email}
-        </a>
-        </p>
-      ) : (
-        <p className="mt-2 text-ink-muted">{copy.sentBy}: {copy.adminFeedbackNoEmail}</p>
-      )}
-      <Notes item={item} />
+    <li className="rounded-2xl border border-white/15 bg-white/5 text-sm">
+      <h3>
+        <button
+          type="button"
+          aria-expanded={open}
+          onClick={() => setOpen((current) => !current)}
+          className="flex w-full items-center gap-3 px-4 py-3 text-left outline-none hover:bg-white/5 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-gold/60"
+        >
+          <ChevronDown
+            aria-hidden
+            className={`size-4 shrink-0 text-ink-muted transition-transform ${open ? "rotate-180" : ""}`}
+          />
+          <span className="min-w-0 flex-1">
+            <span className="block font-semibold break-words text-white">{item.title}</span>
+            <span className="mt-0.5 block truncate text-ink-muted">
+              {copy.sentBy}: {sender}
+            </span>
+          </span>
+          <time dateTime={item.createdAt} className="shrink-0 text-xs text-ink-muted">
+            {formatFetchedAt(item.createdAt)}
+          </time>
+        </button>
+      </h3>
+      {open ? (
+        <div className="border-t border-white/10 px-4 py-3">
+          <p className="break-words whitespace-pre-wrap text-ink">{item.body}</p>
+          <Notes item={item} />
+        </div>
+      ) : null}
     </li>
   );
 }
@@ -60,7 +73,6 @@ function FeedbackItem({ item }: { item: AdminFeedback }) {
 function Notes({ item }: { item: AdminFeedback }) {
   const copy = useCopy();
   const router = useRouter();
-  const [open, setOpen] = useState(false);
   const [notes, setNotes] = useState(item.notes);
   const [saved, setSaved] = useState(item.notes);
   const [saving, setSaving] = useState(false);
@@ -93,44 +105,32 @@ function Notes({ item }: { item: AdminFeedback }) {
   }
 
   return (
-    <div className="mt-3 border-t border-white/10 pt-3">
-      <button
-        type="button"
-        aria-expanded={open}
-        onClick={() => setOpen((current) => !current)}
-        className="inline-flex items-center gap-1.5 rounded-sm text-sm font-medium text-ink/80 outline-none hover:text-white focus-visible:ring-2 focus-visible:ring-gold/60"
-      >
-        <ChevronDown
-          aria-hidden
-          className={`size-4 transition-transform ${open ? "rotate-180" : ""}`}
+    <form onSubmit={(event) => void save(event)} className="mt-4">
+      <label className="block">
+        <span className="mb-1 block text-sm font-bold text-ink/85">
+          {copy.adminFeedbackNotes}
+          {saved.trim() ? (
+            <span className="ml-2 font-medium text-gold">{copy.adminFeedbackNotesSaved}</span>
+          ) : null}
+        </span>
+        <textarea
+          value={notes}
+          onChange={(event) => setNotes(event.target.value)}
+          maxLength={4000}
+          rows={4}
+          placeholder={copy.adminFeedbackNotesHint}
+          disabled={saving}
+          className="w-full rounded-xl border border-white/25 bg-asphalt px-3 py-2.5 text-base text-white outline-none placeholder:text-white/55 focus:border-gold/50 focus:ring-2 focus:ring-gold/60 sm:text-sm"
         />
-        {copy.adminFeedbackNotes}
-        {saved.trim() ? <span className="text-gold">{copy.adminFeedbackNotesSaved}</span> : null}
+      </label>
+      <button
+        type="submit"
+        disabled={saving || notes === saved}
+        className="mt-2 rounded-full bg-gold px-3 py-1.5 text-xs font-bold text-asphalt hover:bg-[#ffe0a3] disabled:cursor-not-allowed disabled:opacity-50"
+      >
+        {saving ? copy.adminSaving : copy.adminFeedbackSaveNotes}
       </button>
-      {open ? (
-        <form onSubmit={(event) => void save(event)} className="mt-2">
-          <label className="block">
-            <span className="sr-only">{copy.adminFeedbackNotes}</span>
-            <textarea
-              value={notes}
-              onChange={(event) => setNotes(event.target.value)}
-              maxLength={4000}
-              rows={4}
-              placeholder={copy.adminFeedbackNotesHint}
-              disabled={saving}
-              className="w-full rounded-xl border border-white/25 bg-asphalt px-3 py-2.5 text-base text-white outline-none placeholder:text-white/55 focus:border-gold/50 focus:ring-2 focus:ring-gold/60 sm:text-sm"
-            />
-          </label>
-          <button
-            type="submit"
-            disabled={saving || notes === saved}
-            className="mt-2 rounded-full bg-gold px-3 py-1.5 text-xs font-bold text-asphalt hover:bg-[#ffe0a3] disabled:cursor-not-allowed disabled:opacity-50"
-          >
-            {saving ? copy.adminSaving : copy.adminFeedbackSaveNotes}
-          </button>
-          {error ? <p className="mt-2 text-sm text-red-400">{copy.adminEditError}</p> : null}
-        </form>
-      ) : null}
-    </div>
+      {error ? <p className="mt-2 text-sm text-red-400">{copy.adminEditError}</p> : null}
+    </form>
   );
 }
