@@ -20,7 +20,6 @@ import {
   MapPin,
   MoveVertical,
   Pencil,
-  Route,
   Ruler,
   School,
   Square,
@@ -47,6 +46,8 @@ import type { CourtPhoto } from "@/lib/court-photos";
 import {
   COURT_THANKS_KEY,
   type Court,
+  courtHref,
+  courtPadLabel,
   courtTitle,
   formatAddress,
   formatAdmin,
@@ -69,6 +70,7 @@ export function CourtDetails({
   sourceFetchedAt,
   courtCount,
   photos,
+  otherCourts = [],
   visitorEmail = null,
 }: {
   court: Court;
@@ -76,6 +78,8 @@ export function CourtDetails({
   sourceFetchedAt: string | null;
   courtCount: number;
   photos: CourtPhoto[];
+  /** Other hoops at this place. Each one has its own page. */
+  otherCourts?: Court[];
   visitorEmail?: string | null;
 }) {
   const copy = useCopy();
@@ -102,6 +106,7 @@ export function CourtDetails({
   const canEdit = showAdminStatus && visitorEmail !== null;
   const dimensions =
     amenities.lengthM && amenities.widthM ? `${amenities.lengthM} × ${amenities.widthM} m` : null;
+  const osmSources = (court.hidden ?? []).filter((item) => item.source === "osm");
 
   return (
     <div className="flex min-h-dvh flex-col bg-asphalt">
@@ -186,12 +191,36 @@ export function CourtDetails({
             />
             {!hideUnpublishedFacts && (
               <>
-                <Fact icon={MapPin} label={copy.address} value={address || copy.notReported} />
                 <Fact
-                  icon={Route}
-                  label={copy.showDirections}
-                  value={googleMapsDirectionsLink(court.lat, court.lon, copy)}
+                  icon={MapPin}
+                  label={copy.address}
+                  value={
+                    <>
+                      <span className="block">{address || copy.notReported}</span>
+                      {googleMapsDirectionsLink(court.lat, court.lon, copy)}
+                    </>
+                  }
                 />
+                {otherCourts.length > 0 ? (
+                  <Fact
+                    icon={LayoutGrid}
+                    label={copy.otherCourts}
+                    value={
+                      <ul className="space-y-1">
+                        {otherCourts.map((pad) => (
+                          <li key={pad.id}>
+                            <AppLink
+                              href={courtHref(pad)}
+                              className="font-medium text-gold hover:text-white"
+                            >
+                              {courtPadLabel(pad, copy)}
+                            </AppLink>
+                          </li>
+                        ))}
+                      </ul>
+                    }
+                  />
+                ) : null}
               </>
             )}
           </dl>
@@ -407,9 +436,9 @@ export function CourtDetails({
                         ) : null}
                       </p>
                     ) : null}
-                    {court.source === "osm" || listingUrl ? (
+                    {court.source === "osm" || osmSources.length > 0 || listingUrl ? (
                       <ul>
-                        {court.source === "osm" ? (
+                        {court.source === "osm" || osmSources.length > 0 ? (
                           <li className="text-sm leading-5 text-ink-muted">
                             <span className="block">© OpenStreetMap {copy.osmContributors}.</span>
                             <span className="block">
@@ -425,19 +454,11 @@ export function CourtDetails({
                             </span>
                           </li>
                         ) : null}
-                        {listingUrl ? (
-                          <li>
-                            <a
-                              href={listingUrl}
-                              className="inline-flex items-center gap-1 break-all text-gold hover:text-white"
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              {websiteLabel(listingUrl)}
-                              <ExternalLink className="size-3.5 shrink-0" aria-hidden />
-                            </a>
-                          </li>
-                        ) : null}
+                        {listingUrl ? <SourceLink href={listingUrl} /> : null}
+                        {osmSources.map((item) => {
+                          const href = sourceListingUrl(item.source, item.id);
+                          return href ? <SourceLink key={item.id} href={href} /> : null;
+                        })}
                       </ul>
                     ) : null}
                     {sourceFetchedAt ? (
@@ -463,11 +484,12 @@ function googleMapsDirectionsLink(lat: number, lon: number, copy: Copy) {
   return (
     <a
       href={`https://${copy.googleMaps}/maps/dir/?api=1&destination=${lat},${lon}`}
-      className="inline-flex items-center gap-1 break-all text-gold hover:text-white"
+      className="mt-1 inline-flex items-center gap-1 text-gold hover:text-white"
       target="_blank"
       rel="noreferrer"
     >
-      Google Maps <ExternalLink className="size-3.5 aria-hidden" />
+      {copy.showDirections}
+      <ExternalLink className="size-3.5" aria-hidden />
     </a>
   );
 }
@@ -513,6 +535,22 @@ function BackToMap({ court, className }: { court: Court; className?: string }) {
       <ArrowLeft className="size-6" aria-hidden />
       {copy.backToMap}
     </AppLink>
+  );
+}
+
+function SourceLink({ href }: { href: string }) {
+  return (
+    <li>
+      <a
+        href={href}
+        className="inline-flex items-center gap-1 break-all text-gold hover:text-white"
+        target="_blank"
+        rel="noreferrer"
+      >
+        {websiteLabel(href)}
+        <ExternalLink className="size-3.5 shrink-0" aria-hidden />
+      </a>
+    </li>
   );
 }
 

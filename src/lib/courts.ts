@@ -43,6 +43,14 @@ export type Court = {
     matchClock: boolean | null;
     scoreboard: boolean | null;
   };
+  /** Other pads on this place page. Set only when a place has two or more. */
+  members?: Court[];
+  /** Source courts folded into this one. They are not their own pins. */
+  hidden?: Court[];
+  /** Other ids that open this same place, so an old link still lands here. */
+  aliases?: string[];
+  /** Other pad coordinates. Placement checks use these as well as lat/lon. */
+  nearby?: Coordinates[];
 };
 
 export type ExplorerCourt = {
@@ -56,6 +64,9 @@ export type ExplorerCourt = {
   lat: number;
   lon: number;
   amenities: Pick<Court["amenities"], "lighting" | "freeUse">;
+  padCount?: number;
+  aliases?: string[];
+  nearby?: Coordinates[];
 } & (
   | { source: CourtSourceId | "submitted" }
   | { source: "pending"; createdAt: string; emailConfirmed: boolean }
@@ -81,6 +92,9 @@ export function toExplorerCourt(court: Court): ExplorerCourt {
       lighting: court.amenities.lighting,
       freeUse: court.amenities.freeUse,
     },
+    ...(court.members && court.members.length > 1 ? { padCount: court.members.length } : {}),
+    ...(court.aliases?.length ? { aliases: court.aliases } : {}),
+    ...(court.nearby?.length ? { nearby: court.nearby } : {}),
   };
 }
 
@@ -111,9 +125,12 @@ export const COURT_MATCH_KM = 0.08;
 /** Unconfirmed pins may sit nearby, but not on top of each other. */
 export const SAME_SPOT_KM = 0.015;
 
-export function isTooCloseToCourt(point: Coordinates, courts: Coordinates[]): boolean {
-  return courts.some(
-    (court) => haversineKm(point, { lat: court.lat, lon: court.lon }) < COURT_MATCH_KM,
+export function isTooCloseToCourt(
+  point: Coordinates,
+  courts: Array<Coordinates & { nearby?: Coordinates[] }>,
+): boolean {
+  return courts.some((court) =>
+    spotsOf(court).some((spot) => haversineKm(point, spot) < COURT_MATCH_KM),
   );
 }
 
@@ -125,6 +142,7 @@ export function courtPlacementBlocked(
       source?: ExplorerCourt["source"];
       emailConfirmed?: boolean;
       status?: string;
+      nearby?: Coordinates[];
     }
   >,
 ): boolean {
@@ -133,32 +151,161 @@ export function courtPlacementBlocked(
       court.status === "unconfirmed" ||
       (court.source === "pending" && court.emailConfirmed === false);
     const km = unconfirmed ? SAME_SPOT_KM : COURT_MATCH_KM;
-    return haversineKm(point, court) < km;
+    return spotsOf(court).some((spot) => haversineKm(point, spot) < km);
   });
 }
 
+function spotsOf(court: Coordinates & { nearby?: Coordinates[] }): Coordinates[] {
+  return [court, ...(court.nearby ?? [])];
+}
+
+/**
+ * One pin when two sources describe the same pad.
+ * Visitor data wins over LIPAS, and LIPAS wins over OSM, whatever order the batches are in.
+ * Same-registry ids stay separate: adjacent pads are grouped later, not deleted here.
+ * An OSM node and a way on the same spot are one court.
+ */
 export function mergeCourts(batches: Court[][]): Court[] {
   const merged: Court[] = [];
   for (const batch of batches) {
     for (const candidate of batch) {
-      if (!merged.some((existing) => isNearDuplicate(existing, candidate))) {
+      const index = merged.findIndex((existing) => sameMappedCourt(existing, candidate));
+      if (index === -1) {
         merged.push(candidate);
+        continue;
       }
+      merged[index] = combineCourts(merged[index], candidate);
     }
   }
   return merged;
 }
 
-function isNearDuplicate(existing: Court, candidate: Court): boolean {
-  // Distinct IDs from the same registry are separate courts, even when they
-  // sit on adjacent pads at one venue (often well under 80 m apart).
-  if (existing.source === candidate.source) return false;
-  return (
-    haversineKm(
-      { lat: existing.lat, lon: existing.lon },
-      { lat: candidate.lat, lon: candidate.lon },
-    ) < COURT_MATCH_KM
-  );
+function sameMappedCourt(existing: Court, candidate: Court): boolean {
+  const km = haversineKm(existing, candidate);
+  if (existing.source !== candidate.source) return km < COURT_MATCH_KM;
+  if (existing.source !== "osm") return false;
+  const left = parseOsmCourtId(existing.id)?.type;
+  const right = parseOsmCourtId(candidate.id)?.type;
+  if (!left || !right || left === right) return false;
+  return km < SAME_SPOT_KM;
+}
+
+function combineCourts(existing: Court, candidate: Court): Court {
+  const winner = preferCourt(existing, candidate);
+  const loser = winner === existing ? candidate : existing;
+  return fillEmptyCourt(winner, loser);
+}
+
+function preferCourt(a: Court, b: Court): Court {
+  const bySource = sourceRank(a) - sourceRank(b);
+  if (bySource !== 0) return bySource > 0 ? a : b;
+  return geometryRank(a) >= geometryRank(b) ? a : b;
+}
+
+function sourceRank(court: Court): number {
+  if (court.source === "submitted") return 2;
+  if (court.source === "lipas") return 1;
+  return 0;
+}
+
+function geometryRank(court: Court): number {
+  const type = parseOsmCourtId(court.id)?.type;
+  if (type === "way") return 2;
+  if (type === "relation") return 1;
+  return 0;
+}
+
+/** A published submission overwrites the facts it actually set. Name and coordinates stay. */
+export function applyVisitorCourt(court: Court, visitor: Court): Court {
+  return {
+    ...court,
+    comment: visitor.comment ?? court.comment,
+    website: visitor.website ?? court.website,
+    constructionYear: visitor.constructionYear ?? court.constructionYear,
+    owner: visitor.owner ?? court.owner,
+    admin: visitor.admin ?? court.admin,
+    status: visitor.reportedStatus ?? court.status,
+    amenities: overlayAmenities(court.amenities, visitor.amenities),
+    hidden: [...(court.hidden ?? []), visitor],
+  };
+}
+
+function fillEmptyCourt(winner: Court, loser: Court): Court {
+  const stored = { ...loser, hidden: undefined };
+  return {
+    ...winner,
+    name: preferName(winner.name, loser.name),
+    nameFi: preferName(winner.nameFi, loser.nameFi),
+    address: winner.address ?? loser.address,
+    postalCode: winner.postalCode ?? loser.postalCode,
+    city: winner.city ?? loser.city,
+    neighborhood: winner.neighborhood ?? loser.neighborhood,
+    comment: winner.comment ?? loser.comment,
+    website: winner.website ?? loser.website,
+    constructionYear: winner.constructionYear ?? loser.constructionYear,
+    owner: winner.owner ?? loser.owner,
+    admin: winner.admin ?? loser.admin,
+    amenities: fillEmptyAmenities(winner.amenities, loser.amenities),
+    hidden: [...(winner.hidden ?? []), stored, ...(loser.hidden ?? [])],
+  };
+}
+
+function preferName(current: string, fallback: string): string {
+  if (current.trim() && !isGenericCourtName(current)) return current;
+  if (fallback.trim() && !isGenericCourtName(fallback)) return fallback;
+  return current || fallback;
+}
+
+function fillEmptyAmenities(
+  winner: Court["amenities"],
+  loser: Court["amenities"],
+): Court["amenities"] {
+  return {
+    lighting: winner.lighting ?? loser.lighting,
+    lightingInfo: winner.lightingInfo ?? loser.lightingInfo,
+    freeUse: winner.freeUse ?? loser.freeUse,
+    schoolUse: winner.schoolUse ?? loser.schoolUse,
+    fieldType: winner.fieldType ?? loser.fieldType,
+    surfaceMaterial: winner.surfaceMaterial.length
+      ? winner.surfaceMaterial
+      : [...loser.surfaceMaterial],
+    surfaceMaterialInfo: winner.surfaceMaterialInfo ?? loser.surfaceMaterialInfo,
+    lengthM: winner.lengthM ?? loser.lengthM,
+    widthM: winner.widthM ?? loser.widthM,
+    areaM2: winner.areaM2 ?? loser.areaM2,
+    toilet: winner.toilet ?? loser.toilet,
+    heightAdjustable: winner.heightAdjustable ?? loser.heightAdjustable,
+    hoopHeight: winner.hoopHeight ?? loser.hoopHeight,
+    waterPoint: winner.waterPoint ?? loser.waterPoint,
+    matchClock: winner.matchClock ?? loser.matchClock,
+    scoreboard: winner.scoreboard ?? loser.scoreboard,
+  };
+}
+
+function overlayAmenities(
+  winner: Court["amenities"],
+  visitor: Court["amenities"],
+): Court["amenities"] {
+  return {
+    lighting: visitor.lighting ?? winner.lighting,
+    lightingInfo: visitor.lightingInfo ?? winner.lightingInfo,
+    freeUse: visitor.freeUse ?? winner.freeUse,
+    schoolUse: visitor.schoolUse ?? winner.schoolUse,
+    fieldType: visitor.fieldType ?? winner.fieldType,
+    surfaceMaterial: visitor.surfaceMaterial.length
+      ? [...visitor.surfaceMaterial]
+      : winner.surfaceMaterial,
+    surfaceMaterialInfo: visitor.surfaceMaterialInfo ?? winner.surfaceMaterialInfo,
+    lengthM: visitor.lengthM ?? winner.lengthM,
+    widthM: visitor.widthM ?? winner.widthM,
+    areaM2: visitor.areaM2 ?? winner.areaM2,
+    toilet: visitor.toilet ?? winner.toilet,
+    heightAdjustable: visitor.heightAdjustable ?? winner.heightAdjustable,
+    hoopHeight: visitor.hoopHeight ?? winner.hoopHeight,
+    waterPoint: visitor.waterPoint ?? winner.waterPoint,
+    matchClock: visitor.matchClock ?? winner.matchClock,
+    scoreboard: visitor.scoreboard ?? winner.scoreboard,
+  };
 }
 
 export function courtName(court: Pick<Court, "name" | "nameFi">, copy: Copy = getCopy()): string {
@@ -168,6 +315,17 @@ export function courtName(court: Pick<Court, "name" | "nameFi">, copy: Copy = ge
 }
 
 /** Generic OSM names get a place suffix so list/SEO titles are not identical. */
+/** Label of one pad on a place page: the part after " / ", or the full name. */
+export function courtPadLabel(
+  court: Pick<Court, "name" | "nameFi">,
+  copy: Copy = getCopy(),
+): string {
+  const name = copy.locale === "en" ? court.name || court.nameFi : court.nameFi || court.name;
+  const slash = name.split(" / ");
+  if (slash.length > 1) return slash.slice(1).join(" / ").trim() || name;
+  return name;
+}
+
 export function courtTitle(
   court: Pick<Court, "name" | "nameFi" | "neighborhood" | "city">,
   copy: Copy = getCopy(),
@@ -176,6 +334,21 @@ export function courtTitle(
   if (!isGenericCourtName(name)) return name;
   const place = court.neighborhood || court.city;
   return place ? `${name}, ${place}` : name;
+}
+
+/** Hoops one map pin stands for. */
+export function pinCourtCount(court: { padCount?: number }): number {
+  return court.padCount && court.padCount > 1 ? court.padCount : 1;
+}
+
+/** Place name on the map. Several hoops add their count on the next line. */
+export function courtMapLabel(
+  court: Pick<ExplorerCourt, "name" | "nameFi" | "neighborhood" | "city" | "padCount">,
+  copy: Copy = getCopy(),
+): string {
+  const name = courtTitle(court, copy);
+  const count = pinCourtCount(court);
+  return count > 1 ? `${name}\n${copy.padCount(count)}` : name;
 }
 
 export function isGenericCourtName(name: string): boolean {
@@ -376,6 +549,16 @@ export function courtParam(court: Pick<ExplorerCourt, "id" | "source">): string 
 
 export function courtHref(court: Pick<ExplorerCourt, "id" | "source">): string {
   return `/courts/${courtPath(court)}`;
+}
+
+/** Court page opened from a map popup. An alias keeps the pad the visitor asked for. */
+export function focusedCourtHref(
+  court: Pick<ExplorerCourt, "id" | "source" | "aliases">,
+  focusId: string | null,
+): string {
+  const id =
+    focusId && (focusId === court.id || court.aliases?.includes(focusId)) ? focusId : court.id;
+  return courtHref({ id, source: court.source });
 }
 
 /** Home map with that court’s popup open. Works for published and pending pins. */

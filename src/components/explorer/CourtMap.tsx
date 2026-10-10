@@ -21,8 +21,8 @@ import { PendingCourtNote } from "@/components/explorer/PendingCourtNote";
 import { MAP_STYLE } from "@/lib/constants";
 import {
   type CourtWithDistance,
-  courtHref,
-  courtTitle,
+  courtMapLabel,
+  focusedCourtHref,
   isAwaitingEmail,
   isPendingCourt,
 } from "@/lib/courts";
@@ -88,6 +88,7 @@ export function CourtMap({
   locateSeq,
   focusBounds,
   keepCamera,
+  focusId = null,
   onSelect,
   onClose,
   onBoundsChange,
@@ -99,6 +100,8 @@ export function CourtMap({
   locateSeq: number;
   focusBounds: MapBounds | null;
   keepCamera: boolean;
+  /** Court id from the page address, including a pad alias of the selected pin. */
+  focusId?: string | null;
   onSelect: (id: string) => void;
   onClose: () => void;
   onBoundsChange: (bounds: MapBounds) => void;
@@ -134,7 +137,7 @@ export function CourtMap({
         },
         properties: {
           id: court.id,
-          name: courtTitle(court, copy),
+          name: courtMapLabel(court, copy),
           pending: isPendingCourt(court) ? 1 : 0,
         },
       })),
@@ -397,7 +400,7 @@ export function CourtMap({
             ) : null}
             {openCourt ? (
               <AppLink
-                href={courtHref(selected)}
+                href={focusedCourtHref(selected, focusId)}
                 className="inline-flex items-center gap-1 self-end pt-2 pb-1 text-sm font-bold text-gold transition-colors after:absolute after:inset-0 after:z-0 group-hover:text-white group-has-[a:focus-visible]:text-white"
               >
                 {copy.letsGo}

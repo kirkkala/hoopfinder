@@ -1,10 +1,12 @@
 import { expect, test } from "vitest";
 import { getCopy } from "@/lib/copy";
 import {
+  applyVisitorCourt,
   COURT_MATCH_KM,
   type Court,
   courtHref,
   courtIdFromParam,
+  courtMapLabel,
   courtName,
   courtOgHref,
   courtParam,
@@ -13,6 +15,7 @@ import {
   courtTitle,
   type ExplorerCourt,
   emptyAmenities,
+  focusedCourtHref,
   formatAddress,
   formatReportedBoolean,
   formatStatus,
@@ -22,6 +25,7 @@ import {
   isTooCloseToCourt,
   mergeCourts,
   parseCourtPath,
+  pinCourtCount,
   submittedCourtKey,
   withDistance,
 } from "@/lib/courts";
@@ -68,22 +72,76 @@ function pin(overrides: Partial<ExplorerCourt> & Pick<ExplorerCourt, "id">): Exp
   } as ExplorerCourt;
 }
 
-test("keeps adjacent pads from the same registry and drops a later source within 80 m", () => {
+test("keeps adjacent pads from the same registry and folds a nearer OSM court into LIPAS", () => {
   expect(haversineKm(here, withinPad)).toBeLessThan(COURT_MATCH_KM);
   expect(haversineKm(here, clearOfPad)).toBeGreaterThan(COURT_MATCH_KM);
 
   const lipas = court({ id: "1", source: "lipas" });
-  const lipasNeighbor = court({ id: "2", source: "lipas", ...withinPad });
-  const osmOnTop = court({ id: "way-9", source: "osm", ...withinPad });
+  const lipasNeighbor = court({
+    id: "2",
+    source: "lipas",
+    ...withinPad,
+    amenities: { ...emptyAmenities(), lighting: null },
+  });
+  const osmOnTop = court({
+    id: "way-9",
+    source: "osm",
+    ...withinPad,
+    name: "Koripallokenttä",
+    nameFi: "Koripallokenttä",
+    amenities: { ...emptyAmenities(), lighting: true, hoopHeight: "lower" },
+  });
   const osmApart = court({ id: "way-10", source: "osm", ...clearOfPad });
 
-  expect(
-    mergeCourts([
-      [lipas, lipasNeighbor],
-      [osmOnTop, osmApart],
-    ]).map((item) => item.id),
-  ).toEqual(["1", "2", "way-10"]);
-  expect(mergeCourts([[osmOnTop], [lipasNeighbor]]).map((item) => item.id)).toEqual(["way-9"]);
+  const merged = mergeCourts([
+    [lipas, lipasNeighbor],
+    [osmOnTop, osmApart],
+  ]);
+  expect(merged.map((item) => item.id)).toEqual(["1", "2", "way-10"]);
+  expect(merged[0]?.hidden?.map((item) => item.id)).toEqual(["way-9"]);
+  expect(merged[0]?.amenities.lighting).toBe(true);
+  expect(merged[0]?.amenities.hoopHeight).toBe("lower");
+  expect(merged[0]?.nameFi).toBe("1");
+
+  const lipasWins = mergeCourts([[osmOnTop], [lipasNeighbor]]);
+  expect(lipasWins.map((item) => item.id)).toEqual(["2"]);
+  expect(lipasWins[0]?.hidden?.map((item) => item.id)).toEqual(["way-9"]);
+});
+
+test("folds an OSM node and way on the same spot, and keeps two ways", () => {
+  const way = court({ id: "way-1", source: "osm" });
+  const node = court({ id: "node-2", source: "osm", lat: here.lat + 0.00005, lon: here.lon });
+  const otherWay = court({ id: "way-3", source: "osm", lat: here.lat + 0.00005, lon: here.lon });
+
+  expect(mergeCourts([[node, way]]).map((item) => item.id)).toEqual(["way-1"]);
+  expect(mergeCourts([[way, otherWay]]).map((item) => item.id)).toEqual(["way-1", "way-3"]);
+});
+
+test("a published submission overwrites facts it set and leaves the catalog name", () => {
+  const lipas = court({
+    id: "1",
+    source: "lipas",
+    nameFi: "Namika Areena",
+    amenities: { ...emptyAmenities(), lighting: true, freeUse: true },
+  });
+  const visitor = court({
+    id: "submitted-10014",
+    source: "submitted",
+    nameFi: "Visitor name",
+    comment: "Two hoops",
+    reportedStatus: "out-of-service-temporarily",
+    amenities: { ...emptyAmenities(), hoopHeight: "lower", lighting: null, freeUse: false },
+  });
+
+  const shown = applyVisitorCourt(lipas, visitor);
+  expect(shown.nameFi).toBe("Namika Areena");
+  expect(shown.id).toBe("1");
+  expect(shown.comment).toBe("Two hoops");
+  expect(shown.status).toBe("out-of-service-temporarily");
+  expect(shown.amenities.hoopHeight).toBe("lower");
+  expect(shown.amenities.lighting).toBe(true);
+  expect(shown.amenities.freeUse).toBe(false);
+  expect(shown.hidden?.map((item) => item.id)).toEqual(["submitted-10014"]);
 });
 
 test("blocks a new pin at 80 m from a catalog court, and only the same spot for an unconfirmed one", () => {
@@ -140,6 +198,9 @@ test("round-trips court ids through the page path and the map query", () => {
   expect(submittedCourtKey(pending.id)).toBe("10014");
   expect(courtIdFromParam(courtParam(pending))).toBe("submitted-10014");
   expect(homeCourtHref(pending, { thanks: true })).toBe("/?court=submitted-10014&thanks=1");
+  expect(focusedCourtHref({ ...lipas, aliases: ["82574"] }, "82574")).toBe("/courts/lipas/82574");
+  expect(focusedCourtHref({ ...lipas, aliases: ["82574"] }, "82547")).toBe("/courts/lipas/82547");
+  expect(focusedCourtHref(lipas, "other")).toBe("/courts/lipas/82547");
 });
 
 test("reads court paths as a court, the home map, or a missing page", () => {
@@ -183,6 +244,18 @@ test("sorts by distance, and without a location by city then Finnish name", () =
   const near = pin({ id: "far-id", ...withinPad });
   const far = pin({ id: "near-id", ...clearOfPad });
   expect(withDistance([far, near], here).map((item) => item.id)).toEqual(["far-id", "near-id"]);
+});
+
+test("map label names a single hoop, and adds the count when one pin covers several", () => {
+  const copy = getCopy("fi");
+  const single = pin({ id: "1", nameFi: "Kallio", name: "Kallio" });
+  expect(pinCourtCount(single)).toBe(1);
+  expect(courtMapLabel(single, copy)).toBe("Kallio");
+
+  const place = pin({ id: "2", nameFi: "Namika Areena", name: "Namika", padCount: 4 });
+  expect(pinCourtCount(place)).toBe(4);
+  expect(courtMapLabel(place, copy)).toBe("Namika Areena\n4 kenttää");
+  expect(courtMapLabel(place, getCopy("en"))).toBe("Namika\n4 courts");
 });
 
 test("labels known codes, title-cases an unknown hyphenated code, and joins an address", () => {

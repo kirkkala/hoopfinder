@@ -31,6 +31,9 @@ export function CourtHeading({
         <p className="mt-1 text-sm text-ink-muted">
           {formatAddress([court.address, court.neighborhood, court.city]) || copy.addressMissing}
         </p>
+        {court.padCount && court.padCount > 1 ? (
+          <p className="mt-1 text-sm text-gold">{copy.padCount(court.padCount)}</p>
+        ) : null}
       </div>
       {court.distanceKm !== null ? <CourtDistance km={court.distanceKm} /> : null}
     </div>

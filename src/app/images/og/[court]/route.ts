@@ -1,5 +1,6 @@
-import { getBasketballCourt } from "@/lib/catalog";
+import { getCourtPlace } from "@/lib/catalog";
 import { getCopy } from "@/lib/copy";
+import { courtOnPlace } from "@/lib/court-groups";
 import { courtIdFromParam, courtTitle, formatAddress } from "@/lib/courts";
 import { generateCourtOgImage, generateHomeOgImage, HOME_OG_ID } from "@/lib/og";
 import { getSubmittedCourt } from "@/lib/submitted-courts";
@@ -24,8 +25,13 @@ export async function GET(_request: Request, context: RouteContext<"/images/og/[
 }
 
 async function getCourtById(id: string) {
-  const catalogCourt = await getBasketballCourt(id);
-  if (catalogCourt) return catalogCourt;
+  const catalogCourt = await getCourtPlace(id);
+  if (catalogCourt) {
+    return {
+      court: courtOnPlace(catalogCourt.court, id),
+      sourceFetchedAt: catalogCourt.sourceFetchedAt,
+    };
+  }
   const submitted = await getSubmittedCourt(id);
   if (!submitted) return null;
   return { court: submitted.court, sourceFetchedAt: submitted.createdAt };
