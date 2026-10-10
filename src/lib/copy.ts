@@ -106,14 +106,34 @@ const messages = {
   },
   sourceListAnd: { fi: " ja ", en: " and " },
   sourceCodeOn: { fi: "Lähdekoodi", en: "Source code" },
-  feedback: { fi: "Palaute", en: "Feedback" },
-  feedbackSubject: {
-    fi: "Palaute%20hoopfinder.fi%20-%20palvelusta",
-    en: "Feedback%20from%20hoopfinder.fi%20-%20service",
+  giveFeedback: { fi: "Anna palautetta", en: "Give feedback" },
+  feedbackTitle: { fi: "Anna palautetta", en: "Give feedback" },
+  feedbackLead: {
+    fi: "Bugit, toiveet ja muu palaute auttavat tekemään palvelusta paremman. Kerro vapaasti, mikä toimii ja mikä ei.",
+    en: "Bug reports, ideas, and other feedback help make the service better. Say what works and what does not.",
   },
-  feedbackBody: {
-    fi: "Kiitos%20jos%20otat%20hetken%20antaaksesi%20palautetta%20palvelusta%2C%20kiitokset%2C%20kehitysehdotukset%20ja%20bugiraportit%20on%20tervetulleita%21",
-    en: "Thank%20you%20if%20you%20take%20a%20moment%20to%20give%20feedback%2C%20suggestions%2C%20and%20bug%20reports%20are%20welcome%21",
+  feedbackFieldTitle: { fi: "Otsikko", en: "Title" },
+  feedbackFieldMessage: { fi: "Viesti", en: "Message" },
+  feedbackFieldEmail: { fi: "Sähköposti", en: "Email" },
+  feedbackEmailHint: {
+    fi: "Vapaaehtoinen. Vain jos haluat vastauksen. Osoitetta ei näytetä muualla palvelussa.",
+    en: "Optional. Only if you want a reply. The address is not shown anywhere else in the service.",
+  },
+  feedbackRequiredMark: { fi: "pakollinen", en: "required" },
+  feedbackSend: { fi: "Lähetä palaute", en: "Send feedback" },
+  feedbackSending: { fi: "Lähetetään…", en: "Sending…" },
+  feedbackThanks: { fi: "Kiitos, palaute on toimitettu kehittäjälle.", en: "Thanks, the feedback has been sent to the developer." },
+  feedbackInvalid: {
+    fi: "Tarkista otsikko, viesti ja sähköposti. Sähköpostin voi jättää tyhjäksi.",
+    en: "Check the title, message, and email. Email can be left empty.",
+  },
+  feedbackRateLimited: {
+    fi: "Tältä yhteydeltä tuli juuri useampi viesti. Kokeile myöhemmin uudelleen.",
+    en: "Several messages just came from this connection. Try again later.",
+  },
+  feedbackUnavailable: {
+    fi: "Lähetys ei onnistunut. Kokeile hetken päästä uudelleen.",
+    en: "Could not send it. Try again in a moment.",
   },
   searchLabel: { fi: "Etsi kaupunkia tai aluetta", en: "Search a city or neighborhood" },
   searchPlaceholder: {
@@ -509,6 +529,21 @@ const messages = {
     fi: "Kirjautuminen epäonnistui. Yritä uudelleen.",
     en: "Sign-in failed. Try again.",
   },
+  adminFeedbackTitle: { fi: "Palaute", en: "Feedback" },
+  adminFeedbackEmpty: { fi: "Ei vielä palautetta.", en: "No feedback yet." },
+  adminFeedbackCount: {
+    fi: (count: number) => (count === 1 ? "1 viesti" : `${count} viestiä`),
+    en: (count: number) => (count === 1 ? "1 message" : `${count} messages`),
+  },
+  adminFeedbackNotes: { fi: "Muistiinpanot", en: "Notes" },
+  adminFeedbackNotesHint: {
+    fi: "Esimerkiksi jos vastasit jo.",
+    en: "For example, if you already replied.",
+  },
+  adminFeedbackNotesSaved: { fi: "Tallennettu", en: "Saved" },
+  adminFeedbackSaveNotes: { fi: "Tallenna muistiinpanot", en: "Save notes" },
+  sentBy: { fi: "Lähettäjä", en: "Sender" },
+  adminFeedbackNoEmail: { fi: "Anonyymi", en: "Anonymous" },
   adminNav: { fi: "Hallinta", en: "Admin" },
   adminTitle: { fi: "Hallintapaneeli", en: "Admin panel" },
   adminEmpty: {

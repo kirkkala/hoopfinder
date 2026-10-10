@@ -10,6 +10,7 @@ import { SourceCredits } from "@/components/brand/AppFooter";
 import { AppLink } from "@/components/brand/AppLink";
 import { AppWordmark } from "@/components/brand/AppWordmark";
 import { BuyMeCoffeeButton } from "@/components/brand/BuyMeCoffeeButton";
+import { useFeedback } from "@/components/brand/FeedbackDialog";
 import { IntroDialog } from "@/components/brand/IntroDialog";
 import { LanguageToggle } from "@/components/brand/LanguageToggle";
 import { useCopy } from "@/components/brand/LocaleProvider";
@@ -217,6 +218,8 @@ function HeaderMenu({
 }) {
   const copy = useCopy();
   const databaseUnavailable = useDatabaseUnavailable();
+  const feedback = useFeedback();
+  const feedbackOpen = feedback?.open ?? false;
   const menuId = useId();
   const [open, setOpen] = useState(false);
 
@@ -224,7 +227,7 @@ function HeaderMenu({
     if (!open) return;
 
     function onKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape" && !introOpen) setOpen(false);
+      if (event.key === "Escape" && !introOpen && !feedbackOpen) setOpen(false);
     }
 
     const previousOverflow = document.body.style.overflow;
@@ -234,7 +237,7 @@ function HeaderMenu({
       document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", onKeyDown);
     };
-  }, [open, introOpen]);
+  }, [open, introOpen, feedbackOpen]);
 
   return (
     <div className="relative flex items-center gap-1">
@@ -294,6 +297,16 @@ function HeaderMenu({
                 >
                   {copy.info}
                 </MenuItem>
+                {databaseUnavailable || !feedback ? null : (
+                  <MenuItem
+                    keepOpen
+                    onClick={feedback.openFeedback}
+                    aria-haspopup="dialog"
+                    aria-expanded={feedbackOpen}
+                  >
+                    {copy.giveFeedback}
+                  </MenuItem>
+                )}
                 {databaseUnavailable ? null : (
                   <MenuItem href="/add" prefetch>
                     {copy.addCourt}

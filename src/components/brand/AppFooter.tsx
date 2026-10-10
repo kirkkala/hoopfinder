@@ -3,7 +3,9 @@
 import { ChevronDown, ChevronUp, Heart } from "lucide-react";
 import { useLayoutEffect, useState } from "react";
 import { BuyMeCoffeeButton } from "@/components/brand/BuyMeCoffeeButton";
+import { useFeedback } from "@/components/brand/FeedbackDialog";
 import { useCopy } from "@/components/brand/LocaleProvider";
+import { useDatabaseUnavailable } from "@/components/brand/SiteBanner";
 import { DATA_CREDITS } from "@/lib/sources";
 
 const FOOTER_COLLAPSED_KEY = "hoopfinder-footer-collapsed";
@@ -59,7 +61,10 @@ export function AppFooter({ collapsible = false }: { collapsible?: boolean }) {
       ) : null}
       <div className={`wide:hidden ${collapsible ? "pr-10" : ""}`}>
         {showCollapsed ? (
-          <MadeWith />
+          <>
+            <MadeWith />
+            <FeedbackLink />
+          </>
         ) : (
           <>
             <MadeWith />
@@ -112,35 +117,43 @@ export function SourceCredits({ row = false }: { row?: boolean }) {
       <Item>
         {copy.courtDataFrom} <CreditLinks />
       </Item>
-      {row ? <CreditDivider /> : null}
-      <Item>
-        <a
-          href="https://github.com/kirkkala/hoopfinder"
-          className="text-gold hover:text-white"
-          target="_blank"
-          rel="noreferrer"
-        >
-          GitHub.com/kirkkala/hoopfinder
-        </a>
-      </Item>
-      {row ? <CreditDivider /> : null}
-      <Item>
-        {copy.feedback}:{" "}
-        <a
-          href={`mailto:timo.kirkkala@gmail.com?subject=${copy.feedbackSubject}&body=${copy.feedbackBody}`}
-          className="text-gold hover:text-white"
-          target="_blank"
-          rel="noreferrer"
-        >
-          timo.kirkkala@gmail.com
-        </a>
-      </Item>
+      <FeedbackLink row={row} />
     </>
   );
 }
 
 function CreditDivider() {
   return <span aria-hidden>|</span>;
+}
+
+function FeedbackLink({ row = false }: { row?: boolean }) {
+  const copy = useCopy();
+  const databaseUnavailable = useDatabaseUnavailable();
+  const feedback = useFeedback();
+  if (databaseUnavailable || !feedback) return null;
+
+  const control = (
+    <button
+      type="button"
+      onClick={feedback.openFeedback}
+      aria-haspopup="dialog"
+      aria-expanded={feedback.open}
+      className="rounded-sm font-medium text-gold outline-none hover:text-white focus-visible:ring-2 focus-visible:ring-gold/60"
+    >
+      {copy.giveFeedback}
+    </button>
+  );
+
+  if (row) {
+    return (
+      <>
+        <CreditDivider />
+        <span>{control}</span>
+      </>
+    );
+  }
+
+  return <p>{control}</p>;
 }
 
 function CreditLinks() {

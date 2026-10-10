@@ -5,6 +5,7 @@ import { Camera, Icon, Pencil, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { AdminCourtEditor } from "@/components/admin/AdminCourtEditor";
+import { AdminFeedbackList } from "@/components/admin/AdminFeedbackList";
 import { AdminStatusButton } from "@/components/admin/AdminStatusButton";
 import { AppFooter } from "@/components/brand/AppFooter";
 import { AppHeader } from "@/components/brand/AppHeader";
@@ -13,6 +14,7 @@ import { useCopy } from "@/components/brand/LocaleProvider";
 import type { FetchedAtBySource } from "@/lib/catalog";
 import type { AdminCourtWithPhotos } from "@/lib/court-photos";
 import { courtHref, courtTitle } from "@/lib/courts";
+import type { AdminFeedback } from "@/lib/feedback";
 import type { AdminSubmittedCourt } from "@/lib/submitted-courts";
 
 export function AdminCourtsView({
@@ -20,11 +22,13 @@ export function AdminCourtsView({
   fetchedAtBySource,
   courts,
   photoCourts,
+  feedback,
 }: {
   courtCount: number;
   fetchedAtBySource: FetchedAtBySource;
   courts: AdminSubmittedCourt[] | null;
   photoCourts: AdminCourtWithPhotos[] | null;
+  feedback: AdminFeedback[] | null;
 }) {
   const copy = useCopy();
 
@@ -33,6 +37,7 @@ export function AdminCourtsView({
       <AppHeader fetchedAtBySource={fetchedAtBySource} courtCount={courtCount} />
       <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-8 sm:px-6">
         <h1 className="font-display text-4xl tracking-wide text-white">{copy.adminTitle}</h1>
+        <AdminFeedbackList items={feedback} />
         <PhotoCourts courts={photoCourts} />
         {courts === null ? (
           <p className="mt-6 text-sm text-ink-muted">{copy.adminUnavailable}</p>
