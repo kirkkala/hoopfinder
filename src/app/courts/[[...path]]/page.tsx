@@ -3,11 +3,15 @@ import { headers } from "next/headers";
 import { notFound, permanentRedirect, redirect } from "next/navigation";
 import { getAuthSession } from "@/auth";
 import { CourtDetails } from "@/components/court/CourtDetails";
-import { getBasketballCourt, getCourtCatalog } from "@/lib/catalog";
+import { getCourtCatalog, getCourtPlace } from "@/lib/catalog";
 import { SITE_URL } from "@/lib/constants";
 import { getCopy } from "@/lib/copy";
+import { courtOnPlace, courtsWithPhotos } from "@/lib/court-groups";
+import type { CourtPhoto } from "@/lib/court-photos";
 import { listCourtPhotos } from "@/lib/court-photos";
 import {
+  applyVisitorCourt,
+  type Court,
   courtHref,
   courtOgHref,
   courtTitle,
@@ -17,7 +21,11 @@ import {
   parseCourtPath,
 } from "@/lib/courts";
 import { isDatabaseUnavailable } from "@/lib/db";
-import { countPublicCourts, getSubmittedCourt } from "@/lib/submitted-courts";
+import {
+  countPublicCourts,
+  getSubmittedCourt,
+  listPublishedCourtsNear,
+} from "@/lib/submitted-courts";
 
 export const dynamic = "force-dynamic";
 
@@ -75,14 +83,18 @@ export default async function CourtPage({ params }: { params: Promise<{ path?: s
   if (isAwaitingEmail(result.court) && !isAdmin) {
     redirect(homeCourtHref({ id: result.court.id, source: "pending" }));
   }
+  const court = await withVisitorFacts(result.court);
+  const mapSpots =
+    result.place.members && result.place.members.length > 1 ? result.place.members : undefined;
   const [{ fetchedAtBySource }, courtCount, photos] = await Promise.all([
     getCourtCatalog(),
     countPublicCourts(),
-    listCourtPhotos(result.court),
+    listPlacePhotos(result.place),
   ]);
   return (
     <CourtDetails
-      court={result.court}
+      court={court}
+      mapSpots={mapSpots}
       fetchedAtBySource={fetchedAtBySource}
       sourceFetchedAt={result.sourceFetchedAt}
       courtCount={courtCount}
@@ -102,8 +114,14 @@ async function courtFromParams(params: Promise<{ path?: string[] }>) {
   const parsed = parseCourtPath(path ?? []);
   if (parsed === "index") permanentRedirect("/");
   if (!parsed) return null;
-  const catalogCourt = await getBasketballCourt(parsed.id);
-  if (catalogCourt) return catalogCourt;
+  const catalogCourt = await getCourtPlace(parsed.id);
+  if (catalogCourt) {
+    return {
+      court: courtOnPlace(catalogCourt.court, parsed.id),
+      place: catalogCourt.court,
+      sourceFetchedAt: catalogCourt.sourceFetchedAt,
+    };
+  }
   const submitted = await getSubmittedCourt(parsed.id);
   if (!submitted) {
     if (isDatabaseUnavailable()) throw new Error("database unavailable");
@@ -111,9 +129,21 @@ async function courtFromParams(params: Promise<{ path?: string[] }>) {
   }
   return {
     court: submitted.court,
+    place: submitted.court,
     sourceFetchedAt: submitted.createdAt,
     email: submitted.email,
   };
+}
+
+async function withVisitorFacts(court: Court): Promise<Court> {
+  if (court.source === "submitted") return court;
+  const visitors = await listPublishedCourtsNear(court.members ?? [court]);
+  return visitors.reduce((current, visitor) => applyVisitorCourt(current, visitor), court);
+}
+
+async function listPlacePhotos(court: Court): Promise<CourtPhoto[]> {
+  const lists = await Promise.all(courtsWithPhotos(court).map((item) => listCourtPhotos(item)));
+  return lists.flat();
 }
 
 async function requestOrigin(): Promise<URL> {

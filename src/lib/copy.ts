@@ -41,7 +41,7 @@ const messages = {
     fi: "Koripallokenttä",
     en: "Basketball court",
   },
-  backToMap: { fi: "Takaisin kartalle", en: "Back to the map" },
+  backToMap: { fi: "Katso kenttä kartalla", en: "See hoop on the map" },
   dataFrom: { fi: "Kenttädata päivitetty:", en: "Court data updated:" },
   dataFromSource: { fi: "Rajapintatieto", en: "API information" },
   dataFetchedAt: { fi: "Tiedot haettu", en: "Data fetched" },
@@ -206,6 +206,10 @@ const messages = {
   } satisfies Record<string, Pair<string>>,
   built: { fi: "Rakennettu", en: "Built" },
   courtFacts: { fi: "Kentän tiedot", en: "Court scouting" },
+  padCount: {
+    fi: (count: number) => `${count} kenttää`,
+    en: (count: number) => `${count} courts`,
+  },
   schoolUse: { fi: "Koulukäyttö", en: "School use" },
   fieldType: { fi: "Kenttätyyppi", en: "Field type" },
   fieldTypes: {
@@ -245,6 +249,7 @@ const messages = {
   notesFromListing: { fi: "Lisätiedot", en: "Notes" },
   photogallery: { fi: "Kuvagalleria", en: "Photo gallery" },
   courtLocation: { fi: "Sijainti kartalla", en: "Location on the map" },
+  courtsOnMap: { fi: "Muut kentät tällä paikalla", en: "Other courts at this location" },
   noPhotos: { fi: "Ei kuvia.", en: "No photos." },
   databaseUnavailable: {
     fi: "Tietokantaan ei saada yhteyttä.",

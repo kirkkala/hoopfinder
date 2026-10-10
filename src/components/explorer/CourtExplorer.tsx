@@ -59,6 +59,12 @@ function clearSelectedCourt() {
   }
 }
 
+function listedCourtId(courts: ExplorerCourt[], id: string | null): string | null {
+  if (!id) return null;
+  const found = courts.find((court) => court.id === id || court.aliases?.includes(id));
+  return found?.id ?? null;
+}
+
 function subscribeSelectedCourt() {
   return () => {};
 }
@@ -99,8 +105,8 @@ export function CourtExplorer({
   const placeBounds = place?.bounds ?? null;
   const showList = useMinWidth(mq.split);
   const savedId = useSyncExternalStore(subscribeSelectedCourt, readSelectedCourt, () => null);
-  const restoredId = savedId && courts.some((court) => court.id === savedId) ? savedId : null;
-  const focusedId = focusId && courts.some((court) => court.id === focusId) ? focusId : null;
+  const restoredId = listedCourtId(courts, savedId);
+  const focusedId = listedCourtId(courts, focusId);
   const selectedId = pickedId === undefined ? (focusedId ?? restoredId) : pickedId;
   const keepCamera = pickedId === undefined && restoredId !== null && !focusedId;
 
@@ -261,6 +267,7 @@ export function CourtExplorer({
               locateSeq={locateSeq}
               focusBounds={place?.camera ?? null}
               keepCamera={keepCamera}
+              focusId={focusId}
               onSelect={selectCourt}
               onClose={clearCourt}
               onBoundsChange={setMapBounds}

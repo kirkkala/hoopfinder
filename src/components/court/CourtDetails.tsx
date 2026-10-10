@@ -69,6 +69,7 @@ export function CourtDetails({
   sourceFetchedAt,
   courtCount,
   photos,
+  mapSpots,
   visitorEmail = null,
 }: {
   court: Court;
@@ -76,6 +77,8 @@ export function CourtDetails({
   sourceFetchedAt: string | null;
   courtCount: number;
   photos: CourtPhoto[];
+  /** Every pad to mark on the small map, including this court. */
+  mapSpots?: Court[];
   visitorEmail?: string | null;
 }) {
   const copy = useCopy();
@@ -102,6 +105,7 @@ export function CourtDetails({
   const canEdit = showAdminStatus && visitorEmail !== null;
   const dimensions =
     amenities.lengthM && amenities.widthM ? `${amenities.lengthM} × ${amenities.widthM} m` : null;
+  const osmSources = (court.hidden ?? []).filter((item) => item.source === "osm");
 
   return (
     <div className="flex min-h-dvh flex-col bg-asphalt">
@@ -359,7 +363,7 @@ export function CourtDetails({
             courtName={courtTitle(court, copy)}
             photos={photos}
           />
-          <CourtMiniMap court={court} />
+          <CourtMiniMap court={court} spots={mapSpots} />
           <dl className="grid gap-3 border-t border-white/10 p-5">
             {court.website ? (
               <Fact
@@ -407,9 +411,9 @@ export function CourtDetails({
                         ) : null}
                       </p>
                     ) : null}
-                    {court.source === "osm" || listingUrl ? (
+                    {court.source === "osm" || osmSources.length > 0 || listingUrl ? (
                       <ul>
-                        {court.source === "osm" ? (
+                        {court.source === "osm" || osmSources.length > 0 ? (
                           <li className="text-sm leading-5 text-ink-muted">
                             <span className="block">© OpenStreetMap {copy.osmContributors}.</span>
                             <span className="block">
@@ -425,19 +429,11 @@ export function CourtDetails({
                             </span>
                           </li>
                         ) : null}
-                        {listingUrl ? (
-                          <li>
-                            <a
-                              href={listingUrl}
-                              className="inline-flex items-center gap-1 break-all text-gold hover:text-white"
-                              target="_blank"
-                              rel="noreferrer"
-                            >
-                              {websiteLabel(listingUrl)}
-                              <ExternalLink className="size-3.5 shrink-0" aria-hidden />
-                            </a>
-                          </li>
-                        ) : null}
+                        {listingUrl ? <SourceLink href={listingUrl} /> : null}
+                        {osmSources.map((item) => {
+                          const href = sourceListingUrl(item.source, item.id);
+                          return href ? <SourceLink key={item.id} href={href} /> : null;
+                        })}
                       </ul>
                     ) : null}
                     {sourceFetchedAt ? (
@@ -513,6 +509,22 @@ function BackToMap({ court, className }: { court: Court; className?: string }) {
       <ArrowLeft className="size-6" aria-hidden />
       {copy.backToMap}
     </AppLink>
+  );
+}
+
+function SourceLink({ href }: { href: string }) {
+  return (
+    <li>
+      <a
+        href={href}
+        className="inline-flex items-center gap-1 break-all text-gold hover:text-white"
+        target="_blank"
+        rel="noreferrer"
+      >
+        {websiteLabel(href)}
+        <ExternalLink className="size-3.5 shrink-0" aria-hidden />
+      </a>
+    </li>
   );
 }
 

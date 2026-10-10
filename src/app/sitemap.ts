@@ -14,15 +14,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly",
       priority: 1,
     },
-    ...courts.map((court) => ({
-      url: `${SITE_URL}${courtHref(court)}`,
-      lastModified:
-        court.source === "submitted"
-          ? catalogUpdated
-          : (fetchedAtBySource[court.source] ?? catalogUpdated),
-      changeFrequency: "weekly" as const,
-      priority: 0.7,
-    })),
+    ...courts.flatMap((court) =>
+      (court.members ?? [court]).map((page) => ({
+        url: `${SITE_URL}${courtHref(page)}`,
+        lastModified:
+          page.source === "submitted"
+            ? catalogUpdated
+            : (fetchedAtBySource[page.source] ?? catalogUpdated),
+        changeFrequency: "weekly" as const,
+        priority: 0.7,
+      })),
+    ),
   ];
 }
 
