@@ -1,17 +1,17 @@
 "use client";
 
-import { useEffect, useState, type FormEvent } from "react";
 import { useRouter } from "next/navigation";
-import { useCopy } from "@/components/brand/LocaleProvider";
-import { AddCourtFormPanel } from "@/components/add-court/AddCourtFormPanel";
+import { type FormEvent, useEffect, useState } from "react";
 import {
+  type AddCourtDetails,
   AddCourtFields,
-  FieldLabel,
   addCourtDetailsFromCourt,
   addCourtFormPayload,
+  FieldLabel,
   requiredFieldIssues,
-  type AddCourtDetails,
 } from "@/components/add-court/AddCourtFields";
+import { AddCourtFormPanel } from "@/components/add-court/AddCourtFormPanel";
+import { useCopy } from "@/components/brand/LocaleProvider";
 import type { Court } from "@/lib/courts";
 
 const INPUT_CLASS =
@@ -31,9 +31,7 @@ export function AdminCourtEditor({
   const [name, setName] = useState(court.name);
   const [address, setAddress] = useState(court.address ?? "");
   const [visitorEmail, setVisitorEmail] = useState(email);
-  const [details, setDetails] = useState<AddCourtDetails>(() =>
-    addCourtDetailsFromCourt(court),
-  );
+  const [details, setDetails] = useState<AddCourtDetails>(() => addCourtDetailsFromCourt(court));
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showIssues, setShowIssues] = useState(false);
@@ -63,14 +61,11 @@ export function AdminCourtEditor({
     setSaving(true);
     setError(null);
     try {
-      const response = await fetch(
-        `/api/admin/courts/${encodeURIComponent(court.id)}`,
-        {
-          method: "PATCH",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ name, address, email: visitorEmail, ...extra }),
-        },
-      );
+      const response = await fetch(`/api/admin/courts/${encodeURIComponent(court.id)}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name, address, email: visitorEmail, ...extra }),
+      });
       if (!response.ok) throw new Error("save failed");
       onClose();
       router.refresh();
@@ -127,7 +122,9 @@ export function AdminCourtEditor({
       >
         <form id="admin-court-edit" onSubmit={save}>
           <label className="mt-3 block">
-            <FieldLabel required invalid={issues.name}>{copy.addCourtName}</FieldLabel>
+            <FieldLabel required invalid={issues.name}>
+              {copy.addCourtName}
+            </FieldLabel>
             <input
               aria-required="true"
               aria-invalid={issues.name}
@@ -142,7 +139,9 @@ export function AdminCourtEditor({
             />
           </label>
           <label className="mt-2.5 block">
-            <FieldLabel required invalid={issues.address}>{copy.addCourtAddress}</FieldLabel>
+            <FieldLabel required invalid={issues.address}>
+              {copy.addCourtAddress}
+            </FieldLabel>
             <input
               aria-required="true"
               aria-invalid={issues.address}
@@ -157,7 +156,9 @@ export function AdminCourtEditor({
             />
           </label>
           <label className="mt-2.5 block">
-            <FieldLabel required invalid={issues.email}>{copy.addCourtEmail}</FieldLabel>
+            <FieldLabel required invalid={issues.email}>
+              {copy.addCourtEmail}
+            </FieldLabel>
             <input
               aria-required="true"
               aria-invalid={issues.email}

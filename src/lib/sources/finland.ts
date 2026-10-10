@@ -50,12 +50,7 @@ export function isInFinland(lat: number, lon: number): boolean {
   return RINGS.some((ring) => pointInRing(lon, lat, ring));
 }
 
-function box(
-  west: number,
-  south: number,
-  east: number,
-  north: number,
-): Array<[number, number]> {
+function box(west: number, south: number, east: number, north: number): Array<[number, number]> {
   return [
     [west, south],
     [east, south],

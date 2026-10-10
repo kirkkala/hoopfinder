@@ -1,19 +1,10 @@
 import { formatDistanceParts } from "@/lib/geo";
 
-export function CourtDistance({
-  km,
-  className,
-}: {
-  km: number;
-  className?: string;
-}) {
+export function CourtDistance({ km, className }: { km: number; className?: string }) {
   const { value, unit } = formatDistanceParts(km);
   return (
     <span
-      className={[
-        "inline-flex shrink-0 items-baseline gap-1 text-gold",
-        className,
-      ]
+      className={["inline-flex shrink-0 items-baseline gap-1 text-gold", className]
         .filter(Boolean)
         .join(" ")}
     >

@@ -19,18 +19,13 @@ export const SEARCH_CAMERA_SPAN_KM = 10;
 
 const EARTH_RADIUS_KM = 6371;
 
-export function haversineKm(
-  from: Coordinates,
-  to: Coordinates,
-): number {
+export function haversineKm(from: Coordinates, to: Coordinates): number {
   const dLat = toRadians(to.lat - from.lat);
   const dLon = toRadians(to.lon - from.lon);
   const lat1 = toRadians(from.lat);
   const lat2 = toRadians(to.lat);
 
-  const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
+  const a = Math.sin(dLat / 2) ** 2 + Math.cos(lat1) * Math.cos(lat2) * Math.sin(dLon / 2) ** 2;
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
   return EARTH_RADIUS_KM * c;
 }
@@ -52,10 +47,7 @@ export type MapBounds = {
   north: number;
 };
 
-export function isInBounds(
-  point: Coordinates,
-  bounds: MapBounds,
-): boolean {
+export function isInBounds(point: Coordinates, bounds: MapBounds): boolean {
   if (point.lat < bounds.south || point.lat > bounds.north) {
     return false;
   }
@@ -65,9 +57,7 @@ export function isInBounds(
   return point.lon >= bounds.west || point.lon <= bounds.east;
 }
 
-export function boundsFromCoordinates(
-  points: Coordinates[],
-): MapBounds | null {
+export function boundsFromCoordinates(points: Coordinates[]): MapBounds | null {
   if (points.length === 0) return null;
   let west = Infinity;
   let south = Infinity;
@@ -101,10 +91,7 @@ export function expandTinyBounds(bounds: MapBounds): MapBounds {
 }
 
 /** Box of `spanKm` across, in both directions, around a point. */
-export function boundsAround(
-  center: Coordinates,
-  spanKm: number,
-): MapBounds {
+export function boundsAround(center: Coordinates, spanKm: number): MapBounds {
   const dLat = spanKm / 111;
   const cosLat = Math.max(Math.cos(toRadians(center.lat)), 0.2);
   const dLon = spanKm / (111 * cosLat);
@@ -126,10 +113,7 @@ export function cameraBoundsForPlace(
   maxSpanKm = SEARCH_CAMERA_SPAN_KM,
 ): MapBounds {
   const latKm = (placeBounds.north - placeBounds.south) * 111;
-  const cosLat = Math.max(
-    Math.cos(toRadians((placeBounds.north + placeBounds.south) / 2)),
-    0.2,
-  );
+  const cosLat = Math.max(Math.cos(toRadians((placeBounds.north + placeBounds.south) / 2)), 0.2);
   const lonKm = (placeBounds.east - placeBounds.west) * 111 * cosLat;
   if (latKm <= maxSpanKm && lonKm <= maxSpanKm) return placeBounds;
   return boundsAround(center, maxSpanKm);

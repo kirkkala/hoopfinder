@@ -1,5 +1,5 @@
-import { COURT_DATA_REVALIDATE } from "@/lib/constants";
 import { getCourtCatalog } from "@/lib/catalog";
+import { COURT_DATA_REVALIDATE } from "@/lib/constants";
 import { toExplorerCourt } from "@/lib/courts";
 
 export async function GET() {

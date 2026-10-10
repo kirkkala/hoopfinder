@@ -1,33 +1,26 @@
 "use client";
 
-import {
-  useEffect,
-  useRef,
-  useState,
-  type FormEvent,
-  type ReactNode,
-  type RefObject,
-} from "react";
+import { CircleHelp, LoaderCircle, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
-import { CircleHelp, LoaderCircle, X } from "lucide-react";
-import { LocateMeButton } from "@/components/LocateMeButton";
-import { AppHeader } from "@/components/brand/AppHeader";
-import { useCopy } from "@/components/brand/LocaleProvider";
-import type { FetchedAtBySource } from "@/lib/catalog";
-import type { Copy } from "@/lib/copy";
-import { homeCourtHref, type ExplorerCourt } from "@/lib/courts";
-import { AddCourtFormPanel } from "@/components/add-court/AddCourtFormPanel";
+import { type FormEvent, type ReactNode, type RefObject, useEffect, useRef, useState } from "react";
 import {
+  type AddCourtDetails,
   AddCourtFields,
-  FieldLabel,
   addCourtDetailsDirty,
   addCourtFormPayload,
-  requiredFieldIssues,
   EMPTY_ADD_COURT_DETAILS,
-  type AddCourtDetails,
+  FieldLabel,
+  requiredFieldIssues,
 } from "@/components/add-court/AddCourtFields";
+import { AddCourtFormPanel } from "@/components/add-court/AddCourtFormPanel";
 import type { AddCourtMapAlert } from "@/components/add-court/AddCourtMap";
+import { AppHeader } from "@/components/brand/AppHeader";
+import { useCopy } from "@/components/brand/LocaleProvider";
+import { LocateMeButton } from "@/components/LocateMeButton";
+import type { FetchedAtBySource } from "@/lib/catalog";
+import type { Copy } from "@/lib/copy";
+import { type ExplorerCourt, homeCourtHref } from "@/lib/courts";
 import type { Coordinates } from "@/lib/geo";
 import { fetchMapCourts } from "@/lib/map-courts";
 import { useLocationStatus } from "@/lib/origin";
@@ -46,8 +39,7 @@ const TEXT_BUTTON_CLASS =
 const GOLD_BUTTON_CLASS =
   "rounded-full bg-gold px-3 py-1.5 text-sm font-bold text-asphalt outline-none hover:bg-white focus-visible:ring-2 focus-visible:ring-gold/60";
 
-const MAP_CHROME_OFFSET =
-  "calc(max(0.75rem, env(safe-area-inset-top)) + 4.25rem)";
+const MAP_CHROME_OFFSET = "calc(max(0.75rem, env(safe-area-inset-top)) + 4.25rem)";
 
 export function AddCourtView({
   courtCount,
@@ -143,6 +135,8 @@ export function AddCourtView({
     setFormCollapsed(false);
   }
 
+  // clearDraft only resets state. Listing it would rebind this listener on every render.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: the listener should stay up while a dialog is open
   useEffect(() => {
     if (!infoOpen && !draft && !mapAlert) return;
     function onKeyDown(event: KeyboardEvent) {
@@ -239,9 +233,7 @@ export function AddCourtView({
           greeting,
         }),
       });
-      const payload = (await response.json()) as
-        | { court: ExplorerCourt }
-        | { error?: string };
+      const payload = (await response.json()) as { court: ExplorerCourt } | { error?: string };
       if (!response.ok || !("court" in payload)) {
         const code = "error" in payload ? payload.error : undefined;
         if (code === "too-close" || code === "outside-finland") {
@@ -325,11 +317,7 @@ export function AddCourtView({
 
         <div className="pointer-events-none absolute inset-x-0 top-0 z-40 flex justify-start p-3 pt-[max(0.75rem,env(safe-area-inset-top))] pl-[max(0.75rem,env(safe-area-inset-left))]">
           <div className="pointer-events-auto flex max-w-full flex-wrap items-center gap-2 drop-shadow-[0_8px_20px_rgb(0_0_0_/_0.35)]">
-            <LocateMeButton
-              iconOnly
-              status={locationStatus}
-              onClick={requestLocation}
-            />
+            <LocateMeButton iconOnly status={locationStatus} onClick={requestLocation} />
             {infoOpen ? null : (
               <button
                 type="button"
@@ -350,10 +338,7 @@ export function AddCourtView({
             style={{ paddingTop: MAP_CHROME_OFFSET }}
             onClick={() => setInfoOpen(false)}
           >
-            <AddCourtInfoDialog
-              ctaRef={infoCtaRef}
-              onClose={() => setInfoOpen(false)}
-            />
+            <AddCourtInfoDialog ctaRef={infoCtaRef} onClose={() => setInfoOpen(false)} />
           </div>
         ) : null}
 
@@ -369,18 +354,10 @@ export function AddCourtView({
                     {copy.addCourtDiscardAsk}
                   </p>
                   <div className="mt-3 flex flex-wrap items-center justify-end gap-2">
-                    <button
-                      type="button"
-                      onClick={keepForm}
-                      className={GOLD_BUTTON_CLASS}
-                    >
+                    <button type="button" onClick={keepForm} className={GOLD_BUTTON_CLASS}>
                       {copy.addCourtDiscardKeep}
                     </button>
-                    <button
-                      type="button"
-                      onClick={clearDraft}
-                      className={TEXT_BUTTON_CLASS}
-                    >
+                    <button type="button" onClick={clearDraft} className={TEXT_BUTTON_CLASS}>
                       {copy.addCourtDiscardConfirm}
                     </button>
                   </div>
@@ -397,11 +374,7 @@ export function AddCourtView({
                   >
                     {formCollapsed ? copy.addCourtShowForm : copy.addCourtShowMap}
                   </button>
-                  <button
-                    type="button"
-                    onClick={requestCancel}
-                    className={TEXT_BUTTON_CLASS}
-                  >
+                  <button type="button" onClick={requestCancel} className={TEXT_BUTTON_CLASS}>
                     {copy.addCourtCancel}
                   </button>
                 </div>
@@ -430,7 +403,9 @@ export function AddCourtView({
                 {draft.lat.toFixed(5)}, {draft.lon.toFixed(5)}
               </p>
               <label className="mt-3 block">
-                <FieldLabel required invalid={issues.name}>{copy.addCourtName}</FieldLabel>
+                <FieldLabel required invalid={issues.name}>
+                  {copy.addCourtName}
+                </FieldLabel>
                 <input
                   aria-required="true"
                   aria-invalid={issues.name}
@@ -446,7 +421,9 @@ export function AddCourtView({
                 />
               </label>
               <label className="mt-2.5 block">
-                <FieldLabel required invalid={issues.address}>{copy.addCourtAddress}</FieldLabel>
+                <FieldLabel required invalid={issues.address}>
+                  {copy.addCourtAddress}
+                </FieldLabel>
                 <span className="relative block">
                   <input
                     aria-required="true"
@@ -459,9 +436,7 @@ export function AddCourtView({
                       setError(null);
                     }}
                     placeholder={
-                      addressLoading
-                        ? copy.addCourtAddressLoading
-                        : copy.addCourtAddressPlaceholder
+                      addressLoading ? copy.addCourtAddressLoading : copy.addCourtAddressPlaceholder
                     }
                     className={`${INPUT_CLASS} ${addressLoading ? "pr-10" : ""}`}
                     autoComplete="street-address"
@@ -475,7 +450,9 @@ export function AddCourtView({
                 </span>
               </label>
               <label className="mt-2.5 block">
-                <FieldLabel required invalid={issues.email}>{copy.addCourtEmail}</FieldLabel>
+                <FieldLabel required invalid={issues.email}>
+                  {copy.addCourtEmail}
+                </FieldLabel>
                 <input
                   aria-required="true"
                   aria-invalid={issues.email}
@@ -490,9 +467,7 @@ export function AddCourtView({
                   className={INPUT_CLASS}
                   autoComplete="email"
                 />
-                <span className="mt-1 block text-sm text-ink-muted">
-                  {copy.addCourtEmailHelp}
-                </span>
+                <span className="mt-1 block text-sm text-ink-muted">{copy.addCourtEmailHelp}</span>
                 <span className="mt-1 block text-xs text-ink-muted">
                   {copy.addCourtEmailUpdates}
                 </span>
@@ -507,7 +482,9 @@ export function AddCourtView({
                   onChange={(event) => setGreeting(event.target.value)}
                   className="w-full rounded-xl border border-white/25 bg-asphalt px-3 py-2 text-base text-white outline-none placeholder:text-white/55 focus:border-gold/50 focus:ring-2 focus:ring-gold/60 sm:text-sm"
                 />
-                <span className="mt-1 block text-xs text-ink-muted">{copy.addCourtGreetingHint}</span>
+                <span className="mt-1 block text-xs text-ink-muted">
+                  {copy.addCourtGreetingHint}
+                </span>
               </label>
             </form>
           </AddCourtFormPanel>
@@ -622,10 +599,7 @@ function AddMapPanel({
         className="pointer-events-auto flex max-h-[min(70dvh,32rem)] w-full max-w-sm flex-col overflow-hidden rounded-2xl border border-white/10 bg-panel/95 shadow-[0_12px_32px_rgb(0_0_0_/_0.45)]"
       >
         <div className="flex shrink-0 items-start justify-between gap-2 px-3 pt-3">
-          <p
-            id="add-court-alert-title"
-            className="font-display text-lg tracking-wide text-gold"
-          >
+          <p id="add-court-alert-title" className="font-display text-lg tracking-wide text-gold">
             {title}
           </p>
           <button
@@ -639,17 +613,13 @@ function AddMapPanel({
         </div>
         <div className="min-h-0 overflow-y-auto overscroll-contain px-3 py-2">
           {typeof children === "string" ? (
-            <p className={`text-sm ${muted ? "text-ink-muted" : "text-ink/90"}`}>
-              {children}
-            </p>
+            <p className={`text-sm ${muted ? "text-ink-muted" : "text-ink/90"}`}>{children}</p>
           ) : (
             children
           )}
         </div>
         {footer ? (
-          <div className="shrink-0 border-t border-white/10 px-3 py-2.5">
-            {footer}
-          </div>
+          <div className="shrink-0 border-t border-white/10 px-3 py-2.5">{footer}</div>
         ) : null}
       </div>
     </div>

@@ -30,9 +30,7 @@ type NominatimHit = {
 
 /** Fill blank OSM city / neighborhood / address from Nominatim's indexed copy of the same objects. */
 export async function enrichOsmPlaces(courts: Court[]): Promise<Court[]> {
-  const pending = courts.filter(
-    (court) => needsPlace(court) && osmLookupId(court.id),
-  );
+  const pending = courts.filter((court) => needsPlace(court) && osmLookupId(court.id));
   if (pending.length === 0) return courts;
 
   console.log(`Nominatim lookup for ${pending.length} OSM courts`);
@@ -143,8 +141,7 @@ function applyHit(court: Court, hit: NominatimHit): Court {
     address: court.address ?? streetAddress,
     postalCode: court.postalCode ?? text(address.postcode),
     city,
-    neighborhood:
-      neighborhood && neighborhood !== city ? neighborhood : court.neighborhood,
+    neighborhood: neighborhood && neighborhood !== city ? neighborhood : court.neighborhood,
   };
 }
 

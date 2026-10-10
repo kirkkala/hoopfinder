@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { AppLink } from "@/components/brand/AppLink";
-import { useRouter } from "next/navigation";
 import { basketball } from "@lucide/lab";
 import { Camera, Icon, Pencil, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { AdminCourtEditor } from "@/components/admin/AdminCourtEditor";
 import { AdminStatusButton } from "@/components/admin/AdminStatusButton";
 import { AppFooter } from "@/components/brand/AppFooter";
 import { AppHeader } from "@/components/brand/AppHeader";
+import { AppLink } from "@/components/brand/AppLink";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import type { FetchedAtBySource } from "@/lib/catalog";
 import type { AdminCourtWithPhotos } from "@/lib/court-photos";
@@ -30,14 +30,9 @@ export function AdminCourtsView({
 
   return (
     <div className="flex min-h-dvh flex-col bg-asphalt">
-      <AppHeader
-        fetchedAtBySource={fetchedAtBySource}
-        courtCount={courtCount}
-      />
+      <AppHeader fetchedAtBySource={fetchedAtBySource} courtCount={courtCount} />
       <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-8 sm:px-6">
-        <h1 className="font-display text-4xl tracking-wide text-white">
-          {copy.adminTitle}
-        </h1>
+        <h1 className="font-display text-4xl tracking-wide text-white">{copy.adminTitle}</h1>
         <PhotoCourts courts={photoCourts} />
         {courts === null ? (
           <p className="mt-6 text-sm text-ink-muted">{copy.adminUnavailable}</p>
@@ -71,12 +66,10 @@ function PhotoCourts({ courts }: { courts: AdminCourtWithPhotos[] | null }) {
               ) : (
                 <p className="font-semibold text-white">{courtTitle(court, copy)}</p>
               )}
-              <span
-                className="inline-flex shrink-0 items-center gap-1.5 text-sm text-ink-muted"
-                aria-label={copy.adminPhotoCount(court.photoCount)}
-              >
+              <span className="inline-flex shrink-0 items-center gap-1.5 text-sm text-ink-muted">
                 <Camera className="size-4" aria-hidden />
-                {court.photoCount}
+                <span className="sr-only">{copy.adminPhotoCount(court.photoCount)}</span>
+                <span aria-hidden="true">{court.photoCount}</span>
               </span>
             </li>
           ))}
@@ -86,11 +79,7 @@ function PhotoCourts({ courts }: { courts: AdminCourtWithPhotos[] | null }) {
   );
 }
 
-function SubmittedList({
-  initialCourts,
-}: {
-  initialCourts: AdminSubmittedCourt[];
-}) {
+function SubmittedList({ initialCourts }: { initialCourts: AdminSubmittedCourt[] }) {
   const copy = useCopy();
   const router = useRouter();
   const [courts, setCourts] = useState(initialCourts);
@@ -108,10 +97,9 @@ function SubmittedList({
     setSavingId(id);
     setErrorId(null);
     try {
-      const response = await fetch(
-        `/api/admin/courts/${encodeURIComponent(id)}`,
-        { method: "DELETE" },
-      );
+      const response = await fetch(`/api/admin/courts/${encodeURIComponent(id)}`, {
+        method: "DELETE",
+      });
       if (!response.ok) throw new Error("delete failed");
       setCourts((current) => current.filter((court) => court.id !== id));
       router.refresh();
@@ -126,17 +114,12 @@ function SubmittedList({
     return (
       <div className="mt-10 flex flex-col items-center gap-2 px-6 py-12 text-center">
         <Icon iconNode={basketball} className="size-10 text-gold/70" aria-hidden />
-        <p className="font-display text-2xl tracking-wide text-white">
-          {copy.adminEmpty}
-        </p>
+        <p className="font-display text-2xl tracking-wide text-white">{copy.adminEmpty}</p>
       </div>
     );
   }
 
-  const visible =
-    filter === "all"
-      ? courts
-      : courts.filter((court) => court.status === filter);
+  const visible = filter === "all" ? courts : courts.filter((court) => court.status === filter);
   const editing = courts.find((court) => court.id === editingId) ?? null;
 
   return (
@@ -148,84 +131,81 @@ function SubmittedList({
       {visible.length === 0 ? (
         <p className="mt-8 text-sm text-ink-muted">{copy.adminFilterEmpty}</p>
       ) : (
-      <ul className="mt-5 space-y-3">
-        {visible.map((court) => {
-          const saving = savingId === court.id;
-          const published = court.status === "published";
-          const confirmed = court.status === "pending";
-          return (
-            <li
-              key={court.id}
-              className={`rounded-2xl border p-4 text-sm ${
-                published
-                  ? "border-emerald-400/40 bg-emerald-400/10"
-                  : confirmed
-                    ? "border-yellow-400/40 bg-yellow-400/10"
-                    : "border-white/15 bg-white/5"
-              }`}
-            >
-              <div className="flex items-start justify-between gap-3">
-                <div className="flex flex-wrap items-center gap-2">
-                  <StatusBadge status={court.status} />
-                  <AdminStatusButton
-                    id={court.id}
-                    name={court.name}
-                    published={published}
-                    onStatusChange={(status) => {
-                      setCourts((current) =>
-                        current.map((item) =>
-                          item.id === court.id ? { ...item, status } : item,
-                        ),
-                      );
-                    }}
-                  />
-                </div>
-                <div className="flex shrink-0 items-center gap-1">
-                  <button
-                    type="button"
-                    onClick={() => setEditingId(court.id)}
-                    className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium text-ink/70 hover:bg-white/10 hover:text-white"
-                  >
-                    <Pencil className="size-3.5" aria-hidden />
-                    {copy.adminEdit}
-                  </button>
-                  <button
-                    type="button"
-                    disabled={saving}
-                    onClick={() => void remove(court.id, court.name)}
-                    className="inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium text-ink/70 hover:bg-red-500/15 hover:text-red-300 disabled:cursor-wait disabled:opacity-70"
-                  >
-                    <Trash2 className="size-3.5" aria-hidden />
-                    {copy.adminDelete}
-                  </button>
-                </div>
-              </div>
-              <AppLink
-                href={courtHref({ id: court.id, source: "submitted" })}
-                className="mt-2 inline-flex items-center gap-1 font-semibold text-gold hover:text-white"
+        <ul className="mt-5 space-y-3">
+          {visible.map((court) => {
+            const saving = savingId === court.id;
+            const published = court.status === "published";
+            const confirmed = court.status === "pending";
+            return (
+              <li
+                key={court.id}
+                className={`rounded-2xl border p-4 text-sm ${
+                  published
+                    ? "border-emerald-400/40 bg-emerald-400/10"
+                    : confirmed
+                      ? "border-yellow-400/40 bg-yellow-400/10"
+                      : "border-white/15 bg-white/5"
+                }`}
               >
-                {court.name}
-              </AppLink>
-              <p className="mt-1 text-ink-muted">{court.address}</p>
-              <a
-                href={`mailto:${court.email}`}
-                className="mt-1 text-gold hover:text-white"
-              >
-                {court.email}
-              </a>
-              {court.greeting ? (
-                <p className="mt-2 whitespace-pre-wrap text-ink">
-                  <span className="text-ink-muted">{copy.addCourtGreeting}: </span>
-                  {court.greeting}
-                </p>
-              ) : null}
-              {errorId === court.id ? (
-                <p className="mt-3 text-sm text-red-400">{copy.adminDeleteError}</p>
-              ) : null}
-            </li>
-          );
-        })}
-      </ul>
+                <div className="flex items-start justify-between gap-3">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <StatusBadge status={court.status} />
+                    <AdminStatusButton
+                      id={court.id}
+                      name={court.name}
+                      published={published}
+                      onStatusChange={(status) => {
+                        setCourts((current) =>
+                          current.map((item) =>
+                            item.id === court.id ? { ...item, status } : item,
+                          ),
+                        );
+                      }}
+                    />
+                  </div>
+                  <div className="flex shrink-0 items-center gap-1">
+                    <button
+                      type="button"
+                      onClick={() => setEditingId(court.id)}
+                      className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium text-ink/70 hover:bg-white/10 hover:text-white"
+                    >
+                      <Pencil className="size-3.5" aria-hidden />
+                      {copy.adminEdit}
+                    </button>
+                    <button
+                      type="button"
+                      disabled={saving}
+                      onClick={() => void remove(court.id, court.name)}
+                      className="inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium text-ink/70 hover:bg-red-500/15 hover:text-red-300 disabled:cursor-wait disabled:opacity-70"
+                    >
+                      <Trash2 className="size-3.5" aria-hidden />
+                      {copy.adminDelete}
+                    </button>
+                  </div>
+                </div>
+                <AppLink
+                  href={courtHref({ id: court.id, source: "submitted" })}
+                  className="mt-2 inline-flex items-center gap-1 font-semibold text-gold hover:text-white"
+                >
+                  {court.name}
+                </AppLink>
+                <p className="mt-1 text-ink-muted">{court.address}</p>
+                <a href={`mailto:${court.email}`} className="mt-1 text-gold hover:text-white">
+                  {court.email}
+                </a>
+                {court.greeting ? (
+                  <p className="mt-2 whitespace-pre-wrap text-ink">
+                    <span className="text-ink-muted">{copy.addCourtGreeting}: </span>
+                    {court.greeting}
+                  </p>
+                ) : null}
+                {errorId === court.id ? (
+                  <p className="mt-3 text-sm text-red-400">{copy.adminDeleteError}</p>
+                ) : null}
+              </li>
+            );
+          })}
+        </ul>
       )}
       {editing ? (
         <AdminCourtEditor
@@ -240,12 +220,7 @@ function SubmittedList({
 
 type StatusFilter = "all" | "unconfirmed" | "pending" | "published";
 
-const STATUS_FILTERS: StatusFilter[] = [
-  "all",
-  "unconfirmed",
-  "pending",
-  "published",
-];
+const STATUS_FILTERS: StatusFilter[] = ["all", "unconfirmed", "pending", "published"];
 
 function StatusFilterToggle({
   filter,
@@ -268,9 +243,7 @@ function StatusFilterToggle({
           aria-pressed={filter === option}
           onClick={() => onChange(option)}
           className={`rounded-full px-3 py-1.5 ${
-            filter === option
-              ? "bg-gold text-asphalt"
-              : "text-ink/70 hover:text-white"
+            filter === option ? "bg-gold text-asphalt" : "text-ink/70 hover:text-white"
           }`}
         >
           {option === "all"
@@ -286,11 +259,7 @@ function StatusFilterToggle({
   );
 }
 
-function StatusBadge({
-  status,
-}: {
-  status: "unconfirmed" | "pending" | "published";
-}) {
+function StatusBadge({ status }: { status: "unconfirmed" | "pending" | "published" }) {
   const copy = useCopy();
   const label =
     status === "published"
@@ -304,9 +273,5 @@ function StatusBadge({
       : status === "pending"
         ? "bg-emerald-400/20 text-emerald-100"
         : "bg-white/15 text-white/80";
-  return (
-    <span className={`rounded-full px-2 py-0.5 text-xs font-bold ${className}`}>
-      {label}
-    </span>
-  );
+  return <span className={`rounded-full px-2 py-0.5 text-xs font-bold ${className}`}>{label}</span>;
 }

@@ -1,13 +1,13 @@
 import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import { Bebas_Neue, Outfit } from "next/font/google";
 import type { Metadata, Viewport } from "next";
+import { Bebas_Neue, Outfit } from "next/font/google";
+import { getAuthSession } from "@/auth";
 import { AdminProvider } from "@/components/admin/AdminProvider";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import { LocaleProvider } from "@/components/brand/LocaleProvider";
 import { SiteBanner, type SiteBannerMessage } from "@/components/brand/SiteBanner";
-import { getAuthSession } from "@/auth";
 import { SITE_URL } from "@/lib/constants";
 import { getCopy } from "@/lib/copy";
 import { isDatabaseUnavailable, withDb } from "@/lib/db";
@@ -90,10 +90,7 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {
-  const [session] = await Promise.all([
-    getAuthSession(),
-    withDb((sql) => sql`select 1`),
-  ]);
+  const [session] = await Promise.all([getAuthSession(), withDb((sql) => sql`select 1`)]);
   const databaseUnavailable = isDatabaseUnavailable();
   const messages: SiteBannerMessage[] = databaseUnavailable
     ? [
@@ -110,9 +107,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <LocaleProvider>
           <SiteBanner messages={messages} databaseUnavailable={databaseUnavailable}>
             <AuthProvider session={session}>
-              <AdminProvider isAdmin={session?.user?.isAdmin === true}>
-                {children}
-              </AdminProvider>
+              <AdminProvider isAdmin={session?.user?.isAdmin === true}>{children}</AdminProvider>
             </AuthProvider>
           </SiteBanner>
         </LocaleProvider>

@@ -4,8 +4,8 @@ import { AddCourtView } from "@/components/add-court/AddCourtView";
 import { getCourtCatalog } from "@/lib/catalog";
 import { getCopy } from "@/lib/copy";
 import { isDatabaseUnavailable } from "@/lib/db";
-import { countPublicCourts } from "@/lib/submitted-courts";
 import { homeOgHref, OG_CONTENT_TYPE, OG_SIZE } from "@/lib/og";
+import { countPublicCourts } from "@/lib/submitted-courts";
 
 export async function generateMetadata(): Promise<Metadata> {
   const finnish = getCopy("fi");
@@ -34,10 +34,5 @@ export default async function AddCourtPage() {
   ]);
   if (isDatabaseUnavailable()) redirect("/");
 
-  return (
-    <AddCourtView
-      courtCount={courtCount}
-      fetchedAtBySource={fetchedAtBySource}
-    />
-  );
+  return <AddCourtView courtCount={courtCount} fetchedAtBySource={fetchedAtBySource} />;
 }

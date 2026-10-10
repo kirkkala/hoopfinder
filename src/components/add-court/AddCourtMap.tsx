@@ -1,27 +1,32 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { MapPin } from "lucide-react";
-import { setWorkerUrl, type Offset } from "maplibre-gl";
-import Map, {
+import { type Offset, setWorkerUrl } from "maplibre-gl";
+import { type ReactNode, useEffect, useMemo, useRef, useState } from "react";
+import MapView, {
   Layer,
+  type MapLayerMouseEvent,
+  type MapRef,
   Marker,
   NavigationControl,
   Popup,
   Source,
-  type MapLayerMouseEvent,
-  type MapRef,
 } from "react-map-gl/maplibre";
-import { MAP_STYLE } from "@/lib/constants";
 import { useCopy } from "@/components/brand/LocaleProvider";
-import { courtPlacementBlocked, courtTitle, isPendingCourt, type ExplorerCourt } from "@/lib/courts";
-import { isInFinland } from "@/lib/sources/finland";
+import { MAP_STYLE } from "@/lib/constants";
 import {
-  DEFAULT_MAP_CENTER,
-  DEFAULT_MAP_ZOOM,
+  courtPlacementBlocked,
+  courtTitle,
+  type ExplorerCourt,
+  isPendingCourt,
+} from "@/lib/courts";
+import {
   boundsFromCoordinates,
   type Coordinates,
+  DEFAULT_MAP_CENTER,
+  DEFAULT_MAP_ZOOM,
 } from "@/lib/geo";
+import { isInFinland } from "@/lib/sources/finland";
 
 setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
 
@@ -51,11 +56,7 @@ export type AddCourtMapAlert = "zoom" | "too-close" | "outside-finland" | "on-wa
 function readSavedView(): { latitude: number; longitude: number; zoom: number } | null {
   try {
     const saved = JSON.parse(localStorage.getItem(MAP_VIEW_KEY) ?? "");
-    if (
-      Number.isFinite(saved.lat) &&
-      Number.isFinite(saved.lon) &&
-      Number.isFinite(saved.zoom)
-    ) {
+    if (Number.isFinite(saved.lat) && Number.isFinite(saved.lon) && Number.isFinite(saved.zoom)) {
       return { latitude: saved.lat, longitude: saved.lon, zoom: saved.zoom };
     }
   } catch {
@@ -90,12 +91,11 @@ export function AddCourtMap({
   const [{ view: initialView, restored }] = useState(() => {
     const saved = readSavedView();
     return {
-      view:
-        saved ?? {
-          latitude: DEFAULT_MAP_CENTER.lat,
-          longitude: DEFAULT_MAP_CENTER.lon,
-          zoom: DEFAULT_MAP_ZOOM,
-        },
+      view: saved ?? {
+        latitude: DEFAULT_MAP_CENTER.lat,
+        longitude: DEFAULT_MAP_CENTER.lon,
+        zoom: DEFAULT_MAP_ZOOM,
+      },
       restored: saved !== null,
     };
   });
@@ -128,6 +128,8 @@ export function AddCourtMap({
     });
   }, [locateSeq, mapReady, origin]);
 
+  // Fit when the court count arrives. Listing `courts` would move the camera on every list update.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: courts.length is the intended trigger
   useEffect(() => {
     if (!mapReady || restored) return;
     const bounds = boundsFromCoordinates(courts);
@@ -173,7 +175,7 @@ export function AddCourtMap({
   }
 
   return (
-    <Map
+    <MapView
       ref={mapRef}
       mapStyle={MAP_STYLE}
       initialViewState={initialView}
@@ -258,7 +260,7 @@ export function AddCourtMap({
           {confirm}
         </Popup>
       ) : null}
-    </Map>
+    </MapView>
   );
 }
 

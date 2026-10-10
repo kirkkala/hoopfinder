@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { NotFoundView } from "@/components/brand/NotFoundView";
 import { getCourtCatalog } from "@/lib/catalog";
-import { countPublicCourts } from "@/lib/submitted-courts";
 import { getCopy } from "@/lib/copy";
+import { countPublicCourts } from "@/lib/submitted-courts";
 
 const finnish = getCopy("fi");
 
@@ -16,10 +16,5 @@ export default async function NotFound() {
     getCourtCatalog(),
     countPublicCourts(),
   ]);
-  return (
-    <NotFoundView
-      courtCount={courtCount}
-      fetchedAtBySource={fetchedAtBySource}
-    />
-  );
+  return <NotFoundView courtCount={courtCount} fetchedAtBySource={fetchedAtBySource} />;
 }

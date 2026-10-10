@@ -1,11 +1,11 @@
 import type { Metadata } from "next";
 import { CourtExplorer } from "@/components/explorer/CourtExplorer";
 import { getCourtCatalog } from "@/lib/catalog";
-import { countPublicCourts } from "@/lib/submitted-courts";
 import { SITE_URL } from "@/lib/constants";
 import { getCopy } from "@/lib/copy";
 import { courtIdFromParam } from "@/lib/courts";
 import { homeOgHref, OG_CONTENT_TYPE, OG_SIZE } from "@/lib/og";
+import { countPublicCourts } from "@/lib/submitted-courts";
 
 export const dynamic = "force-dynamic";
 
@@ -60,6 +60,7 @@ export default async function HomePage({
     <>
       <script
         type="application/ld+json"
+        // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD is built from our own site copy
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
       <CourtExplorer

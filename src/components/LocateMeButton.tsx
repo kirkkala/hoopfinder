@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  LoaderCircle,
-  Locate,
-  LocateFixed,
-  LocateOff,
-} from "lucide-react";
+import { LoaderCircle, Locate, LocateFixed, LocateOff } from "lucide-react";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import type { Copy } from "@/lib/copy";
 import type { LocationStatus } from "@/lib/origin";
@@ -36,11 +31,7 @@ export function LocateMeButton({
   const LocationIcon = LOCATION_ICON[status];
   const pending = status === "pending";
   const label = copy.nearMe[status];
-  const iconClass = iconOnly
-    ? "size-5"
-    : compact
-      ? "size-5 sm:size-3.5"
-      : "size-3.5";
+  const iconClass = iconOnly ? "size-5" : compact ? "size-5 sm:size-3.5" : "size-3.5";
 
   return (
     <button
@@ -56,23 +47,13 @@ export function LocateMeButton({
             : `${BUTTON_CLASS} gap-1.5 px-3 py-1.5 text-sm`
       }
     >
-      <LocationIcon
-        aria-hidden
-        className={`${iconClass} ${pending ? "animate-spin" : ""}`}
-      />
-      {iconOnly ? null : compact ? (
-        <span className="hidden sm:inline">{label}</span>
-      ) : (
-        label
-      )}
+      <LocationIcon aria-hidden className={`${iconClass} ${pending ? "animate-spin" : ""}`} />
+      {iconOnly ? null : compact ? <span className="hidden sm:inline">{label}</span> : label}
     </button>
   );
 }
 
-export function locationHint(
-  copy: Copy,
-  status: LocationStatus,
-): string | null {
+export function locationHint(copy: Copy, status: LocationStatus): string | null {
   if (status === "denied") return copy.locationBlockedHelp;
   if (status === "idle" || status === "unavailable") {
     return copy.locateToSeeDistance;

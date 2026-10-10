@@ -1,62 +1,50 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import { AppLink } from "@/components/brand/AppLink";
 import { ArrowRight, X } from "lucide-react";
-import {
-  LngLatBounds,
-  setWorkerUrl,
-  type ExpressionSpecification,
-} from "maplibre-gl";
-import Map, {
+import { type ExpressionSpecification, type LngLatBounds, setWorkerUrl } from "maplibre-gl";
+import { useEffect, useMemo, useRef, useState } from "react";
+import MapView, {
   Layer,
+  type MapLayerMouseEvent,
+  type MapRef,
   Marker,
   NavigationControl,
   Popup,
   Source,
-  type MapLayerMouseEvent,
-  type MapRef,
 } from "react-map-gl/maplibre";
 import { useIsAdmin } from "@/components/admin/AdminProvider";
-import { MAP_STYLE } from "@/lib/constants";
+import { AppLink } from "@/components/brand/AppLink";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { CourtBadges } from "@/components/explorer/CourtBadges";
 import { CourtHeading } from "@/components/explorer/CourtHeading";
 import { PendingCourtNote } from "@/components/explorer/PendingCourtNote";
+import { MAP_STYLE } from "@/lib/constants";
 import {
+  type CourtWithDistance,
   courtHref,
   courtTitle,
   isAwaitingEmail,
   isPendingCourt,
-  type CourtWithDistance,
 } from "@/lib/courts";
 import {
-  DEFAULT_MAP_CENTER,
-  DEFAULT_MAP_ZOOM,
-  NEAR_ME_ZOOM,
   boundsFromCoordinates,
   type Coordinates,
+  DEFAULT_MAP_CENTER,
+  DEFAULT_MAP_ZOOM,
   type MapBounds,
+  NEAR_ME_ZOOM,
 } from "@/lib/geo";
 
 setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
 
 const MAP_VIEW_KEY = "hoopfinder-map-view";
 const CLICKABLE_LAYERS = ["court-points", "court-labels"];
-const HOVER: ExpressionSpecification = [
-  "boolean",
-  ["feature-state", "hover"],
-  false,
-];
+const HOVER: ExpressionSpecification = ["boolean", ["feature-state", "hover"], false];
 
 function readSavedView(): { latitude: number; longitude: number; zoom: number } | null {
   try {
     const saved = JSON.parse(localStorage.getItem(MAP_VIEW_KEY) ?? "");
-    if (
-      Number.isFinite(saved.lat) &&
-      Number.isFinite(saved.lon) &&
-      Number.isFinite(saved.zoom)
-    ) {
+    if (Number.isFinite(saved.lat) && Number.isFinite(saved.lon) && Number.isFinite(saved.zoom)) {
       return { latitude: saved.lat, longitude: saved.lon, zoom: saved.zoom };
     }
   } catch {
@@ -87,10 +75,7 @@ function boundsFromMap(map: { getBounds: () => LngLatBounds }): MapBounds {
 
 function saveView(latitude: number, longitude: number, zoom: number) {
   try {
-    localStorage.setItem(
-      MAP_VIEW_KEY,
-      JSON.stringify({ lat: latitude, lon: longitude, zoom }),
-    );
+    localStorage.setItem(MAP_VIEW_KEY, JSON.stringify({ lat: latitude, lon: longitude, zoom }));
   } catch {
     // Ignore quota / private-mode failures.
   }
@@ -168,6 +153,8 @@ export function CourtMap({
     });
   }, [locateSeq, mapReady, origin]);
 
+  // Fit when the court count arrives. Listing `courts` would move the camera on every list update.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: courts.length is the intended trigger
   useEffect(() => {
     if (!mapReady || restoredView.current || selectedRef.current) return;
     const bounds = boundsFromCoordinates(courts);
@@ -225,6 +212,8 @@ export function CourtMap({
     paintedIds.current = next;
   }
 
+  // paintHover reads refs. selectedId is what should repaint the highlight.
+  // biome-ignore lint/correctness/useExhaustiveDependencies: selection changes should repaint, not the function identity
   useEffect(() => {
     if (mapReady) paintHover();
   }, [mapReady, selectedId]);
@@ -270,6 +259,8 @@ export function CourtMap({
 
   function handleClick(event: MapLayerMouseEvent) {
     const feature = event.features?.[0];
+    // This check narrows feature to a point. Optional chaining would leave it nullable below.
+    // biome-ignore lint/complexity/useOptionalChain: keep the point geometry narrowed
     if (!feature || feature.geometry.type !== "Point") {
       if (selectedRef.current) onClose();
       return;
@@ -285,7 +276,7 @@ export function CourtMap({
   }
 
   return (
-    <Map
+    <MapView
       ref={mapRef}
       mapStyle={MAP_STYLE}
       initialViewState={initialView}
@@ -389,9 +380,7 @@ export function CourtMap({
                 <p className="text-sm font-bold leading-5 text-ink/90">
                   {copy.addCourtSuccessLead}
                 </p>
-                <p className="mt-1 text-sm leading-5 text-ink-muted">
-                  {copy.addCourtSuccess}
-                </p>
+                <p className="mt-1 text-sm leading-5 text-ink-muted">{copy.addCourtSuccess}</p>
               </div>
             ) : isPendingCourt(selected) ? (
               <PendingCourtNote createdAt={selected.createdAt} className="pt-1" />
@@ -408,6 +397,6 @@ export function CourtMap({
           </div>
         </Popup>
       ) : null}
-    </Map>
+    </MapView>
   );
 }

@@ -21,6 +21,13 @@ Keep the codebase boring and easy for another person to follow.
 - Leave a component in one file until that file is hard to read. Reuse code when the same logic is already repeated.
 - Keep client components and shared state small. Shared logic belongs in `src/lib`.
 - For a visible change, check small screens and that the page still works with the keyboard.
+- Respect biome rules
+
+## Testing
+
+- Use the vitest test setup
+- Whenever changing code change tests respectively
+- When introducing new functionalities add tests
 
 ## Data
 

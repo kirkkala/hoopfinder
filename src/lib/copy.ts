@@ -72,7 +72,7 @@ const messages = {
   },
   introCreatedByTitle: {
     fi: "Kuka tämän teki ja miksi",
-    en: "Who built this and why"
+    en: "Who built this and why",
   },
   introCreatedBy1: {
     fi: "koodaili sivuston omana harrasteprojektina, hakien kenttien tiedot parista avoimesta rajapinnasta ja antamalla käyttäjien itse lisätä palveluun puuttuvia kenttiä sekä kuvia kentistä.",
@@ -80,11 +80,11 @@ const messages = {
   },
   introCreatedBy2: {
     fi: "Motivaationa tähän oli saada isot ja pienet ihmiset ulos liikkumaan enemmän koripallon kanssa.",
-    en: "The motivation for this is to get big and small humans out of the house and move more with a basketball."
+    en: "The motivation for this is to get big and small humans out of the house and move more with a basketball.",
   },
   supportDeveloper: { fi: "Tue kehittäjää", en: "Support the developer" },
   okBroCta: { fi: "Tämä selvä!", en: "Understood!" },
-  madeWith: { fi: 'Made with', en: "Made with" },
+  madeWith: { fi: "Made with", en: "Made with" },
   love: { fi: "love", en: "love" },
   courtDataFrom: {
     fi: "Lähdedata:",
@@ -109,11 +109,11 @@ const messages = {
   feedback: { fi: "Palaute", en: "Feedback" },
   feedbackSubject: {
     fi: "Palaute%20hoopfinder.fi%20-%20palvelusta",
-    en: "Feedback%20from%20hoopfinder.fi%20-%20service"
+    en: "Feedback%20from%20hoopfinder.fi%20-%20service",
   },
-  feedbackBody: { 
+  feedbackBody: {
     fi: "Kiitos%20jos%20otat%20hetken%20antaaksesi%20palautetta%20palvelusta%2C%20kiitokset%2C%20kehitysehdotukset%20ja%20bugiraportit%20on%20tervetulleita%21",
-    en: "Thank%20you%20if%20you%20take%20a%20moment%20to%20give%20feedback%2C%20suggestions%2C%20and%20bug%20reports%20are%20welcome%21"
+    en: "Thank%20you%20if%20you%20take%20a%20moment%20to%20give%20feedback%2C%20suggestions%2C%20and%20bug%20reports%20are%20welcome%21",
   },
   searchLabel: { fi: "Etsi kaupunkia tai aluetta", en: "Search a city or neighborhood" },
   searchPlaceholder: {
@@ -283,9 +283,7 @@ const messages = {
     fi: (current: number, total: number, description: string | null) =>
       description ? `Kuva ${current}/${total}. ${description}` : `Kuva ${current}/${total}`,
     en: (current: number, total: number, description: string | null) =>
-      description
-        ? `Photo ${current} of ${total}. ${description}`
-        : `Photo ${current} of ${total}`,
+      description ? `Photo ${current} of ${total}. ${description}` : `Photo ${current} of ${total}`,
   },
   photoTooLarge: {
     fi: "Kuva on liian suuri. Enimmäiskoko on 4 Mt.",
@@ -483,10 +481,8 @@ const messages = {
   signInTitle: { fi: "Kirjaudu", en: "Sign in" },
   signInGoogle: { fi: "Google sign in", en: "Google sign in" },
   signInNotAdmin: {
-    fi: (email: string) =>
-      `Sähköpostiosoitteellasi ${email} ei ole ylläpito-oikeutta.`,
-    en: (email: string) =>
-      `Your email address ${email} does not have admin access.`,
+    fi: (email: string) => `Sähköpostiosoitteellasi ${email} ei ole ylläpito-oikeutta.`,
+    en: (email: string) => `Your email address ${email} does not have admin access.`,
   },
   signInUnavailable: {
     fi: "Google-kirjautuminen ei ole vielä käytössä.",
@@ -549,10 +545,8 @@ const messages = {
   },
   adminPublish: { fi: "Julkaise", en: "Publish" },
   adminPublishConfirm: {
-    fi: (name: string) =>
-      `Julkaistaanko “${name}”? Käyttäjälle lähetetään sähköposti.`,
-    en: (name: string) =>
-      `Publish “${name}”? An email will be sent to the visitor.`,
+    fi: (name: string) => `Julkaistaanko “${name}”? Käyttäjälle lähetetään sähköposti.`,
+    en: (name: string) => `Publish “${name}”? An email will be sent to the visitor.`,
   },
   adminUnpublish: { fi: "Piilota", en: "Unpublish" },
   adminUnpublishConfirm: {
@@ -567,10 +561,8 @@ const messages = {
   adminSubmittedAt: { fi: "Lähetetty", en: "Submitted" },
   adminDelete: { fi: "Poista", en: "Delete" },
   adminDeleteConfirm: {
-    fi: (name: string) =>
-      `Poistetaanko “${name}” pysyvästi? Tätä ei voi perua.`,
-    en: (name: string) =>
-      `Delete “${name}” permanently? This cannot be undone.`,
+    fi: (name: string) => `Poistetaanko “${name}” pysyvästi? Tätä ei voi perua.`,
+    en: (name: string) => `Delete “${name}” permanently? This cannot be undone.`,
   },
   adminDeleteError: {
     fi: "Poisto epäonnistui. Kokeile uudelleen.",
@@ -629,11 +621,8 @@ const messages = {
   courtNotFound: { fi: "Kenttää ei löydy", en: "Court not found" },
 };
 
-type Resolve<T> = T extends Pair<infer U>
-  ? U
-  : T extends object
-    ? { [K in keyof T]: Resolve<T[K]> }
-    : T;
+type Resolve<T> =
+  T extends Pair<infer U> ? U : T extends object ? { [K in keyof T]: Resolve<T[K]> } : T;
 
 export type Copy = Resolve<typeof messages> & { locale: Locale };
 
@@ -651,10 +640,7 @@ function resolveMessages(node: unknown, locale: Locale): unknown {
   if (isPair(node)) return node[locale];
   if (node && typeof node === "object") {
     return Object.fromEntries(
-      Object.entries(node).map(([key, value]) => [
-        key,
-        resolveMessages(value, locale),
-      ]),
+      Object.entries(node).map(([key, value]) => [key, resolveMessages(value, locale)]),
     );
   }
   return node;

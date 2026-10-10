@@ -3,7 +3,7 @@
 import { Lightbulb, Unlock } from "lucide-react";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import type { Copy } from "@/lib/copy";
-import { formatStatus, isAwaitingEmail, isPendingCourt, type ExplorerCourt } from "@/lib/courts";
+import { type ExplorerCourt, formatStatus, isAwaitingEmail, isPendingCourt } from "@/lib/courts";
 
 export function CourtBadges({ court }: { court: ExplorerCourt }) {
   const copy = useCopy();

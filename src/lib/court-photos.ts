@@ -3,17 +3,17 @@ import { z } from "zod";
 import { getBasketballCourt } from "@/lib/catalog";
 import { COURT_PHOTO_MAX_BYTES } from "@/lib/constants";
 import {
+  type CourtImageType,
   compressCourtImage,
   courtImageExtension,
   deleteCourtImage,
   readCourtImage,
   readCourtThumbnail,
   saveCourtImage,
-  type CourtImageType,
 } from "@/lib/court-image-store";
-import { courtHref, courtPath, type Court } from "@/lib/courts";
-import { getSubmittedCourt } from "@/lib/submitted-courts";
+import { type Court, courtHref, courtPath } from "@/lib/courts";
 import { withDb } from "@/lib/db";
+import { getSubmittedCourt } from "@/lib/submitted-courts";
 
 const MAX_PHOTOS = 12;
 
@@ -96,9 +96,7 @@ export async function listAdminCourtsWithPhotos(): Promise<AdminCourtWithPhotos[
   );
 }
 
-export async function listCourtPhotos(
-  court: Pick<Court, "id" | "source">,
-): Promise<CourtPhoto[]> {
+export async function listCourtPhotos(court: Pick<Court, "id" | "source">): Promise<CourtPhoto[]> {
   const rows = await withDb((sql) => {
     return sql<{ id: string; description: string | null }[]>`
       SELECT id, description

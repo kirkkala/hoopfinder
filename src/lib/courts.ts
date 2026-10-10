@@ -1,7 +1,7 @@
-import { getCopy, type Copy } from "@/lib/copy";
+import { type Copy, getCopy } from "@/lib/copy";
 import type { Coordinates } from "@/lib/geo";
 import { haversineKm } from "@/lib/geo";
-import { parseOsmCourtId, type CourtSourceId } from "@/lib/sources";
+import { type CourtSourceId, parseOsmCourtId } from "@/lib/sources";
 
 export type Court = {
   id: string;
@@ -111,10 +111,7 @@ export const COURT_MATCH_KM = 0.08;
 /** Unconfirmed pins may sit nearby, but not on top of each other. */
 export const SAME_SPOT_KM = 0.015;
 
-export function isTooCloseToCourt(
-  point: Coordinates,
-  courts: Coordinates[],
-): boolean {
+export function isTooCloseToCourt(point: Coordinates, courts: Coordinates[]): boolean {
   return courts.some(
     (court) => haversineKm(point, { lat: court.lat, lon: court.lon }) < COURT_MATCH_KM,
   );
@@ -164,14 +161,8 @@ function isNearDuplicate(existing: Court, candidate: Court): boolean {
   );
 }
 
-export function courtName(
-  court: Pick<Court, "name" | "nameFi">,
-  copy: Copy = getCopy(),
-): string {
-  const title =
-    copy.locale === "en"
-      ? court.name || court.nameFi
-      : court.nameFi || court.name;
+export function courtName(court: Pick<Court, "name" | "nameFi">, copy: Copy = getCopy()): string {
+  const title = copy.locale === "en" ? court.name || court.nameFi : court.nameFi || court.name;
   if (isGenericCourtName(title)) return copy.unnamedCourt;
   return title;
 }
@@ -204,9 +195,7 @@ export function withDistance(
   return courts
     .map((court) => ({
       ...court,
-      distanceKm: origin
-        ? haversineKm(origin, { lat: court.lat, lon: court.lon })
-        : null,
+      distanceKm: origin ? haversineKm(origin, { lat: court.lat, lon: court.lon }) : null,
     }))
     .sort((a, b) => {
       if (a.distanceKm !== null && b.distanceKm !== null) {
@@ -301,10 +290,7 @@ export function formatAdmin(value: string, copy: Copy = getCopy()): string {
   return formatCodedLabel(value, copy.admins as Record<string, string>);
 }
 
-export function formatReportedBoolean(
-  value: boolean | null,
-  copy: Copy = getCopy(),
-): string {
+export function formatReportedBoolean(value: boolean | null, copy: Copy = getCopy()): string {
   if (value === true) return copy.yes;
   if (value === false) return copy.no;
   return copy.notReported;
@@ -331,9 +317,7 @@ export function isPendingCourt(
   return court.source === "pending";
 }
 
-export function formatAddress(
-  parts: Array<string | null | undefined>,
-): string {
+export function formatAddress(parts: Array<string | null | undefined>): string {
   return parts.filter((part): part is string => Boolean(part)).join(", ");
 }
 
@@ -419,9 +403,7 @@ export function courtIdFromParam(value: string): string | null {
 }
 
 /** `"index"` → home; `{ id }` → court; `null` → 404. */
-export function parseCourtPath(
-  segments: string[],
-): "index" | { id: string } | null {
+export function parseCourtPath(segments: string[]): "index" | { id: string } | null {
   if (segments.length === 0) return "index";
   if (segments[0] === "submitted") {
     if (segments.length === 1) return "index";
@@ -430,16 +412,12 @@ export function parseCourtPath(
       : null;
   }
   if (segments.length === 1) {
-    return segments[0] === "lipas" ||
-      segments[0] === "osm" ||
-      isOsmType(segments[0])
+    return segments[0] === "lipas" || segments[0] === "osm" || isOsmType(segments[0])
       ? "index"
       : null;
   }
   if (segments[0] === "lipas") {
-    return segments.length === 2 && /^\d+$/.test(segments[1])
-      ? { id: segments[1] }
-      : null;
+    return segments.length === 2 && /^\d+$/.test(segments[1]) ? { id: segments[1] } : null;
   }
   if (segments[0] === "osm") {
     if (segments.length === 2 && isOsmType(segments[1])) return "index";

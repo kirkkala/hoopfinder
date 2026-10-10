@@ -9,8 +9,7 @@ export function BuyMeCoffeeButton({
   className?: string;
   size?: "sm" | "md";
 }) {
-  const sizeClass =
-    size === "md" ? "h-[2.25rem] wide:h-[2.5rem]" : "h-[2rem]";
+  const sizeClass = size === "md" ? "h-[2.25rem] wide:h-[2.5rem]" : "h-[2rem]";
 
   return (
     <a
