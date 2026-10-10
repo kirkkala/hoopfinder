@@ -13,6 +13,7 @@ import { BuyMeCoffeeButton } from "@/components/brand/BuyMeCoffeeButton";
 import { IntroDialog } from "@/components/brand/IntroDialog";
 import { LanguageToggle } from "@/components/brand/LanguageToggle";
 import { useCopy } from "@/components/brand/LocaleProvider";
+import { MenuItem, MenuItemList } from "@/components/brand/MenuItem";
 import { ShowAnnouncementButton, useDatabaseUnavailable } from "@/components/brand/SiteBanner";
 import type { FetchedAtBySource } from "@/lib/catalog";
 import { APP_VERSION } from "@/lib/constants";
@@ -270,45 +271,18 @@ function HeaderMenu({
                   <LanguageToggle stretch />
                 </div>
               </div>
-              <ul className="border-y border-white/10">
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setOpen(false);
-                      onOpenInfo();
-                    }}
-                    aria-haspopup="dialog"
-                    aria-expanded={introOpen}
-                    className="flex w-full items-center px-4 py-3.5 text-left text-base font-medium text-white outline-none hover:bg-white/5 focus-visible:bg-white/5 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-gold/60"
-                  >
-                    {copy.info}
-                  </button>
-                </li>
+              <MenuItemList onNavigate={() => setOpen(false)}>
+                <MenuItem onClick={onOpenInfo} aria-haspopup="dialog" aria-expanded={introOpen}>
+                  {copy.info}
+                </MenuItem>
                 {databaseUnavailable ? null : (
-                  <li>
-                    <AppLink
-                      href="/add"
-                      prefetch
-                      className="flex w-full items-center gap-2 px-4 py-3.5 text-left text-base font-bold text-gold outline-none hover:bg-white/5 focus-visible:bg-white/5 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-gold/60"
-                    >
-                      {copy.addCourt}
-                    </AppLink>
-                  </li>
+                  <MenuItem href="/add" prefetch>
+                    {copy.addCourt}
+                  </MenuItem>
                 )}
-                {isAdmin ? (
-                  <li>
-                    <AppLink
-                      href="/admin"
-                      onClick={() => setOpen(false)}
-                      className="flex w-full items-center px-4 py-3.5 text-left text-base font-medium text-white outline-none hover:bg-white/5 focus-visible:bg-white/5 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-gold/60"
-                    >
-                      {copy.adminNav}
-                    </AppLink>
-                  </li>
-                ) : null}
-                <AuthControl onAction={() => setOpen(false)} />
-              </ul>
+                {isAdmin ? <MenuItem href="/admin">{copy.adminNav}</MenuItem> : null}
+                <AuthControl />
+              </MenuItemList>
               <div className="px-4">
                 <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1 pt-4">
                   <BuyMeCoffeeButton />
