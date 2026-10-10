@@ -112,8 +112,8 @@ const messages = {
   giveFeedback: { fi: "Anna palautetta", en: "Give feedback" },
   feedbackTitle: { fi: "Anna palautetta", en: "Give feedback" },
   feedbackLead: {
-    fi: "Bugit, toiveet ja muu palaute auttavat tekemään palvelusta paremman. Kerro vapaasti, mikä toimii ja mikä ei.",
-    en: "Bug reports, ideas, and other feedback help make the service better. Say what works and what does not.",
+    fi: "Toiveet, bugiraportit ja muu palaute auttaa parantamaan Hoop Finderiä. Kerro vapaasti, mikä toimii ja mikä ei.",
+    en: "Ideas, bug reports, and other feedback help improve Hoop Finder. Say what works and what does not.",
   },
   feedbackFieldTitle: { fi: "Otsikko", en: "Title" },
   feedbackFieldMessage: { fi: "Viesti", en: "Message" },
