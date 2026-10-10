@@ -28,6 +28,7 @@ import {
   Unlock,
   UserCog,
 } from "lucide-react";
+import dynamic from "next/dynamic";
 import { type ReactNode, useEffect, useState } from "react";
 import { AdminCourtEditor } from "@/components/admin/AdminCourtEditor";
 import { useIsAdmin } from "@/components/admin/AdminProvider";
@@ -38,7 +39,6 @@ import { AppLink } from "@/components/brand/AppLink";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { CourtDistance } from "@/components/CourtDistance";
 import { CourtGallery } from "@/components/court/CourtGallery";
-import { CourtMiniMap } from "@/components/court/CourtMiniMap";
 import { LocateMeButton, locationHint } from "@/components/LocateMeButton";
 import type { FetchedAtBySource } from "@/lib/catalog";
 import type { Copy } from "@/lib/copy";
@@ -63,6 +63,20 @@ import { haversineKm } from "@/lib/geo";
 import { useLocationStatus } from "@/lib/origin";
 import { courtSource, OSM_COPYRIGHT_URL, sourceListingUrl } from "@/lib/sources";
 import { formatFetchedAt } from "@/lib/time";
+
+function MiniMapPlaceholder() {
+  return (
+    <section className="px-3 py-4" aria-hidden>
+      <div className="h-5" />
+      <div className="mt-2 h-80 rounded-xl bg-white/5" />
+    </section>
+  );
+}
+
+const CourtMiniMap = dynamic(
+  () => import("@/components/court/CourtMiniMap").then((mod) => mod.CourtMiniMap),
+  { ssr: false, loading: MiniMapPlaceholder },
+);
 
 export function CourtDetails({
   court,
