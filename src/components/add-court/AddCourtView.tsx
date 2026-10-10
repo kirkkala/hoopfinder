@@ -1,10 +1,11 @@
 "use client";
 
-import { CircleHelp, LoaderCircle, X } from "lucide-react";
+import { CircleHelp, LoaderCircle, Pencil, X } from "lucide-react";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/navigation";
 import { type FormEvent, type ReactNode, type RefObject, useEffect, useRef, useState } from "react";
 import {
+  ADD_COURT_SECTION_HEADING_CLASS,
   type AddCourtDetails,
   AddCourtFields,
   addCourtDetailsDirty,
@@ -39,6 +40,9 @@ const TEXT_BUTTON_CLASS =
 const GOLD_BUTTON_CLASS =
   "rounded-full bg-gold px-3 py-1.5 text-sm font-bold text-asphalt outline-none hover:bg-white focus-visible:ring-2 focus-visible:ring-gold/60";
 
+const CONTINUE_BUTTON_CLASS =
+  "w-full rounded-full bg-gold px-4 py-2.5 text-sm font-bold text-asphalt outline-none hover:bg-white focus-visible:ring-2 focus-visible:ring-gold/60";
+
 const MAP_CHROME_OFFSET = "calc(max(0.75rem, env(safe-area-inset-top)) + 4.25rem)";
 
 export function AddCourtView({
@@ -59,6 +63,8 @@ export function AddCourtView({
   const [addressLoading, setAddressLoading] = useState(false);
   const addressEdited = useRef(false);
   const [email, setEmail] = useState("");
+  const [formStep, setFormStep] = useState<"basics" | "details">("basics");
+  const [detailsAtEnd, setDetailsAtEnd] = useState(false);
   const [greeting, setGreeting] = useState("");
   const [details, setDetails] = useState<AddCourtDetails>(EMPTY_ADD_COURT_DETAILS);
   const [error, setError] = useState<string | null>(null);
@@ -71,6 +77,10 @@ export function AddCourtView({
   const [formCollapsed, setFormCollapsed] = useState(false);
   const [discardConfirm, setDiscardConfirm] = useState(false);
   const showFormRef = useRef<HTMLButtonElement>(null);
+  const formRef = useRef<HTMLFormElement>(null);
+  const nameInputRef = useRef<HTMLInputElement>(null);
+  const detailsHeadingRef = useRef<HTMLParagraphElement>(null);
+  const formStepRef = useRef(formStep);
 
   useEffect(() => {
     if (!infoOpen) return;
@@ -81,6 +91,40 @@ export function AddCourtView({
     if (draftStep !== "form" || !formCollapsed || discardConfirm) return;
     showFormRef.current?.focus();
   }, [discardConfirm, draftStep, formCollapsed]);
+
+  useEffect(() => {
+    const previous = formStepRef.current;
+    formStepRef.current = formStep;
+    if (draftStep !== "form") return;
+    formRef.current?.parentElement?.scrollTo({ top: 0 });
+    if (previous === formStep) return;
+    if (formStep === "details") {
+      detailsHeadingRef.current?.focus({ preventScroll: true });
+      return;
+    }
+    nameInputRef.current?.focus({ preventScroll: true });
+  }, [draftStep, formStep]);
+
+  useEffect(() => {
+    if (formStep !== "details" || formCollapsed || draftStep !== "form") return;
+    const scroller = formRef.current?.parentElement;
+    const form = formRef.current;
+    if (!scroller || !form) return;
+    function atEnd() {
+      const node = formRef.current?.parentElement;
+      if (!node) return;
+      setDetailsAtEnd(node.scrollTop + node.clientHeight >= node.scrollHeight - 8);
+    }
+    atEnd();
+    scroller.addEventListener("scroll", atEnd, { passive: true });
+    const observer = new ResizeObserver(atEnd);
+    observer.observe(scroller);
+    observer.observe(form);
+    return () => {
+      scroller.removeEventListener("scroll", atEnd);
+      observer.disconnect();
+    };
+  }, [draftStep, formCollapsed, formStep]);
 
   useEffect(() => {
     const controller = new AbortController();
@@ -103,6 +147,7 @@ export function AddCourtView({
     setAddress("");
     setAddressLoading(false);
     setEmail("");
+    setFormStep("basics");
     setGreeting("");
     setDetails(EMPTY_ADD_COURT_DETAILS);
     setError(null);
@@ -208,6 +253,11 @@ export function AddCourtView({
     if (!origin || locationStatus !== "granted") request();
   }
 
+  function backToBasics() {
+    setError(null);
+    setFormStep("basics");
+  }
+
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
     if (!draft || draftStep !== "form" || sending) return;
@@ -215,6 +265,14 @@ export function AddCourtView({
     if (typeof extra === "string") {
       setShowIssues(true);
       setError(extra);
+      return;
+    }
+    // The first step only checks the required fields. Save stays on the next step,
+    // after the court details, so Enter in the email field cannot send the court.
+    if (formStep === "basics") {
+      setShowIssues(false);
+      setError(null);
+      setFormStep("details");
       return;
     }
     setSending(true);
@@ -381,111 +439,161 @@ export function AddCourtView({
               )
             }
             footer={
-              <div className="flex flex-col items-end gap-2">
+              <div className="flex flex-col gap-2">
                 {error ? (
-                  <p role="alert" className="w-full text-sm text-red-400">
+                  <p role="alert" className="text-sm text-red-400">
                     {error}
                   </p>
                 ) : null}
-                <button
-                  type="submit"
-                  form="add-court-form"
-                  disabled={sending}
-                  className="rounded-full bg-gold px-3 py-1.5 text-sm font-bold text-asphalt hover:bg-white disabled:cursor-default disabled:opacity-60"
-                >
-                  {sending ? copy.addCourtSending : copy.addCourtSubmit}
-                </button>
+                {formStep === "basics" ? (
+                  <button type="submit" form="add-court-form" className={CONTINUE_BUTTON_CLASS}>
+                    {copy.addCourtContinue}
+                  </button>
+                ) : (
+                  <div className="flex items-center justify-between gap-3">
+                    <p aria-live="polite" className="min-w-0 text-xs leading-snug text-ink-muted">
+                      {detailsAtEnd ? copy.addCourtDetailsReady : copy.addCourtDetailsMore}
+                    </p>
+                    <button
+                      type="submit"
+                      form="add-court-form"
+                      disabled={sending}
+                      className="shrink-0 rounded-full bg-gold px-3 py-1.5 text-sm font-bold text-asphalt hover:bg-white disabled:cursor-default disabled:opacity-60"
+                    >
+                      {sending ? copy.addCourtSending : copy.addCourtSubmit}
+                    </button>
+                  </div>
+                )}
               </div>
             }
           >
-            <form id="add-court-form" onSubmit={handleSubmit}>
-              <p className="text-xs text-ink-muted">
-                {draft.lat.toFixed(5)}, {draft.lon.toFixed(5)}
-              </p>
-              <label className="mt-3 block">
-                <FieldLabel required invalid={issues.name}>
-                  {copy.addCourtName}
-                </FieldLabel>
-                <input
-                  aria-required="true"
-                  aria-invalid={issues.name}
-                  maxLength={120}
-                  value={name}
-                  onChange={(event) => {
-                    setName(event.target.value);
-                    setError(null);
-                  }}
-                  placeholder={copy.addCourtNamePlaceholder}
-                  className={INPUT_CLASS}
-                  autoComplete="off"
-                />
-              </label>
-              <label className="mt-2.5 block">
-                <FieldLabel required invalid={issues.address}>
-                  {copy.addCourtAddress}
-                </FieldLabel>
-                <span className="relative block">
-                  <input
-                    aria-required="true"
-                    aria-invalid={issues.address}
-                    maxLength={200}
-                    value={address}
-                    onChange={(event) => {
-                      addressEdited.current = true;
-                      setAddress(event.target.value);
-                      setError(null);
-                    }}
-                    placeholder={
-                      addressLoading ? copy.addCourtAddressLoading : copy.addCourtAddressPlaceholder
-                    }
-                    className={`${INPUT_CLASS} ${addressLoading ? "pr-10" : ""}`}
-                    autoComplete="street-address"
-                  />
-                  {addressLoading ? (
-                    <LoaderCircle
-                      className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 animate-spin text-gold"
-                      aria-label={copy.addCourtAddressLoading}
+            <form ref={formRef} id="add-court-form" onSubmit={handleSubmit}>
+              {formStep === "basics" ? (
+                <>
+                  <p className={ADD_COURT_SECTION_HEADING_CLASS}>{copy.addCourtBasicsHeading}</p>
+                  <p className="mt-2 text-xs text-ink-muted">
+                    {draft.lat.toFixed(5)}, {draft.lon.toFixed(5)}
+                  </p>
+                  <label className="mt-3 block">
+                    <FieldLabel required invalid={issues.name}>
+                      {copy.addCourtName}
+                    </FieldLabel>
+                    <input
+                      ref={nameInputRef}
+                      aria-required="true"
+                      aria-invalid={issues.name}
+                      maxLength={120}
+                      value={name}
+                      onChange={(event) => {
+                        setName(event.target.value);
+                        setError(null);
+                      }}
+                      placeholder={copy.addCourtNamePlaceholder}
+                      className={INPUT_CLASS}
+                      autoComplete="off"
                     />
-                  ) : null}
-                </span>
-              </label>
-              <label className="mt-2.5 block">
-                <FieldLabel required invalid={issues.email}>
-                  {copy.addCourtEmail}
-                </FieldLabel>
-                <input
-                  aria-required="true"
-                  aria-invalid={issues.email}
-                  type="email"
-                  inputMode="email"
-                  maxLength={254}
-                  value={email}
-                  onChange={(event) => {
-                    setEmail(event.target.value);
-                    setError(null);
-                  }}
-                  className={INPUT_CLASS}
-                  autoComplete="email"
-                />
-                <span className="mt-1 block text-sm text-ink-muted">{copy.addCourtEmailHelp}</span>
-                <span className="mt-1 block text-xs text-ink-muted">
-                  {copy.addCourtEmailUpdates}
-                </span>
-              </label>
-              <AddCourtFields details={details} onChange={setDetails} />
-              <label className="mt-2.5 block">
-                <span className="mb-1 block text-sm text-ink/85">{copy.addCourtGreeting}</span>
-                <textarea
-                  value={greeting}
-                  rows={3}
-                  maxLength={1000}
-                  onChange={(event) => setGreeting(event.target.value)}
-                  className="w-full rounded-xl border border-white/25 bg-asphalt px-3 py-2 text-base text-white outline-none placeholder:text-white/55 focus:border-gold/50 focus:ring-2 focus:ring-gold/60 sm:text-sm"
-                />
-                <span className="mt-1 block text-xs text-ink-muted">
-                  {copy.addCourtGreetingHint}
-                </span>
-              </label>
+                  </label>
+                  <label className="mt-2.5 block">
+                    <FieldLabel required invalid={issues.address}>
+                      {copy.addCourtAddress}
+                    </FieldLabel>
+                    <span className="relative block">
+                      <input
+                        aria-required="true"
+                        aria-invalid={issues.address}
+                        maxLength={200}
+                        value={address}
+                        onChange={(event) => {
+                          addressEdited.current = true;
+                          setAddress(event.target.value);
+                          setError(null);
+                        }}
+                        placeholder={
+                          addressLoading
+                            ? copy.addCourtAddressLoading
+                            : copy.addCourtAddressPlaceholder
+                        }
+                        className={`${INPUT_CLASS} ${addressLoading ? "pr-10" : ""}`}
+                        autoComplete="street-address"
+                      />
+                      {addressLoading ? (
+                        <LoaderCircle
+                          className="pointer-events-none absolute top-1/2 right-3 size-4 -translate-y-1/2 animate-spin text-gold"
+                          aria-label={copy.addCourtAddressLoading}
+                        />
+                      ) : null}
+                    </span>
+                  </label>
+                  <label className="mt-2.5 block">
+                    <FieldLabel required invalid={issues.email}>
+                      {copy.addCourtEmail}
+                    </FieldLabel>
+                    <input
+                      aria-required="true"
+                      aria-invalid={issues.email}
+                      type="email"
+                      inputMode="email"
+                      maxLength={254}
+                      value={email}
+                      onChange={(event) => {
+                        setEmail(event.target.value);
+                        setError(null);
+                      }}
+                      className={INPUT_CLASS}
+                      autoComplete="email"
+                    />
+                    <span className="mt-1 block text-sm text-ink-muted">
+                      {copy.addCourtEmailHelp}
+                    </span>
+                    <span className="mt-1 block text-xs text-ink-muted">
+                      {copy.addCourtEmailUpdates}
+                    </span>
+                  </label>
+                </>
+              ) : (
+                <>
+                  <div>
+                    <p className={ADD_COURT_SECTION_HEADING_CLASS}>{copy.addCourtBasicsHeading}</p>
+                    <div className="mt-2 flex items-center justify-between gap-3 border-b border-white/10 pb-3">
+                      <div className="min-w-0">
+                        <p className="truncate text-sm font-bold text-ink/85">{name.trim()}</p>
+                        <p className="truncate text-sm text-ink/85">{address.trim()}</p>
+                        <p className="truncate text-sm text-ink/85">{email.trim()}</p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={backToBasics}
+                        aria-label={copy.addCourtEditBasics}
+                        className="grid size-11 shrink-0 place-items-center rounded-full text-ink/80 outline-none hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-gold/60"
+                      >
+                        <Pencil aria-hidden className="size-4" />
+                      </button>
+                    </div>
+                  </div>
+                  <AddCourtFields
+                    flush
+                    title={copy.addCourtDetailsHeading}
+                    hint={copy.addCourtDetailsLead}
+                    headingRef={detailsHeadingRef}
+                    details={details}
+                    onChange={setDetails}
+                  />
+                  <div className="mt-6">
+                    <p id="add-court-greeting-heading" className={ADD_COURT_SECTION_HEADING_CLASS}>
+                      {copy.addCourtGreeting}
+                    </p>
+                    <p className="mt-1 text-sm text-ink-muted">{copy.addCourtGreetingHint}</p>
+                    <textarea
+                      aria-labelledby="add-court-greeting-heading"
+                      value={greeting}
+                      rows={3}
+                      maxLength={1000}
+                      onChange={(event) => setGreeting(event.target.value)}
+                      className="mt-2 w-full rounded-xl border border-white/25 bg-asphalt px-3 py-2 text-base text-white outline-none placeholder:text-white/55 focus:border-gold/50 focus:ring-2 focus:ring-gold/60 sm:text-sm"
+                    />
+                  </div>
+                </>
+              )}
             </form>
           </AddCourtFormPanel>
         ) : mapAlert && alertCopy ? (

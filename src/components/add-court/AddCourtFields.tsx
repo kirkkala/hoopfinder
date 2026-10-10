@@ -1,6 +1,7 @@
 "use client";
 
 import { ChevronDown } from "lucide-react";
+import type { Ref } from "react";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import type { Copy } from "@/lib/copy";
 import {
@@ -14,6 +15,9 @@ import {
   SURFACE_CODES,
   WATER_POINT_CODES,
 } from "@/lib/courts";
+
+export const ADD_COURT_SECTION_HEADING_CLASS =
+  "font-display text-lg tracking-wide text-gold outline-none";
 
 const SELECT_CLASS =
   "h-11 w-full appearance-none rounded-xl border border-white/25 bg-asphalt py-0 pr-10 pl-3 text-base text-white outline-none focus:border-gold/50 focus:ring-2 focus:ring-gold/60 sm:text-sm";
@@ -184,7 +188,7 @@ export function FieldLabel({
 }) {
   const copy = useCopy();
   return (
-    <span className={`mb-1 block text-sm ${invalid ? "text-red-400" : "text-ink/85"}`}>
+    <span className={`mb-1 block text-sm font-bold ${invalid ? "text-red-400" : "text-ink/85"}`}>
       {children}
       {required ? (
         <>
@@ -210,9 +214,18 @@ function parseMeasure(value: string, max: number): number | null | "invalid" {
 export function AddCourtFields({
   details,
   onChange,
+  flush = false,
+  hint,
+  title,
+  headingRef,
 }: {
   details: AddCourtDetails;
   onChange: (next: AddCourtDetails) => void;
+  /** Drops the top divider when these fields open a new step. */
+  flush?: boolean;
+  hint?: string;
+  title?: string;
+  headingRef?: Ref<HTMLParagraphElement>;
 }) {
   const copy = useCopy();
   function patch(partial: Partial<AddCourtDetails>) {
@@ -226,32 +239,47 @@ export function AddCourtFields({
   ] as const;
 
   return (
-    <div className="mt-5 border-t border-white/10 pt-4">
-      <p className="font-display text-lg tracking-wide text-gold">{copy.courtFacts}</p>
+    <div className={flush ? "mt-4" : "mt-5 border-t border-white/10 pt-4"}>
+      <p
+        ref={headingRef}
+        tabIndex={headingRef ? -1 : undefined}
+        className={ADD_COURT_SECTION_HEADING_CLASS}
+      >
+        {title ?? copy.courtFacts}
+      </p>
+      {hint ? <p className="mt-1 text-sm text-ink-muted">{hint}</p> : null}
 
-      <ChoiceSelect
+      <ChipChoices
+        label={copy.surface}
+        value={details.surfaceMaterial}
+        options={COMMON_SURFACE_CODES.map((code) => ({
+          value: code,
+          label: copy.surfaces[code],
+        }))}
+        onChange={(surfaceMaterial) =>
+          patch({ surfaceMaterial: surfaceMaterial as AddCourtDetails["surfaceMaterial"] })
+        }
+      />
+      <ChipChoices
         label={copy.status}
         value={details.courtStatus}
-        emptyLabel={copy.addCourtUnknown}
         options={statusOptions.map(([value, label]) => ({ value, label }))}
         onChange={(courtStatus) =>
           patch({ courtStatus: courtStatus as AddCourtDetails["courtStatus"] })
         }
       />
-      <ChoiceSelect
+      <ChipChoices
         label={copy.fieldType}
         value={details.fieldType}
-        emptyLabel={copy.addCourtUnknown}
         options={FIELD_TYPE_CODES.map((code) => ({
           value: code,
           label: copy.fieldTypes[code],
         }))}
         onChange={(fieldType) => patch({ fieldType })}
       />
-      <ChoiceSelect
+      <ChipChoices
         label={copy.hoopHeight}
         value={details.hoopHeight}
-        emptyLabel={copy.addCourtUnknown}
         options={HOOP_HEIGHT_CODES.map((code) => ({
           value: code,
           label: copy.hoopHeights[code],
@@ -261,7 +289,6 @@ export function AddCourtFields({
         }
       />
 
-      <p className="mt-6 text-xs text-ink-muted">{copy.addCourtYesNoHint}</p>
       <YesNoField
         label={copy.adjustableRim}
         value={details.heightAdjustable}
@@ -301,19 +328,6 @@ export function AddCourtFields({
         label={copy.lightingNotes}
         value={details.lightingInfo}
         onChange={(lightingInfo) => patch({ lightingInfo })}
-      />
-
-      <ChoiceSelect
-        label={copy.surface}
-        value={details.surfaceMaterial}
-        emptyLabel={copy.addCourtUnknown}
-        options={COMMON_SURFACE_CODES.map((code) => ({
-          value: code,
-          label: copy.surfaces[code],
-        }))}
-        onChange={(surfaceMaterial) =>
-          patch({ surfaceMaterial: surfaceMaterial as AddCourtDetails["surfaceMaterial"] })
-        }
       />
 
       <div className="mt-2.5 grid grid-cols-3 gap-2">
@@ -382,6 +396,46 @@ export function AddCourtFields({
   );
 }
 
+function choiceButtonClass(selected: boolean) {
+  return `rounded-full border px-2.5 py-1 text-xs font-bold whitespace-nowrap outline-none focus-visible:ring-2 focus-visible:ring-gold/60 ${
+    selected ? "border-gold bg-gold text-asphalt" : "border-white/15 text-ink/70 hover:text-white"
+  }`;
+}
+
+function ChipChoices({
+  label,
+  value,
+  options,
+  onChange,
+}: {
+  label: string;
+  value: string;
+  options: { value: string; label: string }[];
+  onChange: (value: string) => void;
+}) {
+  return (
+    <fieldset className="mt-4 mb-6">
+      <legend className="mb-1.5 text-sm font-bold text-ink/85">{label}</legend>
+      <div className="flex flex-wrap gap-1.5">
+        {options.map((option) => {
+          const selected = value === option.value;
+          return (
+            <button
+              key={option.value}
+              type="button"
+              aria-pressed={selected}
+              onClick={() => onChange(selected ? "" : option.value)}
+              className={choiceButtonClass(selected)}
+            >
+              {option.label}
+            </button>
+          );
+        })}
+      </div>
+    </fieldset>
+  );
+}
+
 function YesNoField({
   label,
   value,
@@ -394,8 +448,8 @@ function YesNoField({
   const copy = useCopy();
   return (
     <div className="mt-2.5 flex items-center justify-between gap-3">
-      <span className="text-sm text-ink/85">{label}</span>
-      <span className="flex shrink-0 rounded-full border border-white/15 p-0.5">
+      <span className="text-sm font-bold text-ink/85">{label}</span>
+      <span className="flex shrink-0 gap-1.5">
         {(
           [
             ["yes", copy.yes],
@@ -408,9 +462,7 @@ function YesNoField({
             aria-pressed={value === option}
             aria-label={`${label}: ${text}`}
             onClick={() => onChange(value === option ? "" : option)}
-            className={`rounded-full px-2.5 py-1 text-xs font-bold outline-none focus-visible:ring-2 focus-visible:ring-gold/60 ${
-              value === option ? "bg-gold text-asphalt" : "text-ink/70 hover:text-white"
-            }`}
+            className={choiceButtonClass(value === option)}
           >
             {text}
           </button>
@@ -435,7 +487,7 @@ function ChoiceSelect({
 }) {
   return (
     <label className="mt-2.5 block">
-      <span className="mb-1 block text-sm text-ink/85">{label}</span>
+      <span className="mb-1 block text-sm font-bold text-ink/85">{label}</span>
       <span className="relative block">
         <select
           value={value}
@@ -485,7 +537,7 @@ function TextField({
   return (
     // biome-ignore lint/a11y/noLabelWithoutControl: the label wraps the input or textarea in either branch
     <label className="mt-2.5 block">
-      <span className="mb-1 block text-sm text-ink/85">{label}</span>
+      <span className="mb-1 block text-sm font-bold text-ink/85">{label}</span>
       {multiline ? (
         <textarea
           value={value}
