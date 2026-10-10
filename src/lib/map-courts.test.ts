@@ -1,6 +1,8 @@
 import { afterEach, expect, test, vi } from "vitest";
 import { fetchMapCourts } from "./map-courts";
 
+const COURTS = "/api/courts?v=local";
+
 afterEach(() => {
   vi.unstubAllGlobals();
 });
@@ -11,7 +13,7 @@ test("shows pending pins with the catalog, and still shows the catalog when pend
   vi.stubGlobal(
     "fetch",
     vi.fn(async (url: string) => {
-      if (url === "/api/courts") return Response.json({ courts: catalog });
+      if (url === COURTS) return Response.json({ courts: catalog });
       if (url === "/api/submitted-courts") return Response.json({ courts: pending });
       return new Response("", { status: 404 });
     }),
@@ -22,7 +24,7 @@ test("shows pending pins with the catalog, and still shows the catalog when pend
   vi.stubGlobal(
     "fetch",
     vi.fn(async (url: string) => {
-      if (url === "/api/courts") return Response.json({ courts: catalog });
+      if (url === COURTS) return Response.json({ courts: catalog });
       return new Response("", { status: 503 });
     }),
   );
