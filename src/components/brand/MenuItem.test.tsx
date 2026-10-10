@@ -70,20 +70,34 @@ test("a page link is a regular item until that page is open", () => {
 test("an action item closes the menu and runs its action", () => {
   navigation.pathname = "/admin";
   const onNavigate = vi.fn();
+  const onSignOut = vi.fn();
+  render(
+    <MenuItemList onNavigate={onNavigate}>
+      <MenuItem onClick={onSignOut}>Sign out</MenuItem>
+    </MenuItemList>,
+  );
+
+  fireEvent.click(screen.getByRole("button", { name: "Sign out" }));
+  expect(onNavigate).toHaveBeenCalledOnce();
+  expect(onSignOut).toHaveBeenCalledOnce();
+});
+
+test("a dialog action leaves the menu open", () => {
+  const onNavigate = vi.fn();
   const onOpenInfo = vi.fn();
   render(
     <MenuItemList onNavigate={onNavigate}>
-      <MenuItem onClick={onOpenInfo} aria-haspopup="dialog" aria-expanded={false}>
+      <MenuItem keepOpen onClick={onOpenInfo} aria-haspopup="dialog" aria-expanded={false}>
         Info
       </MenuItem>
     </MenuItemList>,
   );
 
   const button = screen.getByRole("button", { name: "Info" });
-  expect(button).not.toHaveAttribute("aria-current");
-  expect(button.className).not.toContain("text-gold");
+  expect(button).toHaveAttribute("aria-haspopup", "dialog");
+  expect(button).toHaveAttribute("aria-expanded", "false");
 
   fireEvent.click(button);
-  expect(onNavigate).toHaveBeenCalledOnce();
+  expect(onNavigate).not.toHaveBeenCalled();
   expect(onOpenInfo).toHaveBeenCalledOnce();
 });

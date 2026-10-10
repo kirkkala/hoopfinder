@@ -11,8 +11,8 @@ const itemClass =
 
 type MenuItemBase = {
   children: ReactNode;
-  /** Extra content above the control, inside the same list item. */
   note?: ReactNode;
+  keepOpen?: boolean;
 };
 
 type MenuLinkItem = MenuItemBase & {
@@ -51,7 +51,7 @@ export function MenuItem(props: MenuLinkItem | MenuButtonItem) {
   }`;
 
   function activate(action?: () => void) {
-    closeMenu?.();
+    if (!props.keepOpen) closeMenu?.();
     action?.();
   }
 

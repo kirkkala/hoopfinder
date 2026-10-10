@@ -203,14 +203,10 @@ function HeaderMenu({
   const [open, setOpen] = useState(false);
 
   useEffect(() => {
-    if (introOpen) setOpen(false);
-  }, [introOpen]);
-
-  useEffect(() => {
     if (!open) return;
 
     function onKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key === "Escape" && !introOpen) setOpen(false);
     }
 
     const previousOverflow = document.body.style.overflow;
@@ -220,7 +216,7 @@ function HeaderMenu({
       document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", onKeyDown);
     };
-  }, [open]);
+  }, [open, introOpen]);
 
   return (
     <div className="relative flex items-center gap-1">
@@ -272,7 +268,12 @@ function HeaderMenu({
                 </div>
               </div>
               <MenuItemList onNavigate={() => setOpen(false)}>
-                <MenuItem onClick={onOpenInfo} aria-haspopup="dialog" aria-expanded={introOpen}>
+                <MenuItem
+                  keepOpen
+                  onClick={onOpenInfo}
+                  aria-haspopup="dialog"
+                  aria-expanded={introOpen}
+                >
                   {copy.info}
                 </MenuItem>
                 {databaseUnavailable ? null : (
