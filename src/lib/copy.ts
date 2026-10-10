@@ -82,7 +82,10 @@ const messages = {
     fi: "Motivaationa tähän oli saada isot ja pienet ihmiset ulos liikkumaan enemmän koripallon kanssa.",
     en: "The motivation for this is to get big and small humans out of the house and move more with a basketball.",
   },
-  supportDeveloper: { fi: "Tue kehittäjää", en: "Support the developer" },
+  supportDeveloper: {
+    fi: "Tue halutessasi kehitystä ja ylläpitoa.",
+    en: "Support development and maintenance, if you like.",
+  },
   okBroCta: { fi: "Tämä selvä!", en: "Understood!" },
   madeWith: { fi: "Made with", en: "Made with" },
   love: { fi: "love", en: "love" },
@@ -106,14 +109,37 @@ const messages = {
   },
   sourceListAnd: { fi: " ja ", en: " and " },
   sourceCodeOn: { fi: "Lähdekoodi", en: "Source code" },
-  feedback: { fi: "Palaute", en: "Feedback" },
-  feedbackSubject: {
-    fi: "Palaute%20hoopfinder.fi%20-%20palvelusta",
-    en: "Feedback%20from%20hoopfinder.fi%20-%20service",
+  giveFeedback: { fi: "Anna palautetta", en: "Give feedback" },
+  feedbackTitle: { fi: "Anna palautetta", en: "Give feedback" },
+  feedbackLead: {
+    fi: "Toiveet, bugiraportit ja muu palaute auttaa parantamaan Hoop Finderiä. Kerro vapaasti, mikä toimii ja mikä ei.",
+    en: "Ideas, bug reports, and other feedback help improve Hoop Finder. Say what works and what does not.",
   },
-  feedbackBody: {
-    fi: "Kiitos%20jos%20otat%20hetken%20antaaksesi%20palautetta%20palvelusta%2C%20kiitokset%2C%20kehitysehdotukset%20ja%20bugiraportit%20on%20tervetulleita%21",
-    en: "Thank%20you%20if%20you%20take%20a%20moment%20to%20give%20feedback%2C%20suggestions%2C%20and%20bug%20reports%20are%20welcome%21",
+  feedbackFieldTitle: { fi: "Otsikko", en: "Title" },
+  feedbackFieldMessage: { fi: "Viesti", en: "Message" },
+  feedbackFieldEmail: { fi: "Sähköposti", en: "Email" },
+  feedbackEmailHint: {
+    fi: "Vapaaehtoinen. Vain jos haluat vastauksen. Osoitetta ei näytetä muualla palvelussa.",
+    en: "Optional. Only if you want a reply. The address is not shown anywhere else in the service.",
+  },
+  feedbackRequiredMark: { fi: "pakollinen", en: "required" },
+  feedbackSend: { fi: "Lähetä palaute", en: "Send feedback" },
+  feedbackSending: { fi: "Lähetetään…", en: "Sending…" },
+  feedbackThanks: {
+    fi: "Kiitos, palaute on toimitettu kehittäjälle.",
+    en: "Thanks, the feedback has been sent to the developer.",
+  },
+  feedbackInvalid: {
+    fi: "Otsikko ja viesti ovat pakollisia.",
+    en: "The title and message are required.",
+  },
+  feedbackRateLimited: {
+    fi: "Tältä yhteydeltä tuli vähän liikaa viestejä. Kokeile myöhemmin uudelleen.",
+    en: "A few too many messages came from this connection. Try again later.",
+  },
+  feedbackUnavailable: {
+    fi: "Lähetys ei onnistunut. Kokeile hetken päästä uudelleen.",
+    en: "Could not send it. Try again in a moment.",
   },
   searchLabel: { fi: "Etsi kaupunkia tai aluetta", en: "Search a city or neighborhood" },
   searchPlaceholder: {
@@ -509,6 +535,21 @@ const messages = {
     fi: "Kirjautuminen epäonnistui. Yritä uudelleen.",
     en: "Sign-in failed. Try again.",
   },
+  adminFeedbackTitle: { fi: "Palaute", en: "Feedback" },
+  adminFeedbackEmpty: { fi: "Ei vielä palautetta.", en: "No feedback yet." },
+  adminFeedbackCount: {
+    fi: (count: number) => (count === 1 ? "1 viesti" : `${count} viestiä`),
+    en: (count: number) => (count === 1 ? "1 message" : `${count} messages`),
+  },
+  adminFeedbackNotes: { fi: "Muistiinpanot", en: "Notes" },
+  adminFeedbackNotesHint: {
+    fi: "Esimerkiksi jos vastasit jo.",
+    en: "For example, if you already replied.",
+  },
+  adminFeedbackNotesSaved: { fi: "Tallennettu", en: "Saved" },
+  adminFeedbackSaveNotes: { fi: "Tallenna muistiinpanot", en: "Save notes" },
+  sentBy: { fi: "Lähettäjä", en: "Sender" },
+  adminFeedbackNoEmail: { fi: "Anonyymi", en: "Anonymous" },
   adminNav: { fi: "Hallinta", en: "Admin" },
   adminTitle: { fi: "Hallintapaneeli", en: "Admin panel" },
   adminEmpty: {

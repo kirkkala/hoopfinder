@@ -9,7 +9,7 @@ import { AuthControl } from "@/components/auth/AuthControl";
 import { SourceCredits } from "@/components/brand/AppFooter";
 import { AppLink } from "@/components/brand/AppLink";
 import { AppWordmark } from "@/components/brand/AppWordmark";
-import { BuyMeCoffeeButton } from "@/components/brand/BuyMeCoffeeButton";
+import { useFeedback } from "@/components/brand/FeedbackDialog";
 import { IntroDialog } from "@/components/brand/IntroDialog";
 import { LanguageToggle } from "@/components/brand/LanguageToggle";
 import { useCopy } from "@/components/brand/LocaleProvider";
@@ -52,6 +52,7 @@ export function AppHeader({
   const isAdmin = useIsAdmin();
   const headerRef = useRef<HTMLElement>(null);
   const [introOpen, setIntroOpen] = useState(false);
+  const [introSeen, setIntroSeen] = useState(false);
 
   useLayoutEffect(() => {
     window.scrollTo(0, 0);
@@ -81,7 +82,8 @@ export function AppHeader({
 
   useEffect(() => {
     try {
-      if (!localStorage.getItem(INTRO_KEY)) setIntroOpen(true);
+      if (localStorage.getItem(INTRO_KEY)) setIntroSeen(true);
+      else setIntroOpen(true);
     } catch {
       // Private mode — skip the first-visit prompt.
     }
@@ -93,6 +95,7 @@ export function AppHeader({
     } catch {
       // Ignore quota / private-mode failures.
     }
+    setIntroSeen(true);
     setIntroOpen(false);
   }
 
@@ -164,7 +167,12 @@ export function AppHeader({
           onOpenInfo={() => setIntroOpen(true)}
         />
       </div>
-      <IntroDialog open={introOpen} onClose={closeIntro} courtCount={courtCount} />
+      <IntroDialog
+        open={introOpen}
+        onClose={closeIntro}
+        courtCount={courtCount}
+        showFeedback={introSeen}
+      />
     </header>
   );
 }
@@ -217,6 +225,8 @@ function HeaderMenu({
 }) {
   const copy = useCopy();
   const databaseUnavailable = useDatabaseUnavailable();
+  const feedback = useFeedback();
+  const feedbackOpen = feedback?.open ?? false;
   const menuId = useId();
   const [open, setOpen] = useState(false);
 
@@ -224,7 +234,7 @@ function HeaderMenu({
     if (!open) return;
 
     function onKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape" && !introOpen) setOpen(false);
+      if (event.key === "Escape" && !introOpen && !feedbackOpen) setOpen(false);
     }
 
     const previousOverflow = document.body.style.overflow;
@@ -234,7 +244,7 @@ function HeaderMenu({
       document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", onKeyDown);
     };
-  }, [open, introOpen]);
+  }, [open, introOpen, feedbackOpen]);
 
   return (
     <div className="relative flex items-center gap-1">
@@ -294,6 +304,16 @@ function HeaderMenu({
                 >
                   {copy.info}
                 </MenuItem>
+                {databaseUnavailable || !feedback ? null : (
+                  <MenuItem
+                    keepOpen
+                    onClick={feedback.openFeedback}
+                    aria-haspopup="dialog"
+                    aria-expanded={feedbackOpen}
+                  >
+                    {copy.giveFeedback}
+                  </MenuItem>
+                )}
                 {databaseUnavailable ? null : (
                   <MenuItem href="/add" prefetch>
                     {copy.addCourt}
@@ -303,10 +323,6 @@ function HeaderMenu({
                 <AuthControl />
               </MenuItemList>
               <div className="px-4">
-                <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1 pt-4">
-                  <BuyMeCoffeeButton />
-                  <p className="text-sm text-ink/85">👈 {copy.supportDeveloper}</p>
-                </div>
                 <SourceFetchedAt
                   fetchedAtBySource={fetchedAtBySource}
                   className="mt-5 border-t border-white/10 pt-4 text-sm leading-5 text-ink-muted"
