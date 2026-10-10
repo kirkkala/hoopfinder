@@ -17,9 +17,9 @@ export function NotFoundView({
 }) {
   const copy = useCopy();
   return (
-    <div className="flex min-h-dvh flex-col bg-asphalt">
+    <div className="flex min-h-full flex-col bg-asphalt">
       <AppHeader fetchedAtBySource={fetchedAtBySource} courtCount={courtCount} />
-      <main className="mx-auto flex max-w-lg flex-1 flex-col items-center justify-center gap-3 px-6 text-center">
+      <main className="mx-auto flex max-w-lg grow flex-col items-center justify-center gap-3 px-6 text-center">
         <Icon iconNode={basketball} className="size-10 text-gold" aria-hidden />
         <h1 className="font-display text-4xl tracking-wide text-white">{copy.notFoundTitle}</h1>
         <p className="text-sm text-ink-muted">{copy.notFoundHint}</p>

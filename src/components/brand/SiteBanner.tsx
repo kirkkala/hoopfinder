@@ -86,30 +86,35 @@ export function SiteBanner({
   return (
     <DatabaseUnavailableContext.Provider value={databaseUnavailable}>
       <AnnouncementContext.Provider value={{ dismissed, reopen, recallFocusId, clearRecallFocus }}>
-        {visible.map((message) => (
-          <div key={announcementId(message)} className={`relative ${bannerClass(message.tone)}`}>
-            <p
-              role="status"
-              className={`flex items-start justify-start gap-1.5 py-1 text-left text-sm leading-5 font-medium sm:justify-center sm:text-center ${
-                message.dismissible ? "pr-10 pl-3 sm:px-10" : "px-3"
-              }`}
+        <div className="flex h-dvh flex-col">
+          {visible.map((message) => (
+            <div
+              key={announcementId(message)}
+              className={`relative shrink-0 ${bannerClass(message.tone)}`}
             >
-              <BannerIcon tone={message.tone} />
-              <span className="min-w-0">{message[locale]}</span>
-            </p>
-            {message.dismissible ? (
-              <button
-                type="button"
-                onClick={() => dismiss(message)}
-                aria-label={copy.closeAnnouncement}
-                className="absolute top-1/2 right-1.5 grid size-7 -translate-y-1/2 place-items-center rounded-full outline-none hover:bg-black/15 focus-visible:ring-2 focus-visible:ring-current"
+              <p
+                role="status"
+                className={`flex items-start justify-start gap-1.5 py-1 text-left text-sm leading-5 font-medium sm:justify-center sm:text-center ${
+                  message.dismissible ? "pr-10 pl-3 sm:px-10" : "px-3"
+                }`}
               >
-                <X className="size-4" aria-hidden />
-              </button>
-            ) : null}
-          </div>
-        ))}
-        {children}
+                <BannerIcon tone={message.tone} />
+                <span className="min-w-0">{message[locale]}</span>
+              </p>
+              {message.dismissible ? (
+                <button
+                  type="button"
+                  onClick={() => dismiss(message)}
+                  aria-label={copy.closeAnnouncement}
+                  className="absolute top-1/2 right-1.5 grid size-7 -translate-y-1/2 place-items-center rounded-full outline-none hover:bg-black/15 focus-visible:ring-2 focus-visible:ring-current"
+                >
+                  <X className="size-4" aria-hidden />
+                </button>
+              ) : null}
+            </div>
+          ))}
+          <div className="min-h-0 flex-1 overflow-y-auto">{children}</div>
+        </div>
       </AnnouncementContext.Provider>
     </DatabaseUnavailableContext.Provider>
   );

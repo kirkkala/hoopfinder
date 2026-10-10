@@ -85,8 +85,14 @@ function posts() {
 function openForm() {
   render(<AddCourtView courtCount={1} fetchedAtBySource={{}} />);
   fireEvent.click(screen.getByRole("button", { name: "Tämä selvä!" }));
+  expect(screen.getByRole("button", { name: "Paikanna" })).toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: "place pin" }));
+  expect(screen.getByRole("button", { name: "Ohje" })).toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: "Lisää kenttä" }));
+  expect(screen.queryByRole("button", { name: "Paikanna" })).not.toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: "Ohje" })).not.toBeInTheDocument();
+  const dialog = screen.getByRole("dialog", { name: "Lisää kenttä" });
+  expect(dialog.parentElement?.style.top).toBe("max(0.75rem, env(safe-area-inset-top))");
 }
 
 test("keeps save off the first step and asks for the surface before sending", async () => {

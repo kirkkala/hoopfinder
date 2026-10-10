@@ -103,7 +103,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
     : siteAnnouncements;
   return (
     <html lang="fi" className={`${outfit.variable} ${bebas.variable}`}>
-      <body className="min-h-dvh bg-asphalt font-sans text-ink antialiased">
+      <body className="h-dvh overflow-hidden bg-asphalt font-sans text-ink antialiased">
         <LocaleProvider>
           <SiteBanner messages={messages} databaseUnavailable={databaseUnavailable}>
             <AuthProvider session={session}>

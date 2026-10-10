@@ -338,7 +338,7 @@ export function AddCourtView({
     : null;
 
   return (
-    <div className="flex h-dvh flex-col overflow-hidden overscroll-none bg-asphalt">
+    <div className="flex h-full flex-col overflow-hidden overscroll-none bg-asphalt">
       <AppHeader
         title={copy.addCourt}
         courtCount={courtCount}
@@ -373,22 +373,24 @@ export function AddCourtView({
           />
         </div>
 
-        <div className="pointer-events-none absolute inset-x-0 top-0 z-40 flex justify-start p-3 pt-[max(0.75rem,env(safe-area-inset-top))] pl-[max(0.75rem,env(safe-area-inset-left))]">
-          <div className="pointer-events-auto flex max-w-full flex-wrap items-center gap-2 drop-shadow-[0_8px_20px_rgb(0_0_0_/_0.35)]">
-            <LocateMeButton iconOnly status={locationStatus} onClick={requestLocation} />
-            {infoOpen ? null : (
-              <button
-                type="button"
-                onClick={() => setInfoOpen(true)}
-                aria-label={copy.addCourtInfoOpen}
-                className="inline-flex h-12 shrink-0 items-center gap-1.5 rounded-full bg-asphalt/95 px-3 text-white ring-1 ring-white/15 outline-none hover:bg-gold hover:text-asphalt focus-visible:ring-2 focus-visible:ring-gold/60"
-              >
-                <CircleHelp aria-hidden className="size-5" />
-                <span className="text-sm font-bold">{copy.addCourtInfoOpen}</span>
-              </button>
-            )}
+        {draft && draftStep === "form" && !formCollapsed && !discardConfirm ? null : (
+          <div className="pointer-events-none absolute inset-x-0 top-0 z-40 flex justify-start p-3 pt-[max(0.75rem,env(safe-area-inset-top))] pl-[max(0.75rem,env(safe-area-inset-left))]">
+            <div className="pointer-events-auto flex max-w-full flex-wrap items-center gap-2 drop-shadow-[0_8px_20px_rgb(0_0_0_/_0.35)]">
+              <LocateMeButton iconOnly status={locationStatus} onClick={requestLocation} />
+              {infoOpen ? null : (
+                <button
+                  type="button"
+                  onClick={() => setInfoOpen(true)}
+                  aria-label={copy.addCourtInfoOpen}
+                  className="inline-flex h-12 shrink-0 items-center gap-1.5 rounded-full bg-asphalt/95 px-3 text-white ring-1 ring-white/15 outline-none hover:bg-gold hover:text-asphalt focus-visible:ring-2 focus-visible:ring-gold/60"
+                >
+                  <CircleHelp aria-hidden className="size-5" />
+                  <span className="text-sm font-bold">{copy.addCourtInfoOpen}</span>
+                </button>
+              )}
+            </div>
           </div>
-        </div>
+        )}
 
         {infoOpen ? (
           <div
