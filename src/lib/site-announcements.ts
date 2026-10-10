@@ -8,7 +8,7 @@ export const siteAnnouncements: SiteBannerMessage[] = [
   {
     tone: "notice",
     dismissible: true,
-    fi: "Uutta: Kävijät voivat lisätä kuvia kentille. Auta tekemään palvelusta parempi!",
-    en: "New: Visitors can add photos to courts. Help make the service better!",
+    fi: "Uutta: Olemassa oleville kentille voi nyt lisätä kuvia!",
+    en: "New: Existing courts can now be added photos!",
   },
 ];

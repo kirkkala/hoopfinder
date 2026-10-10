@@ -84,13 +84,18 @@ function posts() {
 
 function openForm() {
   render(<AddCourtView courtCount={1} fetchedAtBySource={{}} />);
+  const leave = screen.getAllByRole("link", { name: "Poistu" });
+  expect(leave).toHaveLength(2);
+  for (const link of leave) expect(link).toHaveAttribute("href", "/");
   fireEvent.click(screen.getByRole("button", { name: "Tämä selvä!" }));
+  expect(screen.getByRole("link", { name: "Poistu" })).toHaveAttribute("href", "/");
   expect(screen.getByRole("button", { name: "Paikanna" })).toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: "place pin" }));
   expect(screen.getByRole("button", { name: "Ohje" })).toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: "Lisää kenttä" }));
   expect(screen.queryByRole("button", { name: "Paikanna" })).not.toBeInTheDocument();
   expect(screen.queryByRole("button", { name: "Ohje" })).not.toBeInTheDocument();
+  expect(screen.queryByRole("link", { name: "Poistu" })).not.toBeInTheDocument();
   const dialog = screen.getByRole("dialog", { name: "Lisää kenttä" });
   expect(dialog.parentElement?.style.top).toBe("max(0.75rem, env(safe-area-inset-top))");
 }

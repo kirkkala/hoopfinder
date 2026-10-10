@@ -321,8 +321,8 @@ const messages = {
     en: "Make the service better by adding a missing court.",
   },
   addCourtHint: {
-    fi: "Paikanna itsesi kartalta tai zoomaa lähemmäs ja napsauta lisätäksesi kentän.",
-    en: "Locate yourself on the map or zoom in closer and tap the map to add it.",
+    fi: "Paikanna itsesi kartalta tai zoomaa lähemmäs ja napsauta lisätäksesi kentän. Voit lisätä kentän sivulle kuvia kun lisäämäsi tiedot on tallennettu ja hyväksytty ylläpidon toimesta.",
+    en: "Locate yourself on the map or zoom in closer and tap the map to add it. Once the court is approved by an admin, you can also add photos to it. Once the court is approved by an admin, you can also add photos to it.",
   },
   addCourtInfoOpen: { fi: "Ohje", en: "Help" },
   addCourtHintZoom: {

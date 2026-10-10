@@ -17,6 +17,7 @@ import {
 import { AddCourtFormPanel } from "@/components/add-court/AddCourtFormPanel";
 import type { AddCourtMapAlert } from "@/components/add-court/AddCourtMap";
 import { AppHeader } from "@/components/brand/AppHeader";
+import { AppLink } from "@/components/brand/AppLink";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { LocateMeButton } from "@/components/LocateMeButton";
 import type { FetchedAtBySource } from "@/lib/catalog";
@@ -42,6 +43,9 @@ const GOLD_BUTTON_CLASS =
 
 const CONTINUE_BUTTON_CLASS =
   "w-full rounded-full bg-gold px-4 py-2.5 text-sm font-bold text-asphalt outline-none hover:bg-white focus-visible:ring-2 focus-visible:ring-gold/60";
+
+const MAP_PILL_CLASS =
+  "inline-flex h-12 shrink-0 items-center gap-1.5 rounded-full bg-asphalt/95 px-3 text-sm font-bold text-white ring-1 ring-white/15 outline-none hover:bg-gold hover:text-asphalt focus-visible:ring-2 focus-visible:ring-gold/60";
 
 const MAP_CHROME_OFFSET = "calc(max(0.75rem, env(safe-area-inset-top)) + 4.25rem)";
 
@@ -378,16 +382,15 @@ export function AddCourtView({
             <div className="pointer-events-auto flex max-w-full flex-wrap items-center gap-2 drop-shadow-[0_8px_20px_rgb(0_0_0_/_0.35)]">
               <LocateMeButton iconOnly status={locationStatus} onClick={requestLocation} />
               {infoOpen ? null : (
-                <button
-                  type="button"
-                  onClick={() => setInfoOpen(true)}
-                  aria-label={copy.addCourtInfoOpen}
-                  className="inline-flex h-12 shrink-0 items-center gap-1.5 rounded-full bg-asphalt/95 px-3 text-white ring-1 ring-white/15 outline-none hover:bg-gold hover:text-asphalt focus-visible:ring-2 focus-visible:ring-gold/60"
-                >
+                <button type="button" onClick={() => setInfoOpen(true)} className={MAP_PILL_CLASS}>
                   <CircleHelp aria-hidden className="size-5" />
-                  <span className="text-sm font-bold">{copy.addCourtInfoOpen}</span>
+                  {copy.addCourtInfoOpen}
                 </button>
               )}
+              <AppLink href="/" className={MAP_PILL_CLASS}>
+                <X aria-hidden className="size-5" />
+                {copy.addCourtExit}
+              </AppLink>
             </div>
           </div>
         )}
@@ -634,14 +637,22 @@ function AddCourtInfoDialog({
       <div className="relative px-6 pt-1 pb-5">
         <p className="mt-4 text-base leading-6 text-ink/90">{copy.addCourtLead}</p>
         <p className="mt-2 text-base leading-6 text-ink-muted">{copy.addCourtHint}</p>
-        <button
-          ref={ctaRef}
-          type="button"
-          onClick={onClose}
-          className="mt-6 w-full rounded-full bg-gold px-4 py-3 text-base font-bold text-asphalt hover:bg-[#ffe0a3]"
-        >
-          {copy.okBroCta}
-        </button>
+        <div className="mt-6 flex flex-col gap-2">
+          <button
+            ref={ctaRef}
+            type="button"
+            onClick={onClose}
+            className="w-full rounded-full bg-gold px-4 py-3 text-base font-bold text-asphalt hover:bg-[#ffe0a3]"
+          >
+            {copy.okBroCta}
+          </button>
+          <AppLink
+            href="/"
+            className="flex w-full items-center justify-center rounded-full px-4 py-3 text-base font-bold text-ink/80 outline-none hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-gold/60"
+          >
+            {copy.addCourtExit}
+          </AppLink>
+        </div>
       </div>
     </div>
   );
