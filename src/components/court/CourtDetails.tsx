@@ -47,6 +47,8 @@ import type { CourtPhoto } from "@/lib/court-photos";
 import {
   COURT_THANKS_KEY,
   type Court,
+  courtHref,
+  courtPadLabel,
   courtTitle,
   formatAddress,
   formatAdmin,
@@ -69,7 +71,7 @@ export function CourtDetails({
   sourceFetchedAt,
   courtCount,
   photos,
-  mapSpots,
+  otherCourts = [],
   visitorEmail = null,
 }: {
   court: Court;
@@ -77,8 +79,8 @@ export function CourtDetails({
   sourceFetchedAt: string | null;
   courtCount: number;
   photos: CourtPhoto[];
-  /** Every pad to mark on the small map, including this court. */
-  mapSpots?: Court[];
+  /** Other hoops at this place. Each one has its own page. */
+  otherCourts?: Court[];
   visitorEmail?: string | null;
 }) {
   const copy = useCopy();
@@ -196,6 +198,26 @@ export function CourtDetails({
                   label={copy.showDirections}
                   value={googleMapsDirectionsLink(court.lat, court.lon, copy)}
                 />
+                {otherCourts.length > 0 ? (
+                  <Fact
+                    icon={LayoutGrid}
+                    label={copy.otherCourts}
+                    value={
+                      <ul className="space-y-1">
+                        {otherCourts.map((pad) => (
+                          <li key={pad.id}>
+                            <AppLink
+                              href={courtHref(pad)}
+                              className="font-medium text-gold hover:text-white"
+                            >
+                              {courtPadLabel(pad, copy)}
+                            </AppLink>
+                          </li>
+                        ))}
+                      </ul>
+                    }
+                  />
+                ) : null}
               </>
             )}
           </dl>
@@ -363,7 +385,7 @@ export function CourtDetails({
             courtName={courtTitle(court, copy)}
             photos={photos}
           />
-          <CourtMiniMap court={court} spots={mapSpots} />
+          <CourtMiniMap court={court} />
           <dl className="grid gap-3 border-t border-white/10 p-5">
             {court.website ? (
               <Fact

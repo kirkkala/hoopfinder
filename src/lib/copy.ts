@@ -249,7 +249,7 @@ const messages = {
   notesFromListing: { fi: "Lisätiedot", en: "Notes" },
   photogallery: { fi: "Kuvagalleria", en: "Photo gallery" },
   courtLocation: { fi: "Sijainti kartalla", en: "Location on the map" },
-  courtsOnMap: { fi: "Muut kentät tällä paikalla", en: "Other courts at this location" },
+  otherCourts: { fi: "Muut kentät tällä paikalla", en: "Other courts at this location" },
   noPhotos: { fi: "Ei kuvia.", en: "No photos." },
   databaseUnavailable: {
     fi: "Tietokantaan ei saada yhteyttä.",

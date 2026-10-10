@@ -84,8 +84,7 @@ export default async function CourtPage({ params }: { params: Promise<{ path?: s
     redirect(homeCourtHref({ id: result.court.id, source: "pending" }));
   }
   const court = await withVisitorFacts(result.court);
-  const mapSpots =
-    result.place.members && result.place.members.length > 1 ? result.place.members : undefined;
+  const otherCourts = (result.place.members ?? []).filter((member) => member.id !== court.id);
   const [{ fetchedAtBySource }, courtCount, photos] = await Promise.all([
     getCourtCatalog(),
     countPublicCourts(),
@@ -94,7 +93,7 @@ export default async function CourtPage({ params }: { params: Promise<{ path?: s
   return (
     <CourtDetails
       court={court}
-      mapSpots={mapSpots}
+      otherCourts={otherCourts}
       fetchedAtBySource={fetchedAtBySource}
       sourceFetchedAt={result.sourceFetchedAt}
       courtCount={courtCount}
