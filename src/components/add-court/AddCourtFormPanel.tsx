@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 
 const MAP_CHROME_OFFSET = "calc(max(0.75rem, env(safe-area-inset-top)) + 4.25rem)";
-
+const MAP_PANEL_TOP = "max(0.75rem, env(safe-area-inset-top))";
 const MAP_PANEL_BOTTOM = "max(0.75rem, env(safe-area-inset-bottom))";
 
 export function AddCourtFormPanel({
@@ -23,7 +23,7 @@ export function AddCourtFormPanel({
     <div
       inert={inert}
       className="pointer-events-none absolute inset-x-0 z-20 flex items-start justify-center px-3 sm:px-4"
-      style={{ top: MAP_CHROME_OFFSET, bottom: MAP_PANEL_BOTTOM }}
+      style={{ top: collapsed ? MAP_CHROME_OFFSET : MAP_PANEL_TOP, bottom: MAP_PANEL_BOTTOM }}
     >
       <div
         role="dialog"

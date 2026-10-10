@@ -121,6 +121,7 @@ export function CourtMap({
   const onCloseRef = useRef(onClose);
   onCloseRef.current = onClose;
   const selected = courts.find((court) => court.id === selectedId) ?? null;
+  const openCourt = selected !== null && !thanks && (!isAwaitingEmail(selected) || isAdmin);
 
   const data = useMemo(
     () => ({
@@ -362,16 +363,25 @@ export function CourtMap({
           maxWidth="18rem"
           onClose={onClose}
         >
-          <div className="relative flex min-w-64 flex-col gap-2 p-3">
+          <div className="group relative flex min-w-64 flex-col gap-2 p-3">
             <button
               type="button"
               onClick={onClose}
-              className="absolute top-2 right-2 rounded-full p-1 text-ink-muted hover:bg-white/10 hover:text-white"
+              className="absolute top-0.5 right-0.5 z-10 flex size-11 items-center justify-center rounded-full text-ink-muted hover:bg-white/10 hover:text-white"
               aria-label={copy.close}
             >
-              <X className="size-4" aria-hidden />
+              <X className="size-5" aria-hidden />
             </button>
-            <CourtHeading court={selected} pin className="pr-6" />
+            <CourtHeading
+              court={selected}
+              pin
+              className="pr-10"
+              titleClassName={
+                openCourt
+                  ? "text-sm font-semibold leading-snug text-gold transition-colors group-hover:text-white group-has-[a:focus-visible]:text-white"
+                  : "text-sm font-semibold leading-snug text-white"
+              }
+            />
             <div className="flex flex-wrap items-center gap-1.5 text-xs">
               <CourtBadges court={selected} />
             </div>
@@ -385,13 +395,16 @@ export function CourtMap({
             ) : isPendingCourt(selected) ? (
               <PendingCourtNote createdAt={selected.createdAt} className="pt-1" />
             ) : null}
-            {!thanks && (!isAwaitingEmail(selected) || isAdmin) ? (
+            {openCourt ? (
               <AppLink
                 href={courtHref(selected)}
-                className="inline-flex items-center gap-1 self-end pt-2 pb-1 text-sm font-bold text-gold hover:text-white"
+                className="inline-flex items-center gap-1 self-end pt-2 pb-1 text-sm font-bold text-gold transition-colors after:absolute after:inset-0 after:z-0 group-hover:text-white group-has-[a:focus-visible]:text-white"
               >
                 {copy.letsGo}
-                <ArrowRight className="size-3.5" aria-hidden />
+                <ArrowRight
+                  className="size-3.5 transition-transform duration-150 group-hover:translate-x-0.5 group-has-[a:focus-visible]:translate-x-0.5"
+                  aria-hidden
+                />
               </AppLink>
             ) : null}
           </div>

@@ -151,7 +151,7 @@ const messages = {
   },
   lights: { fi: "Valot", en: "Lights" },
   freeUse: { fi: "Ilmainen käyttö", en: "Free use" },
-  letsGo: { fi: "Katso kentän tiedot", en: "See court info" },
+  letsGo: { fi: "Avaa kentän tiedot", en: "Open court info" },
   close: { fi: "Sulje", en: "Close" },
   closeAnnouncement: { fi: "Sulje ilmoitus", en: "Close announcement" },
   showAnnouncement: { fi: "Näytä ilmoitus", en: "Show announcement" },
@@ -223,10 +223,6 @@ const messages = {
   lengthM: { fi: "Pituus (m)", en: "Length (m)" },
   widthM: { fi: "Leveys (m)", en: "Width (m)" },
   addCourtUnknown: { fi: "Ei tietoa", en: "Not known" },
-  addCourtYesNoHint: {
-    fi: "Jätä valitsematta jos et tiedä:",
-    en: "If you don't know, leave it unselected:",
-  },
   surface: { fi: "Pinta", en: "Surface" },
   surfaceNotes: { fi: "Pintatiedot", en: "Surface notes" },
   dimensions: { fi: "Mitat", en: "Dimensions" },
@@ -325,8 +321,8 @@ const messages = {
     en: "Make the service better by adding a missing court.",
   },
   addCourtHint: {
-    fi: "Paikanna itsesi kartalta tai zoomaa lähemmäs ja napsauta lisätäksesi kentän.",
-    en: "Locate yourself on the map or zoom in closer and tap the map to add it.",
+    fi: "Paikanna itsesi kartalta tai zoomaa lähemmäs ja napsauta lisätäksesi kentän. Voit lisätä kentän sivulle kuvia kun lisäämäsi tiedot on tallennettu ja hyväksytty ylläpidon toimesta.",
+    en: "Locate yourself on the map or zoom in closer and tap the map to add it. Once the court is approved by an admin, you can also add photos to it. Once the court is approved by an admin, you can also add photos to it.",
   },
   addCourtInfoOpen: { fi: "Ohje", en: "Help" },
   addCourtHintZoom: {
@@ -358,6 +354,22 @@ const messages = {
     en: "An admin may also ask for extra details, or tell you about updates. We won't spam you and your email address is not shown in the service.",
   },
   addCourtSubmit: { fi: "Tallenna", en: "Save" },
+  addCourtContinue: { fi: "Jatka kentän tietoihin", en: "Continue to court details" },
+  addCourtEditBasics: { fi: "Muokkaa", en: "Edit" },
+  addCourtBasicsHeading: { fi: "Perustiedot", en: "Basics" },
+  addCourtDetailsHeading: { fi: "Lisätiedot kentästä", en: "More about the court" },
+  addCourtDetailsMore: {
+    fi: "Vieritä alas, lomakkeella on lisää täytettävää.",
+    en: "Scroll down, the form has more fields to fill in.",
+  },
+  addCourtDetailsReady: {
+    fi: "Hienoa! Tallenna, jahka olet tyytyväinen.",
+    en: "Nice! Save once you're happy.",
+  },
+  addCourtDetailsLead: {
+    fi: "Täytä mitä tiedät, lomakkeen lopussa on myös kenttä palautetta varten. Tallenna kun olet valmis.",
+    en: "Fill in what you know, then save. There is also a field for feedback at the end of the form.",
+  },
   addCourtRequiredMark: { fi: "pakollinen", en: "required" },
   addCourtMissing: {
     fi: (fields: string) => `Täytä vielä: ${fields}.`,
@@ -369,8 +381,8 @@ const messages = {
   },
   addCourtGreeting: { fi: "Terveiset kehittäjälle", en: "A note for the developer" },
   addCourtGreetingHint: {
-    fi: "Palaute tai terveiset. Ei näy muille käyttäjille, vain ylläpito näkee tämän.",
-    en: "Feedback or greetings. Hidden from other visitors. Only an admin can see this.",
+    fi: "Palaute tai terveiset. Ei näytetä muille käyttäjille, vain ylläpito näkee palautteet ja terveiset.",
+    en: "Feedback or greetings. Hidden from other visitors. Only an admin can see the feedback and greetings.",
   },
   addCourtCancel: { fi: "Sulje", en: "Close" },
   addCourtShowMap: { fi: "Näytä kartta", en: "Show map" },

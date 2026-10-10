@@ -9,10 +9,12 @@ export function CourtHeading({
   court,
   pin = false,
   className,
+  titleClassName,
 }: {
   court: CourtWithDistance;
   pin?: boolean;
   className?: string;
+  titleClassName?: string;
 }) {
   const copy = useCopy();
   return (
@@ -20,7 +22,7 @@ export function CourtHeading({
       className={["flex items-start justify-between gap-3", className].filter(Boolean).join(" ")}
     >
       <div className="min-w-0">
-        <p className="font-semibold leading-snug text-white">
+        <p className={titleClassName ?? "font-semibold leading-snug text-white"}>
           {pin ? (
             <MapPin className="mr-1.5 inline size-[1em] shrink-0 align-[-0.15em]" aria-hidden />
           ) : null}

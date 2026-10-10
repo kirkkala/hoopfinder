@@ -215,7 +215,7 @@ export function CourtExplorer({
   }
 
   return (
-    <div className="flex h-dvh flex-col overflow-hidden overscroll-none bg-asphalt">
+    <div className="flex h-full flex-col overflow-hidden overscroll-none bg-asphalt">
       <AppHeader home fetchedAtBySource={fetchedAtBySource} courtCount={totalCourtCount} />
 
       <div className={`flex min-h-0 flex-1 flex-col overflow-hidden ${split.row}`}>
