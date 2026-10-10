@@ -151,7 +151,7 @@ const messages = {
   },
   lights: { fi: "Valot", en: "Lights" },
   freeUse: { fi: "Ilmainen käyttö", en: "Free use" },
-  letsGo: { fi: "Katso kentän tiedot", en: "See court info" },
+  letsGo: { fi: "Avaa kentän tiedot", en: "Open court info" },
   close: { fi: "Sulje", en: "Close" },
   closeAnnouncement: { fi: "Sulje ilmoitus", en: "Close announcement" },
   showAnnouncement: { fi: "Näytä ilmoitus", en: "Show announcement" },

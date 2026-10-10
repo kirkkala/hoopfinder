@@ -63,6 +63,9 @@ a[href],
 .maplibregl-popup-anchor-bottom-left .maplibregl-popup-tip,
 .maplibregl-popup-anchor-bottom-right .maplibregl-popup-tip {
   border-top-color: var(--color-panel);
+  position: relative;
+  z-index: 1;
+  margin-top: -1px;
 }
 
 .maplibregl-popup-anchor-left .maplibregl-popup-tip {
