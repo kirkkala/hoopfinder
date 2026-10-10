@@ -29,9 +29,9 @@ export function AdminCourtsView({
   const copy = useCopy();
 
   return (
-    <div className="flex min-h-full flex-col bg-asphalt">
+    <div className="flex min-h-dvh flex-col bg-asphalt">
       <AppHeader fetchedAtBySource={fetchedAtBySource} courtCount={courtCount} />
-      <main className="mx-auto w-full max-w-2xl grow px-4 py-8 sm:px-6">
+      <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-8 sm:px-6">
         <h1 className="font-display text-4xl tracking-wide text-white">{copy.adminTitle}</h1>
         <PhotoCourts courts={photoCourts} />
         {courts === null ? (

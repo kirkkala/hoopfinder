@@ -18,8 +18,8 @@ export default function ErrorPage({
   }, [error]);
 
   return (
-    <div className="flex min-h-full flex-col bg-asphalt">
-      <main className="mx-auto flex max-w-lg grow flex-col items-center justify-center gap-3 px-6 text-center">
+    <div className="flex min-h-dvh flex-col bg-asphalt">
+      <main className="mx-auto flex max-w-lg flex-1 flex-col items-center justify-center gap-3 px-6 text-center">
         <CircleAlert className="size-10 text-gold" aria-hidden />
         <h1 className="font-display text-4xl tracking-wide text-white">{copy.errorTitle}</h1>
         <p className="text-sm text-ink-muted">{copy.errorHint}</p>

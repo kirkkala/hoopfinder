@@ -14,12 +14,6 @@
   --breakpoint-split: 64rem;
 }
 
-html,
-body {
-  height: 100%;
-  overscroll-behavior: none;
-}
-
 html {
   scroll-padding-top: var(--app-header-height, 3.5rem);
 }

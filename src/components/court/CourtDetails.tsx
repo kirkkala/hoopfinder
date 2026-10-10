@@ -104,10 +104,10 @@ export function CourtDetails({
     amenities.lengthM && amenities.widthM ? `${amenities.lengthM} × ${amenities.widthM} m` : null;
 
   return (
-    <div className="flex min-h-full flex-col bg-asphalt">
+    <div className="flex min-h-dvh flex-col bg-asphalt">
       <AppHeader fetchedAtBySource={fetchedAtBySource} courtCount={courtCount} />
 
-      <main className="mx-auto grid w-full max-w-5xl grow gap-6 px-4 py-8 split:grid-cols-[1.1fr_0.9fr]">
+      <main className="mx-auto grid w-full max-w-5xl flex-1 gap-6 px-4 py-8 split:grid-cols-[1.1fr_0.9fr]">
         <section className="space-y-5">
           <BackToMap court={court} />
           <div>

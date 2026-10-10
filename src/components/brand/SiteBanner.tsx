@@ -1,6 +1,7 @@
 "use client";
 
 import { Bug, CircleCheck, Info, TriangleAlert, X } from "lucide-react";
+import { usePathname } from "next/navigation";
 import {
   createContext,
   type ReactNode,
@@ -47,6 +48,20 @@ export function SiteBanner({
 }) {
   const { locale } = useLocale();
   const copy = useCopy();
+  const pathname = usePathname();
+  const lockScroll = pathname === "/" || pathname === "/add";
+
+  useLayoutEffect(() => {
+    document.documentElement.classList.toggle("overflow-hidden", lockScroll);
+    document.documentElement.classList.toggle("overscroll-none", lockScroll);
+    document.body.classList.toggle("overflow-hidden", lockScroll);
+    document.body.classList.toggle("overscroll-none", lockScroll);
+    return () => {
+      document.documentElement.classList.remove("overflow-hidden", "overscroll-none");
+      document.body.classList.remove("overflow-hidden", "overscroll-none");
+    };
+  }, [lockScroll]);
+
   const [dismissedIds, setDismissedIds] = useState<string[]>([]);
   const [recallFocusId, setRecallFocusId] = useState<string | null>(null);
 
@@ -86,7 +101,7 @@ export function SiteBanner({
   return (
     <DatabaseUnavailableContext.Provider value={databaseUnavailable}>
       <AnnouncementContext.Provider value={{ dismissed, reopen, recallFocusId, clearRecallFocus }}>
-        <div className="flex h-dvh flex-col">
+        <div className={lockScroll ? "flex h-dvh flex-col overflow-hidden" : undefined}>
           {visible.map((message) => (
             <div
               key={announcementId(message)}
@@ -113,7 +128,9 @@ export function SiteBanner({
               ) : null}
             </div>
           ))}
-          <div className="min-h-0 flex-1 overflow-y-auto">{children}</div>
+          <div className={lockScroll ? "min-h-0 flex-1 overflow-hidden" : undefined}>
+            {children}
+          </div>
         </div>
       </AnnouncementContext.Provider>
     </DatabaseUnavailableContext.Provider>
