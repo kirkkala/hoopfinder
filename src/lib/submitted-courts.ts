@@ -3,8 +3,10 @@ import { cache } from "react";
 import { z } from "zod";
 import { adminEmails } from "@/lib/admin";
 import { getCourtCatalog } from "@/lib/catalog";
+import { courtPageCount } from "@/lib/court-groups";
 import {
   ADMIN_CODES,
+  COURT_MATCH_KM,
   COURT_STATUS_CODES,
   type Court,
   courtHref,
@@ -21,6 +23,7 @@ import {
 } from "@/lib/courts";
 import { withDb } from "@/lib/db";
 import { sendTemplateEmail } from "@/lib/email";
+import { type Coordinates, haversineKm } from "@/lib/geo";
 import { isInFinland } from "@/lib/sources/finland";
 
 const triState = z.enum(["yes", "no"]).nullable().optional();
@@ -117,15 +120,16 @@ export async function listSubmittedCourts(): Promise<ExplorerCourt[]> {
   return rows.filter((row) => !isTooCloseToCourt(row, courts)).map(toExplorerCourt);
 }
 
-/** Catalog courts plus submitted courts that are not already covered by it. */
+/** Court pages, plus submitted courts that are not already covered by one. */
 export const countPublicCourts = cache(async (): Promise<number> => {
   const { courts } = await getCourtCatalog();
+  const pages = courtPageCount(courts);
   try {
     const submitted = await listSubmittedCourts();
-    return courts.length + submitted.length;
+    return pages + submitted.length;
   } catch (error) {
     console.error(error);
-    return courts.length;
+    return pages;
   }
 });
 
@@ -150,6 +154,22 @@ export async function listAdminSubmittedCourts(): Promise<AdminSubmittedCourt[] 
     greeting: readDetails(row.details).greeting ?? null,
     court: toCourt(row),
   }));
+}
+
+/** Published submissions within 80 m of a place. The catalog page shows their facts. */
+export async function listPublishedCourtsNear(points: Coordinates[]): Promise<Court[]> {
+  const rows = await withDb((sql) => {
+    return sql<AdminRow[]>`
+      SELECT id, name, address, email, lat, lon, status, created_at, details
+      FROM submitted_courts
+      WHERE status = 'published'
+    `;
+  });
+  if (!rows) return [];
+  return rows
+    .map(toCourt)
+    .filter((court) => points.some((point) => haversineKm(point, court) < COURT_MATCH_KM))
+    .sort((a, b) => a.id.localeCompare(b.id));
 }
 
 export async function getSubmittedCourt(
