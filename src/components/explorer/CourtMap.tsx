@@ -21,7 +21,7 @@ import { PendingCourtNote } from "@/components/explorer/PendingCourtNote";
 import { MAP_STYLE } from "@/lib/constants";
 import {
   type CourtWithDistance,
-  courtTitle,
+  courtMapLabel,
   focusedCourtHref,
   isAwaitingEmail,
   isPendingCourt,
@@ -137,7 +137,7 @@ export function CourtMap({
         },
         properties: {
           id: court.id,
-          name: courtTitle(court, copy),
+          name: courtMapLabel(court, copy),
           pending: isPendingCourt(court) ? 1 : 0,
         },
       })),

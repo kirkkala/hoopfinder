@@ -336,6 +336,21 @@ export function courtTitle(
   return place ? `${name}, ${place}` : name;
 }
 
+/** Hoops one map pin stands for. */
+export function pinCourtCount(court: { padCount?: number }): number {
+  return court.padCount && court.padCount > 1 ? court.padCount : 1;
+}
+
+/** Place name on the map. Several hoops add their count on the next line. */
+export function courtMapLabel(
+  court: Pick<ExplorerCourt, "name" | "nameFi" | "neighborhood" | "city" | "padCount">,
+  copy: Copy = getCopy(),
+): string {
+  const name = courtTitle(court, copy);
+  const count = pinCourtCount(court);
+  return count > 1 ? `${name}\n${copy.padCount(count)}` : name;
+}
+
 export function isGenericCourtName(name: string): boolean {
   const normalized = name.trim().toLowerCase();
   return (

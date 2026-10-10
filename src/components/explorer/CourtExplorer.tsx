@@ -10,7 +10,13 @@ import { useCopy } from "@/components/brand/LocaleProvider";
 import { CourtList } from "@/components/explorer/CourtList";
 import { SearchFilters } from "@/components/explorer/SearchFilters";
 import type { FetchedAtBySource } from "@/lib/catalog";
-import { type CourtWithDistance, courtParam, type ExplorerCourt, withDistance } from "@/lib/courts";
+import {
+  type CourtWithDistance,
+  courtParam,
+  type ExplorerCourt,
+  pinCourtCount,
+  withDistance,
+} from "@/lib/courts";
 import { isInBounds, type MapBounds } from "@/lib/geo";
 import { mq, split, useMinWidth } from "@/lib/layout";
 import { fetchMapCourts } from "@/lib/map-courts";
@@ -147,10 +153,12 @@ export function CourtExplorer({
     );
   }, [mapBounds, placeBounds, searching, showList, visibleCourts]);
   const courtCount = useMemo(() => {
-    if (showList) return courtsInView.length;
+    if (showList) {
+      return courtsInView.reduce((total, court) => total + pinCourtCount(court), 0);
+    }
     let count = 0;
     for (const court of visibleCourts) {
-      if (isInCurrentView(court, searching, placeBounds, mapBounds)) count += 1;
+      if (isInCurrentView(court, searching, placeBounds, mapBounds)) count += pinCourtCount(court);
     }
     return count;
   }, [courtsInView, mapBounds, placeBounds, searching, showList, visibleCourts]);

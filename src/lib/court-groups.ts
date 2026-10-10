@@ -51,6 +51,11 @@ export function courtOnPlace(place: Court, id: string): Court {
   return members.find((member) => member.id === id) ?? members[0];
 }
 
+/** Public court pages. A grouped place counts each hoop, not the single map pin. */
+export function courtPageCount(courts: Court[]): number {
+  return courts.reduce((total, court) => total + (court.members?.length || 1), 0);
+}
+
 /** Every court whose photos belong on this page: the pads, plus anything folded in. */
 export function courtsWithPhotos(court: Court): Court[] {
   const items = [...(court.members ?? [court]), ...(court.hidden ?? [])];

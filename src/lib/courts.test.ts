@@ -6,6 +6,7 @@ import {
   type Court,
   courtHref,
   courtIdFromParam,
+  courtMapLabel,
   courtName,
   courtOgHref,
   courtParam,
@@ -24,6 +25,7 @@ import {
   isTooCloseToCourt,
   mergeCourts,
   parseCourtPath,
+  pinCourtCount,
   submittedCourtKey,
   withDistance,
 } from "@/lib/courts";
@@ -242,6 +244,18 @@ test("sorts by distance, and without a location by city then Finnish name", () =
   const near = pin({ id: "far-id", ...withinPad });
   const far = pin({ id: "near-id", ...clearOfPad });
   expect(withDistance([far, near], here).map((item) => item.id)).toEqual(["far-id", "near-id"]);
+});
+
+test("map label names a single hoop, and adds the count when one pin covers several", () => {
+  const copy = getCopy("fi");
+  const single = pin({ id: "1", nameFi: "Kallio", name: "Kallio" });
+  expect(pinCourtCount(single)).toBe(1);
+  expect(courtMapLabel(single, copy)).toBe("Kallio");
+
+  const place = pin({ id: "2", nameFi: "Namika Areena", name: "Namika", padCount: 4 });
+  expect(pinCourtCount(place)).toBe(4);
+  expect(courtMapLabel(place, copy)).toBe("Namika Areena\n4 kenttää");
+  expect(courtMapLabel(place, getCopy("en"))).toBe("Namika\n4 courts");
 });
 
 test("labels known codes, title-cases an unknown hyphenated code, and joins an address", () => {

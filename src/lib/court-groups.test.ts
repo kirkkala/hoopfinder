@@ -1,5 +1,10 @@
 import { expect, test } from "vitest";
-import { courtOnPlace, courtsWithPhotos, groupCourtPlaces } from "@/lib/court-groups";
+import {
+  courtOnPlace,
+  courtPageCount,
+  courtsWithPhotos,
+  groupCourtPlaces,
+} from "@/lib/court-groups";
 import { type Court, emptyAmenities, mergeCourts } from "@/lib/courts";
 import bundled from "../../data/courts.json";
 
@@ -47,6 +52,7 @@ test("groups pads that share a venue name within 80 m", () => {
   expect(place?.members?.map((item) => item.id)).toEqual(["10", "20", "30"]);
   expect(grouped.placeById.get("99")?.id).toBe("99");
   expect(grouped.courts.map((item) => item.id).sort()).toEqual(["10", "99"]);
+  expect(courtPageCount(grouped.courts)).toBe(4);
   expect(grouped.sourceById.get("20")?.nameFi).toBe("Namika Areena / Koripallokenttä 2");
   expect(courtsWithPhotos(place ?? pads[0]).map((item) => item.id)).toEqual(["10", "20", "30"]);
   expect(courtOnPlace(place ?? pads[0], "20").nameFi).toBe("Namika Areena / Koripallokenttä 2");
