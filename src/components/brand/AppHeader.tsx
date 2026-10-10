@@ -23,6 +23,19 @@ import { formatFetchedAt } from "@/lib/time";
 
 const INTRO_KEY = "hoopfinder-intro-seen";
 
+function setCssPx(root: HTMLElement, name: string, value: number) {
+  const next = `${value}px`;
+  if (root.style.getPropertyValue(name) !== next) root.style.setProperty(name, next);
+}
+
+function syncHeaderOffset(header: HTMLElement | null) {
+  if (!header) return;
+  const rect = header.getBoundingClientRect();
+  const root = document.documentElement;
+  setCssPx(root, "--app-header-height", rect.height);
+  setCssPx(root, "--app-header-bottom", rect.bottom);
+}
+
 export function AppHeader({
   fetchedAtBySource,
   courtCount,
@@ -48,18 +61,23 @@ export function AppHeader({
     const header = headerRef.current;
     if (!header) return;
 
-    const syncHeight = () => {
-      document.documentElement.style.setProperty(
-        "--app-header-height",
-        `${header.getBoundingClientRect().height}px`,
-      );
-    };
-
-    syncHeight();
-    const observer = new ResizeObserver(syncHeight);
+    const sync = () => syncHeaderOffset(header);
+    sync();
+    const observer = new ResizeObserver(sync);
     observer.observe(header);
-    return () => observer.disconnect();
+    window.addEventListener("resize", sync);
+    window.addEventListener("scroll", sync, { passive: true });
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", sync);
+      window.removeEventListener("scroll", sync);
+    };
   }, []);
+
+  // Banner show/hide re-renders the header without moving scroll or its own size.
+  useLayoutEffect(() => {
+    syncHeaderOffset(headerRef.current);
+  });
 
   useEffect(() => {
     try {
@@ -235,7 +253,7 @@ function HeaderMenu({
         <HamburgerIcon open={open} />
       </button>
       <div
-        className={`fixed inset-x-0 bottom-0 z-40 overflow-hidden top-[calc(var(--app-header-height,3.5rem)-1px)] ${
+        className={`fixed inset-x-0 bottom-0 z-40 overflow-hidden top-[calc(var(--app-header-bottom,var(--app-header-height,3.5rem))-1px)] ${
           open ? "" : "pointer-events-none"
         }`}
       >
