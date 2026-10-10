@@ -14,8 +14,10 @@ async function fetchPendingCourts(signal?: AbortSignal): Promise<ExplorerCourt[]
 
 /** Catalog plus pending pins for map UIs. */
 export async function fetchMapCourts(signal?: AbortSignal): Promise<ExplorerCourt[]> {
+  // Set in next.config from the Vercel deploy id, so a new deploy is a new court-list address.
+  const version = process.env.NEXT_PUBLIC_DEPLOYMENT_ID || "local";
   const [catalogResponse, pending] = await Promise.all([
-    fetch("/api/courts", { signal }),
+    fetch(`/api/courts?v=${encodeURIComponent(version)}`, { signal }),
     fetchPendingCourts(signal),
   ]);
   if (!catalogResponse.ok) throw new Error("court list failed");

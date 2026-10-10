@@ -9,10 +9,11 @@ import { AuthControl } from "@/components/auth/AuthControl";
 import { SourceCredits } from "@/components/brand/AppFooter";
 import { AppLink } from "@/components/brand/AppLink";
 import { AppWordmark } from "@/components/brand/AppWordmark";
-import { BuyMeCoffeeButton } from "@/components/brand/BuyMeCoffeeButton";
+import { useFeedback } from "@/components/brand/FeedbackDialog";
 import { IntroDialog } from "@/components/brand/IntroDialog";
 import { LanguageToggle } from "@/components/brand/LanguageToggle";
 import { useCopy } from "@/components/brand/LocaleProvider";
+import { MenuItem, MenuItemList } from "@/components/brand/MenuItem";
 import { ShowAnnouncementButton, useDatabaseUnavailable } from "@/components/brand/SiteBanner";
 import type { FetchedAtBySource } from "@/lib/catalog";
 import { APP_VERSION } from "@/lib/constants";
@@ -21,6 +22,19 @@ import { COURT_SOURCES } from "@/lib/sources";
 import { formatFetchedAt } from "@/lib/time";
 
 const INTRO_KEY = "hoopfinder-intro-seen";
+
+function setCssPx(root: HTMLElement, name: string, value: number) {
+  const next = `${value}px`;
+  if (root.style.getPropertyValue(name) !== next) root.style.setProperty(name, next);
+}
+
+function syncHeaderOffset(header: HTMLElement | null) {
+  if (!header) return;
+  const rect = header.getBoundingClientRect();
+  const root = document.documentElement;
+  setCssPx(root, "--app-header-height", rect.height);
+  setCssPx(root, "--app-header-bottom", rect.bottom);
+}
 
 export function AppHeader({
   fetchedAtBySource,
@@ -38,6 +52,7 @@ export function AppHeader({
   const isAdmin = useIsAdmin();
   const headerRef = useRef<HTMLElement>(null);
   const [introOpen, setIntroOpen] = useState(false);
+  const [introSeen, setIntroSeen] = useState(false);
 
   useLayoutEffect(() => {
     window.scrollTo(0, 0);
@@ -47,22 +62,28 @@ export function AppHeader({
     const header = headerRef.current;
     if (!header) return;
 
-    const syncHeight = () => {
-      document.documentElement.style.setProperty(
-        "--app-header-height",
-        `${header.getBoundingClientRect().height}px`,
-      );
-    };
-
-    syncHeight();
-    const observer = new ResizeObserver(syncHeight);
+    const sync = () => syncHeaderOffset(header);
+    sync();
+    const observer = new ResizeObserver(sync);
     observer.observe(header);
-    return () => observer.disconnect();
+    window.addEventListener("resize", sync);
+    window.addEventListener("scroll", sync, { passive: true });
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", sync);
+      window.removeEventListener("scroll", sync);
+    };
   }, []);
+
+  // Banner show/hide re-renders the header without moving scroll or its own size.
+  useLayoutEffect(() => {
+    syncHeaderOffset(headerRef.current);
+  });
 
   useEffect(() => {
     try {
-      if (!localStorage.getItem(INTRO_KEY)) setIntroOpen(true);
+      if (localStorage.getItem(INTRO_KEY)) setIntroSeen(true);
+      else setIntroOpen(true);
     } catch {
       // Private mode — skip the first-visit prompt.
     }
@@ -74,6 +95,7 @@ export function AppHeader({
     } catch {
       // Ignore quota / private-mode failures.
     }
+    setIntroSeen(true);
     setIntroOpen(false);
   }
 
@@ -145,7 +167,12 @@ export function AppHeader({
           onOpenInfo={() => setIntroOpen(true)}
         />
       </div>
-      <IntroDialog open={introOpen} onClose={closeIntro} courtCount={courtCount} />
+      <IntroDialog
+        open={introOpen}
+        onClose={closeIntro}
+        courtCount={courtCount}
+        showFeedback={introSeen}
+      />
     </header>
   );
 }
@@ -198,18 +225,16 @@ function HeaderMenu({
 }) {
   const copy = useCopy();
   const databaseUnavailable = useDatabaseUnavailable();
+  const feedback = useFeedback();
+  const feedbackOpen = feedback?.open ?? false;
   const menuId = useId();
   const [open, setOpen] = useState(false);
-
-  useEffect(() => {
-    if (introOpen) setOpen(false);
-  }, [introOpen]);
 
   useEffect(() => {
     if (!open) return;
 
     function onKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") setOpen(false);
+      if (event.key === "Escape" && !introOpen && !feedbackOpen) setOpen(false);
     }
 
     const previousOverflow = document.body.style.overflow;
@@ -219,7 +244,7 @@ function HeaderMenu({
       document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", onKeyDown);
     };
-  }, [open]);
+  }, [open, introOpen, feedbackOpen]);
 
   return (
     <div className="relative flex items-center gap-1">
@@ -238,7 +263,7 @@ function HeaderMenu({
         <HamburgerIcon open={open} />
       </button>
       <div
-        className={`fixed inset-x-0 bottom-0 z-40 overflow-hidden top-[calc(var(--app-header-height,3.5rem)-1px)] ${
+        className={`fixed inset-x-0 bottom-0 z-40 overflow-hidden top-[calc(var(--app-header-bottom,var(--app-header-height,3.5rem))-1px)] ${
           open ? "" : "pointer-events-none"
         }`}
       >
@@ -270,50 +295,34 @@ function HeaderMenu({
                   <LanguageToggle stretch />
                 </div>
               </div>
-              <ul className="border-y border-white/10">
-                <li>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setOpen(false);
-                      onOpenInfo();
-                    }}
+              <MenuItemList onNavigate={() => setOpen(false)}>
+                <MenuItem
+                  keepOpen
+                  onClick={onOpenInfo}
+                  aria-haspopup="dialog"
+                  aria-expanded={introOpen}
+                >
+                  {copy.info}
+                </MenuItem>
+                {databaseUnavailable || !feedback ? null : (
+                  <MenuItem
+                    keepOpen
+                    onClick={feedback.openFeedback}
                     aria-haspopup="dialog"
-                    aria-expanded={introOpen}
-                    className="flex w-full items-center px-4 py-3.5 text-left text-base font-medium text-white outline-none hover:bg-white/5 focus-visible:bg-white/5 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-gold/60"
+                    aria-expanded={feedbackOpen}
                   >
-                    {copy.info}
-                  </button>
-                </li>
-                {databaseUnavailable ? null : (
-                  <li>
-                    <AppLink
-                      href="/add"
-                      prefetch
-                      className="flex w-full items-center gap-2 px-4 py-3.5 text-left text-base font-bold text-gold outline-none hover:bg-white/5 focus-visible:bg-white/5 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-gold/60"
-                    >
-                      {copy.addCourt}
-                    </AppLink>
-                  </li>
+                    {copy.giveFeedback}
+                  </MenuItem>
                 )}
-                {isAdmin ? (
-                  <li>
-                    <AppLink
-                      href="/admin"
-                      onClick={() => setOpen(false)}
-                      className="flex w-full items-center px-4 py-3.5 text-left text-base font-medium text-white outline-none hover:bg-white/5 focus-visible:bg-white/5 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-gold/60"
-                    >
-                      {copy.adminNav}
-                    </AppLink>
-                  </li>
-                ) : null}
-                <AuthControl onAction={() => setOpen(false)} />
-              </ul>
+                {databaseUnavailable ? null : (
+                  <MenuItem href="/add" prefetch>
+                    {copy.addCourt}
+                  </MenuItem>
+                )}
+                {isAdmin ? <MenuItem href="/admin">{copy.adminNav}</MenuItem> : null}
+                <AuthControl />
+              </MenuItemList>
               <div className="px-4">
-                <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1 pt-4">
-                  <BuyMeCoffeeButton />
-                  <p className="text-sm text-ink/85">👈 {copy.supportDeveloper}</p>
-                </div>
                 <SourceFetchedAt
                   fetchedAtBySource={fetchedAtBySource}
                   className="mt-5 border-t border-white/10 pt-4 text-sm leading-5 text-ink-muted"

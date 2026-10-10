@@ -200,6 +200,8 @@ export function CourtGallery({
                     src={photo.url}
                     alt=""
                     draggable={false}
+                    fetchPriority={photoIndex === 0 ? "high" : "low"}
+                    loading={photoIndex === 0 ? "eager" : "lazy"}
                     className="h-full w-full object-contain"
                   />
                 </div>
@@ -253,6 +255,7 @@ export function CourtGallery({
                 <img
                   src={photo.thumbUrl}
                   alt=""
+                  loading="lazy"
                   className="aspect-square w-full rounded-lg object-cover"
                 />
               </button>

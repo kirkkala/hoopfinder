@@ -6,6 +6,7 @@ import { Bebas_Neue, Outfit } from "next/font/google";
 import { getAuthSession } from "@/auth";
 import { AdminProvider } from "@/components/admin/AdminProvider";
 import { AuthProvider } from "@/components/auth/AuthProvider";
+import { FeedbackProvider } from "@/components/brand/FeedbackDialog";
 import { LocaleProvider } from "@/components/brand/LocaleProvider";
 import { SiteBanner, type SiteBannerMessage } from "@/components/brand/SiteBanner";
 import { SITE_URL } from "@/lib/constants";
@@ -107,7 +108,9 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <LocaleProvider>
           <SiteBanner messages={messages} databaseUnavailable={databaseUnavailable}>
             <AuthProvider session={session}>
-              <AdminProvider isAdmin={session?.user?.isAdmin === true}>{children}</AdminProvider>
+              <AdminProvider isAdmin={session?.user?.isAdmin === true}>
+                <FeedbackProvider>{children}</FeedbackProvider>
+              </AdminProvider>
             </AuthProvider>
           </SiteBanner>
         </LocaleProvider>
