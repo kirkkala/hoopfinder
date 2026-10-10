@@ -1,13 +1,10 @@
 "use client";
 
 import { signOut, useSession } from "next-auth/react";
-import { AppLink } from "@/components/brand/AppLink";
 import { useCopy } from "@/components/brand/LocaleProvider";
+import { MenuItem } from "@/components/brand/MenuItem";
 
-const menuClass =
-  "flex w-full items-center px-4 py-3.5 text-left text-base font-medium text-white outline-none hover:bg-white/5 focus-visible:bg-white/5 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-gold/60";
-
-export function AuthControl({ onAction }: { onAction?: () => void }) {
+export function AuthControl() {
   const copy = useCopy();
   const { data: session, status } = useSession();
   if (status === "loading") return null;
@@ -16,27 +13,18 @@ export function AuthControl({ onAction }: { onAction?: () => void }) {
 
   if (user) {
     return (
-      <li>
-        {user.email ? <p className="px-4 pt-3.5 text-sm text-ink-muted">{user.email}</p> : null}
-        <button
-          type="button"
-          className={menuClass}
-          onClick={() => {
-            onAction?.();
-            void signOut({ callbackUrl: "/" });
-          }}
-        >
-          {copy.signOut}
-        </button>
-      </li>
+      <MenuItem
+        note={
+          user.email ? <p className="px-4 pt-3.5 text-sm text-ink-muted">{user.email}</p> : null
+        }
+        onClick={() => {
+          void signOut({ callbackUrl: "/" });
+        }}
+      >
+        {copy.signOut}
+      </MenuItem>
     );
   }
 
-  return (
-    <li>
-      <AppLink href="/login" className={menuClass} onClick={onAction}>
-        {copy.signIn}
-      </AppLink>
-    </li>
-  );
+  return <MenuItem href="/login">{copy.signIn}</MenuItem>;
 }
