@@ -23,7 +23,7 @@ test("asks for a title and a message before sending", async () => {
   render(<FeedbackDialog open onClose={vi.fn()} />);
 
   fireEvent.click(screen.getByRole("button", { name: "Lähetä palaute" }));
-  expect(await screen.findByRole("alert")).toHaveTextContent(/Tarkista otsikko/);
+  expect(await screen.findByRole("alert")).toHaveTextContent("Otsikko ja viesti ovat pakollisia.");
   expect(fetchMock).not.toHaveBeenCalled();
   expect(screen.getByRole("link", { name: "Buy Me a Coffee" })).toHaveAttribute(
     "href",
@@ -85,5 +85,7 @@ test("explains the hourly limit", async () => {
     target: { value: "Kartta" },
   });
   fireEvent.click(screen.getByRole("button", { name: "Lähetä palaute" }));
-  expect(await screen.findByRole("alert")).toHaveTextContent(/useampi viesti/);
+  expect(await screen.findByRole("alert")).toHaveTextContent(
+    "Tältä yhteydeltä tuli vähän liikaa viestejä. Kokeile myöhemmin uudelleen.",
+  );
 });

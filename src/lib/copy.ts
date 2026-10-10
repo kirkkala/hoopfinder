@@ -130,7 +130,7 @@ const messages = {
     en: "Thanks, the feedback has been sent to the developer.",
   },
   feedbackInvalid: {
-    fi: "Otsikko ja viesti ovat pakollisia..",
+    fi: "Otsikko ja viesti ovat pakollisia.",
     en: "The title and message are required.",
   },
   feedbackRateLimited: {

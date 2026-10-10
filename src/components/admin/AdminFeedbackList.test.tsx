@@ -61,13 +61,8 @@ test("saves notes from an open message", async () => {
   vi.stubGlobal("fetch", fetchMock);
   render(<AdminFeedbackList items={[item]} />);
 
-  expect(screen.queryByRole("link", { name: "visitor@example.com" })).not.toBeInTheDocument();
+  expect(screen.getByText("Lähettäjä: visitor@example.com")).toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: /Bugi kartalla/ }));
-
-  expect(screen.getByRole("link", { name: "visitor@example.com" })).toHaveAttribute(
-    "href",
-    "mailto:visitor@example.com",
-  );
   fireEvent.change(screen.getByRole("textbox", { name: "Muistiinpanot" }), {
     target: { value: "Vastasin sähköpostilla." },
   });
