@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import useEmblaCarousel from "embla-carousel-react";
 import {
   ChevronLeft,
@@ -10,9 +9,10 @@ import {
   LoaderCircle,
   Trash2,
 } from "lucide-react";
-import { useIsAdmin } from "@/components/admin/AdminProvider";
-import { AddCourtFormPanel } from "@/components/add-court/AddCourtFormPanel";
+import * as React from "react";
 import { FieldLabel } from "@/components/add-court/AddCourtFields";
+import { AddCourtFormPanel } from "@/components/add-court/AddCourtFormPanel";
+import { useIsAdmin } from "@/components/admin/AdminProvider";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { COURT_PHOTO_MAX_BYTES } from "@/lib/constants";
 import type { CourtPhoto, CourtPhotoError } from "@/lib/court-photos";
@@ -56,7 +56,9 @@ export function CourtGallery({
   React.useEffect(() => {
     if (!adding) return;
     function onKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape") closeDialog();
+      if (event.key !== "Escape" || uploading) return;
+      setError(null);
+      setAdding(false);
     }
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
@@ -137,8 +139,7 @@ export function CourtGallery({
   React.useEffect(() => {
     if (!emblaApi || items.length === 0) return;
     const api = emblaApi;
-    const startIndex =
-      pendingIndex.current ?? Math.min(api.selectedScrollSnap(), items.length - 1);
+    const startIndex = pendingIndex.current ?? Math.min(api.selectedScrollSnap(), items.length - 1);
     pendingIndex.current = null;
     api.reInit({
       loop: items.length > 1,
@@ -246,9 +247,7 @@ export function CourtGallery({
                 aria-pressed={photoIndex === selectedIndex}
                 onClick={() => emblaApi?.scrollTo(photoIndex)}
                 className={`block w-full rounded-lg outline-none ring-2 transition duration-150 focus-visible:ring-gold ${
-                  photoIndex === selectedIndex
-                    ? "ring-gold"
-                    : "ring-transparent hover:ring-gold/70"
+                  photoIndex === selectedIndex ? "ring-gold" : "ring-transparent hover:ring-gold/70"
                 }`}
               >
                 <img
@@ -287,10 +286,7 @@ export function CourtGallery({
         </p>
       ) : null}
       {adding ? (
-        <div
-          className="fixed inset-0 z-50 bg-black/60"
-          onClick={closeDialog}
-        >
+        <div className="fixed inset-0 z-50 bg-black/60" onClick={closeDialog}>
           <AddCourtFormPanel
             title={copy.addPhoto}
             collapsed={false}
@@ -390,10 +386,7 @@ export function CourtGallery({
   );
 }
 
-function messageFor(
-  copy: ReturnType<typeof useCopy>,
-  error: CourtPhotoError | undefined,
-): string {
+function messageFor(copy: ReturnType<typeof useCopy>, error: CourtPhotoError | undefined): string {
   if (error === "too-large") return copy.photoTooLarge;
   if (error === "type") return copy.photoType;
   if (error === "full") return copy.photosFull;

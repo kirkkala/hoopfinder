@@ -38,7 +38,9 @@ async function main() {
       : keepPrevious("OpenStreetMap", previous?.osm);
 
   if (!lipas || !osm) {
-    throw new Error("Need a LIPAS and OSM snapshot. Fix the failing fetch or keep data/courts.json.");
+    throw new Error(
+      "Need a LIPAS and OSM snapshot. Fix the failing fetch or keep data/courts.json.",
+    );
   }
 
   const next = { lipas: serialize(lipas), osm: serialize(osm) };
@@ -93,7 +95,10 @@ async function fetchOrKeep(
     console.log(`Fetching ${label}…`);
     const courts = await fetchCourts();
     if (courts.length === 0) throw new Error("no courts");
-    if (previous && JSON.stringify(sortCourts(previous.courts)) === JSON.stringify(sortCourts(courts))) {
+    if (
+      previous &&
+      JSON.stringify(sortCourts(previous.courts)) === JSON.stringify(sortCourts(courts))
+    ) {
       console.log(`${label} ${courts.length} (unchanged)`);
       return previous;
     }

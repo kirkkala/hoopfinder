@@ -27,8 +27,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 }
 
 function latestTimestamp(values: Array<string | undefined>): string | undefined {
-  const dates = values
-    .filter((value): value is string => Boolean(value))
-    .sort();
+  const dates = values.filter((value): value is string => Boolean(value)).sort();
   return dates.at(-1);
 }

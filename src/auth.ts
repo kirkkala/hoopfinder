@@ -1,7 +1,7 @@
-import { cache } from "react";
 import type { NextAuthOptions } from "next-auth";
 import { getServerSession } from "next-auth";
 import Google from "next-auth/providers/google";
+import { cache } from "react";
 import { isAdminEmail } from "@/lib/admin";
 import "@/types/next-auth";
 
@@ -36,21 +36,15 @@ export const authOptions: NextAuthOptions = {
 
 export function googleAuthConfigured(): boolean {
   return Boolean(
-    process.env.AUTH_SECRET &&
-      process.env.GOOGLE_CLIENT_ID &&
-      process.env.GOOGLE_CLIENT_SECRET,
+    process.env.AUTH_SECRET && process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET,
   );
 }
 
 /** Relative in-app paths only, so the post-login redirect cannot leave the site. */
-export function safeCallbackUrl(
-  value: string | string[] | undefined,
-  fallback = "/admin",
-): string {
+export function safeCallbackUrl(value: string | string[] | undefined, fallback = "/admin"): string {
   const raw = Array.isArray(value) ? value[0] : value;
   if (
-    !raw ||
-    !raw.startsWith("/") ||
+    !raw?.startsWith("/") ||
     raw.startsWith("//") ||
     raw.startsWith("/login") ||
     raw.startsWith("/api")

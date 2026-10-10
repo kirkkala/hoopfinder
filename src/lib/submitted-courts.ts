@@ -1,24 +1,24 @@
 import { randomBytes } from "node:crypto";
 import { cache } from "react";
 import { z } from "zod";
+import { adminEmails } from "@/lib/admin";
 import { getCourtCatalog } from "@/lib/catalog";
 import {
   ADMIN_CODES,
   COURT_STATUS_CODES,
+  type Court,
   courtHref,
   courtPlacementBlocked,
+  type ExplorerCourt,
   emptyAmenities,
   FIELD_TYPE_CODES,
   HOOP_HEIGHT_CODES,
   isTooCloseToCourt,
   OWNER_CODES,
-  submittedCourtKey,
   SURFACE_CODES,
+  submittedCourtKey,
   WATER_POINT_CODES,
-  type Court,
-  type ExplorerCourt,
 } from "@/lib/courts";
-import { adminEmails } from "@/lib/admin";
 import { withDb } from "@/lib/db";
 import { sendTemplateEmail } from "@/lib/email";
 import { isInFinland } from "@/lib/sources/finland";
@@ -114,9 +114,7 @@ export async function listSubmittedCourts(): Promise<ExplorerCourt[]> {
   });
   if (!rows) return [];
   const { courts } = await getCourtCatalog();
-  return rows
-    .filter((row) => !isTooCloseToCourt(row, courts))
-    .map(toExplorerCourt);
+  return rows.filter((row) => !isTooCloseToCourt(row, courts)).map(toExplorerCourt);
 }
 
 /** Catalog courts plus submitted courts that are not already covered by it. */
@@ -131,9 +129,7 @@ export const countPublicCourts = cache(async (): Promise<number> => {
   }
 });
 
-export async function listAdminSubmittedCourts(): Promise<
-  AdminSubmittedCourt[] | null
-> {
+export async function listAdminSubmittedCourts(): Promise<AdminSubmittedCourt[] | null> {
   const rows = await withDb((sql) => {
     return sql<AdminRow[]>`
       SELECT id, name, address, email, lat, lon, status, created_at, details
@@ -331,9 +327,7 @@ export async function setSubmittedCourtStatus(
   id: string,
   status: Exclude<SubmittedStatus, "unconfirmed">,
   origin: string,
-): Promise<
-  { court: ExplorerCourt } | { error: "unavailable" | "not-found" | "email" }
-> {
+): Promise<{ court: ExplorerCourt } | { error: "unavailable" | "not-found" | "email" }> {
   const key = submittedCourtKey(id);
   if (!/^\d+$/.test(key)) return { error: "not-found" };
   const updated = await withDb(async (sql) => {

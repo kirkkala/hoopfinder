@@ -1,8 +1,7 @@
 import type { ReactNode } from "react";
 
-const MAP_CHROME_OFFSET =
-  "calc(max(0.75rem, env(safe-area-inset-top)) + 4.25rem)";
-
+const MAP_CHROME_OFFSET = "calc(max(0.75rem, env(safe-area-inset-top)) + 4.25rem)";
+const MAP_PANEL_TOP = "max(0.75rem, env(safe-area-inset-top))";
 const MAP_PANEL_BOTTOM = "max(0.75rem, env(safe-area-inset-bottom))";
 
 export function AddCourtFormPanel({
@@ -24,7 +23,7 @@ export function AddCourtFormPanel({
     <div
       inert={inert}
       className="pointer-events-none absolute inset-x-0 z-20 flex items-start justify-center px-3 sm:px-4"
-      style={{ top: MAP_CHROME_OFFSET, bottom: MAP_PANEL_BOTTOM }}
+      style={{ top: collapsed ? MAP_CHROME_OFFSET : MAP_PANEL_TOP, bottom: MAP_PANEL_BOTTOM }}
     >
       <div
         role="dialog"
@@ -36,23 +35,16 @@ export function AddCourtFormPanel({
         <div
           className={`flex shrink-0 flex-wrap items-center justify-between gap-x-2 gap-y-2 px-3 py-2.5 ${collapsed ? "" : "border-b border-white/10"}`}
         >
-          <p
-            id="add-court-form-title"
-            className="font-display text-lg tracking-wide text-gold"
-          >
+          <p id="add-court-form-title" className="font-display text-lg tracking-wide text-gold">
             {title}
           </p>
           {header}
         </div>
         {collapsed ? null : (
           <>
-            <div className="min-h-0 overflow-y-auto overscroll-contain px-3 py-2">
-              {children}
-            </div>
+            <div className="min-h-0 overflow-y-auto overscroll-contain px-3 py-2">{children}</div>
             {footer ? (
-              <div className="shrink-0 border-t border-white/10 px-3 py-2.5">
-                {footer}
-              </div>
+              <div className="shrink-0 border-t border-white/10 px-3 py-2.5">{footer}</div>
             ) : null}
           </>
         )}

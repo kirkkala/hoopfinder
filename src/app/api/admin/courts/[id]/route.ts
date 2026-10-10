@@ -3,8 +3,8 @@ import { requireAdmin } from "@/auth";
 import { siteOrigin } from "@/lib/site-origin";
 import {
   deleteSubmittedCourt,
-  setSubmittedCourtStatus,
   SubmittedCourtSchema,
+  setSubmittedCourtStatus,
   updateSubmittedCourt,
 } from "@/lib/submitted-courts";
 
@@ -14,10 +14,7 @@ const StatusSchema = z.object({
   status: z.enum(["pending", "published"]),
 });
 
-export async function POST(
-  request: Request,
-  context: RouteContext<"/api/admin/courts/[id]">,
-) {
+export async function POST(request: Request, context: RouteContext<"/api/admin/courts/[id]">) {
   const denied = await requireAdmin();
   if (denied) return denied;
 
@@ -39,14 +36,9 @@ export async function POST(
   }
 
   try {
-    const result = await setSubmittedCourtStatus(
-      id,
-      parsed.data.status,
-      siteOrigin(request),
-    );
+    const result = await setSubmittedCourtStatus(id, parsed.data.status, siteOrigin(request));
     if ("error" in result) {
-      const status =
-        result.error === "unavailable" || result.error === "email" ? 503 : 404;
+      const status = result.error === "unavailable" || result.error === "email" ? 503 : 404;
       return Response.json({ error: result.error }, { status });
     }
     return Response.json(result);
@@ -56,10 +48,7 @@ export async function POST(
   }
 }
 
-export async function PATCH(
-  request: Request,
-  context: RouteContext<"/api/admin/courts/[id]">,
-) {
+export async function PATCH(request: Request, context: RouteContext<"/api/admin/courts/[id]">) {
   const denied = await requireAdmin();
   if (denied) return denied;
 
@@ -93,10 +82,7 @@ export async function PATCH(
   }
 }
 
-export async function DELETE(
-  _request: Request,
-  context: RouteContext<"/api/admin/courts/[id]">,
-) {
+export async function DELETE(_request: Request, context: RouteContext<"/api/admin/courts/[id]">) {
   const denied = await requireAdmin();
   if (denied) return denied;
 

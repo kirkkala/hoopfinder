@@ -3,8 +3,8 @@ import { headers } from "next/headers";
 import { ConfirmCourtView } from "@/components/add-court/ConfirmCourtView";
 import { ThanksRedirect } from "@/components/add-court/ThanksRedirect";
 import { getCourtCatalog } from "@/lib/catalog";
-import { courtHref } from "@/lib/courts";
 import { getCopy } from "@/lib/copy";
+import { courtHref } from "@/lib/courts";
 import { siteOrigin } from "@/lib/site-origin";
 import { confirmSubmittedCourt, countPublicCourts } from "@/lib/submitted-courts";
 
@@ -18,20 +18,11 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function ConfirmCourtPage({
-  params,
-}: {
-  params: Promise<{ token: string }>;
-}) {
+export default async function ConfirmCourtPage({ params }: { params: Promise<{ token: string }> }) {
   const { token } = await params;
   const result = await confirmSubmittedCourt(token, siteOrigin(await headers()));
   if (typeof result === "string") {
-    return (
-      <ThanksRedirect
-        href={courtHref({ id: result, source: "pending" })}
-        courtId={result}
-      />
-    );
+    return <ThanksRedirect href={courtHref({ id: result, source: "pending" })} courtId={result} />;
   }
 
   const [{ fetchedAtBySource }, courtCount] = await Promise.all([

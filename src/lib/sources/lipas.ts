@@ -15,10 +15,7 @@ const LipasListSchema = z.object({
 const LipasSiteSchema = z.looseObject({
   "lipas-id": z.number(),
   name: z.string(),
-  "name-localized": z
-    .looseObject({ en: z.string().optional() })
-    .optional()
-    .nullable(),
+  "name-localized": z.looseObject({ en: z.string().optional() }).optional().nullable(),
   status: z.string().optional().nullable(),
   comment: z.string().optional().nullable(),
   www: z.string().optional().nullable(),

@@ -1,22 +1,22 @@
 "use client";
 
-import { Fragment, useEffect, useId, useLayoutEffect, useRef, useState } from "react";
-import { usePathname } from "next/navigation";
 import { basketball } from "@lucide/lab";
-import { Icon, Plus, X } from "lucide-react";
-import { AppLink } from "@/components/brand/AppLink";
-import { IntroDialog } from "@/components/brand/IntroDialog";
-import { LanguageToggle } from "@/components/brand/LanguageToggle";
-import { BuyMeCoffeeButton } from "@/components/brand/BuyMeCoffeeButton";
-import { SourceCredits } from "@/components/brand/AppFooter";
-import { useCopy } from "@/components/brand/LocaleProvider";
-import { ShowAnnouncementButton, useDatabaseUnavailable } from "@/components/brand/SiteBanner";
-import { AppWordmark } from "@/components/brand/AppWordmark";
+import { Icon, Plus } from "lucide-react";
+import { usePathname } from "next/navigation";
+import { Fragment, useEffect, useId, useLayoutEffect, useRef, useState } from "react";
 import { useIsAdmin } from "@/components/admin/AdminProvider";
 import { AuthControl } from "@/components/auth/AuthControl";
-import { APP_VERSION } from "@/lib/constants";
+import { SourceCredits } from "@/components/brand/AppFooter";
+import { AppLink } from "@/components/brand/AppLink";
+import { AppWordmark } from "@/components/brand/AppWordmark";
+import { BuyMeCoffeeButton } from "@/components/brand/BuyMeCoffeeButton";
+import { IntroDialog } from "@/components/brand/IntroDialog";
+import { LanguageToggle } from "@/components/brand/LanguageToggle";
+import { useCopy } from "@/components/brand/LocaleProvider";
+import { ShowAnnouncementButton, useDatabaseUnavailable } from "@/components/brand/SiteBanner";
 import type { FetchedAtBySource } from "@/lib/catalog";
-import { mq, useMinWidth, wide } from "@/lib/layout";
+import { APP_VERSION } from "@/lib/constants";
+import { wide } from "@/lib/layout";
 import { COURT_SOURCES } from "@/lib/sources";
 import { formatFetchedAt } from "@/lib/time";
 
@@ -90,7 +90,7 @@ export function AppHeader({
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="court-arc absolute inset-0 opacity-40" />
       </div>
-      <div className="relative flex items-center gap-3 px-3 py-2 sm:px-4 sm:py-3 lg:px-6">
+      <div className="relative flex items-center gap-1.5 px-3 py-2 sm:px-4 sm:py-3 lg:px-6">
         <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
           <AppLink
             href="/"
@@ -113,33 +113,18 @@ export function AppHeader({
                     <AppWordmark region={copy.region} />
                   </span>
                 )}
-                <span className="mt-0.5 hidden text-sm text-ink/70 sm:block">
-                  {copy.tagline}
-                </span>
+                <span className="mt-0.5 hidden text-sm text-ink/70 sm:block">{copy.tagline}</span>
               </span>
             )}
           </AppLink>
           {title ? (
-            <>
-              <h1 className="min-w-0 truncate font-display text-xl leading-none tracking-wide text-gold sm:text-2xl">
-                {title}
-              </h1>
-              <AppLink
-                href="/"
-                className="inline-flex shrink-0 items-center gap-1 rounded-sm px-2 py-1.5 text-sm font-medium text-ink/80 outline-none hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-gold/60"
-              >
-                <X aria-hidden className="size-4" />
-                {copy.addCourtExit}
-              </AppLink>
-            </>
+            <h1 className="min-w-0 truncate font-display text-xl leading-none tracking-wide text-gold sm:text-2xl">
+              {title}
+            </h1>
           ) : (
             <>
-              <BetaBadge />
               <div className={wide.flex}>
-                <InfoMenuButton
-                  introOpen={introOpen}
-                  onOpenInfo={() => setIntroOpen(true)}
-                />
+                <InfoMenuButton introOpen={introOpen} onOpenInfo={() => setIntroOpen(true)} />
               </div>
               <AddCourtNavLink />
               {isAdmin ? <AdminNavLink /> : null}
@@ -160,11 +145,7 @@ export function AppHeader({
           onOpenInfo={() => setIntroOpen(true)}
         />
       </div>
-      <IntroDialog
-        open={introOpen}
-        onClose={closeIntro}
-        courtCount={courtCount}
-      />
+      <IntroDialog open={introOpen} onClose={closeIntro} courtCount={courtCount} />
     </header>
   );
 }
@@ -192,7 +173,7 @@ function SourceFetchedAt({
         {rows.map(({ source, iso }, index) => (
           <Fragment key={source.id}>
             {index > 0 ? " , " : null}
-              {source.shortLabel}
+            {source.shortLabel}
             {": "}
             <time dateTime={iso} className={timeClassName}>
               {formatFetchedAt(iso, true)}
@@ -284,9 +265,7 @@ function HeaderMenu({
             <div className="min-w-0 pr-[max(0px,env(safe-area-inset-right))]">
               <div className="px-4 pt-5 pb-4">
                 <p className="text-sm font-bold text-white">{APP_VERSION}</p>
-                <p className="mt-1 text-sm leading-5 text-ink-muted">
-                  {copy.betaTooltip}
-                </p>
+                <p className="mt-1 text-sm leading-5 text-ink-muted">{copy.betaTooltip}</p>
                 <div className="mt-4">
                   <LanguageToggle stretch />
                 </div>
@@ -311,7 +290,7 @@ function HeaderMenu({
                     <AppLink
                       href="/add"
                       prefetch
-                      className="flex w-full items-center gap-2 px-4 py-3.5 text-left text-base font-medium text-white outline-none hover:bg-white/5 focus-visible:bg-white/5 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-gold/60"
+                      className="flex w-full items-center gap-2 px-4 py-3.5 text-left text-base font-bold text-gold outline-none hover:bg-white/5 focus-visible:bg-white/5 focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-gold/60"
                     >
                       {copy.addCourt}
                     </AppLink>
@@ -363,8 +342,7 @@ function HamburgerIcon({ open }: { open: boolean }) {
     borderRadius: 999,
     background: "currentColor",
     transformOrigin: "center",
-    transition:
-      "transform 300ms cubic-bezier(.22, 1, .36, 1), opacity 200ms ease",
+    transition: "transform 300ms cubic-bezier(.22, 1, .36, 1), opacity 200ms ease",
   };
 
   return (
@@ -373,9 +351,7 @@ function HamburgerIcon({ open }: { open: boolean }) {
         style={{
           ...bar,
           top: 0,
-          transform: open
-            ? "translateY(6px) rotate(45deg)"
-            : "translateY(0) rotate(0deg)",
+          transform: open ? "translateY(6px) rotate(45deg)" : "translateY(0) rotate(0deg)",
         }}
       />
       <span
@@ -390,9 +366,7 @@ function HamburgerIcon({ open }: { open: boolean }) {
         style={{
           ...bar,
           top: 12,
-          transform: open
-            ? "translateY(-6px) rotate(-45deg)"
-            : "translateY(0) rotate(0deg)",
+          transform: open ? "translateY(-6px) rotate(-45deg)" : "translateY(0) rotate(0deg)",
         }}
       />
     </span>
@@ -408,9 +382,7 @@ function AdminNavLink() {
       href="/admin"
       aria-current={onAdminPage ? "page" : undefined}
       className={`hidden wide:inline-flex shrink-0 items-center whitespace-nowrap rounded-sm px-2.5 py-1.5 text-sm font-medium outline-none focus-visible:ring-2 focus-visible:ring-gold/60 ${
-        onAdminPage
-          ? "text-gold"
-          : "text-ink/80 hover:bg-white/10 hover:text-white"
+        onAdminPage ? "text-gold" : "text-ink/80 hover:bg-white/10 hover:text-white"
       }`}
     >
       {copy.adminNav}
@@ -421,42 +393,21 @@ function AdminNavLink() {
 function AddCourtNavLink() {
   const copy = useCopy();
   const databaseUnavailable = useDatabaseUnavailable();
-  const onAddPage = usePathname() === "/add";
   if (databaseUnavailable) return null;
 
   return (
     <AppLink
-      href={onAddPage ? "/" : "/add"}
+      href="/add"
       prefetch
-      aria-current={onAddPage ? "page" : undefined}
-      aria-label={onAddPage ? copy.addCourtExit : undefined}
-      className={`group inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-sm px-2.5 py-1.5 text-sm font-medium outline-none focus-visible:ring-2 focus-visible:ring-gold/60 ${
-        onAddPage
-          ? "text-gold"
-          : "text-ink/80 hover:bg-white/10 hover:text-white"
-      }`}
+      className="group inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full border border-gold/80 bg-gold/15 px-2.5 py-1 text-sm font-bold text-gold outline-none hover:bg-gold hover:text-asphalt focus-visible:ring-2 focus-visible:ring-gold/60"
     >
-      {onAddPage ? null : (
-        <Plus aria-hidden className="size-3.5 stroke-[2.5]" />
-      )}
+      <Plus aria-hidden className="size-3.5 stroke-[2.5]" />
       {copy.addCourt}
-      {onAddPage ? (
-        <X
-          aria-hidden
-          className="size-3.5 stroke-2 opacity-70 transition duration-150 group-hover:stroke-[3] group-hover:opacity-100 group-hover:text-white group-focus-visible:stroke-[3] group-focus-visible:opacity-100 group-focus-visible:text-white"
-        />
-      ) : null}
     </AppLink>
   );
 }
 
-function InfoMenuButton({
-  introOpen,
-  onOpenInfo,
-}: {
-  introOpen: boolean;
-  onOpenInfo: () => void;
-}) {
+function InfoMenuButton({ introOpen, onOpenInfo }: { introOpen: boolean; onOpenInfo: () => void }) {
   const copy = useCopy();
 
   return (
@@ -468,36 +419,6 @@ function InfoMenuButton({
       className="shrink-0 whitespace-nowrap rounded-sm px-2.5 py-1.5 text-sm font-medium text-ink/80 outline-none hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-gold/60"
     >
       {copy.info}
-    </button>
-  );
-}
-
-function BetaBadge() {
-  const copy = useCopy();
-  const showTooltip = useMinWidth(mq.wide);
-  const chip =
-    "inline-flex rounded-full bg-gold/20 px-1.5 py-px font-sans text-[9px] font-bold uppercase tracking-[0.12em] text-gold sm:px-2 sm:py-0.5 sm:text-[11px] sm:tracking-[0.14em]";
-
-  if (!showTooltip) {
-    return <span className={chip}>Beta</span>;
-  }
-
-  return (
-    <button
-      type="button"
-      className={`group relative ${chip} outline-none hover:bg-gold/30 focus-visible:ring-2 focus-visible:ring-gold/60`}
-      aria-describedby="beta-tooltip"
-    >
-      Beta
-      <span
-        id="beta-tooltip"
-        role="tooltip"
-        className="pointer-events-none absolute top-[calc(100%+10px)] left-0 z-50 w-56 max-w-[calc(100vw-2rem)] rounded-xl border border-white/10 bg-panel px-3 py-2.5 text-left text-xs font-normal normal-case leading-5 tracking-normal text-ink/90 opacity-0 shadow-[0_12px_32px_rgb(0_0_0_/_0.5)] transition-opacity duration-150 sm:left-1/2 sm:-translate-x-1/2 group-hover:opacity-100 group-focus:opacity-100"
-      >
-        <span className="absolute -top-1 left-1/2 size-2 -translate-x-1/2 rotate-45 border-t border-l border-white/10 bg-panel" />
-        <span className="block font-bold text-white">{APP_VERSION}</span>
-        <span className="mt-1 block">{copy.betaTooltip}</span>
-      </span>
     </button>
   );
 }

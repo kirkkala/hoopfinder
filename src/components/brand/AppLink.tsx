@@ -1,7 +1,7 @@
 "use client";
 
-import Link, { useLinkStatus } from "next/link";
 import { LoaderCircle } from "lucide-react";
+import Link, { useLinkStatus } from "next/link";
 import type { ComponentProps } from "react";
 
 /** In-app link that shows a spinner while its navigation is pending. */

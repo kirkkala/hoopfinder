@@ -4,8 +4,6 @@ export function formatFetchedAt(iso: string, dateOnly = false): string {
     day: "numeric",
     month: "numeric",
     year: "numeric",
-    ...(dateOnly
-      ? {}
-      : { hour: "2-digit", minute: "2-digit", hour12: false }),
+    ...(dateOnly ? {} : { hour: "2-digit", minute: "2-digit", hour12: false }),
   }).format(new Date(iso));
 }

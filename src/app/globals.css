@@ -14,12 +14,6 @@
   --breakpoint-split: 64rem;
 }
 
-html,
-body {
-  height: 100%;
-  overscroll-behavior: none;
-}
-
 html {
   scroll-padding-top: var(--app-header-height, 3.5rem);
 }
@@ -32,9 +26,16 @@ a[href],
 
 .court-arc {
   background:
-    radial-gradient(circle at 50% 120%, transparent 38%, rgb(255 212 130 / 0.08) 39%, transparent 40%),
+    radial-gradient(
+      circle at 50% 120%,
+      transparent 38%,
+      rgb(255 212 130 / 0.08) 39%,
+      transparent 40%
+    ),
     linear-gradient(rgb(255 212 130 / 0.08) 1px, transparent 1px);
-  background-size: auto, 100% 18px;
+  background-size:
+    auto,
+    100% 18px;
 }
 
 .maplibregl-popup-content {
@@ -56,6 +57,9 @@ a[href],
 .maplibregl-popup-anchor-bottom-left .maplibregl-popup-tip,
 .maplibregl-popup-anchor-bottom-right .maplibregl-popup-tip {
   border-top-color: var(--color-panel);
+  position: relative;
+  z-index: 1;
+  margin-top: -1px;
 }
 
 .maplibregl-popup-anchor-left .maplibregl-popup-tip {

@@ -1,10 +1,10 @@
 "use client";
 
-import { AppLink } from "@/components/brand/AppLink";
 import { basketball } from "@lucide/lab";
 import { Icon } from "lucide-react";
 import { AppFooter } from "@/components/brand/AppFooter";
 import { AppHeader } from "@/components/brand/AppHeader";
+import { AppLink } from "@/components/brand/AppLink";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import type { FetchedAtBySource } from "@/lib/catalog";
 
@@ -21,10 +21,7 @@ export function ConfirmCourtView({
 
   return (
     <div className="flex min-h-dvh flex-col bg-asphalt">
-      <AppHeader
-        fetchedAtBySource={fetchedAtBySource}
-        courtCount={courtCount}
-      />
+      <AppHeader fetchedAtBySource={fetchedAtBySource} courtCount={courtCount} />
       <main className="mx-auto flex w-full max-w-lg flex-1 flex-col items-center justify-center gap-3 px-6 py-10 text-center">
         <Icon iconNode={basketball} className="size-10 text-gold" aria-hidden />
         <h1 className="font-display text-4xl tracking-wide text-white">

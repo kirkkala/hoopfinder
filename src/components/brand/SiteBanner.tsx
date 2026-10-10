@@ -1,15 +1,16 @@
 "use client";
 
+import { Bug, CircleCheck, Info, TriangleAlert, X } from "lucide-react";
+import { usePathname } from "next/navigation";
 import {
   createContext,
+  type ReactNode,
   useCallback,
   useContext,
   useLayoutEffect,
   useRef,
   useState,
-  type ReactNode,
 } from "react";
-import { Bug, CircleCheck, Info, TriangleAlert, X } from "lucide-react";
 import { useCopy, useLocale } from "@/components/brand/LocaleProvider";
 
 const DatabaseUnavailableContext = createContext(false);
@@ -47,6 +48,20 @@ export function SiteBanner({
 }) {
   const { locale } = useLocale();
   const copy = useCopy();
+  const pathname = usePathname();
+  const lockScroll = pathname === "/" || pathname === "/add";
+
+  useLayoutEffect(() => {
+    document.documentElement.classList.toggle("overflow-hidden", lockScroll);
+    document.documentElement.classList.toggle("overscroll-none", lockScroll);
+    document.body.classList.toggle("overflow-hidden", lockScroll);
+    document.body.classList.toggle("overscroll-none", lockScroll);
+    return () => {
+      document.documentElement.classList.remove("overflow-hidden", "overscroll-none");
+      document.body.classList.remove("overflow-hidden", "overscroll-none");
+    };
+  }, [lockScroll]);
+
   const [dismissedIds, setDismissedIds] = useState<string[]>([]);
   const [recallFocusId, setRecallFocusId] = useState<string | null>(null);
 
@@ -85,36 +100,38 @@ export function SiteBanner({
 
   return (
     <DatabaseUnavailableContext.Provider value={databaseUnavailable}>
-      <AnnouncementContext.Provider
-        value={{ dismissed, reopen, recallFocusId, clearRecallFocus }}
-      >
-        {visible.map((message) => (
-          <div
-            key={announcementId(message)}
-            className={`relative ${bannerClass(message.tone)}`}
-          >
-            <p
-              role="status"
-              className={`flex items-start justify-start gap-1.5 py-1 text-left text-sm leading-5 font-medium sm:justify-center sm:text-center ${
-                message.dismissible ? "pr-10 pl-3 sm:px-10" : "px-3"
-              }`}
+      <AnnouncementContext.Provider value={{ dismissed, reopen, recallFocusId, clearRecallFocus }}>
+        <div className={lockScroll ? "flex h-dvh flex-col overflow-hidden" : undefined}>
+          {visible.map((message) => (
+            <div
+              key={announcementId(message)}
+              className={`relative shrink-0 ${bannerClass(message.tone)}`}
             >
-              <BannerIcon tone={message.tone} />
-              <span className="min-w-0">{message[locale]}</span>
-            </p>
-            {message.dismissible ? (
-              <button
-                type="button"
-                onClick={() => dismiss(message)}
-                aria-label={copy.closeAnnouncement}
-                className="absolute top-1/2 right-1.5 grid size-7 -translate-y-1/2 place-items-center rounded-full outline-none hover:bg-black/15 focus-visible:ring-2 focus-visible:ring-current"
+              <p
+                role="status"
+                className={`flex items-start justify-start gap-1.5 py-1 text-left text-sm leading-5 font-medium sm:justify-center sm:text-center ${
+                  message.dismissible ? "pr-10 pl-3 sm:px-10" : "px-3"
+                }`}
               >
-                <X className="size-4" aria-hidden />
-              </button>
-            ) : null}
+                <BannerIcon tone={message.tone} />
+                <span className="min-w-0">{message[locale]}</span>
+              </p>
+              {message.dismissible ? (
+                <button
+                  type="button"
+                  onClick={() => dismiss(message)}
+                  aria-label={copy.closeAnnouncement}
+                  className="absolute top-1/2 right-1.5 grid size-7 -translate-y-1/2 place-items-center rounded-full outline-none hover:bg-black/15 focus-visible:ring-2 focus-visible:ring-current"
+                >
+                  <X className="size-4" aria-hidden />
+                </button>
+              ) : null}
+            </div>
+          ))}
+          <div className={lockScroll ? "min-h-0 flex-1 overflow-hidden" : undefined}>
+            {children}
           </div>
-        ))}
-        {children}
+        </div>
       </AnnouncementContext.Provider>
     </DatabaseUnavailableContext.Provider>
   );
@@ -204,13 +221,7 @@ function BannerIcon({ tone }: { tone: SiteBannerMessage["tone"] }) {
   return <BannerGlyph tone={tone} className="mt-0.5 size-4 shrink-0" />;
 }
 
-function BannerGlyph({
-  tone,
-  className,
-}: {
-  tone: SiteBannerMessage["tone"];
-  className: string;
-}) {
+function BannerGlyph({ tone, className }: { tone: SiteBannerMessage["tone"]; className: string }) {
   if (tone === "error") return <Bug className={className} aria-hidden />;
   if (tone === "warning") return <TriangleAlert className={className} aria-hidden />;
   if (tone === "notice") return <Info className={className} aria-hidden />;

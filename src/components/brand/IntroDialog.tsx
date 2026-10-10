@@ -1,12 +1,12 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
 import { basketball } from "@lucide/lab";
 import { ChevronDown, Icon, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
+import { AppWordmark } from "@/components/brand/AppWordmark";
 import { LanguageToggle } from "@/components/brand/LanguageToggle";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { LocateMeButton } from "@/components/LocateMeButton";
-import { AppWordmark } from "@/components/brand/AppWordmark";
 import { useLocationStatus } from "@/lib/origin";
 
 export function IntroDialog({
@@ -43,8 +43,7 @@ export function IntroDialog({
 
     const node = dialog;
     function update() {
-      const remaining =
-        node.scrollHeight - node.scrollTop - node.clientHeight;
+      const remaining = node.scrollHeight - node.scrollTop - node.clientHeight;
       setShowScrollHint(remaining > 24);
     }
 
@@ -94,17 +93,12 @@ export function IntroDialog({
             </p>
             <LanguageToggle />
           </div>
-          <h2
-            id="intro-title"
-            className="mt-1 font-display text-3xl tracking-wide text-white"
-          >
+          <h2 id="intro-title" className="mt-1 font-display text-3xl tracking-wide text-white">
             {copy.introTitle}
           </h2>
           <p className="mt-3 text-base leading-6 text-ink/80">
             {leadBefore}
-            <strong className="text-md font-bold tracking-wide text-gold">
-              {courtCount}
-            </strong>
+            <strong className="text-md font-bold tracking-wide text-gold">{courtCount}</strong>
             {leadAfter}
           </p>
           <IntroLocationPrompt />
@@ -150,23 +144,15 @@ function IntroLocationPrompt() {
   return (
     <div
       className={`mt-5 rounded-2xl border px-4 py-3 ${
-        granted
-          ? "border-emerald-400/25 bg-emerald-400/10"
-          : "border-gold/20 bg-gold/5"
+        granted ? "border-emerald-400/25 bg-emerald-400/10" : "border-gold/20 bg-gold/5"
       }`}
     >
       {granted ? (
-        <p className="text-base leading-6 text-ink/85">
-          {copy.introLocationGranted}
-        </p>
+        <p className="text-base leading-6 text-ink/85">{copy.introLocationGranted}</p>
       ) : (
         <>
-          <p className="text-base leading-6 text-ink/85">
-            {copy.introLocationBenefit}
-          </p>
-          <p className="mt-1 text-sm text-ink-muted">
-            {copy.introLocationOptional}
-          </p>
+          <p className="text-base leading-6 text-ink/85">{copy.introLocationBenefit}</p>
+          <p className="mt-1 text-sm text-ink-muted">{copy.introLocationOptional}</p>
           <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
             <LocateMeButton status={status} onClick={request} />
             {status === "denied" ? (
