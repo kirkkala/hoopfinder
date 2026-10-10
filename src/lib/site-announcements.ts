@@ -8,7 +8,7 @@ export const siteAnnouncements: SiteBannerMessage[] = [
   {
     tone: "notice",
     dismissible: true,
-    fi: "Uutta Hoop Finderissä: Kentän sivulle voi nyt lisätä kuvia. Auta tekemään palvelusta parempi!",
-    en: "New in Hoop Finder: You can now add photos to court pages. Help make the service better!",
+    fi: "Uutta: Kävijät voivat nyt lisätä kuvia kentille. Auta tekemään palvelusta parempi!",
+    en: "New: Visitors can now add photos to courts. Help make the service better!",
   },
 ];

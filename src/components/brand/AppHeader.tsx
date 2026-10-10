@@ -90,7 +90,7 @@ export function AppHeader({
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div className="court-arc absolute inset-0 opacity-40" />
       </div>
-      <div className="relative flex items-center gap-3 px-3 py-2 sm:px-4 sm:py-3 lg:px-6">
+      <div className="relative flex items-center gap-1.5 px-3 py-2 sm:px-4 sm:py-3 lg:px-6">
         <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
           <AppLink
             href="/"
@@ -412,7 +412,7 @@ function AddCourtNavLink() {
       prefetch
       aria-current={onAddPage ? "page" : undefined}
       aria-label={onAddPage ? copy.addCourtExit : undefined}
-      className={`group inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-sm px-2.5 py-1.5 text-sm font-medium outline-none focus-visible:ring-2 focus-visible:ring-gold/60 ${
+      className={`group inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-sm px-1 py-1.5 text-sm font-medium outline-none focus-visible:ring-2 focus-visible:ring-gold/60 ${
         onAddPage ? "text-gold" : "text-ink/80 hover:bg-white/10 hover:text-white"
       }`}
     >
