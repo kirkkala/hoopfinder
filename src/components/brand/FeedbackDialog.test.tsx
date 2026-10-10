@@ -25,6 +25,11 @@ test("asks for a title and a message before sending", async () => {
   fireEvent.click(screen.getByRole("button", { name: "Lähetä palaute" }));
   expect(await screen.findByRole("alert")).toHaveTextContent(/Tarkista otsikko/);
   expect(fetchMock).not.toHaveBeenCalled();
+  expect(screen.getByRole("link", { name: "Buy Me a Coffee" })).toHaveAttribute(
+    "href",
+    "https://www.buymeacoffee.com/kirkkala",
+  );
+  expect(screen.getByText("Tue halutessasi kehitystä ja ylläpitoa.")).toBeInTheDocument();
 });
 
 test("stores a message and shows thanks", async () => {
@@ -46,7 +51,9 @@ test("stores a message and shows thanks", async () => {
   });
   fireEvent.click(screen.getByRole("button", { name: "Lähetä palaute" }));
 
-  expect(await screen.findByText("Kiitos, palaute on perillä.")).toBeInTheDocument();
+  expect(
+    await screen.findByText("Kiitos, palaute on toimitettu kehittäjälle."),
+  ).toBeInTheDocument();
   expect(fetchMock).toHaveBeenCalledWith("/api/feedback", {
     method: "POST",
     headers: { "Content-Type": "application/json" },

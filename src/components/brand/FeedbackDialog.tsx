@@ -12,6 +12,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { BuyMeCoffeeButton } from "@/components/brand/BuyMeCoffeeButton";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { FeedbackSchema } from "@/lib/feedback";
 
@@ -224,6 +225,12 @@ export function FeedbackDialog({ open, onClose }: { open: boolean; onClose: () =
               </button>
             </form>
           )}
+          <div className="mt-6 rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-center">
+            <p className="text-sm leading-5 text-ink/80">{copy.supportDeveloper}</p>
+            <div className="mt-2.5 flex justify-center">
+              <BuyMeCoffeeButton size="md" />
+            </div>
+          </div>
         </div>
       </div>
     </dialog>

@@ -9,7 +9,6 @@ import { AuthControl } from "@/components/auth/AuthControl";
 import { SourceCredits } from "@/components/brand/AppFooter";
 import { AppLink } from "@/components/brand/AppLink";
 import { AppWordmark } from "@/components/brand/AppWordmark";
-import { BuyMeCoffeeButton } from "@/components/brand/BuyMeCoffeeButton";
 import { useFeedback } from "@/components/brand/FeedbackDialog";
 import { IntroDialog } from "@/components/brand/IntroDialog";
 import { LanguageToggle } from "@/components/brand/LanguageToggle";
@@ -316,10 +315,6 @@ function HeaderMenu({
                 <AuthControl />
               </MenuItemList>
               <div className="px-4">
-                <div className="flex flex-wrap items-center gap-x-1.5 gap-y-1 pt-4">
-                  <BuyMeCoffeeButton />
-                  <p className="text-sm text-ink/85">👈 {copy.supportDeveloper}</p>
-                </div>
                 <SourceFetchedAt
                   fetchedAtBySource={fetchedAtBySource}
                   className="mt-5 border-t border-white/10 pt-4 text-sm leading-5 text-ink-muted"

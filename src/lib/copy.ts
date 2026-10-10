@@ -82,7 +82,10 @@ const messages = {
     fi: "Motivaationa tähän oli saada isot ja pienet ihmiset ulos liikkumaan enemmän koripallon kanssa.",
     en: "The motivation for this is to get big and small humans out of the house and move more with a basketball.",
   },
-  supportDeveloper: { fi: "Tue kehittäjää", en: "Support the developer" },
+  supportDeveloper: {
+    fi: "Tue halutessasi kehitystä ja ylläpitoa.",
+    en: "Support development and maintenance, if you like.",
+  },
   okBroCta: { fi: "Tämä selvä!", en: "Understood!" },
   madeWith: { fi: "Made with", en: "Made with" },
   love: { fi: "love", en: "love" },
@@ -122,14 +125,17 @@ const messages = {
   feedbackRequiredMark: { fi: "pakollinen", en: "required" },
   feedbackSend: { fi: "Lähetä palaute", en: "Send feedback" },
   feedbackSending: { fi: "Lähetetään…", en: "Sending…" },
-  feedbackThanks: { fi: "Kiitos, palaute on toimitettu kehittäjälle.", en: "Thanks, the feedback has been sent to the developer." },
+  feedbackThanks: {
+    fi: "Kiitos, palaute on toimitettu kehittäjälle.",
+    en: "Thanks, the feedback has been sent to the developer.",
+  },
   feedbackInvalid: {
-    fi: "Tarkista otsikko, viesti ja sähköposti. Sähköpostin voi jättää tyhjäksi.",
-    en: "Check the title, message, and email. Email can be left empty.",
+    fi: "Otsikko ja viesti ovat pakollisia..",
+    en: "The title and message are required.",
   },
   feedbackRateLimited: {
-    fi: "Tältä yhteydeltä tuli juuri useampi viesti. Kokeile myöhemmin uudelleen.",
-    en: "Several messages just came from this connection. Try again later.",
+    fi: "Tältä yhteydeltä tuli vähän liikaa viestejä. Kokeile myöhemmin uudelleen.",
+    en: "A few too many messages came from this connection. Try again later.",
   },
   feedbackUnavailable: {
     fi: "Lähetys ei onnistunut. Kokeile hetken päästä uudelleen.",

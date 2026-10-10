@@ -2,7 +2,6 @@
 
 import { ChevronDown, ChevronUp, Heart } from "lucide-react";
 import { useLayoutEffect, useState } from "react";
-import { BuyMeCoffeeButton } from "@/components/brand/BuyMeCoffeeButton";
 import { useFeedback } from "@/components/brand/FeedbackDialog";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { useDatabaseUnavailable } from "@/components/brand/SiteBanner";
@@ -72,16 +71,10 @@ export function AppFooter({ collapsible = false }: { collapsible?: boolean }) {
           </>
         )}
       </div>
-      <div className="hidden wide:grid wide:grid-cols-[1fr_auto_1fr] wide:items-center wide:gap-4">
-        <div />
-        <div className="text-center">
-          <MadeWith />
-          <div className="flex flex-wrap items-center justify-center gap-x-2.5">
-            <SourceCredits row />
-          </div>
-        </div>
-        <div className="justify-self-end">
-          <BuyMeCoffeeButton size="md" className="shrink-0" />
+      <div className="hidden text-center wide:block">
+        <MadeWith />
+        <div className="flex flex-wrap items-center justify-center gap-x-2.5">
+          <SourceCredits row />
         </div>
       </div>
     </footer>
