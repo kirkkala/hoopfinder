@@ -4,8 +4,10 @@ import { basketball } from "@lucide/lab";
 import { ChevronDown, Icon, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { AppWordmark } from "@/components/brand/AppWordmark";
+import { useFeedback } from "@/components/brand/FeedbackDialog";
 import { LanguageToggle } from "@/components/brand/LanguageToggle";
 import { useCopy } from "@/components/brand/LocaleProvider";
+import { useDatabaseUnavailable } from "@/components/brand/SiteBanner";
 import { LocateMeButton } from "@/components/LocateMeButton";
 import { useLocationStatus } from "@/lib/origin";
 
@@ -13,10 +15,12 @@ export function IntroDialog({
   open,
   onClose,
   courtCount,
+  showFeedback = false,
 }: {
   open: boolean;
   onClose: () => void;
   courtCount: number;
+  showFeedback?: boolean;
 }) {
   const copy = useCopy();
   const ref = useRef<HTMLDialogElement>(null);
@@ -124,6 +128,7 @@ export function IntroDialog({
           >
             {copy.okBroCta}
           </button>
+          {showFeedback ? <IntroFeedbackLink onOpen={onClose} /> : null}
         </div>
       </div>
       {showScrollHint ? (
@@ -133,6 +138,29 @@ export function IntroDialog({
         </p>
       ) : null}
     </dialog>
+  );
+}
+
+function IntroFeedbackLink({ onOpen }: { onOpen: () => void }) {
+  const copy = useCopy();
+  const databaseUnavailable = useDatabaseUnavailable();
+  const feedback = useFeedback();
+  if (databaseUnavailable || !feedback) return null;
+
+  return (
+    <p className="mt-4 text-center">
+      <button
+        type="button"
+        onClick={() => {
+          onOpen();
+          feedback.openFeedback();
+        }}
+        aria-haspopup="dialog"
+        className="rounded-sm text-base font-medium text-gold outline-none hover:text-white focus-visible:ring-2 focus-visible:ring-gold/60"
+      >
+        {copy.giveFeedback}
+      </button>
+    </p>
   );
 }
 

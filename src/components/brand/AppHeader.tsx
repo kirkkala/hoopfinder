@@ -52,6 +52,7 @@ export function AppHeader({
   const isAdmin = useIsAdmin();
   const headerRef = useRef<HTMLElement>(null);
   const [introOpen, setIntroOpen] = useState(false);
+  const [introSeen, setIntroSeen] = useState(false);
 
   useLayoutEffect(() => {
     window.scrollTo(0, 0);
@@ -81,7 +82,8 @@ export function AppHeader({
 
   useEffect(() => {
     try {
-      if (!localStorage.getItem(INTRO_KEY)) setIntroOpen(true);
+      if (localStorage.getItem(INTRO_KEY)) setIntroSeen(true);
+      else setIntroOpen(true);
     } catch {
       // Private mode — skip the first-visit prompt.
     }
@@ -93,6 +95,7 @@ export function AppHeader({
     } catch {
       // Ignore quota / private-mode failures.
     }
+    setIntroSeen(true);
     setIntroOpen(false);
   }
 
@@ -164,7 +167,12 @@ export function AppHeader({
           onOpenInfo={() => setIntroOpen(true)}
         />
       </div>
-      <IntroDialog open={introOpen} onClose={closeIntro} courtCount={courtCount} />
+      <IntroDialog
+        open={introOpen}
+        onClose={closeIntro}
+        courtCount={courtCount}
+        showFeedback={introSeen}
+      />
     </header>
   );
 }
