@@ -116,6 +116,9 @@ const messages = {
     en: "Outdoor basketball courts in Finland, by city. Open a court for details and the map.",
   },
   allCourtsCities: { fi: "Kaupungit", en: "Cities" },
+  citySearchPlaceholder: { fi: "Etsi kaupunkia", en: "Search a city" },
+  citySearchEmpty: { fi: "Ei osumia", en: "No matches" },
+  citySearchClear: { fi: "Tyhjennä", en: "Clear" },
   cityUnknown: { fi: "Muu", en: "Other" },
   feedbackTitle: { fi: "Anna palautetta", en: "Give feedback" },
   feedbackLead: {
