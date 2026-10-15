@@ -16,7 +16,7 @@ import { useCopy } from "@/components/brand/LocaleProvider";
 import { MenuItem, MenuItemList } from "@/components/brand/MenuItem";
 import { ShowAnnouncementButton, useDatabaseUnavailable } from "@/components/brand/SiteBanner";
 import type { FetchedAtBySource } from "@/lib/catalog";
-import { APP_VERSION } from "@/lib/constants";
+import { APP_VERSION, COURT_INDEX_PATH } from "@/lib/constants";
 import { wide } from "@/lib/layout";
 import { COURT_SOURCES } from "@/lib/sources";
 import { formatFetchedAt } from "@/lib/time";
@@ -314,6 +314,9 @@ function HeaderMenu({
                     {copy.giveFeedback}
                   </MenuItem>
                 )}
+                <MenuItem href={COURT_INDEX_PATH} prefetch={false}>
+                  {copy.allCourts}
+                </MenuItem>
                 {databaseUnavailable ? null : (
                   <MenuItem href="/add" prefetch>
                     {copy.addCourt}
@@ -332,7 +335,7 @@ function HeaderMenu({
             </div>
             <div className="mt-auto min-w-0 border-t border-white/10 bg-black/30 px-4 pt-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] pr-[max(1rem,env(safe-area-inset-right))] text-sm leading-5 text-ink-muted">
               <div className="space-y-1.5">
-                <SourceCredits />
+                <SourceCredits hideCourtIndex />
               </div>
             </div>
           </div>

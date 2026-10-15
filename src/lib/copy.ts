@@ -110,6 +110,13 @@ const messages = {
   sourceListAnd: { fi: " ja ", en: " and " },
   sourceCodeOn: { fi: "Lähdekoodi", en: "Source code" },
   giveFeedback: { fi: "Anna palautetta", en: "Give feedback" },
+  allCourts: { fi: "Kaikki kentät", en: "All courts" },
+  allCourtsLead: {
+    fi: "Suomen ulkokoripallokentät kaupungeittain. Avaa kenttä nähdäksesi tiedot ja kartan.",
+    en: "Outdoor basketball courts in Finland, by city. Open a court for details and the map.",
+  },
+  allCourtsCities: { fi: "Kaupungit", en: "Cities" },
+  cityUnknown: { fi: "Muu", en: "Other" },
   feedbackTitle: { fi: "Anna palautetta", en: "Give feedback" },
   feedbackLead: {
     fi: "Toiveet, bugiraportit ja muu palaute auttaa parantamaan Hoop Finderiä. Kerro vapaasti, mikä toimii ja mikä ei.",
