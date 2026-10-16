@@ -40,15 +40,13 @@ test("the collapsed map footer still offers feedback", () => {
   expect(screen.queryByRole("link", { name: /github/i })).not.toBeInTheDocument();
 });
 
-test("the footer links to the court index without hiding feedback", () => {
+test("the footer leaves the court list to the page jump", () => {
   render(
     <FeedbackProvider>
       <AppFooter collapsible />
     </FeedbackProvider>,
   );
 
-  const links = screen.getAllByRole("link", { name: "Kaikki kentät" });
-  expect(links.length).toBeGreaterThan(0);
-  expect(links[0]).toHaveAttribute("href", "/courts/list");
+  expect(screen.queryByRole("link", { name: "Kaikki kentät" })).not.toBeInTheDocument();
   expect(screen.getAllByRole("button", { name: "Anna palautetta" }).length).toBeGreaterThan(0);
 });

@@ -5,19 +5,11 @@ import { useLayoutEffect, useState } from "react";
 import { useFeedback } from "@/components/brand/FeedbackDialog";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { useDatabaseUnavailable } from "@/components/brand/SiteBanner";
-import { COURT_INDEX_PATH } from "@/lib/constants";
 import { DATA_CREDITS } from "@/lib/sources";
 
 const FOOTER_COLLAPSED_KEY = "hoopfinder-footer-collapsed";
 
-export function AppFooter({
-  collapsible = false,
-  hideCourtIndex = false,
-}: {
-  collapsible?: boolean;
-  /** The court index page already is this list. */
-  hideCourtIndex?: boolean;
-}) {
+export function AppFooter({ collapsible = false }: { collapsible?: boolean }) {
   const copy = useCopy();
   const [collapsed, setCollapsed] = useState(collapsible);
   const showCollapsed = collapsible && collapsed;
@@ -70,19 +62,19 @@ export function AppFooter({
         {showCollapsed ? (
           <>
             <MadeWith />
-            <CollapsedLinks hideCourtIndex={hideCourtIndex} />
+            <CollapsedLinks />
           </>
         ) : (
           <>
             <MadeWith />
-            <SourceCredits hideCourtIndex={hideCourtIndex} />
+            <SourceCredits />
           </>
         )}
       </div>
       <div className="hidden text-center wide:block">
         <MadeWith />
         <div className="flex flex-wrap items-center justify-center gap-x-2.5">
-          <SourceCredits row hideCourtIndex={hideCourtIndex} />
+          <SourceCredits row />
         </div>
       </div>
     </footer>
@@ -109,13 +101,7 @@ function MadeWith() {
   );
 }
 
-export function SourceCredits({
-  row = false,
-  hideCourtIndex = false,
-}: {
-  row?: boolean;
-  hideCourtIndex?: boolean;
-}) {
+export function SourceCredits({ row = false }: { row?: boolean }) {
   const copy = useCopy();
   const Item = row ? "span" : "p";
 
@@ -124,50 +110,14 @@ export function SourceCredits({
       <Item>
         {copy.courtDataFrom} <CreditLinks />
       </Item>
-      {hideCourtIndex ? null : <CourtIndexLink row={row} />}
       <FeedbackLink row={row} />
     </>
   );
 }
 
-function CollapsedLinks({ hideCourtIndex }: { hideCourtIndex: boolean }) {
+function CollapsedLinks() {
   const feedback = useFeedbackControl();
-  if (hideCourtIndex) return feedback ? <p>{feedback}</p> : null;
-
-  return (
-    <p>
-      <CourtIndexLink />
-      {feedback ? (
-        <>
-          <span aria-hidden> · </span>
-          {feedback}
-        </>
-      ) : null}
-    </p>
-  );
-}
-
-function CourtIndexLink({ row = false }: { row?: boolean }) {
-  const copy = useCopy();
-  const link = (
-    <a
-      href={COURT_INDEX_PATH}
-      className="rounded-sm font-medium text-gold outline-none hover:text-white focus-visible:ring-2 focus-visible:ring-gold/60"
-    >
-      {copy.allCourts}
-    </a>
-  );
-
-  if (row) {
-    return (
-      <>
-        <CreditDivider />
-        <span>{link}</span>
-      </>
-    );
-  }
-
-  return link;
+  return feedback ? <p>{feedback}</p> : null;
 }
 
 function CreditDivider() {

@@ -314,8 +314,9 @@ function HeaderMenu({
                     {copy.giveFeedback}
                   </MenuItem>
                 )}
+                <MenuItem href="/">{copy.courtsOnMap}</MenuItem>
                 <MenuItem href={COURT_INDEX_PATH} prefetch={false}>
-                  {copy.allCourts}
+                  {copy.courtsAsList}
                 </MenuItem>
                 {databaseUnavailable ? null : (
                   <MenuItem href="/add" prefetch>
@@ -335,7 +336,7 @@ function HeaderMenu({
             </div>
             <div className="mt-auto min-w-0 border-t border-white/10 bg-black/30 px-4 pt-4 pb-[max(1.25rem,env(safe-area-inset-bottom))] pr-[max(1rem,env(safe-area-inset-right))] text-sm leading-5 text-ink-muted">
               <div className="space-y-1.5">
-                <SourceCredits hideCourtIndex />
+                <SourceCredits />
               </div>
             </div>
           </div>
