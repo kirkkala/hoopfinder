@@ -67,6 +67,17 @@ test("a page link is a regular item until that page is open", () => {
   expect(screen.getByRole("link", { name: "Add court" })).not.toHaveAttribute("aria-current");
 });
 
+test("an about link is current on the homepage", () => {
+  navigation.pathname = "/";
+  render(
+    <MenuItemList onNavigate={vi.fn()}>
+      <MenuItem href="/?info">About</MenuItem>
+    </MenuItemList>,
+  );
+
+  expect(screen.getByRole("link", { name: "About" })).toHaveAttribute("aria-current", "page");
+});
+
 test("an action item closes the menu and runs its action", () => {
   navigation.pathname = "/admin";
   const onNavigate = vi.fn();

@@ -8,27 +8,26 @@ import { AppHeader } from "@/components/brand/AppHeader";
 import { AppLink } from "@/components/brand/AppLink";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import type { FetchedAtBySource } from "@/lib/catalog";
+import { MAP_PATH } from "@/lib/constants";
 
 export function LoginView({
   configured,
   callbackUrl,
   signedInEmail,
   error,
-  courtCount,
   fetchedAtBySource,
 }: {
   configured: boolean;
   callbackUrl: string;
   signedInEmail: string | null;
   error: boolean;
-  courtCount: number;
   fetchedAtBySource: FetchedAtBySource;
 }) {
   const copy = useCopy();
 
   return (
     <div className="flex min-h-dvh flex-col bg-asphalt">
-      <AppHeader fetchedAtBySource={fetchedAtBySource} courtCount={courtCount} />
+      <AppHeader fetchedAtBySource={fetchedAtBySource} />
       <main className="mx-auto flex w-full max-w-lg flex-1 flex-col items-center justify-center gap-3 px-6 py-10 text-center">
         <Icon iconNode={basketball} className="size-10 text-gold" aria-hidden />
         <h1 className="font-display text-4xl tracking-wide text-white">{copy.signInTitle}</h1>
@@ -37,7 +36,7 @@ export function LoginView({
         </p>
         {error ? <p className="text-sm text-red-400">{copy.signInError}</p> : null}
         <AppLink
-          href="/"
+          href={MAP_PATH}
           className="mt-2 inline-flex items-center rounded-full bg-gold px-4 py-2 text-sm font-bold text-asphalt hover:bg-white"
         >
           {copy.backToMap}

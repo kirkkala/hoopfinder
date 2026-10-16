@@ -16,16 +16,12 @@ import {
   courtOgHref,
   courtTitle,
   formatAddress,
-  homeCourtHref,
   isAwaitingEmail,
+  mapCourtHref,
   parseCourtPath,
 } from "@/lib/courts";
 import { isDatabaseUnavailable } from "@/lib/db";
-import {
-  countPublicCourts,
-  getSubmittedCourt,
-  listPublishedCourtsNear,
-} from "@/lib/submitted-courts";
+import { getSubmittedCourt, listPublishedCourtsNear } from "@/lib/submitted-courts";
 
 export const dynamic = "force-dynamic";
 
@@ -81,13 +77,12 @@ export default async function CourtPage({ params }: { params: Promise<{ path: st
   if (!result) notFound();
   const isAdmin = await viewerIsAdmin();
   if (isAwaitingEmail(result.court) && !isAdmin) {
-    redirect(homeCourtHref({ id: result.court.id, source: "pending" }));
+    redirect(mapCourtHref({ id: result.court.id, source: "pending" }));
   }
   const court = await withVisitorFacts(result.court);
   const otherCourts = (result.place.members ?? []).filter((member) => member.id !== court.id);
-  const [{ fetchedAtBySource }, courtCount, photos] = await Promise.all([
+  const [{ fetchedAtBySource }, photos] = await Promise.all([
     getCourtCatalog(),
-    countPublicCourts(),
     listPlacePhotos(result.place),
   ]);
   return (
@@ -96,7 +91,6 @@ export default async function CourtPage({ params }: { params: Promise<{ path: st
       otherCourts={otherCourts}
       fetchedAtBySource={fetchedAtBySource}
       sourceFetchedAt={result.sourceFetchedAt}
-      courtCount={courtCount}
       photos={photos}
       visitorEmail={isAdmin && "email" in result ? result.email : null}
     />

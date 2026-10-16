@@ -52,15 +52,15 @@ const messages = {
   },
   language: { fi: "Language", en: "Language" },
   menu: { fi: "Valikko", en: "Menu" },
-  info: { fi: "Tietoa palvelusta", en: "About the service" },
+  homepage: { fi: "Etusivu", en: "Home" },
   introTitle: { fi: "Koripallokentät suomessa", en: "Basketball courts in Finland" },
-  introLead: {
-    fi: "Hoop Finderin kartalla on {count} Suomen ulkokoripallokenttää. Olit sitten reissussa, mökillä, sukulaisten luona tai haluat tsekata kodin läheltä uuden kentän, täältä niitä löytyy!",
-    en: "Hoop Finder has {count} outdoor basketball courts in Finland. Whether you're on a trip, at the cottage, visiting relatives or want to check a new court close to home — here you can find them!",
+  servicePitch: {
+    fi: "Hoop Finderissä on kaikki Suomen ulkokoripallokentät.",
+    en: "Hoop Finder has all outdoor basketball courts in Finland.",
   },
   introLocationBenefit: {
-    fi: "Salli sijaintisi, niin näet kuinka kaukana kukin kenttä sijaitsee.",
-    en: "Allow your location to see the distance to each court.",
+    fi: "Salli sijainti, niin näet helposti lähelläsi olevat kentät.",
+    en: "Allow location tracking to see hoops near you.",
   },
   introLocationOptional: {
     fi: "Voit toki käyttää palvelua ilman sijainnin jakamistakin.",
@@ -75,12 +75,24 @@ const messages = {
     en: "Who built this and why",
   },
   introCreatedBy1: {
-    fi: "koodaili sivuston omana harrasteprojektina, hakien kenttien tiedot parista avoimesta rajapinnasta ja antamalla käyttäjien itse lisätä palveluun puuttuvia kenttiä sekä kuvia kentistä.",
-    en: "built this site as a side project, fetching the court data from a few open APIs and allowing users to add missing courts to the service and photos of the courts.",
+    fi: "toteutti sivuston harrasteprojektina syksyllä 2026. Kenttien tiedot haetaan avoimista rajapinnoista sekä käyttäjien itse lisäämistä kenttien tiedoista. Palveluun voi myös lisätä kuvia kentistä.",
+    en: "built this site as a side project in the fall of 2026. The court data is fetched from open APIs and users can add missing court data and photos of the courts.",
   },
-  introCreatedBy2: {
-    fi: "Motivaationa tähän oli saada isot ja pienet ihmiset ulos liikkumaan enemmän koripallon kanssa.",
-    en: "The motivation for this is to get big and small humans out of the house and move more with a basketball.",
+  introMotivation: {
+    fi: "Motivaationa tämän toteuttamiselle oli yksi paikka mistä löytyy kaikki suomen ulkokoripallokentät ja tätä kautta ihmiset ulos liikkumaan enemmän koripallon kanssa.",
+    en: "The motivation for this was to have one place where all outdoor basketball courts in Finland can be found and through this get humans out of the house and moving more with a basketball.",
+  },
+  introFutureOfTheApp: {
+    fi: "Palvelua kehitetään jatkuvasti, palaute ja kehitysideat otetaan ilolla vastaan!",
+    en: "The service is developed continuously, feedback and development ideas are welcome!",
+  },
+  introOpenSource: {
+    fi: "Toteutuksen lähdekoodi löytyy",
+    en: "The source code is available at",
+  },
+  introOpenSourceLink: {
+    fi: "GitHubista",
+    en: "GitHub",
   },
   supportDeveloper: {
     fi: "Tue halutessasi kehitystä ja ylläpitoa.",
@@ -200,7 +212,6 @@ const messages = {
   close: { fi: "Sulje", en: "Close" },
   closeAnnouncement: { fi: "Sulje ilmoitus", en: "Close announcement" },
   showAnnouncement: { fi: "Näytä ilmoitus", en: "Show announcement" },
-  scrollForMore: { fi: "Vieritä alas", en: "Scroll for more" },
   courtKind: { fi: "Koripallokenttä", en: "Basketball court" },
   status: { fi: "Tila", en: "Status" },
   address: { fi: "Osoite", en: "Address" },
@@ -694,7 +705,7 @@ const messages = {
     fi: "Kenttä hukassa (404 - sivua ei löydy).",
     en: "Court is missing (404 - page not found).",
   },
-  backToHoops: { fi: "Takaisin kartalle", en: "Back to the hoops" },
+  toHomepage: { fi: "Etusivulle", en: "To the homepage" },
   courtNotFound: { fi: "Kenttää ei löydy", en: "Court not found" },
 };
 

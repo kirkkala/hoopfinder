@@ -20,9 +20,9 @@ import {
   formatReportedBoolean,
   formatStatus,
   formatSurface,
-  homeCourtHref,
   isAwaitingEmail,
   isTooCloseToCourt,
+  mapCourtHref,
   mergeCourts,
   parseCourtPath,
   pinCourtCount,
@@ -197,7 +197,7 @@ test("round-trips court ids through the page path and the map query", () => {
   expect(courtPath(pending)).toBe("submitted/10014");
   expect(submittedCourtKey(pending.id)).toBe("10014");
   expect(courtIdFromParam(courtParam(pending))).toBe("submitted-10014");
-  expect(homeCourtHref(pending, { thanks: true })).toBe("/?court=submitted-10014&thanks=1");
+  expect(mapCourtHref(pending, { thanks: true })).toBe("/map?court=submitted-10014&thanks=1");
   expect(focusedCourtHref({ ...lipas, aliases: ["82574"] }, "82574")).toBe("/courts/lipas/82574");
   expect(focusedCourtHref({ ...lipas, aliases: ["82574"] }, "82547")).toBe("/courts/lipas/82547");
   expect(focusedCourtHref(lipas, "other")).toBe("/courts/lipas/82547");

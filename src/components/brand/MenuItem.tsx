@@ -6,6 +6,11 @@ import { AppLink } from "@/components/brand/AppLink";
 
 const closeMenuContext = createContext<(() => void) | null>(null);
 
+function hrefPath(href: string) {
+  const end = href.search(/[?#]/);
+  return end === -1 ? href : href.slice(0, end);
+}
+
 const itemClass =
   "flex w-full items-center gap-2 px-4 py-3.5 text-left text-base font-medium outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-gold/60";
 
@@ -45,7 +50,7 @@ export function MenuItemList({
 export function MenuItem(props: MenuLinkItem | MenuButtonItem) {
   const pathname = usePathname();
   const closeMenu = useContext(closeMenuContext);
-  const current = props.href != null && pathname === props.href;
+  const current = props.href != null && pathname === hrefPath(props.href);
   const className = `${itemClass} ${
     current ? "bg-white/10 text-gold" : "text-white hover:bg-white/5 focus-visible:bg-white/5"
   }`;

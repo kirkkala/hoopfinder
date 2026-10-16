@@ -9,6 +9,7 @@ import { AuthProvider } from "@/components/auth/AuthProvider";
 import { FeedbackProvider } from "@/components/brand/FeedbackDialog";
 import { LocaleProvider } from "@/components/brand/LocaleProvider";
 import { SiteBanner, type SiteBannerMessage } from "@/components/brand/SiteBanner";
+import { StorageCleanup } from "@/components/brand/StorageCleanup";
 import { SITE_URL } from "@/lib/constants";
 import { getCopy } from "@/lib/copy";
 import { isDatabaseUnavailable, withDb } from "@/lib/db";
@@ -106,6 +107,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
     <html lang="fi" className={`${outfit.variable} ${bebas.variable}`}>
       <body className="min-h-dvh bg-asphalt font-sans text-ink antialiased">
         <LocaleProvider>
+          <StorageCleanup />
           <SiteBanner messages={messages} databaseUnavailable={databaseUnavailable}>
             <AuthProvider session={session}>
               <AdminProvider isAdmin={session?.user?.isAdmin === true}>
