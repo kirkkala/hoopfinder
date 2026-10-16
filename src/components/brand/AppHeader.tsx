@@ -363,7 +363,7 @@ function AddCourtNavLink() {
     <AppLink
       href="/add"
       prefetch
-      className="group inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full border border-gold/80 bg-gold/15 px-2.5 py-1 text-sm font-bold text-gold outline-none hover:bg-gold hover:text-asphalt focus-visible:ring-2 focus-visible:ring-gold/60"
+      className="group ms-2 inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full border border-gold/80 bg-gold/15 px-3.5 py-1 text-sm font-bold text-gold outline-none hover:bg-gold hover:text-asphalt focus-visible:ring-2 focus-visible:ring-gold/60 sm:ms-3"
     >
       <Plus aria-hidden className="size-3.5 stroke-[2.5]" />
       {copy.addCourt}
@@ -378,8 +378,9 @@ function InfoMenuButton() {
   return (
     <AppLink
       href={INFO_HREF}
+      reservePending
       aria-current={onHome ? "page" : undefined}
-      className={`shrink-0 whitespace-nowrap rounded-sm px-2.5 py-1.5 text-sm font-medium outline-none focus-visible:ring-2 focus-visible:ring-gold/60 ${
+      className={`inline-flex shrink-0 items-center whitespace-nowrap rounded-sm px-2.5 py-1.5 text-sm font-medium outline-none focus-visible:ring-2 focus-visible:ring-gold/60 ${
         onHome ? "text-gold" : "text-ink/80 hover:bg-white/10 hover:text-white"
       }`}
     >
