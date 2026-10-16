@@ -40,5 +40,13 @@ test("interpolated copy includes the value it is given", () => {
     expect(copy.padCount(4)).toContain("4");
     expect(copy.addCourtMissing("nimi")).toContain("nimi");
     expect(copy.listedCourtCount(12)).toContain("12");
+    expect(copy.cityCourtCount(265)).toContain("265");
   }
+});
+
+test("city headings count courts in the active language", () => {
+  expect(getCopy("fi").cityCourtCount(265)).toBe("265 kenttää");
+  expect(getCopy("fi").cityCourtCount(1)).toBe("1 kenttä");
+  expect(getCopy("en").cityCourtCount(265)).toBe("265 courts");
+  expect(getCopy("en").cityCourtCount(1)).toBe("1 court");
 });

@@ -145,6 +145,10 @@ const messages = {
   citySearchEmpty: { fi: "Ei osumia", en: "No matches" },
   citySearchClear: { fi: "Tyhjennä", en: "Clear" },
   cityUnknown: { fi: "Muu", en: "Other" },
+  cityCourtCount: {
+    fi: (count: number) => `${count} ${count === 1 ? "kenttä" : "kenttää"}`,
+    en: (count: number) => `${count} ${count === 1 ? "court" : "courts"}`,
+  },
   feedbackTitle: { fi: "Anna palautetta", en: "Give feedback" },
   feedbackLead: {
     fi: "Toiveet, bugiraportit ja muu palaute auttaa parantamaan Hoop Finderiä. Kerro vapaasti, mikä toimii ja mikä ei.",
