@@ -1,10 +1,13 @@
 "use client";
 
+import { ArrowRight } from "lucide-react";
 import { useLayoutEffect, useRef } from "react";
 import { AppFooter } from "@/components/brand/AppFooter";
 import { AppHeader } from "@/components/brand/AppHeader";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { CITY_SEARCH_HEIGHT, CitySelect, COURT_LIST_ID } from "@/components/court/CitySelect";
+import { CourtBadges } from "@/components/explorer/CourtBadges";
+import { CourtHeading } from "@/components/explorer/CourtHeading";
 import type { FetchedAtBySource } from "@/lib/catalog";
 import type { CourtIndexGroup } from "@/lib/court-index";
 
@@ -65,14 +68,21 @@ export function CourtIndexView({
               >
                 {group.city ?? copy.cityUnknown}
               </h2>
-              <ul className="mt-1">
+              <ul className="mt-3 space-y-2">
                 {group.courts.map((court) => (
-                  <li key={court.href} className="border-b border-white/10">
+                  <li key={court.href}>
                     <a
                       href={court.href}
-                      className="block rounded-sm py-2.5 text-white outline-none hover:text-gold focus-visible:ring-2 focus-visible:ring-gold/60"
+                      className="group flex w-full flex-col gap-2 rounded-2xl bg-white/5 px-3 py-3 outline-none hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-gold/60"
                     >
-                      {copy.locale === "en" ? court.name : court.nameFi}
+                      <CourtHeading court={court} />
+                      <div className="flex flex-wrap items-center gap-2 text-sm">
+                        <CourtBadges court={court} />
+                        <span className="ml-auto inline-flex items-center gap-1 font-bold text-gold group-hover:text-white">
+                          {copy.letsGo}
+                          <ArrowRight className="size-3.5" aria-hidden />
+                        </span>
+                      </div>
                     </a>
                   </li>
                 ))}

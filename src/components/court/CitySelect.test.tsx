@@ -1,24 +1,25 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, expect, test, vi } from "vitest";
-import type { CourtIndexGroup } from "@/lib/court-index";
+import type { CourtIndexEntry, CourtIndexGroup } from "@/lib/court-index";
 import { CitySelect, COURT_LIST_ID } from "./CitySelect";
 
+function entry(name: string, href: string): CourtIndexEntry {
+  return {
+    href,
+    name,
+    nameFi: name,
+    status: "active",
+    address: null,
+    neighborhood: null,
+    city: null,
+    amenities: { lighting: null, freeUse: null },
+  };
+}
+
 const groups: CourtIndexGroup[] = [
-  {
-    city: "Halikko",
-    anchor: "halikko",
-    courts: [{ href: "/courts/lipas/1", nameFi: "Halikko", name: "Halikko" }],
-  },
-  {
-    city: "Helsinki",
-    anchor: "helsinki",
-    courts: [{ href: "/courts/lipas/2", nameFi: "Kallio", name: "Kallio" }],
-  },
-  {
-    city: "Järvenpää",
-    anchor: "jarvenpaa",
-    courts: [{ href: "/courts/lipas/3", nameFi: "Järvenpää", name: "Järvenpää" }],
-  },
+  { city: "Halikko", anchor: "halikko", courts: [entry("Halikko", "/courts/lipas/1")] },
+  { city: "Helsinki", anchor: "helsinki", courts: [entry("Kallio", "/courts/lipas/2")] },
+  { city: "Järvenpää", anchor: "jarvenpaa", courts: [entry("Järvenpää", "/courts/lipas/3")] },
 ];
 
 afterEach(cleanup);

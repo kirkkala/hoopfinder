@@ -3,8 +3,13 @@ import { type Court, courtHref, courtTitle } from "@/lib/courts";
 
 export type CourtIndexEntry = {
   href: string;
-  nameFi: string;
   name: string;
+  nameFi: string;
+  status: string;
+  address: string | null;
+  neighborhood: string | null;
+  city: string | null;
+  amenities: Pick<Court["amenities"], "lighting" | "freeUse">;
 };
 
 export type CourtIndexGroup = {
@@ -20,19 +25,26 @@ export type CourtIndexGroup = {
  */
 export function courtIndex(courts: Court[]): CourtIndexGroup[] {
   const finnish = getCopy("fi");
-  const english = getCopy("en");
   const byCity = new Map<string | null, CityBucket>();
 
   for (const court of courts) {
     for (const page of court.members ?? [court]) {
       const city = page.city?.trim() || null;
       const key = city?.toLocaleLowerCase("fi") ?? null;
-      const bucket = byCity.get(key) ?? { labels: new Map(), courts: [] };
+      const bucket: CityBucket = byCity.get(key) ?? { labels: new Map(), courts: [] };
       if (city) bucket.labels.set(city, (bucket.labels.get(city) ?? 0) + 1);
       bucket.courts.push({
         href: courtHref(page),
-        nameFi: courtTitle(page, finnish).trim(),
-        name: courtTitle(page, english).trim(),
+        name: page.name,
+        nameFi: page.nameFi,
+        status: page.status,
+        address: page.address,
+        neighborhood: page.neighborhood,
+        city: page.city,
+        amenities: {
+          lighting: page.amenities.lighting,
+          freeUse: page.amenities.freeUse,
+        },
       });
       byCity.set(key, bucket);
     }
@@ -45,7 +57,9 @@ export function courtIndex(courts: Court[]): CourtIndexGroup[] {
       return {
         city,
         anchor: cityAnchor(city, usedAnchors),
-        courts: bucket.courts.sort((a, b) => compareFi(a.nameFi, b.nameFi)),
+        courts: bucket.courts.sort((a, b) =>
+          compareFi(courtTitle(a, finnish), courtTitle(b, finnish)),
+        ),
       };
     })
     .sort((a, b) => byCityName(a.city, b.city));

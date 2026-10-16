@@ -49,6 +49,16 @@ test("lists each pad with the title and URL of its court page", () => {
       lon: 24.8,
     }),
     court({
+      id: "3",
+      nameFi: "Suljettu kenttä",
+      city: "Espoo",
+      neighborhood: null,
+      address: null,
+      status: "out-of-service-temporarily",
+      lat: 60.16,
+      lon: 24.7,
+    }),
+    court({
       id: "2",
       nameFi: "Kenttä ilman kaupunkia",
       city: null,
@@ -61,17 +71,35 @@ test("lists each pad with the title and URL of its court page", () => {
   expect(index.map((group) => group.city)).toEqual(["Espoo", "Helsinki", null]);
 
   const helsinki = index.find((group) => group.city === "Helsinki");
-  expect(helsinki?.courts.map((entry) => [entry.nameFi, entry.href])).toEqual([
+  expect(helsinki?.courts.map((entry) => [entry.nameFi.trim(), entry.href])).toEqual([
     ["Mustikkamaan liikuntapuisto / Koripallokenttä", "/courts/lipas/82574"],
     ["Mustikkamaan liikuntapuisto / Minikoripallokenttä", "/courts/lipas/82547"],
   ]);
-  expect(helsinki?.courts[0]?.name).toBe("Mustikkamaa sports park / Basketball court");
+  expect(helsinki?.courts[0]).toMatchObject({
+    name: "Mustikkamaa sports park / Basketball court",
+    status: "active",
+    address: "Mustikkamaantie 8",
+    neighborhood: "Kulosaari",
+    city: "Helsinki",
+    amenities: { lighting: null, freeUse: null },
+  });
 
   const espoo = index.find((group) => group.city === "Espoo");
   expect(espoo?.courts[0]).toMatchObject({
-    nameFi: "Koripallokenttä, Tapiola",
-    name: "Basketball court, Tapiola",
+    nameFi: "Koripallokenttä",
+    name: "Basketball court",
     href: "/courts/lipas/1",
+    status: "active",
+    address: "Mustikkamaantie 8",
+    neighborhood: "Tapiola",
+    city: "Espoo",
+  });
+  expect(espoo?.courts[1]).toMatchObject({
+    nameFi: "Suljettu kenttä",
+    status: "out-of-service-temporarily",
+    address: null,
+    neighborhood: null,
+    city: "Espoo",
   });
   expect(index.at(-1)?.anchor).toBe("muu");
 });

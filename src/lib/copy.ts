@@ -112,8 +112,8 @@ const messages = {
   giveFeedback: { fi: "Anna palautetta", en: "Give feedback" },
   allCourts: { fi: "Kaikki kentät", en: "All courts" },
   allCourtsLead: {
-    fi: "Suomen ulkokoripallokentät kaupungeittain. Avaa kenttä nähdäksesi tiedot ja kartan.",
-    en: "Outdoor basketball courts in Finland, by city. Open a court for details and the map.",
+    fi: "Kaikki Suomen ulkokoripallokentät kaupungeittain. Avaa kenttä nähdäksesi tiedot ja kartan.",
+    en: "All outdoor basketball courts in Finland, by city. Open a court for details and the map.",
   },
   allCourtsCities: { fi: "Kaupungit", en: "Cities" },
   citySearchPlaceholder: { fi: "Etsi kaupunkia", en: "Search a city" },
