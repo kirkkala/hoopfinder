@@ -4,6 +4,7 @@ import { ArrowRight } from "lucide-react";
 import { useLayoutEffect, useRef } from "react";
 import { AppFooter } from "@/components/brand/AppFooter";
 import { AppHeader } from "@/components/brand/AppHeader";
+import { AppLink, AppLinkPending } from "@/components/brand/AppLink";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { ViewJump } from "@/components/brand/ViewJump";
 import { CITY_SEARCH_HEIGHT, CitySelect, COURT_LIST_ID } from "@/components/court/CitySelect";
@@ -84,8 +85,10 @@ export function CourtIndexView({
               <ul className="mt-3 space-y-2">
                 {group.courts.map((court) => (
                   <li key={court.href}>
-                    <a
+                    <AppLink
                       href={court.href}
+                      prefetch={false}
+                      trailingPending={false}
                       className="group flex w-full flex-col gap-2 rounded-2xl bg-white/5 px-3 py-3 outline-none hover:bg-white/10 focus-visible:ring-2 focus-visible:ring-gold/60"
                     >
                       <CourtHeading court={court} />
@@ -94,9 +97,10 @@ export function CourtIndexView({
                         <span className="ml-auto inline-flex items-center gap-1 font-bold text-gold group-hover:text-white">
                           {copy.letsGo}
                           <ArrowRight className="size-3.5" aria-hidden />
+                          <AppLinkPending />
                         </span>
                       </div>
-                    </a>
+                    </AppLink>
                   </li>
                 ))}
               </ul>
