@@ -1,7 +1,7 @@
 import { expect, test } from "vitest";
 import { groupCourtPlaces } from "@/lib/court-groups";
 import { courtIndex } from "@/lib/court-index";
-import { type Court, emptyAmenities } from "@/lib/courts";
+import { type Court, type ExplorerCourt, emptyAmenities } from "@/lib/courts";
 
 const here = { lat: 60.18, lon: 24.99 };
 
@@ -119,6 +119,80 @@ test("groups a city without caring about letter case", () => {
     ["Helsinki", 3, "helsinki"],
     ["Järvenpää", 3, "jarvenpaa"],
   ]);
+});
+
+function submitted(
+  overrides: Partial<ExplorerCourt> & Pick<ExplorerCourt, "id" | "nameFi" | "source">,
+): ExplorerCourt {
+  return {
+    name: overrides.nameFi,
+    status: "active",
+    address: null,
+    city: null,
+    neighborhood: null,
+    lat: 60.186,
+    lon: 24.972,
+    amenities: { lighting: true, freeUse: null },
+    ...overrides,
+  } as ExplorerCourt;
+}
+
+test("puts a database court under the city written in its address", () => {
+  const grouped = groupCourtPlaces([court({ id: "1", nameFi: "Brahenkenttä", city: "Helsinki" })]);
+
+  const index = courtIndex(grouped.courts, [
+    submitted({
+      id: "submitted-10000",
+      source: "submitted",
+      nameFi: "Suvilahti",
+      address: "Sörnäisten rantatie 22, 00540 Helsinki",
+    }),
+    submitted({
+      id: "submitted-10001",
+      source: "pending",
+      nameFi: "Tapiolan kenttä",
+      status: "pending",
+      address: "Testikatu 1, Espoo",
+      emailConfirmed: true,
+      createdAt: "2026-01-01",
+    }),
+    submitted({
+      id: "submitted-10002",
+      source: "pending",
+      nameFi: "Kenttä ilman kaupunkia",
+      status: "pending",
+      address: "Katu 1",
+      emailConfirmed: false,
+      createdAt: "2026-01-02",
+    }),
+  ]);
+
+  const helsinki = index.find((group) => group.city === "Helsinki");
+  expect(helsinki?.courts.map((entry) => entry.nameFi)).toEqual(["Brahenkenttä", "Suvilahti"]);
+  expect(helsinki?.courts[1]).toMatchObject({
+    href: "/courts/submitted/10000",
+    address: "Sörnäisten rantatie 22, 00540",
+    city: "Helsinki",
+    source: "submitted",
+    amenities: { lighting: true, freeUse: null },
+  });
+
+  const espoo = index.find((group) => group.city === "Espoo");
+  expect(espoo?.courts[0]).toMatchObject({
+    nameFi: "Tapiolan kenttä",
+    href: "/courts/submitted/10001",
+    address: "Testikatu 1",
+    source: "pending",
+    emailConfirmed: true,
+    status: "pending",
+  });
+
+  expect(index.at(-1)?.courts[0]).toMatchObject({
+    nameFi: "Kenttä ilman kaupunkia",
+    address: "Katu 1",
+    city: null,
+    emailConfirmed: false,
+  });
 });
 
 test("writes an all-caps city in normal spelling", () => {

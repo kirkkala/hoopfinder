@@ -54,6 +54,9 @@ export function CourtIndexView({
         <h1 className="mt-4 font-display text-4xl tracking-wide text-white">
           {copy.allCourtsHeading}
         </h1>
+        <p className="mt-2 max-w-xl text-sm leading-6 text-ink-muted">
+          {copy.listedCourtCount(courtCount)}
+        </p>
         <p className="mt-2 max-w-xl text-sm leading-6 text-ink-muted">{copy.allCourtsLead}</p>
         <div
           ref={searchRef}

@@ -1,5 +1,5 @@
 import { getCopy } from "@/lib/copy";
-import { type Court, courtHref, courtTitle } from "@/lib/courts";
+import { type Court, courtHref, courtTitle, type ExplorerCourt } from "@/lib/courts";
 
 export type CourtIndexEntry = {
   href: string;
@@ -9,6 +9,8 @@ export type CourtIndexEntry = {
   address: string | null;
   neighborhood: string | null;
   city: string | null;
+  source?: ExplorerCourt["source"];
+  emailConfirmed?: boolean;
   amenities: Pick<Court["amenities"], "lighting" | "freeUse">;
 };
 
@@ -19,36 +21,24 @@ export type CourtIndexGroup = {
   courts: CourtIndexEntry[];
 };
 
+type IndexCourt = Pick<
+  ExplorerCourt,
+  "id" | "source" | "name" | "nameFi" | "status" | "address" | "neighborhood" | "city" | "amenities"
+> & { emailConfirmed?: boolean };
+
 /**
  * Public court pages grouped by city, in Finnish alphabetical order.
  * Each pad keeps the same URL and title as its court page.
+ * `submitted` is the same set the map adds from the database.
  */
-export function courtIndex(courts: Court[]): CourtIndexGroup[] {
+export function courtIndex(courts: Court[], submitted: ExplorerCourt[] = []): CourtIndexGroup[] {
   const finnish = getCopy("fi");
   const byCity = new Map<string | null, CityBucket>();
 
   for (const court of courts) {
-    for (const page of court.members ?? [court]) {
-      const city = page.city?.trim() || null;
-      const key = city?.toLocaleLowerCase("fi") ?? null;
-      const bucket: CityBucket = byCity.get(key) ?? { labels: new Map(), courts: [] };
-      if (city) bucket.labels.set(city, (bucket.labels.get(city) ?? 0) + 1);
-      bucket.courts.push({
-        href: courtHref(page),
-        name: page.name,
-        nameFi: page.nameFi,
-        status: page.status,
-        address: page.address,
-        neighborhood: page.neighborhood,
-        city: page.city,
-        amenities: {
-          lighting: page.amenities.lighting,
-          freeUse: page.amenities.freeUse,
-        },
-      });
-      byCity.set(key, bucket);
-    }
+    for (const page of court.members ?? [court]) addCourt(byCity, page, false);
   }
+  for (const court of submitted) addCourt(byCity, court, true);
 
   const usedAnchors = new Set<string>();
   return [...byCity.values()]
@@ -63,6 +53,48 @@ export function courtIndex(courts: Court[]): CourtIndexGroup[] {
       };
     })
     .sort((a, b) => byCityName(a.city, b.city));
+}
+
+function addCourt(byCity: Map<string | null, CityBucket>, page: IndexCourt, fromDatabase: boolean) {
+  const place = fromDatabase && !page.city?.trim() ? cityFromAddress(page.address) : null;
+  const city = page.city?.trim() || place?.city || null;
+  const address = place ? place.address : page.address;
+  const key = city?.toLocaleLowerCase("fi") ?? null;
+  const bucket: CityBucket = byCity.get(key) ?? { labels: new Map(), courts: [] };
+  if (city) bucket.labels.set(city, (bucket.labels.get(city) ?? 0) + 1);
+  bucket.courts.push({
+    href: courtHref(page),
+    name: page.name,
+    nameFi: page.nameFi,
+    status: page.status,
+    address,
+    neighborhood: page.neighborhood,
+    city,
+    source: page.source,
+    ...(page.emailConfirmed === undefined ? {} : { emailConfirmed: page.emailConfirmed }),
+    amenities: {
+      lighting: page.amenities.lighting,
+      freeUse: page.amenities.freeUse,
+    },
+  });
+  byCity.set(key, bucket);
+}
+
+/**
+ * Visitor addresses are one line, "street, 00540 Helsinki" or "street, Helsinki".
+ * The city is only the grouping key. The street line keeps the postcode.
+ */
+function cityFromAddress(address: string | null): { address: string | null; city: string } | null {
+  if (!address) return null;
+  const comma = address.lastIndexOf(",");
+  if (comma === -1) return null;
+  const street = address.slice(0, comma).trim();
+  const place = address.slice(comma + 1).trim();
+  const posted = /^(?:FI-)?(\d{5})\s+(.+)$/i.exec(place);
+  const city = (posted ? posted[2] : place).trim();
+  if (!city || (posted ? false : /\d/.test(place))) return null;
+  const line = posted ? [street, posted[1]].filter(Boolean).join(", ") : street;
+  return { address: line || null, city };
 }
 
 type CityBucket = {

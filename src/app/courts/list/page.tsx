@@ -5,6 +5,7 @@ import { COURT_INDEX_PATH } from "@/lib/constants";
 import { getCopy } from "@/lib/copy";
 import { courtPageCount } from "@/lib/court-groups";
 import { courtIndex } from "@/lib/court-index";
+import { listSubmittedCourts } from "@/lib/submitted-courts";
 
 export async function generateMetadata(): Promise<Metadata> {
   const finnish = getCopy("fi");
@@ -17,10 +18,11 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default async function CourtIndexPage() {
   const { courts, fetchedAtBySource } = await getCourtCatalog();
+  const submitted = await listSubmittedCourts();
   return (
     <CourtIndexView
-      groups={courtIndex(courts)}
-      courtCount={courtPageCount(courts)}
+      groups={courtIndex(courts, submitted)}
+      courtCount={courtPageCount(courts) + submitted.length}
       fetchedAtBySource={fetchedAtBySource}
     />
   );
