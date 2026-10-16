@@ -172,10 +172,10 @@ test("uses the locale name and adds a place only for a generic court name", () =
   const finnish = getCopy("fi");
   const english = getCopy("en");
 
-  expect(courtTitle(generic, finnish)).toBe("Koripallokenttä, Kallio");
-  expect(courtTitle(generic, english)).toBe("Basketball court, Kallio");
+  expect(courtTitle(generic, finnish)).toBe(`${finnish.unnamedCourt}, Kallio`);
+  expect(courtTitle(generic, english)).toBe(`${english.unnamedCourt}, Kallio`);
   expect(courtTitle({ ...generic, neighborhood: null, city: null }, finnish)).toBe(
-    "Koripallokenttä",
+    finnish.unnamedCourt,
   );
   expect(courtName({ name: "", nameFi: "Brahenkenttä" }, english)).toBe("Brahenkenttä");
   expect(courtTitle({ ...generic, name: "Brahe", nameFi: "Brahenkenttä" }, english)).toBe("Brahe");
@@ -253,9 +253,10 @@ test("map label names a single hoop, and adds the count when one pin covers seve
   expect(courtMapLabel(single, copy)).toBe("Kallio");
 
   const place = pin({ id: "2", nameFi: "Namika Areena", name: "Namika", padCount: 4 });
+  const english = getCopy("en");
   expect(pinCourtCount(place)).toBe(4);
-  expect(courtMapLabel(place, copy)).toBe("Namika Areena\n4 kenttää");
-  expect(courtMapLabel(place, getCopy("en"))).toBe("Namika\n4 courts");
+  expect(courtMapLabel(place, copy)).toBe(`Namika Areena\n${copy.padCount(4)}`);
+  expect(courtMapLabel(place, english)).toBe(`Namika\n${english.padCount(4)}`);
 });
 
 test("labels known codes, title-cases an unknown hyphenated code, and joins an address", () => {

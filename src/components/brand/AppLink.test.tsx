@@ -1,7 +1,10 @@
 import { cleanup, render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { afterEach, expect, test, vi } from "vitest";
+import { getCopy } from "@/lib/copy";
 import { AppLink } from "./AppLink";
+
+const copy = getCopy();
 
 const status = vi.hoisted(() => ({ pending: true }));
 
@@ -28,9 +31,9 @@ vi.mock("next/link", () => ({
 
 test("the pending spinner stays on the label's row, after the text", () => {
   status.pending = true;
-  render(<AppLink href="/?info">Etusivu</AppLink>);
+  render(<AppLink href="/?info">{copy.homepage}</AppLink>);
 
-  const link = screen.getByRole("link", { name: "Etusivu" });
+  const link = screen.getByRole("link", { name: copy.homepage });
   const spinner = link.querySelector("svg");
   expect(spinner).toHaveClass("inline-block", "animate-spin");
   expect(link.lastElementChild).toBe(spinner);
@@ -40,11 +43,11 @@ test("a reserved spinner keeps its width while the link is idle", () => {
   status.pending = false;
   render(
     <AppLink href="/?info" reservePending>
-      Etusivu
+      {copy.homepage}
     </AppLink>,
   );
 
-  const spinner = screen.getByRole("link", { name: "Etusivu" }).querySelector("svg");
+  const spinner = screen.getByRole("link", { name: copy.homepage }).querySelector("svg");
   expect(spinner).toHaveClass("invisible", "inline-block", "size-3.5");
   expect(spinner).not.toHaveClass("animate-spin");
 });
