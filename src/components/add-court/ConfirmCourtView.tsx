@@ -7,13 +7,12 @@ import { AppHeader } from "@/components/brand/AppHeader";
 import { AppLink } from "@/components/brand/AppLink";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import type { FetchedAtBySource } from "@/lib/catalog";
+import { MAP_PATH } from "@/lib/constants";
 
 export function ConfirmCourtView({
-  courtCount,
   fetchedAtBySource,
   notifyFailed = false,
 }: {
-  courtCount: number;
   fetchedAtBySource: FetchedAtBySource;
   notifyFailed?: boolean;
 }) {
@@ -21,7 +20,7 @@ export function ConfirmCourtView({
 
   return (
     <div className="flex min-h-dvh flex-col bg-asphalt">
-      <AppHeader fetchedAtBySource={fetchedAtBySource} courtCount={courtCount} />
+      <AppHeader fetchedAtBySource={fetchedAtBySource} />
       <main className="mx-auto flex w-full max-w-lg flex-1 flex-col items-center justify-center gap-3 px-6 py-10 text-center">
         <Icon iconNode={basketball} className="size-10 text-gold" aria-hidden />
         <h1 className="font-display text-4xl tracking-wide text-white">
@@ -31,7 +30,7 @@ export function ConfirmCourtView({
           {notifyFailed ? copy.confirmNotifyFailed : copy.confirmCourtInvalid}
         </p>
         <AppLink
-          href="/"
+          href={MAP_PATH}
           className="mt-2 inline-flex items-center gap-1 text-sm font-medium text-ink/80 underline-offset-2 hover:text-white hover:underline"
         >
           {copy.backToMap}

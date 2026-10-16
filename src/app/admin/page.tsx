@@ -6,7 +6,7 @@ import { getCourtCatalog } from "@/lib/catalog";
 import { getCopy } from "@/lib/copy";
 import { listAdminCourtsWithPhotos } from "@/lib/court-photos";
 import { listAdminFeedback } from "@/lib/feedback-store";
-import { countPublicCourts, listAdminSubmittedCourts } from "@/lib/submitted-courts";
+import { listAdminSubmittedCourts } from "@/lib/submitted-courts";
 
 export const dynamic = "force-dynamic";
 
@@ -24,17 +24,15 @@ export default async function AdminPage() {
     redirect("/login?callbackUrl=/admin");
   }
 
-  const [{ fetchedAtBySource }, submitted, courtCount, photoCourts, feedback] = await Promise.all([
+  const [{ fetchedAtBySource }, submitted, photoCourts, feedback] = await Promise.all([
     getCourtCatalog(),
     listAdminSubmittedCourts(),
-    countPublicCourts(),
     listAdminCourtsWithPhotos(),
     listAdminFeedback(),
   ]);
 
   return (
     <AdminCourtsView
-      courtCount={courtCount}
       fetchedAtBySource={fetchedAtBySource}
       courts={submitted}
       photoCourts={photoCourts}

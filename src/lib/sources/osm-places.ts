@@ -1,7 +1,7 @@
+import { USER_AGENT } from "@/lib/constants";
 import type { Court } from "@/lib/courts";
 import { parseOsmCourtId } from "@/lib/sources";
 
-const USER_AGENT = "HoopFinder/0.1 (https://github.com/kirkkala/hoopfinder)";
 const LOOKUP = "https://nominatim.openstreetmap.org/lookup";
 const BATCH = 50;
 const GAP_MS = 1_100;

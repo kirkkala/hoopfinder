@@ -18,13 +18,11 @@ import type { AdminFeedback } from "@/lib/feedback";
 import type { AdminSubmittedCourt } from "@/lib/submitted-courts";
 
 export function AdminCourtsView({
-  courtCount,
   fetchedAtBySource,
   courts,
   photoCourts,
   feedback,
 }: {
-  courtCount: number;
   fetchedAtBySource: FetchedAtBySource;
   courts: AdminSubmittedCourt[] | null;
   photoCourts: AdminCourtWithPhotos[] | null;
@@ -34,7 +32,7 @@ export function AdminCourtsView({
 
   return (
     <div className="flex min-h-dvh flex-col bg-asphalt">
-      <AppHeader fetchedAtBySource={fetchedAtBySource} courtCount={courtCount} />
+      <AppHeader fetchedAtBySource={fetchedAtBySource} />
       <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-8 sm:px-6">
         <h1 className="font-display text-4xl tracking-wide text-white">{copy.adminTitle}</h1>
         <AdminFeedbackList items={feedback} />

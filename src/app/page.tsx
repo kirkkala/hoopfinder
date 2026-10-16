@@ -1,11 +1,13 @@
 import type { Metadata } from "next";
-import { CourtExplorer } from "@/components/explorer/CourtExplorer";
+import { cookies } from "next/headers";
+import { permanentRedirect, redirect } from "next/navigation";
+import { HomeView } from "@/components/brand/HomeView";
 import { getCourtCatalog } from "@/lib/catalog";
-import { SITE_URL } from "@/lib/constants";
+import { INFO_PARAM, SITE_URL } from "@/lib/constants";
 import { getCopy } from "@/lib/copy";
-import { courtIdFromParam } from "@/lib/courts";
 import { homeOgHref, OG_CONTENT_TYPE, OG_SIZE } from "@/lib/og";
 import { countPublicCourts } from "@/lib/submitted-courts";
+import { homeEntryTarget, VISITED_COOKIE } from "@/lib/visit";
 
 export const dynamic = "force-dynamic";
 
@@ -34,14 +36,22 @@ export async function generateMetadata(): Promise<Metadata> {
 export default async function HomePage({
   searchParams,
 }: {
-  searchParams: Promise<{ court?: string | string[]; thanks?: string | string[] }>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }) {
+  const [params, cookieStore] = await Promise.all([searchParams, cookies()]);
+  const entry = homeEntryTarget({
+    visited: cookieStore.get(VISITED_COOKIE)?.value === "1",
+    showHome: params[INFO_PARAM] !== undefined,
+    court: single(params.court),
+    thanks: single(params.thanks) === "1",
+  });
+  if (entry?.permanent) permanentRedirect(entry.href);
+  if (entry) redirect(entry.href);
+
   const [{ fetchedAtBySource }, courtCount] = await Promise.all([
     getCourtCatalog(),
     countPublicCourts(),
   ]);
-  const { court, thanks } = await searchParams;
-  const focusId = typeof court === "string" ? courtIdFromParam(court) : null;
   const finnish = getCopy("fi");
   const jsonLd = {
     "@context": "https://schema.org",
@@ -63,12 +73,11 @@ export default async function HomePage({
         // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD is built from our own site copy
         dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
       />
-      <CourtExplorer
-        courtCount={courtCount}
-        fetchedAtBySource={fetchedAtBySource}
-        focusId={focusId}
-        thanks={thanks === "1"}
-      />
+      <HomeView fetchedAtBySource={fetchedAtBySource} />
     </>
   );
+}
+
+function single(value: string | string[] | undefined): string | null {
+  return typeof value === "string" && value.length > 0 ? value : null;
 }

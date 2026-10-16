@@ -36,6 +36,7 @@ import { AdminStatusButton } from "@/components/admin/AdminStatusButton";
 import { AppFooter } from "@/components/brand/AppFooter";
 import { AppHeader } from "@/components/brand/AppHeader";
 import { AppLink } from "@/components/brand/AppLink";
+import { FirstVisitNote } from "@/components/brand/FirstVisitNote";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { CourtDistance } from "@/components/CourtDistance";
 import { CourtGallery } from "@/components/court/CourtGallery";
@@ -57,7 +58,7 @@ import {
   formatStatus,
   formatSurface,
   formatWaterPoint,
-  homeCourtHref,
+  mapCourtHref,
 } from "@/lib/courts";
 import { haversineKm } from "@/lib/geo";
 import { useLocationStatus } from "@/lib/origin";
@@ -82,7 +83,6 @@ export function CourtDetails({
   court,
   fetchedAtBySource,
   sourceFetchedAt,
-  courtCount,
   photos,
   otherCourts = [],
   visitorEmail = null,
@@ -90,7 +90,6 @@ export function CourtDetails({
   court: Court;
   fetchedAtBySource: FetchedAtBySource;
   sourceFetchedAt: string | null;
-  courtCount: number;
   photos: CourtPhoto[];
   /** Other hoops at this place. Each one has its own page. */
   otherCourts?: Court[];
@@ -124,7 +123,8 @@ export function CourtDetails({
 
   return (
     <div className="flex min-h-dvh flex-col bg-asphalt">
-      <AppHeader fetchedAtBySource={fetchedAtBySource} courtCount={courtCount} />
+      <AppHeader fetchedAtBySource={fetchedAtBySource} />
+      <FirstVisitNote />
 
       <main className="mx-auto grid w-full max-w-5xl flex-1 gap-6 px-4 py-8 split:grid-cols-[1.1fr_0.9fr]">
         <section className="space-y-5">
@@ -542,7 +542,7 @@ function BackToMap({ court, className }: { court: Court; className?: string }) {
   const copy = useCopy();
   return (
     <AppLink
-      href={homeCourtHref(court)}
+      href={mapCourtHref(court)}
       className={`inline-flex shrink-0 items-center gap-1 text-md font-medium text-gold hover:text-white ${className ?? ""}`}
     >
       <MapIcon aria-hidden />

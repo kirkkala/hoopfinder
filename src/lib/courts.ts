@@ -1,3 +1,4 @@
+import { MAP_PATH } from "@/lib/constants";
 import { type Copy, getCopy } from "@/lib/copy";
 import type { Coordinates } from "@/lib/geo";
 import { haversineKm } from "@/lib/geo";
@@ -561,12 +562,12 @@ export function focusedCourtHref(
   return courtHref({ id, source: court.source });
 }
 
-/** Home map with that court’s popup open. Works for published and pending pins. */
-export function homeCourtHref(
+/** Map with that court’s popup open. Works for published and pending pins. */
+export function mapCourtHref(
   court: Pick<ExplorerCourt, "id" | "source">,
   options?: { thanks?: boolean },
 ): string {
-  const href = `/?court=${encodeURIComponent(courtParam(court))}`;
+  const href = `${MAP_PATH}?court=${encodeURIComponent(courtParam(court))}`;
   return options?.thanks ? `${href}&thanks=1` : href;
 }
 

@@ -61,7 +61,6 @@ beforeAll(() => {
 
 beforeEach(() => {
   push.mockClear();
-  localStorage.setItem("hoopfinder-intro-seen", "1");
   vi.stubGlobal(
     "fetch",
     vi.fn(async (input: RequestInfo | URL, init?: RequestInit) => {
@@ -83,12 +82,12 @@ function posts() {
 }
 
 function openForm() {
-  render(<AddCourtView courtCount={1} fetchedAtBySource={{}} />);
+  render(<AddCourtView fetchedAtBySource={{}} />);
   const leave = screen.getAllByRole("link", { name: "Poistu" });
   expect(leave).toHaveLength(2);
-  for (const link of leave) expect(link).toHaveAttribute("href", "/");
+  for (const link of leave) expect(link).toHaveAttribute("href", "/map");
   fireEvent.click(screen.getByRole("button", { name: "Tämä selvä!" }));
-  expect(screen.getByRole("link", { name: "Poistu" })).toHaveAttribute("href", "/");
+  expect(screen.getByRole("link", { name: "Poistu" })).toHaveAttribute("href", "/map");
   expect(screen.getByRole("button", { name: "Paikanna" })).toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: "place pin" }));
   expect(screen.getByRole("button", { name: "Ohje" })).toBeInTheDocument();

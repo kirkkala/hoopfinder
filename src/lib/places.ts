@@ -1,4 +1,4 @@
-import { COURT_DATA_REVALIDATE } from "@/lib/constants";
+import { COURT_DATA_REVALIDATE, USER_AGENT } from "@/lib/constants";
 import { cameraBoundsForPlace, expandTinyBounds, type MapBounds } from "@/lib/geo";
 
 export type PlaceMatch = {
@@ -12,7 +12,7 @@ const NOMINATIM = "https://nominatim.openstreetmap.org/search";
 const NOMINATIM_REVERSE = "https://nominatim.openstreetmap.org/reverse";
 const NOMINATIM_HEADERS = {
   Accept: "application/json",
-  "User-Agent": "HoopFinder/0.1 (https://github.com/kirkkala/hoopfinder)",
+  "User-Agent": USER_AGENT,
 };
 
 /** Prefer real neighborhoods and towns over stations, shops, and roads. */

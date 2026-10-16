@@ -1,10 +1,10 @@
 import { z } from "zod";
+import { USER_AGENT } from "@/lib/constants";
 import { getCopy } from "@/lib/copy";
 import { type Court, emptyAmenities, isGenericCourtName } from "@/lib/courts";
 import { isInFinland } from "@/lib/sources/finland";
 import { enrichOsmPlaces } from "@/lib/sources/osm-places";
 
-const USER_AGENT = "HoopFinder/0.1 (https://github.com/kirkkala/hoopfinder)";
 const DEFAULT_DISPATCHER = "https://overpass-api.de/api/interpreter";
 const LZ4_INTERPRETER = "https://lz4.overpass-api.de/api/interpreter";
 const TILE_TIMEOUT_S = 30;

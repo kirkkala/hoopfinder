@@ -6,7 +6,7 @@ import Link from "next/link";
 import MapView, { Marker } from "react-map-gl/maplibre";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { MAP_STYLE } from "@/lib/constants";
-import { type Court, homeCourtHref } from "@/lib/courts";
+import { type Court, mapCourtHref } from "@/lib/courts";
 
 setWorkerUrl("/maplibre/maplibre-gl-worker.mjs");
 
@@ -33,7 +33,7 @@ export function CourtMiniMap({ court }: { court: Court }) {
         >
           <Marker latitude={court.lat} longitude={court.lon} anchor="center">
             <Link
-              href={homeCourtHref(court)}
+              href={mapCourtHref(court)}
               aria-label={copy.backToMap}
               title={copy.backToMap}
               className="flex size-8 items-center justify-center rounded-full outline-offset-2 hover:outline-2 hover:outline-gold focus-visible:outline-2 focus-visible:outline-gold"
