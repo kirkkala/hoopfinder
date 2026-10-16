@@ -110,6 +110,25 @@ const messages = {
   sourceListAnd: { fi: " ja ", en: " and " },
   sourceCodeOn: { fi: "Lähdekoodi", en: "Source code" },
   giveFeedback: { fi: "Anna palautetta", en: "Give feedback" },
+  allCourts: { fi: "Kaikki kentät", en: "All courts" },
+  allCourtsHeading: { fi: "Kentät kaupungeittain", en: "Courts by city" },
+  courtsAsList: { fi: "Kentät listana", en: "Courts as a list" },
+  courtsOnMap: { fi: "Kentät kartalla", en: "Courts on the map" },
+  allCourtsLead: {
+    fi: "Valitse kaupunki ja selaa sen kenttiä. Avaa kenttä nähdäksesi tiedot ja kartan.",
+    en: "Choose a city and browse its courts. Open a court to see the details and the map.",
+  },
+  listedCourtCount: {
+    fi: (count: number) =>
+      `Palvelussa on listattuna ${count} Suomen ulkokoripallo${count === 1 ? "kenttä" : "kenttää"}.`,
+    en: (count: number) =>
+      `The service lists ${count} outdoor basketball ${count === 1 ? "court" : "courts"} in Finland.`,
+  },
+  allCourtsCities: { fi: "Kaupungit", en: "Cities" },
+  citySearchPlaceholder: { fi: "Etsi kaupunkia", en: "Search a city" },
+  citySearchEmpty: { fi: "Ei osumia", en: "No matches" },
+  citySearchClear: { fi: "Tyhjennä", en: "Clear" },
+  cityUnknown: { fi: "Muu", en: "Other" },
   feedbackTitle: { fi: "Anna palautetta", en: "Give feedback" },
   feedbackLead: {
     fi: "Toiveet, bugiraportit ja muu palaute auttaa parantamaan Hoop Finderiä. Kerro vapaasti, mikä toimii ja mikä ei.",
@@ -143,8 +162,8 @@ const messages = {
   },
   searchLabel: { fi: "Etsi kaupunkia tai aluetta", en: "Search a city or neighborhood" },
   searchPlaceholder: {
-    fi: "Kaupunki, alue tai osoite",
-    en: "City, neighborhood or address",
+    fi: "Hae kenttää...",
+    en: "Search for a court...",
   },
   searchInstructions: {
     fi: "Etsi hakusanalla tai käytä paikannusta löytääkseen kentät lähellä sinua.",

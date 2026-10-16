@@ -49,7 +49,7 @@ export function CourtList({
         return (
           <li key={court.id} id={`court-${court.id}`}>
             <div
-              className={`flex flex-col gap-2 rounded-2xl px-3 py-3 ${
+              className={`group flex flex-col gap-2 rounded-2xl px-3 py-3 ${
                 selected
                   ? "bg-emerald-400/15 ring-1 ring-emerald-400"
                   : "bg-white/5 hover:bg-white/10"
@@ -66,7 +66,7 @@ export function CourtList({
                 {isAwaitingEmail(court) && !isAdmin ? null : (
                   <AppLink
                     href={courtHref(court)}
-                    className="ml-auto inline-flex items-center gap-1 font-bold text-gold hover:text-white"
+                    className="ml-auto inline-flex items-center gap-1 font-bold text-gold group-hover:text-white"
                   >
                     {copy.letsGo}
                     <ArrowRight className="size-3.5" aria-hidden />

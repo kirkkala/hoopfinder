@@ -39,3 +39,14 @@ test("the collapsed map footer still offers feedback", () => {
   expect(screen.getAllByRole("button", { name: "Anna palautetta" }).length).toBeGreaterThan(0);
   expect(screen.queryByRole("link", { name: /github/i })).not.toBeInTheDocument();
 });
+
+test("the footer leaves the court list to the page jump", () => {
+  render(
+    <FeedbackProvider>
+      <AppFooter collapsible />
+    </FeedbackProvider>,
+  );
+
+  expect(screen.queryByRole("link", { name: "Kaikki kentät" })).not.toBeInTheDocument();
+  expect(screen.getAllByRole("button", { name: "Anna palautetta" }).length).toBeGreaterThan(0);
+});

@@ -203,7 +203,7 @@ test("round-trips court ids through the page path and the map query", () => {
   expect(focusedCourtHref(lipas, "other")).toBe("/courts/lipas/82547");
 });
 
-test("reads court paths as a court, the home map, or a missing page", () => {
+test("reads court paths as a court, the court list, or a missing page", () => {
   expect(parseCourtPath([])).toBe("index");
   expect(parseCourtPath(["lipas"])).toBe("index");
   expect(parseCourtPath(["osm", "way"])).toBe("index");

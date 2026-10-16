@@ -585,7 +585,7 @@ export function courtIdFromParam(value: string): string | null {
   return parsed && parsed !== "index" ? parsed.id : null;
 }
 
-/** `"index"` → home; `{ id }` → court; `null` → 404. */
+/** `"index"` → the court list; `{ id }` → court; `null` → 404. */
 export function parseCourtPath(segments: string[]): "index" | { id: string } | null {
   if (segments.length === 0) return "index";
   if (segments[0] === "submitted") {

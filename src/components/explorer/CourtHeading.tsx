@@ -5,13 +5,21 @@ import { useCopy } from "@/components/brand/LocaleProvider";
 import { CourtDistance } from "@/components/CourtDistance";
 import { type CourtWithDistance, courtTitle, formatAddress } from "@/lib/courts";
 
+type CourtHeadingCourt = Pick<
+  CourtWithDistance,
+  "name" | "nameFi" | "address" | "neighborhood" | "city"
+> & {
+  padCount?: number;
+  distanceKm?: number | null;
+};
+
 export function CourtHeading({
   court,
   pin = false,
   className,
   titleClassName,
 }: {
-  court: CourtWithDistance;
+  court: CourtHeadingCourt;
   pin?: boolean;
   className?: string;
   titleClassName?: string;
@@ -35,7 +43,7 @@ export function CourtHeading({
           <p className="mt-1 text-sm text-gold">{copy.padCount(court.padCount)}</p>
         ) : null}
       </div>
-      {court.distanceKm !== null ? <CourtDistance km={court.distanceKm} /> : null}
+      {court.distanceKm != null ? <CourtDistance km={court.distanceKm} /> : null}
     </div>
   );
 }

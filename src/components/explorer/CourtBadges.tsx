@@ -3,9 +3,16 @@
 import { Lightbulb, Unlock } from "lucide-react";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import type { Copy } from "@/lib/copy";
-import { type ExplorerCourt, formatStatus, isAwaitingEmail, isPendingCourt } from "@/lib/courts";
+import { type ExplorerCourt, formatStatus } from "@/lib/courts";
 
-export function CourtBadges({ court }: { court: ExplorerCourt }) {
+type CourtBadgeCourt = {
+  status: string;
+  source?: string;
+  emailConfirmed?: boolean;
+  amenities: Pick<ExplorerCourt["amenities"], "lighting" | "freeUse">;
+};
+
+export function CourtBadges({ court }: { court: CourtBadgeCourt }) {
   const copy = useCopy();
   return (
     <>
@@ -26,9 +33,9 @@ export function CourtBadges({ court }: { court: ExplorerCourt }) {
   );
 }
 
-function statusLabel(court: ExplorerCourt, copy: Copy): string {
-  if (isAwaitingEmail(court)) return copy.statusAwaitingEmail;
-  if (isPendingCourt(court) || court.status === "pending") return copy.statusUnderReview;
+function statusLabel(court: CourtBadgeCourt, copy: Copy): string {
+  if (court.emailConfirmed === false) return copy.statusAwaitingEmail;
+  if (court.source === "pending" || court.status === "pending") return copy.statusUnderReview;
   return formatStatus(court.status, copy);
 }
 

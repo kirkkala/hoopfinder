@@ -16,7 +16,7 @@ import { useCopy } from "@/components/brand/LocaleProvider";
 import { MenuItem, MenuItemList } from "@/components/brand/MenuItem";
 import { ShowAnnouncementButton, useDatabaseUnavailable } from "@/components/brand/SiteBanner";
 import type { FetchedAtBySource } from "@/lib/catalog";
-import { APP_VERSION } from "@/lib/constants";
+import { APP_VERSION, COURT_INDEX_PATH } from "@/lib/constants";
 import { wide } from "@/lib/layout";
 import { COURT_SOURCES } from "@/lib/sources";
 import { formatFetchedAt } from "@/lib/time";
@@ -314,6 +314,10 @@ function HeaderMenu({
                     {copy.giveFeedback}
                   </MenuItem>
                 )}
+                <MenuItem href="/">{copy.courtsOnMap}</MenuItem>
+                <MenuItem href={COURT_INDEX_PATH} prefetch={false}>
+                  {copy.courtsAsList}
+                </MenuItem>
                 {databaseUnavailable ? null : (
                   <MenuItem href="/add" prefetch>
                     {copy.addCourt}
