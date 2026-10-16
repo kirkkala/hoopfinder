@@ -23,12 +23,29 @@ const LipasSiteSchema = z.looseObject({
   owner: z.string().optional().nullable(),
   admin: z.string().optional().nullable(),
   properties: z.record(z.string(), z.unknown()).optional().nullable(),
+  "search-meta": z
+    .looseObject({
+      location: z
+        .looseObject({
+          city: z
+            .looseObject({
+              name: z.looseObject({ fi: z.string().optional().nullable() }).optional().nullable(),
+            })
+            .optional()
+            .nullable(),
+        })
+        .optional()
+        .nullable(),
+    })
+    .optional()
+    .nullable(),
   location: z.looseObject({
     address: z.string().optional().nullable(),
     "postal-code": z.string().optional().nullable(),
     "postal-office": z.string().optional().nullable(),
     city: z
       .looseObject({
+        "city-code": z.number().optional().nullable(),
         neighborhood: z.string().optional().nullable(),
       })
       .optional()
@@ -36,6 +53,27 @@ const LipasSiteSchema = z.looseObject({
     geometries: z.unknown().optional().nullable(),
   }),
 });
+
+const LipasMunicipalitySchema = z.object({
+  "search-meta": z
+    .looseObject({
+      location: z
+        .looseObject({
+          city: z
+            .looseObject({
+              name: z.looseObject({ fi: z.string().optional().nullable() }).optional().nullable(),
+            })
+            .optional()
+            .nullable(),
+        })
+        .optional()
+        .nullable(),
+    })
+    .optional()
+    .nullable(),
+});
+
+type LipasSite = z.infer<typeof LipasSiteSchema>;
 
 export async function getLipasCourts(): Promise<Court[]> {
   const first = await fetchPage(1);
@@ -45,14 +83,19 @@ export async function getLipasCourts(): Promise<Court[]> {
     ),
   );
 
-  const courts: Court[] = [];
+  const sites: LipasSite[] = [];
   for (const page of [first, ...rest]) {
     for (const item of page.items) {
       const parsed = LipasSiteSchema.safeParse(item);
-      if (!parsed.success) continue;
-      const court = toCourt(parsed.data);
-      if (court) courts.push(court);
+      if (parsed.success) sites.push(parsed.data);
     }
+  }
+
+  const municipalities = await municipalityNames(sites);
+  const courts: Court[] = [];
+  for (const site of sites) {
+    const court = toCourt(site, municipalities);
+    if (court) courts.push(court);
   }
   return courts;
 }
@@ -76,18 +119,98 @@ async function fetchPage(page: number) {
   return parsed.data;
 }
 
-function toCourt(site: z.infer<typeof LipasSiteSchema>): Court | null {
-  const coordinates = (
+/**
+ * List rows omit the municipality name. One site per city code is enough;
+ * search-meta on that site carries the Finnish kunta name.
+ */
+async function municipalityNames(sites: LipasSite[]): Promise<Map<number, string>> {
+  const names = new Map<number, string>();
+  const sampleId = new Map<number, number>();
+
+  for (const site of sites) {
+    if (!coordinates(site)) continue;
+    const code = site.location.city?.["city-code"];
+    if (typeof code !== "number") continue;
+    const known = text(site["search-meta"]?.location?.city?.name?.fi);
+    if (known) names.set(code, known);
+    if (!text(site.location["postal-office"]) && !sampleId.has(code)) {
+      sampleId.set(code, site["lipas-id"]);
+    }
+  }
+
+  await Promise.all(
+    [...sampleId]
+      .filter(([code]) => !names.has(code))
+      .map(async ([code, id]) => {
+        const name = await fetchMunicipalityName(id);
+        if (name) names.set(code, name);
+      }),
+  );
+  return names;
+}
+
+async function fetchMunicipalityName(id: number): Promise<string | null> {
+  const response = await fetch(`${LIPAS_API}/sports-sites/${id}`, { cache: "no-store" });
+  if (!response.ok) return null;
+  const parsed = LipasMunicipalitySchema.safeParse(await response.json());
+  if (!parsed.success) return null;
+  return text(parsed.data["search-meta"]?.location?.city?.name?.fi);
+}
+
+/**
+ * Postitoimipaikka is the locality when Lipas has one (Halikko stays Halikko).
+ * Otherwise the municipality name fills the city, and a distinct kuntaosa stays
+ * on the address. A kuntaosa that only repeats the city is dropped, and its
+ * normal spelling replaces an all-caps postal place.
+ */
+function lipasPlace(
+  site: LipasSite,
+  municipalities: Map<number, string>,
+): { city: string | null; neighborhood: string | null } {
+  const postalOffice = text(site.location["postal-office"]);
+  const code = site.location.city?.["city-code"];
+  const municipality = typeof code === "number" ? text(municipalities.get(code)) : null;
+  const district = text(site.location.city?.neighborhood);
+  const city = postalOffice ?? municipality ?? district;
+  if (district && city && sameLabel(district, city)) {
+    // Kuntaosa often repeats the postal place in normal spelling (Myllyoja vs MYLLYOJA).
+    return { city: preferredSpelling(city, district), neighborhood: null };
+  }
+  return { city, neighborhood: district };
+}
+
+function preferredSpelling(primary: string, alternate: string): string {
+  if (isUppercase(primary) && !isUppercase(alternate)) return alternate;
+  return primary;
+}
+
+function isUppercase(value: string): boolean {
+  return value === value.toLocaleUpperCase("fi") && value !== value.toLocaleLowerCase("fi");
+}
+
+function sameLabel(a: string, b: string): boolean {
+  return a.localeCompare(b, "fi", { sensitivity: "accent" }) === 0;
+}
+
+function coordinates(site: LipasSite): { lat: number; lon: number } | null {
+  const pair = (
     site.location.geometries as
       | { features?: Array<{ geometry?: { coordinates?: number[] } }> }
       | null
       | undefined
   )?.features?.[0]?.geometry?.coordinates;
-  const lon = coordinates?.[0];
-  const lat = coordinates?.[1];
+  const lon = pair?.[0];
+  const lat = pair?.[1];
   if (typeof lon !== "number" || typeof lat !== "number") return null;
+  return { lat, lon };
+}
+
+function toCourt(site: LipasSite, municipalities: Map<number, string>): Court | null {
+  const point = coordinates(site);
+  if (!point) return null;
 
   const properties = site.properties ?? {};
+  const place = lipasPlace(site, municipalities);
   return {
     id: String(site["lipas-id"]),
     source: "lipas",
@@ -96,11 +219,10 @@ function toCourt(site: z.infer<typeof LipasSiteSchema>): Court | null {
     status: site.status ?? "unknown",
     address: text(site.location.address),
     postalCode: text(site.location["postal-code"]),
-    city: text(site.location["postal-office"]),
-    // LIPAS "neighborhood" is a planning district (peruspiiri), not kaupunginosa.
-    neighborhood: text(site.location.city?.neighborhood),
-    lat,
-    lon,
+    city: place.city,
+    neighborhood: place.neighborhood,
+    lat: point.lat,
+    lon: point.lon,
     comment: text(site.comment),
     website: text(site.www),
     constructionYear: site["construction-year"] ?? null,
