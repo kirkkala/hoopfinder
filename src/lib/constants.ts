@@ -21,6 +21,6 @@ export const COURT_DATA_REVALIDATE = 86400;
 
 /**
  * Largest photo the upload form accepts. The file is sent through the app
- * before it is resized, and Vercel stops a request at about 4.5 MB.
+ * before it is resized, and Vercel stops a request at about 8 MB.
  */
-export const COURT_PHOTO_MAX_BYTES = 4 * 1024 * 1024;
+export const COURT_PHOTO_MAX_BYTES = 8 * 1024 * 1024;
