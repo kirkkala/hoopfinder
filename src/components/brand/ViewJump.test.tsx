@@ -1,7 +1,10 @@
 import { render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { expect, test, vi } from "vitest";
+import { getCopy } from "@/lib/copy";
 import { ViewJump } from "./ViewJump";
+
+const copy = getCopy();
 
 vi.mock("next/link", () => ({
   default: ({
@@ -26,18 +29,18 @@ test("the map and list buttons show the spinner after the label", () => {
   render(
     <>
       <ViewJump href="/map" direction="to-map">
-        Kentät kartalla
+        {copy.courtsOnMap}
       </ViewJump>
       <ViewJump href="/courts" direction="to-list">
-        Kentät listana
+        {copy.courtsAsList}
       </ViewJump>
     </>,
   );
 
   for (const [name, href] of [
-    ["Kentät kartalla", "/map"],
-    ["Kentät listana", "/courts"],
-  ] as const) {
+    [copy.courtsOnMap, "/map"],
+    [copy.courtsAsList, "/courts"],
+  ]) {
     const link = screen.getByRole("link", { name });
     const label = [...link.childNodes].find((node) => node.textContent === name);
     const spinner = link.querySelector(".animate-spin");

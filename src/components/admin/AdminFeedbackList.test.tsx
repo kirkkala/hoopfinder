@@ -1,7 +1,10 @@
 import { cleanup, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { afterEach, expect, test, vi } from "vitest";
+import { getCopy } from "@/lib/copy";
 import type { AdminFeedback } from "@/lib/feedback";
 import { AdminFeedbackList } from "./AdminFeedbackList";
+
+const copy = getCopy();
 
 const refresh = vi.hoisted(() => vi.fn());
 
@@ -25,10 +28,10 @@ const item: AdminFeedback = {
 
 test("says when there is no feedback and when the database is down", () => {
   const { rerender } = render(<AdminFeedbackList items={[]} />);
-  expect(screen.getByText("Ei vielä palautetta.")).toBeInTheDocument();
+  expect(screen.getByText(copy.adminFeedbackEmpty)).toBeInTheDocument();
 
   rerender(<AdminFeedbackList items={null} />);
-  expect(screen.getByText("Hallintapaneeli ei ole juuri nyt käytössä.")).toBeInTheDocument();
+  expect(screen.getByText(copy.adminUnavailable)).toBeInTheDocument();
 });
 
 test("keeps each opened message open", () => {
@@ -51,7 +54,7 @@ test("keeps each opened message open", () => {
   fireEvent.click(screen.getByRole("button", { name: /Toive/ }));
   expect(screen.getByText(item.body)).toBeInTheDocument();
   expect(screen.getByText(second.body)).toBeInTheDocument();
-  expect(screen.getByText("Lähettäjä: Anonyymi")).toBeInTheDocument();
+  expect(screen.getByText(`${copy.sentBy}: ${copy.adminFeedbackNoEmail}`)).toBeInTheDocument();
 });
 
 test("saves notes from an open message", async () => {
@@ -61,12 +64,12 @@ test("saves notes from an open message", async () => {
   vi.stubGlobal("fetch", fetchMock);
   render(<AdminFeedbackList items={[item]} />);
 
-  expect(screen.getByText("Lähettäjä: visitor@example.com")).toBeInTheDocument();
+  expect(screen.getByText(`${copy.sentBy}: ${item.email}`)).toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: /Bugi kartalla/ }));
-  fireEvent.change(screen.getByRole("textbox", { name: "Muistiinpanot" }), {
+  fireEvent.change(screen.getByRole("textbox", { name: copy.adminFeedbackNotes }), {
     target: { value: "Vastasin sähköpostilla." },
   });
-  fireEvent.click(screen.getByRole("button", { name: "Tallenna muistiinpanot" }));
+  fireEvent.click(screen.getByRole("button", { name: copy.adminFeedbackSaveNotes }));
 
   await waitFor(() => {
     expect(fetchMock).toHaveBeenCalledWith("/api/admin/feedback/4", {
@@ -76,5 +79,5 @@ test("saves notes from an open message", async () => {
     });
   });
   expect(refresh).toHaveBeenCalled();
-  expect(screen.getByText("Tallennettu")).toBeInTheDocument();
+  expect(screen.getByText(copy.adminFeedbackNotesSaved)).toBeInTheDocument();
 });
