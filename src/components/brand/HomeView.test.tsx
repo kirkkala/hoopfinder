@@ -56,7 +56,9 @@ test("the homepage explains the service, then offers the map, the list, and loca
   expect(mapLink).toHaveAttribute("href", "/map");
   expect(listLink).toHaveAttribute("href", "/courts");
   expect(
-    screen.getByText("Hoop Finderissä on kaikki Suomen ulkokoripallokentät."),
+    screen.getByText(
+      "Hoop Finderista löytyy kaikki Suomen vapaassa käytössä olevat ulko- ja katukoripallokentät sekä korit. Jokaisesta kentästä on listattu tarkempia tietoja sekä käyttäjien lisäämiä kuvia kuvagalleriassa.",
+    ),
   ).toBeInTheDocument();
   const feedback = within(main).getByRole("button", { name: "Anna palautetta" });
   const source = within(main).getByRole("link", { name: "GitHubista" });
