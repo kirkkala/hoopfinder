@@ -3,8 +3,8 @@ import { version } from "../../package.json";
 export const APP_NAME = "Hoop Finder";
 export const APP_VERSION = version;
 export const SITE_URL = "https://www.hoopfinder.fi";
-/** Server-rendered court list. Linked from the homepage so crawlers can reach every court. */
-export const COURT_INDEX_PATH = "/courts/list";
+/** Court list. `/courts/lipas`, `/courts/osm`, and `/courts/submitted` without an id redirect here. */
+export const COURT_INDEX_PATH = "/courts";
 export const MAP_STYLE = "https://tiles.openfreemap.org/styles/liberty";
 export const BUY_ME_A_COFFEE_URL = "https://www.buymeacoffee.com/kirkkala";
 
