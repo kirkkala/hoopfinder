@@ -59,8 +59,8 @@ const messages = {
   homepage: { fi: "Etusivu", en: "Home" },
   introTitle: { fi: "Koripallokentät suomessa", en: "Basketball courts in Finland" },
   servicePitch: {
-    fi: "Hoop Finderissä on kaikki Suomen ulkokoripallokentät.",
-    en: "Hoop Finder has all outdoor basketball courts in Finland.",
+    fi: "Hoop Finderista löytyy kaikki Suomen vapaassa käytössä olevat ulko- ja katukoripallokentät sekä korit. Jokaisesta kentästä on listattu tarkempia tietoja sekä käyttäjien lisäämiä kuvia kuvagalleriassa.",
+    en: "Hoop Finder has all freely available outdoor and street basketball courts & hoops in Finland, on the map and by city. Each court has details and photos from users in the photo gallery.",
   },
   introLocationBenefit: {
     fi: "Salli sijainti, niin näet helposti lähelläsi olevat kentät.",
@@ -75,16 +75,16 @@ const messages = {
     en: "You have allowed location information, distance to each court is shown for you.",
   },
   introCreatedByTitle: {
-    fi: "Kuka tämän teki ja miksi",
-    en: "Who built this and why",
+    fi: "Lisää tietoa palvelusta",
+    en: "Add information about the service",
   },
   introCreatedBy1: {
-    fi: "toteutti sivuston harrasteprojektina syksyllä 2026. Kenttien tiedot haetaan avoimista rajapinnoista sekä käyttäjien itse lisäämistä kenttien tiedoista. Palveluun voi myös lisätä kuvia kentistä.",
+    fi: "teki sivuston harrasteprojektina syksyllä 2026. Kenttien tiedot haetaan avoimista rajapinnoista sekä käyttäjien itse lisäämistä kenttien tiedoista. Palveluun voi myös lisätä kuvia kentistä.",
     en: "built this site as a side project in the fall of 2026. The court data is fetched from open APIs and users can add missing court data and photos of the courts.",
   },
   introMotivation: {
-    fi: "Motivaationa tämän toteuttamiselle oli yksi paikka mistä löytyy kaikki suomen ulkokoripallokentät ja tätä kautta ihmiset ulos liikkumaan enemmän koripallon kanssa.",
-    en: "The motivation for this was to have one place where all outdoor basketball courts in Finland can be found and through this get humans out of the house and moving more with a basketball.",
+    fi: "Motivaationa sivuston toteutukselle oli yksi paikka mistä löytyy kaikki suomen ulkokoripallokentät ja tätä kautta koripallosta kiinnostuneet ulos liikkumaan enemmän koripallon kanssa.",
+    en: "The motivation for building this site was to have one place where all outdoor basketball courts in Finland can be found and through this get people interested in basketball out of the house and moving more with a basketball.",
   },
   introFutureOfTheApp: {
     fi: "Palvelua kehitetään jatkuvasti, palaute ja kehitysideat otetaan ilolla vastaan!",
