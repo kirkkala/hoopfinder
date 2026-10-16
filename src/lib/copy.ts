@@ -1,8 +1,12 @@
+import { COURT_PHOTO_MAX_BYTES } from "@/lib/constants";
+
 export const LOCALES = ["fi", "en"] as const;
 export type Locale = (typeof LOCALES)[number];
 export const DEFAULT_LOCALE: Locale = "fi";
 
 type Pair<T> = { fi: T; en: T };
+
+const courtPhotoMaxMegabytes = COURT_PHOTO_MAX_BYTES / (1024 * 1024);
 
 const messages = {
   appName: {
@@ -343,8 +347,8 @@ const messages = {
       description ? `Photo ${current} of ${total}. ${description}` : `Photo ${current} of ${total}`,
   },
   photoTooLarge: {
-    fi: "Kuva on liian suuri. Enimmäiskoko on 4 Mt.",
-    en: "That photo is too large. Maximum size is 4 MB.",
+    fi: `Kuva on liian suuri. Enimmäiskoko on ${courtPhotoMaxMegabytes} Mt.`,
+    en: `That photo is too large. Maximum size is ${courtPhotoMaxMegabytes} MB.`,
   },
   photoType: {
     fi: "Käytä JPG-, PNG- tai WebP-kuvaa.",
