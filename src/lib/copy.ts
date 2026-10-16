@@ -51,8 +51,8 @@ const messages = {
   dataFetchedAt: { fi: "Tiedot haettu", en: "Data fetched" },
   addedAt: { fi: "Lisätty", en: "Added" },
   betaTooltip: {
-    fi: "Varhainen beta-versio. Ei valmis, saattaa sisältää bugeja.",
-    en: "Early beta preview. Not ready yet, might contain bugs.",
+    fi: "Beta-versio. Ei valmis, saattaa sisältää bugeja.",
+    en: "Beta preview. Not ready yet, might contain bugs.",
   },
   language: { fi: "Language", en: "Language" },
   menu: { fi: "Valikko", en: "Menu" },
@@ -63,7 +63,7 @@ const messages = {
     en: "Hoop Finder has all freely available outdoor and street basketball courts & hoops in Finland, on the map and by city. Each court has details and photos from users in the photo gallery.",
   },
   introLocationBenefit: {
-    fi: "Salli sijainti, niin näet helposti lähelläsi olevat kentät.",
+    fi: "Salli sijainti, niin näet kentät lähelläsi.",
     en: "Allow location tracking to see hoops near you.",
   },
   introLocationOptional: {
@@ -71,8 +71,8 @@ const messages = {
     en: "You can of course use the service without sharing your location.",
   },
   introLocationGranted: {
-    fi: "Olet sallinut sijainnin jakamisen, etäisyys kentille näytetään palvelussa.",
-    en: "You have allowed location information, distance to each court is shown for you.",
+    fi: "Olet sallinut paikantamisen, näet kentät lähelläsi.",
+    en: "You have allowed location tracking, you can see hoops near you.",
   },
   introCreatedByTitle: {
     fi: "Lisää tietoa palvelusta",
