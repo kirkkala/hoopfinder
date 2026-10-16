@@ -239,11 +239,7 @@ export function CourtExplorer({
           className={`flex w-full shrink-0 flex-col border-b border-white/10 bg-panel ${split.aside}`}
         >
           <div className={`p-3 sm:p-4 ${split.paneBorder}`}>
-            <ViewJump
-              href={COURT_INDEX_PATH}
-              direction="to-list"
-              className="mb-3 w-full justify-between"
-            >
+            <ViewJump href={COURT_INDEX_PATH} direction="to-list" className="mb-3">
               {copy.courtsAsList}
             </ViewJump>
             <SearchFilters
