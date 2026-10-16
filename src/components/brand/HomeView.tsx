@@ -67,7 +67,8 @@ export function HomeView({ fetchedAtBySource }: { fetchedAtBySource: FetchedAtBy
             className="underline hover:text-gold"
           >
             {copy.introOpenSourceLink}
-          </a>.
+          </a>
+          .
         </p>
       </main>
       <AppFooter />

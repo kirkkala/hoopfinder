@@ -65,7 +65,7 @@ test("the homepage explains the service, then offers the map, the list, and loca
   expect(source).toHaveAttribute("target", "_blank");
   expect(source.closest("p")).toHaveTextContent("Toteutuksen lähdekoodi löytyy GitHubista.");
   expect(
-    screen.getByText("Salli sijaintisi, niin näet kuinka kaukana kukin kenttä sijaitsee."),
+    screen.getByText("Salli sijainti, niin näet helposti lähelläsi olevat kentät."),
   ).toBeInTheDocument();
   expect(screen.getByRole("button", { name: "Paikanna" })).toBeInTheDocument();
   expect(document.cookie).toContain("hoopfinder-visited=1");

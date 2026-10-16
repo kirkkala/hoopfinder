@@ -34,9 +34,7 @@ test("sends a returning visitor to the map and keeps an explicit about visit", (
   expect(
     homeEntryTarget({ visited: false, showHome: false, court: null, thanks: false }),
   ).toBeNull();
-  expect(
-    homeEntryTarget({ visited: true, showHome: true, court: null, thanks: false }),
-  ).toBeNull();
+  expect(homeEntryTarget({ visited: true, showHome: true, court: null, thanks: false })).toBeNull();
   expect(homeEntryTarget({ visited: true, showHome: false, court: null, thanks: false })).toEqual({
     href: "/map",
     permanent: false,

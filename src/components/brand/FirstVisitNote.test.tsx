@@ -27,7 +27,7 @@ test("a first visit on a court page explains the service and links onward", () =
   );
 
   expect(
-    screen.getByRole("heading", { name: "Hoop Finder näyttää Suomen ulkokoripallokentät." }),
+    screen.getByRole("heading", { name: "Hoop Finderissä on kaikki Suomen ulkokoripallokentät." }),
   ).toBeInTheDocument();
   expect(screen.getByRole("link", { name: "Kentät kartalla" })).toHaveAttribute("href", "/map");
   expect(screen.getByRole("link", { name: "Kentät listana" })).toHaveAttribute("href", "/courts");
