@@ -98,5 +98,6 @@ test("a court card shows the pending spinner after its open label", () => {
   expect(link.querySelectorAll(".animate-spin")).toHaveLength(1);
   if (!label || !spinner) return;
   const text = [...label.childNodes].find((node) => node.textContent === copy.letsGo);
-  expect(text?.compareDocumentPosition(spinner) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  if (!text) return;
+  expect(text.compareDocumentPosition(spinner) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
 });
