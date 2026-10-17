@@ -4,7 +4,6 @@ import { getAuthSession, googleAuthConfigured, safeCallbackUrl } from "@/auth";
 import { LoginView } from "@/components/auth/LoginView";
 import { getCourtCatalog } from "@/lib/catalog";
 import { getCopy } from "@/lib/copy";
-import { countPublicCourts } from "@/lib/submitted-courts";
 
 export const dynamic = "force-dynamic";
 
@@ -29,10 +28,7 @@ export default async function LoginPage({
   const session = await getAuthSession();
   if (session?.user?.isAdmin) redirect(callbackUrl);
 
-  const [{ fetchedAtBySource }, courtCount] = await Promise.all([
-    getCourtCatalog(),
-    countPublicCourts(),
-  ]);
+  const { fetchedAtBySource } = await getCourtCatalog();
   const error = params.error;
   return (
     <LoginView
@@ -40,7 +36,6 @@ export default async function LoginPage({
       callbackUrl={callbackUrl}
       signedInEmail={session?.user?.email ?? null}
       error={Array.isArray(error) ? error.length > 0 : Boolean(error)}
-      courtCount={courtCount}
       fetchedAtBySource={fetchedAtBySource}
     />
   );

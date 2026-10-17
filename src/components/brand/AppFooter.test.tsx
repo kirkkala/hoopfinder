@@ -1,7 +1,10 @@
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { afterEach, beforeAll, expect, test } from "vitest";
+import { getCopy } from "@/lib/copy";
 import { AppFooter } from "./AppFooter";
 import { FeedbackProvider } from "./FeedbackDialog";
+
+const copy = getCopy();
 
 beforeAll(() => {
   HTMLDialogElement.prototype.showModal = function showModal() {
@@ -25,8 +28,8 @@ test("the footer credit opens feedback instead of GitHub", () => {
   );
 
   expect(screen.queryByRole("link", { name: /github/i })).not.toBeInTheDocument();
-  fireEvent.click(screen.getAllByRole("button", { name: "Anna palautetta" })[0]);
-  expect(screen.getByRole("heading", { name: "Anna palautetta" })).toBeInTheDocument();
+  fireEvent.click(screen.getAllByRole("button", { name: copy.giveFeedback })[0]);
+  expect(screen.getByRole("heading", { name: copy.giveFeedback })).toBeInTheDocument();
 });
 
 test("the collapsed map footer still offers feedback", () => {
@@ -36,6 +39,17 @@ test("the collapsed map footer still offers feedback", () => {
     </FeedbackProvider>,
   );
 
-  expect(screen.getAllByRole("button", { name: "Anna palautetta" }).length).toBeGreaterThan(0);
+  expect(screen.getAllByRole("button", { name: copy.giveFeedback }).length).toBeGreaterThan(0);
   expect(screen.queryByRole("link", { name: /github/i })).not.toBeInTheDocument();
+});
+
+test("the footer leaves the court list to the page jump", () => {
+  render(
+    <FeedbackProvider>
+      <AppFooter collapsible />
+    </FeedbackProvider>,
+  );
+
+  expect(screen.queryByRole("link", { name: copy.allCourts })).not.toBeInTheDocument();
+  expect(screen.getAllByRole("button", { name: copy.giveFeedback }).length).toBeGreaterThan(0);
 });

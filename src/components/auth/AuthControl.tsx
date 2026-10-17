@@ -3,6 +3,7 @@
 import { signOut, useSession } from "next-auth/react";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { MenuItem } from "@/components/brand/MenuItem";
+import { MAP_PATH } from "@/lib/constants";
 
 export function AuthControl() {
   const copy = useCopy();
@@ -18,7 +19,7 @@ export function AuthControl() {
           user.email ? <p className="px-4 pt-3.5 text-sm text-ink-muted">{user.email}</p> : null
         }
         onClick={() => {
-          void signOut({ callbackUrl: "/" });
+          void signOut({ callbackUrl: MAP_PATH });
         }}
       >
         {copy.signOut}

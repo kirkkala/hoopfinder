@@ -7,9 +7,11 @@ import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "reac
 import { AppFooter } from "@/components/brand/AppFooter";
 import { AppHeader } from "@/components/brand/AppHeader";
 import { useCopy } from "@/components/brand/LocaleProvider";
+import { ViewJump } from "@/components/brand/ViewJump";
 import { CourtList } from "@/components/explorer/CourtList";
 import { SearchFilters } from "@/components/explorer/SearchFilters";
 import type { FetchedAtBySource } from "@/lib/catalog";
+import { COURT_INDEX_PATH } from "@/lib/constants";
 import {
   type CourtWithDistance,
   courtParam,
@@ -87,12 +89,10 @@ function syncCourtUrl(path: string | null) {
 }
 
 export function CourtExplorer({
-  courtCount: totalCourtCount,
   fetchedAtBySource,
   focusId,
   thanks: thanksFromUrl = false,
 }: {
-  courtCount: number;
   fetchedAtBySource: FetchedAtBySource;
   focusId: string | null;
   thanks?: boolean;
@@ -230,13 +230,16 @@ export function CourtExplorer({
 
   return (
     <div className="flex h-full flex-col overflow-hidden overscroll-none bg-asphalt">
-      <AppHeader home fetchedAtBySource={fetchedAtBySource} courtCount={totalCourtCount} />
+      <AppHeader fetchedAtBySource={fetchedAtBySource} />
 
       <div className={`flex min-h-0 flex-1 flex-col overflow-hidden ${split.row}`}>
         <aside
           className={`flex w-full shrink-0 flex-col border-b border-white/10 bg-panel ${split.aside}`}
         >
           <div className={`p-3 sm:p-4 ${split.paneBorder}`}>
+            <ViewJump href={COURT_INDEX_PATH} direction="to-list" className="mb-3">
+              {copy.courtsAsList}
+            </ViewJump>
             <SearchFilters
               query={query}
               onQueryChange={(value) => {

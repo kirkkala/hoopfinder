@@ -1,8 +1,12 @@
+import { COURT_PHOTO_MAX_BYTES } from "@/lib/constants";
+
 export const LOCALES = ["fi", "en"] as const;
 export type Locale = (typeof LOCALES)[number];
 export const DEFAULT_LOCALE: Locale = "fi";
 
 type Pair<T> = { fi: T; en: T };
+
+const courtPhotoMaxMegabytes = COURT_PHOTO_MAX_BYTES / (1024 * 1024);
 
 const messages = {
   appName: {
@@ -47,40 +51,52 @@ const messages = {
   dataFetchedAt: { fi: "Tiedot haettu", en: "Data fetched" },
   addedAt: { fi: "Lisätty", en: "Added" },
   betaTooltip: {
-    fi: "Varhainen beta-versio. Ei valmis, saattaa sisältää bugeja.",
-    en: "Early beta preview. Not ready yet, might contain bugs.",
+    fi: "Beta-versio. Ei valmis, saattaa sisältää bugeja.",
+    en: "Beta preview. Not ready yet, might contain bugs.",
   },
   language: { fi: "Language", en: "Language" },
   menu: { fi: "Valikko", en: "Menu" },
-  info: { fi: "Tietoa palvelusta", en: "About the service" },
+  homepage: { fi: "Etusivu", en: "Home" },
   introTitle: { fi: "Koripallokentät suomessa", en: "Basketball courts in Finland" },
-  introLead: {
-    fi: "Hoop Finderin kartalla on {count} Suomen ulkokoripallokenttää. Olit sitten reissussa, mökillä, sukulaisten luona tai haluat tsekata kodin läheltä uuden kentän, täältä niitä löytyy!",
-    en: "Hoop Finder has {count} outdoor basketball courts in Finland. Whether you're on a trip, at the cottage, visiting relatives or want to check a new court close to home — here you can find them!",
+  servicePitch: {
+    fi: "Hoop Finderista löytyy kaikki Suomen vapaassa käytössä olevat ulko- ja katukoripallokentät sekä korit. Jokaisesta kentästä on listattu tarkempia tietoja sekä käyttäjien lisäämiä kuvia kuvagalleriassa.",
+    en: "Hoop Finder has all freely available outdoor and street basketball courts & hoops in Finland, on the map and by city. Each court has details and photos from users in the photo gallery.",
   },
   introLocationBenefit: {
-    fi: "Salli sijaintisi, niin näet kuinka kaukana kukin kenttä sijaitsee.",
-    en: "Allow your location to see the distance to each court.",
+    fi: "Salli sijainti, niin näet kentät lähelläsi.",
+    en: "Allow location tracking to see hoops near you.",
   },
   introLocationOptional: {
     fi: "Voit toki käyttää palvelua ilman sijainnin jakamistakin.",
     en: "You can of course use the service without sharing your location.",
   },
   introLocationGranted: {
-    fi: "Olet sallinut sijainnin jakamisen, etäisyys kentille näytetään palvelussa.",
-    en: "You have allowed location information, distance to each court is shown for you.",
+    fi: "Olet sallinut paikantamisen, näet kentät lähelläsi.",
+    en: "You have allowed location tracking, you can see hoops near you.",
   },
   introCreatedByTitle: {
-    fi: "Kuka tämän teki ja miksi",
-    en: "Who built this and why",
+    fi: "Lisää tietoa palvelusta",
+    en: "Add information about the service",
   },
   introCreatedBy1: {
-    fi: "koodaili sivuston omana harrasteprojektina, hakien kenttien tiedot parista avoimesta rajapinnasta ja antamalla käyttäjien itse lisätä palveluun puuttuvia kenttiä sekä kuvia kentistä.",
-    en: "built this site as a side project, fetching the court data from a few open APIs and allowing users to add missing courts to the service and photos of the courts.",
+    fi: "teki sivuston harrasteprojektina syksyllä 2026. Kenttien tiedot haetaan avoimista rajapinnoista sekä käyttäjien itse lisäämistä kenttien tiedoista. Palveluun voi myös lisätä kuvia kentistä.",
+    en: "built this site as a side project in the fall of 2026. The court data is fetched from open APIs and users can add missing court data and photos of the courts.",
   },
-  introCreatedBy2: {
-    fi: "Motivaationa tähän oli saada isot ja pienet ihmiset ulos liikkumaan enemmän koripallon kanssa.",
-    en: "The motivation for this is to get big and small humans out of the house and move more with a basketball.",
+  introMotivation: {
+    fi: "Motivaationa sivuston toteutukselle oli yksi paikka mistä löytyy kaikki suomen ulkokoripallokentät ja tätä kautta koripallosta kiinnostuneet ulos liikkumaan enemmän koripallon kanssa.",
+    en: "The motivation for building this site was to have one place where all outdoor basketball courts in Finland can be found and through this get people interested in basketball out of the house and moving more with a basketball.",
+  },
+  introFutureOfTheApp: {
+    fi: "Palvelua kehitetään jatkuvasti, palaute ja kehitysideat otetaan ilolla vastaan!",
+    en: "The service is developed continuously, feedback and development ideas are welcome!",
+  },
+  introOpenSource: {
+    fi: "Toteutuksen lähdekoodi löytyy",
+    en: "The source code is available at",
+  },
+  introOpenSourceLink: {
+    fi: "GitHubista",
+    en: "GitHub",
   },
   supportDeveloper: {
     fi: "Tue halutessasi kehitystä ja ylläpitoa.",
@@ -110,6 +126,29 @@ const messages = {
   sourceListAnd: { fi: " ja ", en: " and " },
   sourceCodeOn: { fi: "Lähdekoodi", en: "Source code" },
   giveFeedback: { fi: "Anna palautetta", en: "Give feedback" },
+  allCourts: { fi: "Kaikki kentät", en: "All courts" },
+  allCourtsHeading: { fi: "Kentät kaupungeittain", en: "Courts by city" },
+  courtsAsList: { fi: "Kentät listana", en: "Courts as a list" },
+  courtsOnMap: { fi: "Kentät kartalla", en: "Courts on the map" },
+  allCourtsLead: {
+    fi: "Valitse kaupunki ja selaa sen kenttiä. Avaa kenttä nähdäksesi tiedot ja kartan.",
+    en: "Choose a city and browse its courts. Open a court to see the details and the map.",
+  },
+  listedCourtCount: {
+    fi: (count: number) =>
+      `Palvelussa on listattuna ${count} Suomen ulkokoripallo${count === 1 ? "kenttä" : "kenttää"}.`,
+    en: (count: number) =>
+      `The service lists ${count} outdoor basketball ${count === 1 ? "court" : "courts"} in Finland.`,
+  },
+  allCourtsCities: { fi: "Kaupungit", en: "Cities" },
+  citySearchPlaceholder: { fi: "Etsi kaupunkia", en: "Search a city" },
+  citySearchEmpty: { fi: "Ei osumia", en: "No matches" },
+  citySearchClear: { fi: "Tyhjennä", en: "Clear" },
+  cityUnknown: { fi: "Muu", en: "Other" },
+  cityCourtCount: {
+    fi: (count: number) => `${count} ${count === 1 ? "kenttä" : "kenttää"}`,
+    en: (count: number) => `${count} ${count === 1 ? "court" : "courts"}`,
+  },
   feedbackTitle: { fi: "Anna palautetta", en: "Give feedback" },
   feedbackLead: {
     fi: "Toiveet, bugiraportit ja muu palaute auttaa parantamaan Hoop Finderiä. Kerro vapaasti, mikä toimii ja mikä ei.",
@@ -143,8 +182,8 @@ const messages = {
   },
   searchLabel: { fi: "Etsi kaupunkia tai aluetta", en: "Search a city or neighborhood" },
   searchPlaceholder: {
-    fi: "Kaupunki, alue tai osoite",
-    en: "City, neighborhood or address",
+    fi: "Hae kenttää...",
+    en: "Search for a court...",
   },
   searchInstructions: {
     fi: "Etsi hakusanalla tai käytä paikannusta löytääkseen kentät lähellä sinua.",
@@ -181,7 +220,6 @@ const messages = {
   close: { fi: "Sulje", en: "Close" },
   closeAnnouncement: { fi: "Sulje ilmoitus", en: "Close announcement" },
   showAnnouncement: { fi: "Näytä ilmoitus", en: "Show announcement" },
-  scrollForMore: { fi: "Vieritä alas", en: "Scroll for more" },
   courtKind: { fi: "Koripallokenttä", en: "Basketball court" },
   status: { fi: "Tila", en: "Status" },
   address: { fi: "Osoite", en: "Address" },
@@ -275,8 +313,13 @@ const messages = {
   notesFromListing: { fi: "Lisätiedot", en: "Notes" },
   photogallery: { fi: "Kuvagalleria", en: "Photo gallery" },
   courtLocation: { fi: "Sijainti kartalla", en: "Location on the map" },
+  mapZoomIn: { fi: "Lähennä", en: "Zoom in" },
+  mapZoomOut: { fi: "Loitonna", en: "Zoom out" },
   otherCourts: { fi: "Muut kentät tässä osoitteessa", en: "Other courts at this address" },
-  noPhotos: { fi: "Ei kuvia.", en: "No photos." },
+  noPhotos: {
+    fi: "Ei kuvia vielä. Ota kuva kun käyt kentällä, tai lisää kuva jos sinulla on jo sellainen.",
+    en: "No photos yet. Take one when you play here, or upload a photo if you already have one.",
+  },
   databaseUnavailable: {
     fi: "Tietokantaan ei saada yhteyttä.",
     en: "Can't reach the database.",
@@ -313,8 +356,8 @@ const messages = {
       description ? `Photo ${current} of ${total}. ${description}` : `Photo ${current} of ${total}`,
   },
   photoTooLarge: {
-    fi: "Kuva on liian suuri. Enimmäiskoko on 4 Mt.",
-    en: "That photo is too large. Maximum size is 4 MB.",
+    fi: `Kuva on liian suuri. Enimmäiskoko on ${courtPhotoMaxMegabytes} Mt.`,
+    en: `That photo is too large. Maximum size is ${courtPhotoMaxMegabytes} MB.`,
   },
   photoType: {
     fi: "Käytä JPG-, PNG- tai WebP-kuvaa.",
@@ -675,7 +718,7 @@ const messages = {
     fi: "Kenttä hukassa (404 - sivua ei löydy).",
     en: "Court is missing (404 - page not found).",
   },
-  backToHoops: { fi: "Takaisin kartalle", en: "Back to the hoops" },
+  toHomepage: { fi: "Etusivulle", en: "To the homepage" },
   courtNotFound: { fi: "Kenttää ei löydy", en: "Court not found" },
 };
 

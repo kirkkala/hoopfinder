@@ -12,6 +12,7 @@ import {
   useState,
 } from "react";
 import { useCopy, useLocale } from "@/components/brand/LocaleProvider";
+import { MAP_PATH } from "@/lib/constants";
 
 const DatabaseUnavailableContext = createContext(false);
 const STORAGE_KEY = "hoopfinder-announcements-dismissed";
@@ -49,7 +50,7 @@ export function SiteBanner({
   const { locale } = useLocale();
   const copy = useCopy();
   const pathname = usePathname();
-  const lockScroll = pathname === "/" || pathname === "/add";
+  const lockScroll = pathname === MAP_PATH || pathname === "/add";
 
   useLayoutEffect(() => {
     document.documentElement.classList.toggle("overflow-hidden", lockScroll);

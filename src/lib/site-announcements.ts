@@ -5,10 +5,10 @@ import type { SiteBannerMessage } from "@/components/brand/SiteBanner";
  * These stay hidden while the database is down — see the root layout.
  */
 export const siteAnnouncements: SiteBannerMessage[] = [
-  {
-    tone: "notice",
-    dismissible: true,
-    fi: "Uutta: Olemassa oleville kentille voi nyt lisätä kuvia!",
-    en: "New: Existing courts can now be added photos!",
-  },
+  // {
+  //   tone: "notice",
+  //   dismissible: true,
+  //   fi: "Uutta: Olemassa oleville kentille voi nyt lisätä kuvia!",
+  //   en: "New: Existing courts can now be added photos!",
+  // },
 ];

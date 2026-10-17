@@ -21,8 +21,9 @@ import { AppLink } from "@/components/brand/AppLink";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { LocateMeButton } from "@/components/LocateMeButton";
 import type { FetchedAtBySource } from "@/lib/catalog";
+import { MAP_PATH } from "@/lib/constants";
 import type { Copy } from "@/lib/copy";
-import { type ExplorerCourt, homeCourtHref } from "@/lib/courts";
+import { type ExplorerCourt, mapCourtHref } from "@/lib/courts";
 import type { Coordinates } from "@/lib/geo";
 import { fetchMapCourts } from "@/lib/map-courts";
 import { useLocationStatus } from "@/lib/origin";
@@ -49,13 +50,7 @@ const MAP_PILL_CLASS =
 
 const MAP_CHROME_OFFSET = "calc(max(0.75rem, env(safe-area-inset-top)) + 4.25rem)";
 
-export function AddCourtView({
-  courtCount,
-  fetchedAtBySource,
-}: {
-  courtCount: number;
-  fetchedAtBySource: FetchedAtBySource;
-}) {
+export function AddCourtView({ fetchedAtBySource }: { fetchedAtBySource: FetchedAtBySource }) {
   const copy = useCopy();
   const router = useRouter();
   const infoCtaRef = useRef<HTMLButtonElement>(null);
@@ -308,7 +303,7 @@ export function AddCourtView({
       if (document.activeElement instanceof HTMLElement) {
         document.activeElement.blur();
       }
-      router.push(homeCourtHref(payload.court, { thanks: true }));
+      router.push(mapCourtHref(payload.court, { thanks: true }));
     } catch {
       setError(copy.addCourtError);
     } finally {
@@ -343,11 +338,7 @@ export function AddCourtView({
 
   return (
     <div className="flex h-full flex-col overflow-hidden overscroll-none bg-asphalt">
-      <AppHeader
-        title={copy.addCourt}
-        courtCount={courtCount}
-        fetchedAtBySource={fetchedAtBySource}
-      />
+      <AppHeader title={copy.addCourt} fetchedAtBySource={fetchedAtBySource} />
       <section className="relative min-h-0 flex-1 bg-asphalt">
         <div className="add-court-map absolute inset-0" inert={infoOpen}>
           <AddCourtMap
@@ -387,7 +378,7 @@ export function AddCourtView({
                   {copy.addCourtInfoOpen}
                 </button>
               )}
-              <AppLink href="/" className={MAP_PILL_CLASS}>
+              <AppLink href={MAP_PATH} className={MAP_PILL_CLASS}>
                 <X aria-hidden className="size-5" />
                 {copy.addCourtExit}
               </AppLink>
@@ -647,7 +638,7 @@ function AddCourtInfoDialog({
             {copy.okBroCta}
           </button>
           <AppLink
-            href="/"
+            href={MAP_PATH}
             className="flex w-full items-center justify-center rounded-full px-4 py-3 text-base font-bold text-ink/80 outline-none hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-gold/60"
           >
             {copy.addCourtExit}

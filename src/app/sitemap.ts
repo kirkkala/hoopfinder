@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { getCourtCatalog } from "@/lib/catalog";
-import { SITE_URL } from "@/lib/constants";
+import { COURT_INDEX_PATH, MAP_PATH, SITE_URL } from "@/lib/constants";
 import { courtHref } from "@/lib/courts";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -13,6 +13,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       lastModified: catalogUpdated,
       changeFrequency: "weekly",
       priority: 1,
+    },
+    {
+      url: `${SITE_URL}${MAP_PATH}`,
+      lastModified: catalogUpdated,
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+    {
+      url: `${SITE_URL}${COURT_INDEX_PATH}`,
+      lastModified: catalogUpdated,
+      changeFrequency: "weekly",
+      priority: 0.8,
     },
     ...courts.flatMap((court) =>
       (court.members ?? [court]).map((page) => ({

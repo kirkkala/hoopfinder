@@ -5,6 +5,20 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
+function point(
+  address: string,
+  city: Record<string, unknown>,
+  coordinates: [number, number],
+  extra: Record<string, unknown> = {},
+) {
+  return {
+    address,
+    city,
+    geometries: { features: [{ geometry: { coordinates } }] },
+    ...extra,
+  };
+}
+
 function site(overrides: Record<string, unknown> = {}) {
   return {
     "lipas-id": 82547,
@@ -69,6 +83,103 @@ test("asks LIPAS for outdoor basketball sites and maps a page of them", async ()
       lengthM: 28,
     },
   });
+});
+
+test("fills a missing postal office from the municipality, and keeps a distinct district", async () => {
+  const urls: string[] = [];
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (url: string | URL) => {
+      urls.push(String(url));
+      const href = String(url);
+      if (href.endsWith("/sports-sites/603522")) {
+        return Response.json({
+          "search-meta": { location: { city: { name: { fi: " Savitaipale " } } } },
+        });
+      }
+      if (href.endsWith("/sports-sites/601592")) {
+        return Response.json({
+          "search-meta": { location: { city: { name: { fi: "Liminka" } } } },
+        });
+      }
+      return Response.json({
+        items: [
+          site({
+            "lipas-id": 603522,
+            location: point("Koulutie 7", { "city-code": 739 }, [27.69, 61.19]),
+          }),
+          site({
+            "lipas-id": 621111,
+            location: point("Alaseinäjoenkatu 9", { "city-code": 739 }, [22.84, 62.79]),
+          }),
+          site({
+            "lipas-id": 510794,
+            "search-meta": { location: { city: { name: { fi: "Sipoo" } } } },
+            location: point(
+              "Iso kylätie 8",
+              { "city-code": 753, neighborhood: " Sipoo " },
+              [25.26, 60.37],
+            ),
+          }),
+          site({
+            "lipas-id": 601592,
+            location: point(
+              "Karintie 3B",
+              { "city-code": 425, neighborhood: "Keskusta" },
+              [25.41, 64.81],
+            ),
+          }),
+          site({
+            location: point("Helsinginkatu 1", { neighborhood: "Kallio" }, [24.94, 60.17], {
+              "postal-office": "Helsinki",
+            }),
+          }),
+          site({
+            "lipas-id": 88,
+            location: point("Karjalantie 59", { neighborhood: "Myllyoja" }, [25.98, 61.16], {
+              "postal-office": "MYLLYOJA",
+            }),
+          }),
+        ],
+        pagination: { "total-pages": 1 },
+      });
+    }),
+  );
+
+  const courts = await getLipasCourts();
+  expect(urls.filter((url) => !url.includes("page=")).sort()).toEqual([
+    "https://api.lipas.fi/v2/sports-sites/601592",
+    "https://api.lipas.fi/v2/sports-sites/603522",
+  ]);
+  expect(courts).toEqual([
+    expect.objectContaining({ id: "603522", city: "Savitaipale", neighborhood: null }),
+    expect.objectContaining({ id: "621111", city: "Savitaipale", neighborhood: null }),
+    expect.objectContaining({ id: "510794", city: "Sipoo", neighborhood: null }),
+    expect.objectContaining({ id: "601592", city: "Liminka", neighborhood: "Keskusta" }),
+    expect.objectContaining({ id: "82547", city: "Helsinki", neighborhood: "Kallio" }),
+    expect.objectContaining({ id: "88", city: "Myllyoja", neighborhood: null }),
+  ]);
+});
+
+test("uses the district when Lipas has no municipality name", async () => {
+  vi.stubGlobal(
+    "fetch",
+    vi.fn(async (url: string | URL) => {
+      if (String(url).endsWith("/sports-sites/12")) return new Response("", { status: 404 });
+      return Response.json({
+        items: [
+          site({
+            "lipas-id": 12,
+            location: point("Koulutie", { "city-code": 1, neighborhood: "Halikko" }, [23.07, 60.4]),
+          }),
+        ],
+        pagination: { "total-pages": 1 },
+      });
+    }),
+  );
+
+  const courts = await getLipasCourts();
+  expect(courts[0]).toMatchObject({ city: "Halikko", neighborhood: null });
 });
 
 test("fails the refresh when LIPAS does not return a court list", async () => {

@@ -10,18 +10,15 @@ import { SourceCredits } from "@/components/brand/AppFooter";
 import { AppLink } from "@/components/brand/AppLink";
 import { AppWordmark } from "@/components/brand/AppWordmark";
 import { useFeedback } from "@/components/brand/FeedbackDialog";
-import { IntroDialog } from "@/components/brand/IntroDialog";
 import { LanguageToggle } from "@/components/brand/LanguageToggle";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { MenuItem, MenuItemList } from "@/components/brand/MenuItem";
 import { ShowAnnouncementButton, useDatabaseUnavailable } from "@/components/brand/SiteBanner";
 import type { FetchedAtBySource } from "@/lib/catalog";
-import { APP_VERSION } from "@/lib/constants";
+import { APP_VERSION, COURT_INDEX_PATH, INFO_HREF, MAP_PATH } from "@/lib/constants";
 import { wide } from "@/lib/layout";
 import { COURT_SOURCES } from "@/lib/sources";
 import { formatFetchedAt } from "@/lib/time";
-
-const INTRO_KEY = "hoopfinder-intro-seen";
 
 function setCssPx(root: HTMLElement, name: string, value: number) {
   const next = `${value}px`;
@@ -38,21 +35,16 @@ function syncHeaderOffset(header: HTMLElement | null) {
 
 export function AppHeader({
   fetchedAtBySource,
-  courtCount,
-  home = false,
   title,
 }: {
   fetchedAtBySource?: FetchedAtBySource;
-  courtCount: number;
-  home?: boolean;
   /** Replaces the nav cluster. The menu stays on the right. */
   title?: string;
 }) {
   const copy = useCopy();
   const isAdmin = useIsAdmin();
+  const onMap = usePathname() === MAP_PATH;
   const headerRef = useRef<HTMLElement>(null);
-  const [introOpen, setIntroOpen] = useState(false);
-  const [introSeen, setIntroSeen] = useState(false);
 
   useLayoutEffect(() => {
     window.scrollTo(0, 0);
@@ -80,25 +72,6 @@ export function AppHeader({
     syncHeaderOffset(headerRef.current);
   });
 
-  useEffect(() => {
-    try {
-      if (localStorage.getItem(INTRO_KEY)) setIntroSeen(true);
-      else setIntroOpen(true);
-    } catch {
-      // Private mode — skip the first-visit prompt.
-    }
-  }, []);
-
-  function closeIntro() {
-    try {
-      localStorage.setItem(INTRO_KEY, "1");
-    } catch {
-      // Ignore quota / private-mode failures.
-    }
-    setIntroSeen(true);
-    setIntroOpen(false);
-  }
-
   const brandTitleClass =
     "block font-display text-xl leading-none tracking-wide whitespace-nowrap text-white sm:text-2xl";
 
@@ -106,7 +79,7 @@ export function AppHeader({
     <header
       ref={headerRef}
       className={`z-50 shrink-0 border-b border-white/10 bg-asphalt ${
-        home ? "relative" : "sticky top-0"
+        onMap ? "relative" : "sticky top-0"
       }`}
     >
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
@@ -115,7 +88,7 @@ export function AppHeader({
       <div className="relative flex items-center gap-1.5 px-3 py-2 sm:px-4 sm:py-3 lg:px-6">
         <div className="flex min-w-0 flex-1 items-center gap-2 sm:gap-3">
           <AppLink
-            href="/"
+            href={MAP_PATH}
             className="group flex min-w-0 items-center gap-2 rounded-sm outline-none sm:gap-3 focus-visible:ring-2 focus-visible:ring-gold/60"
             aria-label={copy.appName}
           >
@@ -126,7 +99,7 @@ export function AppHeader({
             />
             {title ? null : (
               <span className="min-w-0">
-                {home ? (
+                {onMap ? (
                   <h1 className={brandTitleClass}>
                     <AppWordmark region={copy.region} />
                   </h1>
@@ -146,7 +119,7 @@ export function AppHeader({
           ) : (
             <>
               <div className={wide.flex}>
-                <InfoMenuButton introOpen={introOpen} onOpenInfo={() => setIntroOpen(true)} />
+                <InfoMenuButton />
               </div>
               <AddCourtNavLink />
               {isAdmin ? <AdminNavLink /> : null}
@@ -160,19 +133,8 @@ export function AppHeader({
             </div>
           </nav>
         )}
-        <HeaderMenu
-          fetchedAtBySource={fetchedAtBySource}
-          introOpen={introOpen}
-          isAdmin={isAdmin}
-          onOpenInfo={() => setIntroOpen(true)}
-        />
+        <HeaderMenu fetchedAtBySource={fetchedAtBySource} isAdmin={isAdmin} />
       </div>
-      <IntroDialog
-        open={introOpen}
-        onClose={closeIntro}
-        courtCount={courtCount}
-        showFeedback={introSeen}
-      />
     </header>
   );
 }
@@ -214,14 +176,10 @@ function SourceFetchedAt({
 
 function HeaderMenu({
   fetchedAtBySource,
-  introOpen,
   isAdmin,
-  onOpenInfo,
 }: {
   fetchedAtBySource?: FetchedAtBySource;
-  introOpen: boolean;
   isAdmin: boolean;
-  onOpenInfo: () => void;
 }) {
   const copy = useCopy();
   const databaseUnavailable = useDatabaseUnavailable();
@@ -234,7 +192,7 @@ function HeaderMenu({
     if (!open) return;
 
     function onKeyDown(event: KeyboardEvent) {
-      if (event.key === "Escape" && !introOpen && !feedbackOpen) setOpen(false);
+      if (event.key === "Escape" && !feedbackOpen) setOpen(false);
     }
 
     const previousOverflow = document.body.style.overflow;
@@ -244,7 +202,7 @@ function HeaderMenu({
       document.body.style.overflow = previousOverflow;
       document.removeEventListener("keydown", onKeyDown);
     };
-  }, [open, introOpen, feedbackOpen]);
+  }, [open, feedbackOpen]);
 
   return (
     <div className="relative flex items-center gap-1">
@@ -296,14 +254,16 @@ function HeaderMenu({
                 </div>
               </div>
               <MenuItemList onNavigate={() => setOpen(false)}>
-                <MenuItem
-                  keepOpen
-                  onClick={onOpenInfo}
-                  aria-haspopup="dialog"
-                  aria-expanded={introOpen}
-                >
-                  {copy.info}
+                <MenuItem href={INFO_HREF}>{copy.homepage}</MenuItem>
+                <MenuItem href={MAP_PATH}>{copy.courtsOnMap}</MenuItem>
+                <MenuItem href={COURT_INDEX_PATH} prefetch={false}>
+                  {copy.courtsAsList}
                 </MenuItem>
+                {databaseUnavailable ? null : (
+                  <MenuItem href="/add" prefetch>
+                    {copy.addCourt}
+                  </MenuItem>
+                )}
                 {databaseUnavailable || !feedback ? null : (
                   <MenuItem
                     keepOpen
@@ -312,11 +272,6 @@ function HeaderMenu({
                     aria-expanded={feedbackOpen}
                   >
                     {copy.giveFeedback}
-                  </MenuItem>
-                )}
-                {databaseUnavailable ? null : (
-                  <MenuItem href="/add" prefetch>
-                    {copy.addCourt}
                   </MenuItem>
                 )}
                 {isAdmin ? <MenuItem href="/admin">{copy.adminNav}</MenuItem> : null}
@@ -408,7 +363,7 @@ function AddCourtNavLink() {
     <AppLink
       href="/add"
       prefetch
-      className="group inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full border border-gold/80 bg-gold/15 px-2.5 py-1 text-sm font-bold text-gold outline-none hover:bg-gold hover:text-asphalt focus-visible:ring-2 focus-visible:ring-gold/60"
+      className="group ms-2 inline-flex shrink-0 items-center gap-1 whitespace-nowrap rounded-full border border-gold/80 bg-gold/15 px-3.5 py-1 text-sm font-bold text-gold outline-none hover:bg-gold hover:text-asphalt focus-visible:ring-2 focus-visible:ring-gold/60 sm:ms-3"
     >
       <Plus aria-hidden className="size-3.5 stroke-[2.5]" />
       {copy.addCourt}
@@ -416,18 +371,20 @@ function AddCourtNavLink() {
   );
 }
 
-function InfoMenuButton({ introOpen, onOpenInfo }: { introOpen: boolean; onOpenInfo: () => void }) {
+function InfoMenuButton() {
   const copy = useCopy();
+  const onHome = usePathname() === "/";
 
   return (
-    <button
-      type="button"
-      onClick={onOpenInfo}
-      aria-haspopup="dialog"
-      aria-expanded={introOpen}
-      className="shrink-0 whitespace-nowrap rounded-sm px-2.5 py-1.5 text-sm font-medium text-ink/80 outline-none hover:bg-white/10 hover:text-white focus-visible:ring-2 focus-visible:ring-gold/60"
+    <AppLink
+      href={INFO_HREF}
+      reservePending
+      aria-current={onHome ? "page" : undefined}
+      className={`inline-flex shrink-0 items-center whitespace-nowrap rounded-sm px-2.5 py-1.5 text-sm font-medium outline-none focus-visible:ring-2 focus-visible:ring-gold/60 ${
+        onHome ? "text-gold" : "text-ink/80 hover:bg-white/10 hover:text-white"
+      }`}
     >
-      {copy.info}
-    </button>
+      {copy.homepage}
+    </AppLink>
   );
 }

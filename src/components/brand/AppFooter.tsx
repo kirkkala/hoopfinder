@@ -62,7 +62,7 @@ export function AppFooter({ collapsible = false }: { collapsible?: boolean }) {
         {showCollapsed ? (
           <>
             <MadeWith />
-            <FeedbackLink />
+            <CollapsedLinks />
           </>
         ) : (
           <>
@@ -115,17 +115,22 @@ export function SourceCredits({ row = false }: { row?: boolean }) {
   );
 }
 
+function CollapsedLinks() {
+  const feedback = useFeedbackControl();
+  return feedback ? <p>{feedback}</p> : null;
+}
+
 function CreditDivider() {
   return <span aria-hidden>|</span>;
 }
 
-function FeedbackLink({ row = false }: { row?: boolean }) {
+function useFeedbackControl() {
   const copy = useCopy();
   const databaseUnavailable = useDatabaseUnavailable();
   const feedback = useFeedback();
   if (databaseUnavailable || !feedback) return null;
 
-  const control = (
+  return (
     <button
       type="button"
       onClick={feedback.openFeedback}
@@ -136,6 +141,11 @@ function FeedbackLink({ row = false }: { row?: boolean }) {
       {copy.giveFeedback}
     </button>
   );
+}
+
+function FeedbackLink({ row = false }: { row?: boolean }) {
+  const control = useFeedbackControl();
+  if (!control) return null;
 
   if (row) {
     return (

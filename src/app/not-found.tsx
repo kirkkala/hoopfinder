@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { NotFoundView } from "@/components/brand/NotFoundView";
 import { getCourtCatalog } from "@/lib/catalog";
 import { getCopy } from "@/lib/copy";
-import { countPublicCourts } from "@/lib/submitted-courts";
 
 const finnish = getCopy("fi");
 
@@ -12,9 +11,6 @@ export const metadata: Metadata = {
 };
 
 export default async function NotFound() {
-  const [{ fetchedAtBySource }, courtCount] = await Promise.all([
-    getCourtCatalog(),
-    countPublicCourts(),
-  ]);
-  return <NotFoundView courtCount={courtCount} fetchedAtBySource={fetchedAtBySource} />;
+  const { fetchedAtBySource } = await getCourtCatalog();
+  return <NotFoundView fetchedAtBySource={fetchedAtBySource} />;
 }
