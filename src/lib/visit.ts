@@ -1,6 +1,6 @@
 import { MAP_PATH } from "@/lib/constants";
 
-/** Set once the visitor has seen the about page or the short court-page note. */
+/** Set once the visitor has seen the about page. */
 export const VISITED_COOKIE = "hoopfinder-visited";
 
 /**
@@ -16,14 +16,6 @@ export function clearObsoleteStorage() {
     for (const key of OBSOLETE_LOCAL_STORAGE_KEYS) localStorage.removeItem(key);
   } catch {
     // Private mode can block storage. Nothing else depends on the cleanup.
-  }
-}
-
-export function hasVisited(): boolean {
-  try {
-    return document.cookie.split("; ").some((part) => part === `${VISITED_COOKIE}=1`);
-  } catch {
-    return false;
   }
 }
 
