@@ -15,7 +15,7 @@ import { useCopy } from "@/components/brand/LocaleProvider";
 import { MenuItem, MenuItemList } from "@/components/brand/MenuItem";
 import { ShowAnnouncementButton, useDatabaseUnavailable } from "@/components/brand/SiteBanner";
 import type { FetchedAtBySource } from "@/lib/catalog";
-import { APP_VERSION, COURT_INDEX_PATH, MAP_PATH } from "@/lib/constants";
+import { APP_VERSION, COURT_INDEX_PATH, INFO_HREF, MAP_PATH } from "@/lib/constants";
 import { wide } from "@/lib/layout";
 import { COURT_SOURCES } from "@/lib/sources";
 import { formatFetchedAt } from "@/lib/time";
@@ -251,6 +251,7 @@ function HeaderMenu({
                 </div>
               </div>
               <MenuItemList onNavigate={() => setOpen(false)}>
+                <MenuItem href={INFO_HREF}>{copy.homepage}</MenuItem>
                 <MenuItem href={MAP_PATH}>{copy.courtsOnMap}</MenuItem>
                 <MenuItem href={COURT_INDEX_PATH} prefetch={false}>
                   {copy.courtsAsList}

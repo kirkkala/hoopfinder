@@ -1,4 +1,4 @@
-import { render, screen, within } from "@testing-library/react";
+import { fireEvent, render, screen, within } from "@testing-library/react";
 import { beforeAll, beforeEach, expect, test, vi } from "vitest";
 import { FeedbackProvider } from "@/components/brand/FeedbackDialog";
 import { LocaleProvider } from "@/components/brand/LocaleProvider";
@@ -75,4 +75,11 @@ test("the homepage explains the service, then offers the map, the list, and loca
   expect(document.cookie).toContain("hoopfinder-visited=1");
   expect(replace).toHaveBeenCalledWith("/?info");
   expect(screen.queryByRole("link", { name: copy.homepage })).not.toBeInTheDocument();
+
+  fireEvent.click(screen.getByRole("button", { name: copy.menu }));
+  const menuLinks = within(screen.getByRole("navigation", { name: copy.menu })).getAllByRole(
+    "link",
+  );
+  expect(menuLinks[0]).toHaveAccessibleName(copy.homepage);
+  expect(menuLinks[0]).toHaveAttribute("href", "/?info");
 });
