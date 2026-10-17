@@ -15,7 +15,7 @@ import { useCopy } from "@/components/brand/LocaleProvider";
 import { MenuItem, MenuItemList } from "@/components/brand/MenuItem";
 import { ShowAnnouncementButton, useDatabaseUnavailable } from "@/components/brand/SiteBanner";
 import type { FetchedAtBySource } from "@/lib/catalog";
-import { APP_VERSION, COURT_INDEX_PATH, INFO_HREF, MAP_PATH } from "@/lib/constants";
+import { APP_VERSION, COURT_INDEX_PATH, MAP_PATH } from "@/lib/constants";
 import { wide } from "@/lib/layout";
 import { COURT_SOURCES } from "@/lib/sources";
 import { formatFetchedAt } from "@/lib/time";
@@ -118,9 +118,6 @@ export function AppHeader({
             </h1>
           ) : (
             <>
-              <div className={wide.flex}>
-                <InfoMenuButton />
-              </div>
               <AddCourtNavLink />
               {isAdmin ? <AdminNavLink /> : null}
             </>
@@ -254,7 +251,6 @@ function HeaderMenu({
                 </div>
               </div>
               <MenuItemList onNavigate={() => setOpen(false)}>
-                <MenuItem href={INFO_HREF}>{copy.homepage}</MenuItem>
                 <MenuItem href={MAP_PATH}>{copy.courtsOnMap}</MenuItem>
                 <MenuItem href={COURT_INDEX_PATH} prefetch={false}>
                   {copy.courtsAsList}
@@ -367,24 +363,6 @@ function AddCourtNavLink() {
     >
       <Plus aria-hidden className="size-3.5 stroke-[2.5]" />
       {copy.addCourt}
-    </AppLink>
-  );
-}
-
-function InfoMenuButton() {
-  const copy = useCopy();
-  const onHome = usePathname() === "/";
-
-  return (
-    <AppLink
-      href={INFO_HREF}
-      reservePending
-      aria-current={onHome ? "page" : undefined}
-      className={`inline-flex shrink-0 items-center whitespace-nowrap rounded-sm px-2.5 py-1.5 text-sm font-medium outline-none focus-visible:ring-2 focus-visible:ring-gold/60 ${
-        onHome ? "text-gold" : "text-ink/80 hover:bg-white/10 hover:text-white"
-      }`}
-    >
-      {copy.homepage}
     </AppLink>
   );
 }

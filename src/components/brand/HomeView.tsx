@@ -32,11 +32,14 @@ export function HomeView({ fetchedAtBySource }: { fetchedAtBySource: FetchedAtBy
       <main className="mx-auto w-full max-w-xl flex-1 px-4 py-8 sm:px-6">
         <h1 className="font-display text-4xl tracking-wide text-white">{copy.introTitle}</h1>
         <p className="mt-3 text-base leading-6 text-ink/85">{copy.servicePitch}</p>
-        <div className="mt-5 flex flex-wrap gap-2">
-          <ViewJump href={MAP_PATH} direction="to-map">
+        <h2 className="mt-4 font-display text-2xl tracking-wide text-white">
+          {copy.introExploreTitle}:
+        </h2>
+        <div className="mt-3 grid grid-cols-2 gap-2 sm:flex sm:w-fit sm:flex-nowrap">
+          <ViewJump href={MAP_PATH} direction="to-map" size="lg">
             {copy.courtsOnMap}
           </ViewJump>
-          <ViewJump href={COURT_INDEX_PATH} direction="to-list">
+          <ViewJump href={COURT_INDEX_PATH} direction="to-list" size="lg">
             {copy.courtsAsList}
           </ViewJump>
         </div>

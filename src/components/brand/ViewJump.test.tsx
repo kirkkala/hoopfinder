@@ -1,10 +1,12 @@
-import { render, screen } from "@testing-library/react";
+import { cleanup, render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
-import { expect, test, vi } from "vitest";
+import { afterEach, expect, test, vi } from "vitest";
 import { getCopy } from "@/lib/copy";
-import { ViewJump } from "./ViewJump";
+import { ViewJump, ViewJumps } from "./ViewJump";
 
 const copy = getCopy();
+
+afterEach(cleanup);
 
 vi.mock("next/link", () => ({
   default: ({
@@ -51,4 +53,22 @@ test("the map and list buttons show the spinner after the label", () => {
     if (!label || !spinner) return;
     expect(label.compareDocumentPosition(spinner) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   }
+});
+
+test("the map and the list put the info page before the other view", () => {
+  const { rerender } = render(<ViewJumps also="to-list" />);
+
+  const home = screen.getByRole("link", { name: copy.homepage });
+  const list = screen.getByRole("link", { name: copy.courtsAsList });
+  expect(home.compareDocumentPosition(list) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  expect(home).toHaveAttribute("href", "/?info");
+  expect(list).toHaveAttribute("href", "/courts");
+
+  rerender(<ViewJumps also="to-map" />);
+  const map = screen.getByRole("link", { name: copy.courtsOnMap });
+  expect(
+    screen.getByRole("link", { name: copy.homepage }).compareDocumentPosition(map) &
+      Node.DOCUMENT_POSITION_FOLLOWING,
+  ).toBeTruthy();
+  expect(map).toHaveAttribute("href", "/map");
 });

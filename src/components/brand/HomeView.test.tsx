@@ -58,6 +58,9 @@ test("the homepage explains the service, then offers the map, the list, and loca
   expect(pitch.compareDocumentPosition(mapLink) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   expect(mapLink).toHaveAttribute("href", "/map");
   expect(listLink).toHaveAttribute("href", "/courts");
+  expect(mapLink.parentElement).toHaveClass("grid-cols-2", "sm:flex-nowrap");
+  expect(mapLink).toHaveClass("w-full", "py-2.5", "min-[26rem]:text-base");
+  expect(listLink).toHaveClass("w-full", "py-2.5", "min-[26rem]:text-base");
   expect(screen.getByText(copy.servicePitch)).toBeInTheDocument();
   const feedback = within(main).getByRole("button", { name: copy.giveFeedback });
   const source = within(main).getByRole("link", { name: copy.introOpenSourceLink });
@@ -71,7 +74,5 @@ test("the homepage explains the service, then offers the map, the list, and loca
   expect(screen.getByRole("button", { name: copy.nearMe.idle })).toBeInTheDocument();
   expect(document.cookie).toContain("hoopfinder-visited=1");
   expect(replace).toHaveBeenCalledWith("/?info");
-  for (const link of screen.getAllByRole("link", { name: copy.homepage })) {
-    expect(link).toHaveAttribute("href", "/?info");
-  }
+  expect(screen.queryByRole("link", { name: copy.homepage })).not.toBeInTheDocument();
 });

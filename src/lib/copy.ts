@@ -62,6 +62,7 @@ const messages = {
     fi: "Hoop Finderista löytyy kaikki Suomen vapaassa käytössä olevat ulko- ja katukoripallokentät sekä korit. Jokaisesta kentästä on listattu tarkempia tietoja sekä käyttäjien lisäämiä kuvia kuvagalleriassa.",
     en: "Hoop Finder has all freely available outdoor and street basketball courts & hoops in Finland, on the map and by city. Each court has details and photos from users in the photo gallery.",
   },
+  introExploreTitle: { fi: "Tutustu palveluun", en: "Explore the service" },
   introLocationBenefit: {
     fi: "Salli sijainti, niin näet kentät lähelläsi.",
     en: "Allow location tracking to see hoops near you.",

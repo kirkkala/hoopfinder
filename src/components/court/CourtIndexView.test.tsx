@@ -77,6 +77,12 @@ test("each city heading shows how many courts it lists", () => {
   status.pending = false;
   render(<CourtIndexView groups={groups} courtCount={3} fetchedAtBySource={{}} />);
 
+  const home = screen.getByRole("link", { name: copy.homepage });
+  const map = screen.getByRole("link", { name: copy.courtsOnMap });
+  expect(home.compareDocumentPosition(map) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  expect(home).toHaveAttribute("href", "/?info");
+  expect(map).toHaveAttribute("href", "/map");
+
   const helsinki = screen.getByRole("heading", { level: 2, name: "Helsinki (2 kenttää)" });
   const other = screen.getByRole("heading", { level: 2, name: `${copy.cityUnknown} (1 kenttä)` });
   expect(helsinki).toHaveTextContent("Helsinki");
