@@ -92,9 +92,9 @@ function openForm() {
   render(<AddCourtView fetchedAtBySource={{}} />);
   const leave = screen.getAllByRole("link", { name: copy.addCourtExit });
   expect(leave).toHaveLength(2);
-  for (const link of leave) expect(link).toHaveAttribute("href", "/map");
+  for (const link of leave) expect(link).toHaveAttribute("href", "/kartta");
   fireEvent.click(screen.getByRole("button", { name: copy.okBroCta }));
-  expect(screen.getByRole("link", { name: copy.addCourtExit })).toHaveAttribute("href", "/map");
+  expect(screen.getByRole("link", { name: copy.addCourtExit })).toHaveAttribute("href", "/kartta");
   expect(screen.getByRole("button", { name: copy.nearMe.idle })).toBeInTheDocument();
   fireEvent.click(screen.getByRole("button", { name: "place pin" }));
   expect(screen.getByRole("button", { name: copy.addCourtInfoOpen })).toBeInTheDocument();

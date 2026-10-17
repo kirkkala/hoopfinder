@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 import { groupCourtPlaces } from "@/lib/court-groups";
-import { courtIndex } from "@/lib/court-index";
+import { cityAreas, cityCourtFacts, courtIndex } from "@/lib/court-index";
 import { type Court, type ExplorerCourt, emptyAmenities } from "@/lib/courts";
 
 const here = { lat: 60.18, lon: 24.99 };
@@ -72,8 +72,8 @@ test("lists each pad with the title and URL of its court page", () => {
 
   const helsinki = index.find((group) => group.city === "Helsinki");
   expect(helsinki?.courts.map((entry) => [entry.nameFi.trim(), entry.href])).toEqual([
-    ["Mustikkamaan liikuntapuisto / Koripallokenttä", "/courts/lipas/82574"],
-    ["Mustikkamaan liikuntapuisto / Minikoripallokenttä", "/courts/lipas/82547"],
+    ["Mustikkamaan liikuntapuisto / Koripallokenttä", "/koripallokentat/helsinki/l82574"],
+    ["Mustikkamaan liikuntapuisto / Minikoripallokenttä", "/koripallokentat/helsinki/l82547"],
   ]);
   expect(helsinki?.courts[0]).toMatchObject({
     name: "Mustikkamaa sports park / Basketball court",
@@ -88,7 +88,7 @@ test("lists each pad with the title and URL of its court page", () => {
   expect(espoo?.courts[0]).toMatchObject({
     nameFi: "Koripallokenttä",
     name: "Basketball court",
-    href: "/courts/lipas/1",
+    href: "/koripallokentat/espoo/l1",
     status: "active",
     address: "Mustikkamaantie 8",
     neighborhood: "Tapiola",
@@ -102,6 +102,9 @@ test("lists each pad with the title and URL of its court page", () => {
     city: "Espoo",
   });
   expect(index.at(-1)?.anchor).toBe("muu");
+  expect(index.at(-1)?.pageHref).toBeNull();
+  expect(helsinki?.pageHref).toBe("/koripallokentat/helsinki");
+  expect(espoo?.pageHref).toBe("/koripallokentat/espoo");
 });
 
 test("groups a city without caring about letter case", () => {
@@ -115,9 +118,11 @@ test("groups a city without caring about letter case", () => {
   ]);
 
   const index = courtIndex(grouped.courts);
-  expect(index.map((group) => [group.city, group.courts.length, group.anchor])).toEqual([
-    ["Helsinki", 3, "helsinki"],
-    ["Järvenpää", 3, "jarvenpaa"],
+  expect(
+    index.map((group) => [group.city, group.courts.length, group.anchor, group.pageHref]),
+  ).toEqual([
+    ["Helsinki", 3, "helsinki", "/koripallokentat/helsinki"],
+    ["Järvenpää", 3, "jarvenpaa", "/koripallokentat/jarvenpaa"],
   ]);
 });
 
@@ -170,7 +175,7 @@ test("puts a database court under the city written in its address", () => {
   const helsinki = index.find((group) => group.city === "Helsinki");
   expect(helsinki?.courts.map((entry) => entry.nameFi)).toEqual(["Brahenkenttä", "Suvilahti"]);
   expect(helsinki?.courts[1]).toMatchObject({
-    href: "/courts/submitted/10000",
+    href: "/koripallokentat/helsinki/s10000",
     address: "Sörnäisten rantatie 22, 00540",
     city: "Helsinki",
     source: "submitted",
@@ -180,7 +185,7 @@ test("puts a database court under the city written in its address", () => {
   const espoo = index.find((group) => group.city === "Espoo");
   expect(espoo?.courts[0]).toMatchObject({
     nameFi: "Tapiolan kenttä",
-    href: "/courts/submitted/10001",
+    href: "/koripallokentat/espoo/s10001",
     address: "Testikatu 1",
     source: "pending",
     emailConfirmed: true,
@@ -207,4 +212,63 @@ test("writes an all-caps city in normal spelling", () => {
     "Koski Tl",
     "Siilinjärvi",
   ]);
+});
+
+test("opens a city page from the second public court", () => {
+  const grouped = groupCourtPlaces([
+    court({ id: "1", nameFi: "Ainoa", city: "Akaa" }),
+    court({
+      id: "2",
+      nameFi: "Valo",
+      city: "Espoo",
+      lat: 60.2,
+      lon: 24.6,
+      amenities: { ...emptyAmenities(), lighting: true, freeUse: true },
+    }),
+    court({
+      id: "3",
+      nameFi: "Varjo",
+      city: "Espoo",
+      lat: 60.21,
+      lon: 24.7,
+      status: "out-of-service-temporarily",
+    }),
+  ]);
+
+  const index = courtIndex(grouped.courts, [
+    submitted({
+      id: "submitted-9",
+      source: "pending",
+      nameFi: "Tulossa",
+      status: "pending",
+      city: "Akaa",
+      address: "Katu 1, Akaa",
+      emailConfirmed: true,
+      createdAt: "2026-01-01",
+    }),
+  ]);
+
+  const akaa = index.find((group) => group.city === "Akaa");
+  expect(akaa?.courts.map((entry) => entry.nameFi)).toEqual(["Ainoa", "Tulossa"]);
+  expect(akaa?.pageHref).toBeNull();
+
+  const espoo = index.find((group) => group.city === "Espoo");
+  expect(espoo?.pageHref).toBe("/koripallokentat/espoo");
+  expect(espoo?.courts.map((entry) => entry.href)).toEqual([
+    "/koripallokentat/espoo/l2",
+    "/koripallokentat/espoo/l3",
+  ]);
+  expect(cityCourtFacts(espoo?.courts ?? [])).toEqual({ lit: 1, closed: 1 });
+});
+
+test("city areas keep the first spelling and sort in Finnish", () => {
+  expect(
+    cityAreas([
+      { neighborhood: "Tapiola" },
+      { neighborhood: "  " },
+      { neighborhood: null },
+      { neighborhood: "matinkylä" },
+      { neighborhood: "Matinkylä" },
+    ]),
+  ).toEqual(["matinkylä", "Tapiola"]);
 });

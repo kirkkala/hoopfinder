@@ -56,8 +56,8 @@ test("the homepage explains the service, then offers the map, the list, and loca
   const mapLink = within(main).getByRole("link", { name: copy.courtsOnMap });
   const listLink = within(main).getByRole("link", { name: copy.courtsAsList });
   expect(pitch.compareDocumentPosition(mapLink) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-  expect(mapLink).toHaveAttribute("href", "/map");
-  expect(listLink).toHaveAttribute("href", "/courts");
+  expect(mapLink).toHaveAttribute("href", "/kartta");
+  expect(listLink).toHaveAttribute("href", "/koripallokentat");
   expect(mapLink.parentElement).toHaveClass("grid-cols-2", "sm:flex-nowrap");
   expect(mapLink).toHaveClass("w-full", "py-2.5", "min-[26rem]:text-base");
   expect(listLink).toHaveClass("w-full", "py-2.5", "min-[26rem]:text-base");

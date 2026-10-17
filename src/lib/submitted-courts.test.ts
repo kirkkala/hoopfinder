@@ -299,7 +299,7 @@ test("rolls a published court back when the visitor mail fails, and skips mail w
     expect.objectContaining({
       template: "hoop-add-confirmed",
       variables: {
-        PUBLISHED_COURT_URL: "https://www.hoopfinder.fi/courts/submitted/10014",
+        PUBLISHED_COURT_URL: "https://www.hoopfinder.fi/koripallokentat/muu/s10014",
       },
     }),
   );

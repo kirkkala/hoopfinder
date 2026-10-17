@@ -42,7 +42,7 @@ const photoDescription = z
   .transform((value) => value || null);
 
 export function courtPhotoUrl(court: Pick<Court, "id" | "source">, photoId: string): string {
-  return `${courtHref(court)}/photos/${photoId}`;
+  return `/courts/${courtPath(court)}/photos/${photoId}`;
 }
 
 function courtPhoto(

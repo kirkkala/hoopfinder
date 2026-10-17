@@ -187,7 +187,7 @@ function SubmittedList({ initialCourts }: { initialCourts: AdminSubmittedCourt[]
                   </div>
                 </div>
                 <AppLink
-                  href={courtHref({ id: court.id, source: "submitted" })}
+                  href={courtHref(court.court)}
                   className="mt-2 inline-flex items-center gap-1 font-semibold text-gold hover:text-white"
                 >
                   {court.name}

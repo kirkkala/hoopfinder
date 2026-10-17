@@ -30,7 +30,7 @@ test("sends a returning visitor to the map and keeps an explicit about visit", (
   ).toBeNull();
   expect(homeEntryTarget({ visited: true, showHome: true, court: null, thanks: false })).toBeNull();
   expect(homeEntryTarget({ visited: true, showHome: false, court: null, thanks: false })).toEqual({
-    href: "/map",
+    href: "/kartta",
     permanent: false,
   });
 });
@@ -44,11 +44,11 @@ test("sends old map links to the map", () => {
       thanks: true,
     }),
   ).toEqual({
-    href: "/map?court=submitted-10014&thanks=1",
+    href: "/kartta?court=submitted-10014&thanks=1",
     permanent: true,
   });
   expect(homeEntryTarget({ visited: true, showHome: true, court: null, thanks: true })).toEqual({
-    href: "/map?thanks=1",
+    href: "/kartta?thanks=1",
     permanent: true,
   });
 });
