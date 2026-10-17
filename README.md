@@ -1,4 +1,4 @@
-# Hoop Finder beta 20
+# Hoop Finder beta 21
 
 Outdoor basketball courts across Finland — find a hoop, go out and play.
 
