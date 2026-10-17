@@ -7,11 +7,10 @@ import { useEffect, useMemo, useRef, useState, useSyncExternalStore } from "reac
 import { AppFooter } from "@/components/brand/AppFooter";
 import { AppHeader } from "@/components/brand/AppHeader";
 import { useCopy } from "@/components/brand/LocaleProvider";
-import { ViewJump } from "@/components/brand/ViewJump";
+import { ViewJumps } from "@/components/brand/ViewJump";
 import { CourtList } from "@/components/explorer/CourtList";
 import { SearchFilters } from "@/components/explorer/SearchFilters";
 import type { FetchedAtBySource } from "@/lib/catalog";
-import { COURT_INDEX_PATH } from "@/lib/constants";
 import {
   type CourtWithDistance,
   courtParam,
@@ -236,10 +235,8 @@ export function CourtExplorer({
         <aside
           className={`flex w-full shrink-0 flex-col border-b border-white/10 bg-panel ${split.aside}`}
         >
-          <div className={`p-3 sm:p-4 ${split.paneBorder}`}>
-            <ViewJump href={COURT_INDEX_PATH} direction="to-list" className="mb-3">
-              {copy.courtsAsList}
-            </ViewJump>
+          <div className={`px-3 pt-6 pb-3 sm:p-4 ${split.paneBorder}`}>
+            <ViewJumps also="to-list" className="mb-3" />
             <SearchFilters
               query={query}
               onQueryChange={(value) => {

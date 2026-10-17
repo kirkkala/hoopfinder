@@ -6,12 +6,11 @@ import { AppFooter } from "@/components/brand/AppFooter";
 import { AppHeader } from "@/components/brand/AppHeader";
 import { AppLink, AppLinkPending } from "@/components/brand/AppLink";
 import { useCopy } from "@/components/brand/LocaleProvider";
-import { ViewJump } from "@/components/brand/ViewJump";
+import { ViewJumps } from "@/components/brand/ViewJump";
 import { CITY_SEARCH_HEIGHT, CitySelect, COURT_LIST_ID } from "@/components/court/CitySelect";
 import { CourtBadges } from "@/components/explorer/CourtBadges";
 import { CourtHeading } from "@/components/explorer/CourtHeading";
 import type { FetchedAtBySource } from "@/lib/catalog";
-import { MAP_PATH } from "@/lib/constants";
 import type { CourtIndexGroup } from "@/lib/court-index";
 
 const searchHeight = `var(${CITY_SEARCH_HEIGHT}, 0px)`;
@@ -50,9 +49,7 @@ export function CourtIndexView({
     <div className="flex min-h-dvh flex-col bg-asphalt">
       <AppHeader fetchedAtBySource={fetchedAtBySource} />
       <main className="mx-auto w-full max-w-3xl flex-1 px-4 py-6 sm:px-6">
-        <ViewJump href={MAP_PATH} direction="to-map">
-          {copy.courtsOnMap}
-        </ViewJump>
+        <ViewJumps also="to-map" />
         <h1 className="mt-4 font-display text-4xl tracking-wide text-white">
           {copy.allCourtsHeading}
         </h1>
