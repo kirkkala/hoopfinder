@@ -1,7 +1,7 @@
 import { type Court, type ExplorerCourt, toExplorerCourt } from "@/lib/courts";
 
 /** The page court is this pin, including a pad that shares the place's map dot. */
-export function pinMatchesPage(pin: ExplorerCourt, court: Court): boolean {
+function pinMatchesPage(pin: ExplorerCourt, court: Court): boolean {
   return pin.id === court.id || pin.aliases?.includes(court.id) === true;
 }
 

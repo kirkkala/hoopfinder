@@ -11,26 +11,17 @@ import {
   formatAddress,
   isAwaitingEmail,
   isPendingCourt,
-  mapCourtHref,
   pinCourtCount,
 } from "@/lib/courts";
 
-/** Small card on a minimap dot. Other courts open their page; this court returns to the main map. */
-export function CourtMiniPopup({
-  court,
-  current,
-  onClose,
-}: {
-  court: ExplorerCourt;
-  current: boolean;
-  onClose: () => void;
-}) {
+/** Small card for another court on the minimap. */
+export function CourtMiniPopup({ court, onClose }: { court: ExplorerCourt; onClose: () => void }) {
   const copy = useCopy();
   const isAdmin = useIsAdmin();
   const place = formatAddress([court.address, court.neighborhood, court.city]);
   const pads = pinCourtCount(court);
   const awaitingEmail = isAwaitingEmail(court);
-  const canOpen = !current && (!awaitingEmail || isAdmin);
+  const canOpen = !awaitingEmail || isAdmin;
 
   return (
     <div className="relative flex min-w-52 flex-col gap-1.5 p-3">
@@ -52,15 +43,7 @@ export function CourtMiniPopup({
       ) : isPendingCourt(court) ? (
         <p className="text-xs text-ink-muted">{copy.pendingComingSoon}</p>
       ) : null}
-      {current ? (
-        <AppLink
-          href={mapCourtHref(court)}
-          className="inline-flex items-center gap-1 self-end pt-1 text-sm font-bold text-gold hover:text-white"
-        >
-          {copy.backToMap}
-          <ArrowRight className="size-3.5" aria-hidden />
-        </AppLink>
-      ) : canOpen ? (
+      {canOpen ? (
         <AppLink
           href={courtHref(court)}
           className="inline-flex items-center gap-1 self-end pt-1 text-sm font-bold text-gold hover:text-white"

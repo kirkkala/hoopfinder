@@ -43,56 +43,43 @@ afterEach(() => {
   cleanup();
 });
 
-function renderPopup(court: ExplorerCourt, current: boolean) {
+function renderPopup(court: ExplorerCourt) {
   const onClose = vi.fn();
   render(
     <LocaleProvider>
-      <CourtMiniPopup court={court} current={current} onClose={onClose} />
+      <CourtMiniPopup court={court} onClose={onClose} />
     </LocaleProvider>,
   );
   return onClose;
 }
 
-test("the current court links back to the main map", () => {
-  renderPopup(kallio, true);
+test("another court opens that court's page", () => {
+  renderPopup(kallio);
 
   expect(screen.getByText("Kallio")).toBeInTheDocument();
   expect(screen.getByText("Helsinginkatu 25, Kallio, Helsinki")).toBeInTheDocument();
-  expect(screen.getByRole("link", { name: copy.backToMap })).toHaveAttribute(
-    "href",
-    "/map?court=lipas-82547",
-  );
-  expect(screen.queryByRole("link", { name: copy.letsGo })).not.toBeInTheDocument();
-});
-
-test("another court opens that court's page", () => {
-  renderPopup(kallio, false);
 
   expect(screen.getByRole("link", { name: copy.letsGo })).toHaveAttribute(
     "href",
     "/courts/lipas/82547",
   );
-  expect(screen.queryByRole("link", { name: copy.backToMap })).not.toBeInTheDocument();
 });
 
 test("a court still waiting for email has no page link", () => {
-  renderPopup(
-    {
-      ...kallio,
-      id: "submitted-9",
-      source: "pending",
-      emailConfirmed: false,
-      createdAt: "2026-01-01T00:00:00.000Z",
-    },
-    false,
-  );
+  renderPopup({
+    ...kallio,
+    id: "submitted-9",
+    source: "pending",
+    emailConfirmed: false,
+    createdAt: "2026-01-01T00:00:00.000Z",
+  });
 
   expect(screen.getByText(copy.statusAwaitingEmail)).toBeInTheDocument();
   expect(screen.queryByRole("link", { name: copy.letsGo })).not.toBeInTheDocument();
 });
 
 test("close dismisses the card", () => {
-  const onClose = renderPopup(kallio, false);
+  const onClose = renderPopup(kallio);
   fireEvent.click(screen.getByRole("button", { name: copy.close }));
   expect(onClose).toHaveBeenCalledOnce();
 });
