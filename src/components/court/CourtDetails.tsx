@@ -131,11 +131,18 @@ export function CourtDetails({
     <div className="flex min-h-dvh flex-col bg-asphalt">
       <AppHeader fetchedAtBySource={fetchedAtBySource} />
 
-      <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-6 px-4 py-8 split:grid split:grid-cols-[1.1fr_0.9fr]">
+      <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-6 px-4 py-8 split:grid split:content-start split:grid-cols-[1.1fr_0.9fr]">
         {/* contents drops these wrappers on a narrow screen so the gallery can sit between the intro and the facts. */}
         <section className="contents split:block split:space-y-5">
           <div className="order-1 space-y-5">
-            <CourtCrumb cityName={cityName} cityUnknown={cityUnknown} cityPageHref={cityPageHref} />
+            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
+              <CourtCrumb
+                cityName={cityName}
+                cityUnknown={cityUnknown}
+                cityPageHref={cityPageHref}
+              />
+              <CourtOnMapLink court={court} />
+            </div>
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">
                 {copy.courtKind}
@@ -423,13 +430,7 @@ export function CourtDetails({
                 {copy.courtLocation}
               </h2>
               <CourtMiniMap court={court} />
-              <AppLink
-                href={mapCourtHref(court)}
-                className="mt-2 inline-flex items-center gap-1.5 text-sm font-bold text-gold hover:text-white"
-              >
-                <MapIcon className="size-4 shrink-0" aria-hidden />
-                {copy.backToMap}
-              </AppLink>
+              <CourtOnMapLink court={court} className="mt-2" />
             </section>
             <dl className="grid gap-3 border-t border-white/10 p-5">
               {court.website ? (
@@ -564,6 +565,24 @@ function CourtDistanceBlock({ court }: { court: Court }) {
       <LocateMeButton status={status} onClick={request} />
       {hint ? <p className="text-sm text-ink-muted">{hint}</p> : null}
     </div>
+  );
+}
+
+function CourtOnMapLink({ court, className }: { court: Court; className?: string }) {
+  const copy = useCopy();
+  return (
+    <AppLink
+      href={mapCourtHref(court)}
+      className={[
+        "inline-flex items-center gap-1.5 text-sm font-bold text-gold hover:text-white",
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
+    >
+      <MapIcon className="size-4 shrink-0" aria-hidden />
+      {copy.backToMap}
+    </AppLink>
   );
 }
 
