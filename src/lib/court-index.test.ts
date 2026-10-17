@@ -1,6 +1,6 @@
 import { expect, test } from "vitest";
 import { groupCourtPlaces } from "@/lib/court-groups";
-import { cityCourtFacts, courtIndex } from "@/lib/court-index";
+import { cityAreas, cityCourtFacts, courtIndex } from "@/lib/court-index";
 import { type Court, type ExplorerCourt, emptyAmenities } from "@/lib/courts";
 
 const here = { lat: 60.18, lon: 24.99 };
@@ -259,4 +259,16 @@ test("opens a city page from the second public court", () => {
     "/koripallokentat/espoo/l3",
   ]);
   expect(cityCourtFacts(espoo?.courts ?? [])).toEqual({ lit: 1, closed: 1 });
+});
+
+test("city areas keep the first spelling and sort in Finnish", () => {
+  expect(
+    cityAreas([
+      { neighborhood: "Tapiola" },
+      { neighborhood: "  " },
+      { neighborhood: null },
+      { neighborhood: "matinkylä" },
+      { neighborhood: "Matinkylä" },
+    ]),
+  ).toEqual(["matinkylä", "Tapiola"]);
 });

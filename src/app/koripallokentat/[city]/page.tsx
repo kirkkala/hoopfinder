@@ -26,10 +26,10 @@ export async function generateMetadata({
   if (!page) return { title: finnish.courtNotFound, robots: { index: false } };
   const place = page.group.city ?? finnish.cityUnknown;
   const facts = cityCourtFacts(page.courts);
-  const summary = finnish.cityCourtsSummary(page.courts.length, facts.lit, facts.closed);
+  const intro = finnish.cityCourtsIntro(page.courts.length, facts.lit, facts.closed);
   return {
     title: finnish.cityCourtsHeading(place),
-    description: finnish.cityCourtsDescription(place, summary),
+    description: `${finnish.cityCourtsHeading(place)}. ${intro}`,
     alternates: { canonical: page.group.pageHref ?? COURT_INDEX_PATH },
   };
 }

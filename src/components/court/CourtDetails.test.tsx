@@ -76,7 +76,7 @@ const court: Court = {
   amenities: emptyAmenities(),
 };
 
-test("a court page links to this court on the map above the title and under the minimap", () => {
+test("a court page links to this court on the map under the minimap", () => {
   render(
     <CourtDetails
       court={court}
@@ -95,13 +95,8 @@ test("a court page links to this court on the map above the title and under the 
   expect(within(main).queryByRole("link", { name: copy.homepage })).not.toBeInTheDocument();
   expect(within(main).queryByRole("link", { name: copy.courtsOnMap })).not.toBeInTheDocument();
 
-  const maps = within(main).getAllByRole("link", { name: copy.backToMap });
-  const heading = within(main).getByRole("heading", { level: 1 });
+  const map = within(main).getByRole("link", { name: copy.backToMap });
   const location = within(main).getByRole("heading", { name: copy.courtLocation });
-  expect(maps).toHaveLength(2);
-  for (const link of maps) expect(link).toHaveAttribute("href", "/kartta?court=l1");
-  expect(maps[0].compareDocumentPosition(heading) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
-  expect(
-    location.compareDocumentPosition(maps[1]) & Node.DOCUMENT_POSITION_FOLLOWING,
-  ).toBeTruthy();
+  expect(map).toHaveAttribute("href", "/kartta?court=l1");
+  expect(location.compareDocumentPosition(map) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
 });

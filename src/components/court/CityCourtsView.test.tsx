@@ -75,8 +75,11 @@ test("a city page names the city and counts its own courts", () => {
       closed={1}
       fetchedAtBySource={{}}
       courts={[
-        entry("Tapiola", "/koripallokentat/espoo/l1", true, true),
-        entry("Matinkylä", "/koripallokentat/espoo/l2", null, true),
+        { ...entry("Tapiola", "/koripallokentat/espoo/l1", true, true), neighborhood: "Tapiola" },
+        {
+          ...entry("Matinkylä", "/koripallokentat/espoo/l2", null, true),
+          neighborhood: "Matinkylä",
+        },
       ]}
     />,
   );
@@ -84,7 +87,14 @@ test("a city page names the city and counts its own courts", () => {
   expect(
     screen.getByRole("heading", { level: 1, name: "Koripallokentät Espoo" }),
   ).toBeInTheDocument();
-  expect(screen.getByText("2 kenttää, 1 valaistu, 1 tilapäisesti kiinni")).toBeInTheDocument();
+  expect(
+    screen.getByText(
+      "Yhteensä 2 ulkokoripallokenttää. Niistä 1 on merkitty valaistuksi ja 1 on tilapäisesti kiinni. Avaa kenttä listalta nähdäksesi lisää tietoja sekä sijainnin kartalla.",
+    ),
+  ).toBeInTheDocument();
+  const areas = screen.getByText("Alueita: Matinkylä ja Tapiola.");
+  expect(areas).toHaveClass("sr-only");
+  expect(areas).toHaveAttribute("aria-hidden", "true");
   expect(screen.getByRole("link", { name: copy.allCourts })).toHaveAttribute(
     "href",
     "/koripallokentat",

@@ -16,20 +16,24 @@ import {
 import { CourtBadges } from "@/components/explorer/CourtBadges";
 import { CourtHeading } from "@/components/explorer/CourtHeading";
 import type { FetchedAtBySource } from "@/lib/catalog";
-import { type CourtIndexEntry, type CourtIndexGroup, cityIndexHref } from "@/lib/court-index";
+import {
+  type CourtIndexEntry,
+  type CourtIndexGroup,
+  cityIndexHref,
+  indexListFacts,
+} from "@/lib/court-index";
 
 const searchHeight = `var(${CITY_SEARCH_HEIGHT}, 0px)`;
 
 export function CourtIndexView({
   groups,
-  courtCount,
   fetchedAtBySource,
 }: {
   groups: CourtIndexGroup[];
-  courtCount: number;
   fetchedAtBySource: FetchedAtBySource;
 }) {
   const copy = useCopy();
+  const facts = indexListFacts(groups);
   const [query, setQuery] = useState("");
   const searchRef = useRef<HTMLDivElement>(null);
   const visibleGroups = groups.filter((group) =>
@@ -60,10 +64,10 @@ export function CourtIndexView({
         <h1 className="mt-4 font-display text-4xl tracking-wide text-white">
           {copy.allCourtsHeading}
         </h1>
-        <p className="mt-2 max-w-xl text-sm leading-6 text-ink-muted">
-          {copy.listedCourtCount(courtCount)}
+        <p className="mt-2 text-sm leading-6 text-ink-muted">
+          {copy.allCourtsIntro(facts.courts, facts.places, facts.lit, facts.closed)}
         </p>
-        <p className="mt-2 max-w-xl text-sm leading-6 text-ink-muted">{copy.allCourtsLead}</p>
+        <p className="mt-2 text-sm leading-6 text-ink-muted">{copy.allCourtsLead}</p>
         <div
           ref={searchRef}
           className="sticky top-[var(--app-header-bottom,3.5rem)] z-30 -mx-4 mt-2 border-b border-white/10 bg-asphalt px-4 py-3 sm:-mx-6 sm:px-6"

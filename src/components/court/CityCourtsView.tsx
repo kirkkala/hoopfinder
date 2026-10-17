@@ -8,7 +8,7 @@ import { ViewJumps } from "@/components/brand/ViewJump";
 import { CourtIndexCard } from "@/components/court/CourtIndexView";
 import type { FetchedAtBySource } from "@/lib/catalog";
 import { COURT_INDEX_PATH } from "@/lib/constants";
-import type { CourtIndexEntry } from "@/lib/court-index";
+import { type CourtIndexEntry, cityAreas } from "@/lib/court-index";
 
 export function CityCourtsView({
   cityName,
@@ -26,6 +26,7 @@ export function CityCourtsView({
   const copy = useCopy();
   const place = cityName ?? copy.cityUnknown;
   const heading = copy.cityCourtsHeading(place);
+  const areas = cityAreas(courts);
 
   return (
     <div className="flex min-h-dvh flex-col bg-asphalt">
@@ -43,9 +44,14 @@ export function CityCourtsView({
           </AppLink>
         </nav>
         <h1 className="mt-3 font-display text-4xl tracking-wide text-white">{heading}</h1>
-        <p className="mt-2 max-w-xl text-sm leading-6 text-ink-muted">
-          {copy.cityCourtsSummary(courts.length, lit, closed)}
+        <p className="mt-2 text-sm leading-6 text-ink-muted">
+          {copy.cityCourtsIntro(courts.length, lit, closed)}
         </p>
+        {areas.length > 0 ? (
+          <p className="sr-only" aria-hidden="true">
+            {copy.cityAreasLine(areas)}
+          </p>
+        ) : null}
         <ul className="mt-6 space-y-2">
           {courts.map((court) => (
             <CourtIndexCard key={court.href} court={court} />

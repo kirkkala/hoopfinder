@@ -144,6 +144,33 @@ export function cityCourtFacts(courts: Pick<CourtIndexEntry, "amenities" | "stat
   return { lit, closed };
 }
 
+/** Named areas on these courts, in Finnish alphabetical order. */
+export function cityAreas(courts: Pick<CourtIndexEntry, "neighborhood">[]): string[] {
+  const seen = new Map<string, string>();
+  for (const court of courts) {
+    const name = court.neighborhood?.trim();
+    if (!name) continue;
+    const key = name.toLocaleLowerCase("fi");
+    if (!seen.has(key)) seen.set(key, name);
+  }
+  return [...seen.values()].sort((a, b) => a.localeCompare(b, "fi"));
+}
+
+/** Totals for the city list. Places skip courts that have no city. */
+export function indexListFacts(groups: Pick<CourtIndexGroup, "city" | "courts">[]): {
+  courts: number;
+  places: number;
+  lit: number;
+  closed: number;
+} {
+  const courts = groups.flatMap((group) => group.courts);
+  return {
+    courts: courts.length,
+    places: groups.filter((group) => group.city).length,
+    ...cityCourtFacts(courts),
+  };
+}
+
 /** Index group that contains this court page, matched on the public id. */
 export function courtIndexGroup(
   groups: CourtIndexGroup[],

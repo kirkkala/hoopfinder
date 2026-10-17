@@ -84,13 +84,18 @@ const groups: CourtIndexGroup[] = [
 
 test("lists each city as a link and leaves the courts for the city page", () => {
   status.pending = false;
-  render(<CourtIndexView groups={groups} courtCount={3} fetchedAtBySource={{}} />);
+  render(<CourtIndexView groups={groups} fetchedAtBySource={{}} />);
 
   const home = screen.getByRole("link", { name: copy.homepage });
   const map = screen.getByRole("link", { name: copy.courtsOnMap });
   expect(home.compareDocumentPosition(map) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   expect(home).toHaveAttribute("href", "/?info");
   expect(map).toHaveAttribute("href", "/kartta");
+
+  expect(
+    screen.getByText(/Palvelussa on 3 ulkokoripallokenttää yhdellä paikkakunnalla/),
+  ).toBeInTheDocument();
+  expect(screen.getByText(copy.allCourtsLead)).toBeInTheDocument();
 
   const helsinki = screen.getByRole("link", { name: "Helsinki (2 kenttää)" });
   const other = screen.getByRole("link", { name: `${copy.cityUnknown} (1 kenttä)` });
@@ -101,7 +106,7 @@ test("lists each city as a link and leaves the courts for the city page", () => 
 });
 
 test("the city search hides cities that do not match", () => {
-  render(<CourtIndexView groups={groups} courtCount={3} fetchedAtBySource={{}} />);
+  render(<CourtIndexView groups={groups} fetchedAtBySource={{}} />);
   const search = screen.getByRole("searchbox", { name: copy.allCourtsCities });
 
   fireEvent.change(search, { target: { value: "hel" } });
