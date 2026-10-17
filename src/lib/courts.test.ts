@@ -4,8 +4,10 @@ import {
   applyVisitorCourt,
   COURT_MATCH_KM,
   type Court,
+  citySlug,
   courtHref,
   courtIdFromParam,
+  courtIdFromPublicId,
   courtMapLabel,
   courtName,
   courtOgHref,
@@ -26,6 +28,7 @@ import {
   mergeCourts,
   parseCourtPath,
   pinCourtCount,
+  publicCourtId,
   submittedCourtKey,
   withDistance,
 } from "@/lib/courts";
@@ -182,25 +185,45 @@ test("uses the locale name and adds a place only for a generic court name", () =
 });
 
 test("round-trips court ids through the page path and the map query", () => {
-  const lipas = { id: "82547", source: "lipas" as const };
-  const osm = { id: "way-1095396325", source: "osm" as const };
-  const pending = { id: "submitted-10014", source: "pending" as const };
+  const lipas = { id: "82547", source: "lipas" as const, city: "Helsinki" };
+  const osm = { id: "way-1095396325", source: "osm" as const, city: "Espoo" };
+  const pending = {
+    id: "submitted-10014",
+    source: "pending" as const,
+    city: null,
+    address: "Katu 1, Tampere",
+  };
 
   expect(courtPath(lipas)).toBe("lipas/82547");
-  expect(courtParam(lipas)).toBe("lipas-82547");
+  expect(publicCourtId(lipas)).toBe("l82547");
+  expect(courtParam(lipas)).toBe("l82547");
   expect(courtIdFromParam(courtParam(lipas))).toBe("82547");
-  expect(courtHref(lipas)).toBe("/courts/lipas/82547");
+  expect(courtIdFromParam("lipas-82547")).toBe("82547");
+  expect(courtHref(lipas)).toBe("/koripallokentat/helsinki/l82547");
+  expect(citySlug("Järvenpää")).toBe("jarvenpaa");
+  expect(citySlug(null)).toBe("muu");
+  expect(courtHref({ id: "1", source: "lipas", city: null })).toBe("/koripallokentat/muu/l1");
 
   expect(courtPath(osm)).toBe("osm/way/1095396325");
+  expect(courtHref(osm)).toBe("/koripallokentat/espoo/w1095396325");
   expect(courtIdFromParam(courtParam(osm))).toBe("way-1095396325");
+  expect(courtIdFromParam("osm-way-1095396325")).toBe("way-1095396325");
+  expect(courtIdFromPublicId("n12")).toBe("node-12");
+  expect(courtIdFromPublicId("r9")).toBe("relation-9");
 
   expect(courtPath(pending)).toBe("submitted/10014");
   expect(submittedCourtKey(pending.id)).toBe("10014");
+  expect(courtHref(pending)).toBe("/koripallokentat/tampere/s10014");
   expect(courtIdFromParam(courtParam(pending))).toBe("submitted-10014");
-  expect(mapCourtHref(pending, { thanks: true })).toBe("/map?court=submitted-10014&thanks=1");
-  expect(focusedCourtHref({ ...lipas, aliases: ["82574"] }, "82574")).toBe("/courts/lipas/82574");
-  expect(focusedCourtHref({ ...lipas, aliases: ["82574"] }, "82547")).toBe("/courts/lipas/82547");
-  expect(focusedCourtHref(lipas, "other")).toBe("/courts/lipas/82547");
+  expect(courtIdFromParam("submitted-10014")).toBe("submitted-10014");
+  expect(mapCourtHref(pending, { thanks: true })).toBe("/kartta?court=s10014&thanks=1");
+  expect(focusedCourtHref({ ...lipas, aliases: ["82574"] }, "82574")).toBe(
+    "/koripallokentat/helsinki/l82574",
+  );
+  expect(focusedCourtHref({ ...lipas, aliases: ["82574"] }, "82547")).toBe(
+    "/koripallokentat/helsinki/l82547",
+  );
+  expect(focusedCourtHref(lipas, "other")).toBe("/koripallokentat/helsinki/l82547");
 });
 
 test("reads court paths as a court, the court list, or a missing page", () => {
@@ -224,9 +247,9 @@ test("reads court paths as a court, the court list, or a missing page", () => {
 
 test("versions an og image only when the fetch time parses", () => {
   const court = { id: "82547", source: "lipas" as const };
-  expect(courtOgHref(court, "not-a-date")).toBe("/images/og/lipas-82547");
+  expect(courtOgHref(court, "not-a-date")).toBe("/images/og/l82547");
   expect(courtOgHref(court, "2026-01-15T12:00:00.000Z")).toBe(
-    `/images/og/lipas-82547?v=${Date.parse("2026-01-15T12:00:00.000Z")}`,
+    `/images/og/l82547?v=${Date.parse("2026-01-15T12:00:00.000Z")}`,
   );
 });
 

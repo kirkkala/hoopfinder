@@ -1,152 +1,25 @@
-import type { Metadata } from "next";
-import { headers } from "next/headers";
 import { notFound, permanentRedirect, redirect } from "next/navigation";
 import { getAuthSession } from "@/auth";
-import { CourtDetails } from "@/components/court/CourtDetails";
-import { getCourtCatalog, getCourtPlace } from "@/lib/catalog";
-import { COURT_INDEX_PATH, SITE_URL } from "@/lib/constants";
-import { getCopy } from "@/lib/copy";
-import { courtOnPlace, courtsWithPhotos } from "@/lib/court-groups";
-import type { CourtPhoto } from "@/lib/court-photos";
-import { listCourtPhotos } from "@/lib/court-photos";
-import {
-  applyVisitorCourt,
-  type Court,
-  courtHref,
-  courtOgHref,
-  courtTitle,
-  formatAddress,
-  isAwaitingEmail,
-  mapCourtHref,
-  parseCourtPath,
-} from "@/lib/courts";
-import { isDatabaseUnavailable } from "@/lib/db";
-import { getSubmittedCourt, listPublishedCourtsNear } from "@/lib/submitted-courts";
+import { COURT_INDEX_PATH } from "@/lib/constants";
+import { canonicalCourtHref } from "@/lib/court-index";
+import { loadCourtById, loadCourtIndex } from "@/lib/court-page";
+import { isAwaitingEmail, mapCourtHref, parseCourtPath } from "@/lib/courts";
 
-export const dynamic = "force-dynamic";
+export default async function LegacyCourtPage({ params }: { params: Promise<{ path: string[] }> }) {
+  const { path } = await params;
+  const parsed = parseCourtPath(path);
+  if (parsed === "index") permanentRedirect(COURT_INDEX_PATH);
+  if (!parsed) notFound();
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ path: string[] }>;
-}): Promise<Metadata> {
-  const result = await courtFromParams(params);
-  const finnish = getCopy("fi");
-  if (!result) {
-    return { title: finnish.courtNotFound, robots: { index: false } };
+  const [loaded, index] = await Promise.all([loadCourtById(parsed.id), loadCourtIndex()]);
+  if (!loaded) notFound();
+  if (isAwaitingEmail(loaded.court) && !(await viewerIsAdmin())) {
+    redirect(mapCourtHref({ id: loaded.court.id, source: "pending" }));
   }
-  if (isAwaitingEmail(result.court) && !(await viewerIsAdmin())) {
-    return { title: finnish.statusAwaitingEmail, robots: { index: false, follow: false } };
-  }
-
-  const name = courtTitle(result.court, finnish);
-  const place =
-    formatAddress([result.court.address, result.court.neighborhood, result.court.city]) ||
-    finnish.addressMissing;
-  const description = finnish.metaCourtDescription(name, place);
-  const canonical = courtHref(result.court);
-  const pending = result.court.status === "pending";
-
-  return {
-    metadataBase: await requestOrigin(),
-    title: name,
-    description,
-    robots: pending ? { index: false, follow: false } : undefined,
-    alternates: {
-      canonical,
-    },
-    openGraph: {
-      title: name,
-      description,
-      type: "article",
-      url: canonical,
-      images: [
-        {
-          url: courtOgHref(result.court, result.sourceFetchedAt),
-          width: 1200,
-          height: 630,
-          alt: `${name} — ${place}`,
-        },
-      ],
-    },
-  };
-}
-
-export default async function CourtPage({ params }: { params: Promise<{ path: string[] }> }) {
-  const result = await courtFromParams(params);
-  if (!result) notFound();
-  const isAdmin = await viewerIsAdmin();
-  if (isAwaitingEmail(result.court) && !isAdmin) {
-    redirect(mapCourtHref({ id: result.court.id, source: "pending" }));
-  }
-  const court = await withVisitorFacts(result.court);
-  const otherCourts = (result.place.members ?? []).filter((member) => member.id !== court.id);
-  const [{ fetchedAtBySource }, photos] = await Promise.all([
-    getCourtCatalog(),
-    listPlacePhotos(result.place),
-  ]);
-  return (
-    <CourtDetails
-      court={court}
-      otherCourts={otherCourts}
-      fetchedAtBySource={fetchedAtBySource}
-      sourceFetchedAt={result.sourceFetchedAt}
-      photos={photos}
-      visitorEmail={isAdmin && "email" in result ? result.email : null}
-    />
-  );
+  permanentRedirect(canonicalCourtHref(loaded.court, index.groups));
 }
 
 async function viewerIsAdmin() {
   const session = await getAuthSession();
   return session?.user?.isAdmin === true;
-}
-
-async function courtFromParams(params: Promise<{ path: string[] }>) {
-  const { path } = await params;
-  const parsed = parseCourtPath(path);
-  if (parsed === "index") permanentRedirect(COURT_INDEX_PATH);
-  if (!parsed) return null;
-  const catalogCourt = await getCourtPlace(parsed.id);
-  if (catalogCourt) {
-    return {
-      court: courtOnPlace(catalogCourt.court, parsed.id),
-      place: catalogCourt.court,
-      sourceFetchedAt: catalogCourt.sourceFetchedAt,
-    };
-  }
-  const submitted = await getSubmittedCourt(parsed.id);
-  if (!submitted) {
-    if (isDatabaseUnavailable()) throw new Error("database unavailable");
-    return null;
-  }
-  return {
-    court: submitted.court,
-    place: submitted.court,
-    sourceFetchedAt: submitted.createdAt,
-    email: submitted.email,
-  };
-}
-
-async function withVisitorFacts(court: Court): Promise<Court> {
-  if (court.source === "submitted") return court;
-  const visitors = await listPublishedCourtsNear(court.members ?? [court]);
-  return visitors.reduce((current, visitor) => applyVisitorCourt(current, visitor), court);
-}
-
-async function listPlacePhotos(court: Court): Promise<CourtPhoto[]> {
-  const lists = await Promise.all(courtsWithPhotos(court).map((item) => listCourtPhotos(item)));
-  return lists.flat();
-}
-
-async function requestOrigin(): Promise<URL> {
-  const headerList = await headers();
-  const host = (headerList.get("x-forwarded-host") ?? headerList.get("host"))
-    ?.split(",")[0]
-    ?.trim();
-  if (!host) return new URL(SITE_URL);
-  const protocol =
-    headerList.get("x-forwarded-proto")?.split(",")[0]?.trim() ??
-    (host.startsWith("localhost") || host.startsWith("127.") ? "http" : "https");
-  return new URL(`${protocol}://${host}`);
 }

@@ -129,7 +129,7 @@ const messages = {
   giveFeedback: { fi: "Anna palautetta", en: "Give feedback" },
   allCourts: { fi: "Kaikki kentät", en: "All courts" },
   allCourtsHeading: { fi: "Kentät kaupungeittain", en: "Courts by city" },
-  courtsAsList: { fi: "Kentät listana", en: "Courts as a list" },
+  courtsAsList: { fi: "Kentät kaupungeittain", en: "Courts by city" },
   courtsOnMap: { fi: "Kentät kartalla", en: "Courts on the map" },
   allCourtsLead: {
     fi: "Valitse kaupunki ja selaa sen kenttiä. Avaa kenttä nähdäksesi tiedot ja kartan.",
@@ -150,6 +150,21 @@ const messages = {
     fi: (count: number) => `${count} ${count === 1 ? "kenttä" : "kenttää"}`,
     en: (count: number) => `${count} ${count === 1 ? "court" : "courts"}`,
   },
+  cityCourtsHeading: {
+    fi: (city: string) => `Koripallokentät ${city}`,
+    en: (city: string) => `Basketball courts in ${city}`,
+  },
+  cityCourtsSummary: {
+    fi: (count: number, lit: number, closed: number) => cityCourtSummary(count, lit, closed, "fi"),
+    en: (count: number, lit: number, closed: number) => cityCourtSummary(count, lit, closed, "en"),
+  },
+  cityCourtsDescription: {
+    fi: (city: string, summary: string) =>
+      `${summary}. Ulkokoripallokentät, ${city}. Selaa kenttiä ja avaa kartta Hoop Finderissa.`,
+    en: (city: string, summary: string) =>
+      `${summary}. Outdoor basketball courts in ${city}. Browse them and open the map on Hoop Finder.`,
+  },
+  breadcrumb: { fi: "Murupolku", en: "Breadcrumb" },
   feedbackTitle: { fi: "Anna palautetta", en: "Give feedback" },
   feedbackLead: {
     fi: "Toiveet, bugiraportit ja muu palaute auttaa parantamaan Hoop Finderiä. Kerro vapaasti, mikä toimii ja mikä ei.",
@@ -722,6 +737,19 @@ const messages = {
   toHomepage: { fi: "Etusivulle", en: "To the homepage" },
   courtNotFound: { fi: "Kenttää ei löydy", en: "Court not found" },
 };
+
+function cityCourtSummary(count: number, lit: number, closed: number, locale: "fi" | "en"): string {
+  if (locale === "fi") {
+    const parts = [`${count} ${count === 1 ? "kenttä" : "kenttää"}`];
+    if (lit > 0) parts.push(`${lit} ${lit === 1 ? "valaistu" : "valaistua"}`);
+    if (closed > 0) parts.push(`${closed} tilapäisesti kiinni`);
+    return parts.join(", ");
+  }
+  const parts = [`${count} ${count === 1 ? "court" : "courts"}`];
+  if (lit > 0) parts.push(`${lit} lit`);
+  if (closed > 0) parts.push(`${closed} temporarily closed`);
+  return parts.join(", ");
+}
 
 type Resolve<T> =
   T extends Pair<infer U> ? U : T extends object ? { [K in keyof T]: Resolve<T[K]> } : T;

@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  ArrowLeft,
   Bath,
   Building2,
   Calendar,
@@ -41,6 +40,7 @@ import { CourtDistance } from "@/components/CourtDistance";
 import { CourtGallery } from "@/components/court/CourtGallery";
 import { LocateMeButton, locationHint } from "@/components/LocateMeButton";
 import type { FetchedAtBySource } from "@/lib/catalog";
+import { COURT_INDEX_PATH } from "@/lib/constants";
 import type { Copy } from "@/lib/copy";
 import type { CourtPhoto } from "@/lib/court-photos";
 import {
@@ -84,6 +84,9 @@ export function CourtDetails({
   photos,
   otherCourts = [],
   visitorEmail = null,
+  cityName = null,
+  cityUnknown = false,
+  cityPageHref = null,
 }: {
   court: Court;
   fetchedAtBySource: FetchedAtBySource;
@@ -92,6 +95,11 @@ export function CourtDetails({
   /** Other hoops at this place. Each one has its own page. */
   otherCourts?: Court[];
   visitorEmail?: string | null;
+  /** Place name. Null with `cityUnknown` shows the "other" label. */
+  cityName?: string | null;
+  cityUnknown?: boolean;
+  /** City page. Absent when the city has fewer than two public courts. */
+  cityPageHref?: string | null;
 }) {
   const copy = useCopy();
   const isAdmin = useIsAdmin();
@@ -127,7 +135,7 @@ export function CourtDetails({
         {/* contents drops these wrappers on a narrow screen so the gallery can sit between the intro and the facts. */}
         <section className="contents split:block split:space-y-5">
           <div className="order-1 space-y-5">
-            <BackToMap court={court} />
+            <CourtCrumb cityName={cityName} cityUnknown={cityUnknown} cityPageHref={cityPageHref} />
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">
                 {copy.courtKind}
@@ -559,17 +567,47 @@ function CourtDistanceBlock({ court }: { court: Court }) {
   );
 }
 
-function BackToMap({ court, className }: { court: Court; className?: string }) {
+function CourtCrumb({
+  cityName,
+  cityUnknown,
+  cityPageHref,
+}: {
+  cityName: string | null;
+  cityUnknown: boolean;
+  cityPageHref: string | null;
+}) {
   const copy = useCopy();
+  const city = cityName ?? (cityUnknown ? copy.cityUnknown : null);
   return (
-    <AppLink
-      href={mapCourtHref(court)}
-      className={`inline-flex shrink-0 items-center gap-1 text-md font-medium text-gold hover:text-white ${className ?? ""}`}
-    >
-      <MapIcon aria-hidden />
-      <ArrowLeft className="size-6" aria-hidden />
-      {copy.backToMap}
-    </AppLink>
+    <nav aria-label={copy.breadcrumb}>
+      <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-ink-muted">
+        <li>
+          <AppLink
+            href={COURT_INDEX_PATH}
+            trailingPending={false}
+            className="font-medium text-gold hover:text-white"
+          >
+            {copy.allCourts}
+          </AppLink>
+        </li>
+        {city ? (
+          <li className="flex items-center gap-2">
+            <span aria-hidden="true">/</span>
+            {cityPageHref ? (
+              <AppLink
+                href={cityPageHref}
+                trailingPending={false}
+                className="font-medium text-gold hover:text-white"
+              >
+                {city}
+              </AppLink>
+            ) : (
+              <span>{city}</span>
+            )}
+          </li>
+        ) : null}
+      </ol>
+    </nav>
   );
 }
 

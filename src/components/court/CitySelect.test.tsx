@@ -20,9 +20,24 @@ function entry(name: string, href: string): CourtIndexEntry {
 }
 
 const groups: CourtIndexGroup[] = [
-  { city: "Halikko", anchor: "halikko", courts: [entry("Halikko", "/courts/lipas/1")] },
-  { city: "Helsinki", anchor: "helsinki", courts: [entry("Kallio", "/courts/lipas/2")] },
-  { city: "Järvenpää", anchor: "jarvenpaa", courts: [entry("Järvenpää", "/courts/lipas/3")] },
+  {
+    city: "Halikko",
+    anchor: "halikko",
+    pageHref: null,
+    courts: [entry("Halikko", "/koripallokentat/halikko/l1")],
+  },
+  {
+    city: "Helsinki",
+    anchor: "helsinki",
+    pageHref: null,
+    courts: [entry("Kallio", "/koripallokentat/helsinki/l2")],
+  },
+  {
+    city: "Järvenpää",
+    anchor: "jarvenpaa",
+    pageHref: null,
+    courts: [entry("Järvenpää", "/koripallokentat/jarvenpaa/l3")],
+  },
 ];
 
 afterEach(cleanup);

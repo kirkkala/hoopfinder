@@ -62,7 +62,7 @@ test("the map and the list put the info page before the other view", () => {
   const list = screen.getByRole("link", { name: copy.courtsAsList });
   expect(home.compareDocumentPosition(list) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   expect(home).toHaveAttribute("href", "/?info");
-  expect(list).toHaveAttribute("href", "/courts");
+  expect(list).toHaveAttribute("href", "/koripallokentat");
 
   rerender(<ViewJumps also="to-map" />);
   const map = screen.getByRole("link", { name: copy.courtsOnMap });
@@ -70,5 +70,5 @@ test("the map and the list put the info page before the other view", () => {
     screen.getByRole("link", { name: copy.homepage }).compareDocumentPosition(map) &
       Node.DOCUMENT_POSITION_FOLLOWING,
   ).toBeTruthy();
-  expect(map).toHaveAttribute("href", "/map");
+  expect(map).toHaveAttribute("href", "/kartta");
 });

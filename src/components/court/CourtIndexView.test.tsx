@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, render, screen, within } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { afterEach, beforeAll, expect, test, vi } from "vitest";
 import { getCopy } from "@/lib/copy";
@@ -27,7 +27,7 @@ vi.mock("next/link", () => ({
 }));
 
 vi.mock("next/navigation", () => ({
-  usePathname: () => "/courts",
+  usePathname: () => "/koripallokentat",
   useRouter: () => ({ push: vi.fn(), replace: vi.fn() }),
 }));
 
@@ -68,9 +68,18 @@ const groups: CourtIndexGroup[] = [
   {
     city: "Helsinki",
     anchor: "helsinki",
-    courts: [entry("Kallio", "/courts/lipas/1"), entry("Brahe", "/courts/lipas/2")],
+    pageHref: "/koripallokentat/helsinki",
+    courts: [
+      entry("Kallio", "/koripallokentat/helsinki/l1"),
+      entry("Brahe", "/koripallokentat/helsinki/l2"),
+    ],
   },
-  { city: null, anchor: "muu", courts: [entry("Nimetön", "/courts/lipas/3")] },
+  {
+    city: null,
+    anchor: "muu",
+    pageHref: null,
+    courts: [entry("Nimetön", "/koripallokentat/muu/l3")],
+  },
 ];
 
 test("each city heading shows how many courts it lists", () => {
@@ -81,12 +90,19 @@ test("each city heading shows how many courts it lists", () => {
   const map = screen.getByRole("link", { name: copy.courtsOnMap });
   expect(home.compareDocumentPosition(map) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
   expect(home).toHaveAttribute("href", "/?info");
-  expect(map).toHaveAttribute("href", "/map");
+  expect(map).toHaveAttribute("href", "/kartta");
 
   const helsinki = screen.getByRole("heading", { level: 2, name: "Helsinki (2 kenttää)" });
   const other = screen.getByRole("heading", { level: 2, name: `${copy.cityUnknown} (1 kenttä)` });
   expect(helsinki).toHaveTextContent("Helsinki");
   expect(other).toHaveTextContent(copy.cityCourtCount(1));
+  expect(within(helsinki).getByRole("link")).toHaveAttribute(
+    "href",
+    "/koripallokentat/helsinki",
+  );
+  expect(within(helsinki).getByText("(2 kenttää)")).toHaveClass("text-ink-muted");
+  expect(within(helsinki).getByRole("link").querySelector("svg")).toBeNull();
+  expect(within(other).getByRole("link")).toHaveAttribute("href", "/koripallokentat/muu");
 });
 
 test("a court card shows the pending spinner after its open label", () => {
@@ -98,7 +114,7 @@ test("a court card shows the pending spinner after its open label", () => {
     node.textContent?.includes(copy.letsGo),
   );
   const spinner = label?.querySelector(".animate-spin");
-  expect(link).toHaveAttribute("href", "/courts/lipas/1");
+  expect(link).toHaveAttribute("href", "/koripallokentat/helsinki/l1");
   expect(link).toHaveAttribute("data-prefetch", "false");
   expect(spinner).not.toBeNull();
   expect(link.querySelectorAll(".animate-spin")).toHaveLength(1);

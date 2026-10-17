@@ -61,7 +61,7 @@ test("another court opens that court's page", () => {
 
   expect(screen.getByRole("link", { name: copy.letsGo })).toHaveAttribute(
     "href",
-    "/courts/lipas/82547",
+    "/koripallokentat/helsinki/l82547",
   );
 });
 
