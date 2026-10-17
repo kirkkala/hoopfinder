@@ -4,7 +4,7 @@ import { notFound, permanentRedirect, redirect } from "next/navigation";
 import { getAuthSession } from "@/auth";
 import { CourtDetails } from "@/components/court/CourtDetails";
 import { getCourtCatalog } from "@/lib/catalog";
-import { COURT_INDEX_PATH, SITE_URL } from "@/lib/constants";
+import { COURT_INDEX_PATH } from "@/lib/constants";
 import { getCopy } from "@/lib/copy";
 import { courtsWithPhotos } from "@/lib/court-groups";
 import { canonicalCourtHref, cityHeading, courtIndexGroup } from "@/lib/court-index";
@@ -22,6 +22,8 @@ import {
   listingCity,
   mapCourtHref,
 } from "@/lib/courts";
+import { OG_CONTENT_TYPE, OG_SIZE, siteOpenGraph } from "@/lib/og";
+import { siteOrigin } from "@/lib/site-origin";
 import { listPublishedCourtsNear } from "@/lib/submitted-courts";
 
 export const dynamic = "force-dynamic";
@@ -46,12 +48,12 @@ export async function generateMetadata({
   const pending = resolved.court.status === "pending";
 
   return {
-    metadataBase: await requestOrigin(),
+    metadataBase: new URL(siteOrigin(await headers())),
     title: name,
     description,
     robots: pending ? { index: false, follow: false } : undefined,
     alternates: { canonical: resolved.canonical },
-    openGraph: {
+    openGraph: siteOpenGraph({
       title: name,
       description,
       type: "article",
@@ -59,12 +61,13 @@ export async function generateMetadata({
       images: [
         {
           url: courtOgHref(resolved.court, resolved.sourceFetchedAt),
-          width: 1200,
-          height: 630,
+          width: OG_SIZE.width,
+          height: OG_SIZE.height,
           alt: `${name} — ${place}`,
+          type: OG_CONTENT_TYPE,
         },
       ],
-    },
+    }),
   };
 }
 
@@ -152,16 +155,4 @@ async function withVisitorFacts(court: Court): Promise<Court> {
 async function listPlacePhotos(court: Court): Promise<CourtPhoto[]> {
   const lists = await Promise.all(courtsWithPhotos(court).map((item) => listCourtPhotos(item)));
   return lists.flat();
-}
-
-async function requestOrigin(): Promise<URL> {
-  const headerList = await headers();
-  const host = (headerList.get("x-forwarded-host") ?? headerList.get("host"))
-    ?.split(",")[0]
-    ?.trim();
-  if (!host) return new URL(SITE_URL);
-  const protocol =
-    headerList.get("x-forwarded-proto")?.split(",")[0]?.trim() ??
-    (host.startsWith("localhost") || host.startsWith("127.") ? "http" : "https");
-  return new URL(`${protocol}://${host}`);
 }

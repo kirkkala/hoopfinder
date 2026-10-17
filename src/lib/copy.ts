@@ -21,6 +21,10 @@ const messages = {
     fi: "Löydä kenttä, käy heittelemässä.",
     en: "Find a hoop, go out and play.",
   },
+  metaDefaultTitle: {
+    fi: "Kaikki Suomen koripallokentät",
+    en: "All basketball courts in Finland",
+  },
   metaDescription: {
     fi: "Löydä ulkokoripallokentät Suomesta. Etsi kaupungilla, alueella tai sijainnilla ja ota pallo mukaan.",
     en: "Find outdoor basketball courts in Finland. Search by city, neighborhood or your location — then go hoop.",
@@ -157,6 +161,12 @@ const messages = {
   cityCourtsIntro: {
     fi: (count: number, lit: number, closed: number) => cityIntro("fi", count, lit, closed),
     en: (count: number, lit: number, closed: number) => cityIntro("en", count, lit, closed),
+  },
+  /** Short line under the city name on the share image. */
+  cityOgCaption: {
+    fi: (count: number) =>
+      `${count} ${count === 1 ? "ulkokoripallokenttä" : "ulkokoripallokenttää"}`,
+    en: (count: number) => `${count} outdoor basketball ${count === 1 ? "court" : "courts"}`,
   },
   /** Area names for the page source. The city view hides this from sight and screen readers. */
   cityAreasLine: {

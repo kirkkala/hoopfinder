@@ -1,7 +1,10 @@
+import type { Metadata } from "next";
 import { ImageResponse } from "next/og";
 import type { ReactNode } from "react";
-import { APP_NAME, APP_VERSION } from "@/lib/constants";
+import { APP_NAME, APP_VERSION, SITE_URL } from "@/lib/constants";
 import { getCopy } from "@/lib/copy";
+
+type OpenGraph = NonNullable<Metadata["openGraph"]>;
 
 export const OG_SIZE = { width: 1200, height: 630 };
 export const OG_CONTENT_TYPE = "image/png";
@@ -9,6 +12,41 @@ export const HOME_OG_ID = "home";
 
 export function homeOgHref() {
   return `/images/og/${HOME_OG_ID}?v=${encodeURIComponent(APP_VERSION)}`;
+}
+
+export function cityOgHref(anchor: string, count: number) {
+  return `/images/og/city/${encodeURIComponent(anchor)}?v=${encodeURIComponent(APP_VERSION)}&n=${count}`;
+}
+
+export function siteOpenGraph(options?: {
+  title?: string;
+  description?: string;
+  url?: string;
+  type?: "website" | "article";
+  images?: OpenGraph["images"];
+}): OpenGraph {
+  const finnish = getCopy("fi");
+  return {
+    type: options?.type ?? "website",
+    locale: "fi_FI",
+    alternateLocale: ["en_US"],
+    url: options?.url ?? SITE_URL,
+    siteName: finnish.appName,
+    title: options?.title ?? finnish.metaDefaultTitle,
+    description: options?.description ?? finnish.metaDescription,
+    images: options?.images ?? [defaultOgImage()],
+  };
+}
+
+export function defaultOgImage() {
+  const finnish = getCopy("fi");
+  return {
+    url: homeOgHref(),
+    width: OG_SIZE.width,
+    height: OG_SIZE.height,
+    alt: finnish.metaOgImageAlt,
+    type: OG_CONTENT_TYPE,
+  };
 }
 
 /**
