@@ -2,7 +2,7 @@
 
 Outdoor basketball courts across Finland — find a hoop, go out and play.
 
-Map, search, and a page per court. UI defaults to Finnish; English is a toggle. Copy lives in [`src/lib/copy.ts`](src/lib/copy.ts).
+Map, list of cities, and courts per city. And a page per basketball court. UI defaults to Finnish; English is a toggle and stays out of the URL. Copy lives in [`src/lib/copy.ts`](src/lib/copy.ts).
 
 ## Announcements
 
@@ -25,6 +25,12 @@ npm run refresh-courts:osm-places   # Nominatim only, keep the OSM snapshot
 ```
 
 A Monday GitHub Action runs the full refresh. If Overpass fails, the previous OSM snapshot is kept.
+
+## URLs
+
+`/kartta` is the map. `/koripallokentat` lists cities, `/koripallokentat/{city}` is a city with at least two courts, and `/koripallokentat/{city}/{id}` is a court. A city with one court redirects to that court. Court photo files are under `/courts/.../photos`.
+
+`{id}` is a letter plus the source number: `l` LIPAS, `n`/`w`/`r` an OSM node, way, or relation, `s` a visitor submission. Old `/courts/…` paths and a wrong city redirect to the current court. `/map` redirects to `/kartta`.
 
 ## Develop
 
