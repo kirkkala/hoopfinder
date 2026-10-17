@@ -4,31 +4,20 @@ import { getCourtCatalog } from "@/lib/catalog";
 import { MAP_PATH } from "@/lib/constants";
 import { getCopy } from "@/lib/copy";
 import { courtIdFromParam } from "@/lib/courts";
-import { homeOgHref, OG_CONTENT_TYPE, OG_SIZE } from "@/lib/og";
+import { siteOpenGraph } from "@/lib/og";
 import { countPublicCourts } from "@/lib/submitted-courts";
 
 export const dynamic = "force-dynamic";
 
 export async function generateMetadata(): Promise<Metadata> {
   const courtCount = await countPublicCourts();
-  const finnish = getCopy("fi");
+  const description = getCopy("fi").metaDescriptionCount(courtCount);
   return {
-    title: finnish.courtsOnMap,
-    description: finnish.metaDescriptionCount(courtCount),
+    description,
     alternates: {
       canonical: MAP_PATH,
     },
-    openGraph: {
-      images: [
-        {
-          url: homeOgHref(),
-          width: OG_SIZE.width,
-          height: OG_SIZE.height,
-          alt: finnish.metaOgImageAlt,
-          type: OG_CONTENT_TYPE,
-        },
-      ],
-    },
+    openGraph: siteOpenGraph({ description, url: MAP_PATH }),
   };
 }
 

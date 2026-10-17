@@ -43,6 +43,7 @@ test("interpolated copy includes the value it is given", () => {
     expect(copy.cityCourtsIntro(2, 1, 0)).toContain("2");
     expect(copy.cityAreasLine(["Malmi"])).toContain("Malmi");
     expect(copy.cityCourtCount(265)).toContain("265");
+    expect(copy.cityOgCaption(2)).toContain("2");
   }
 });
 
@@ -59,6 +60,14 @@ test("court list text uses the counts and leaves out unknown lighting", () => {
   expect(getCopy("fi").cityAreasLine(["Matinkylä", "Tapiola"])).toBe(
     "Alueita: Matinkylä ja Tapiola.",
   );
+});
+
+test("the default share title names every court, not only the map", () => {
+  expect(getCopy("fi").metaDefaultTitle).toBe("Kaikki Suomen koripallokentät");
+  expect(getCopy("en").metaDefaultTitle).toBe("All basketball courts in Finland");
+  expect(getCopy("fi").cityOgCaption(1)).toBe("1 ulkokoripallokenttä");
+  expect(getCopy("fi").cityOgCaption(265)).toBe("265 ulkokoripallokenttää");
+  expect(getCopy("en").cityOgCaption(1)).toBe("1 outdoor basketball court");
 });
 
 test("city headings count courts in the active language", () => {

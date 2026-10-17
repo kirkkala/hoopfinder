@@ -13,6 +13,7 @@ import { StorageCleanup } from "@/components/brand/StorageCleanup";
 import { SITE_URL } from "@/lib/constants";
 import { getCopy } from "@/lib/copy";
 import { isDatabaseUnavailable, withDb } from "@/lib/db";
+import { siteOpenGraph } from "@/lib/og";
 import { siteAnnouncements } from "@/lib/site-announcements";
 
 const outfit = Outfit({
@@ -29,6 +30,7 @@ const bebas = Bebas_Neue({
 const finnish = getCopy("fi");
 const appName = finnish.appName;
 const description = finnish.metaDescription;
+const defaultTitle = `${finnish.metaDefaultTitle} · ${appName}`;
 
 export const viewport: Viewport = {
   themeColor: "#07070a",
@@ -38,7 +40,7 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
   title: {
-    default: appName,
+    default: defaultTitle,
     template: `%s · ${appName}`,
   },
   description,
@@ -73,15 +75,7 @@ export const metadata: Metadata = {
       "max-snippet": -1,
     },
   },
-  openGraph: {
-    type: "website",
-    locale: "fi_FI",
-    alternateLocale: ["en_US"],
-    url: SITE_URL,
-    siteName: appName,
-    title: appName,
-    description,
-  },
+  openGraph: siteOpenGraph(),
   appleWebApp: {
     capable: true,
     title: appName,

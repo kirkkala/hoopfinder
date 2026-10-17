@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { headers } from "next/headers";
 import { notFound, permanentRedirect, redirect } from "next/navigation";
 import { getAuthSession } from "@/auth";
 import { CityCourtsView } from "@/components/court/CityCourtsView";
@@ -14,6 +15,8 @@ import {
 } from "@/lib/court-index";
 import { breadcrumbJsonLd, loadCourtById, loadCourtIndex } from "@/lib/court-page";
 import { courtIdFromPublicId, isAwaitingEmail, mapCourtHref } from "@/lib/courts";
+import { cityOgHref, OG_CONTENT_TYPE, OG_SIZE, siteOpenGraph } from "@/lib/og";
+import { siteOrigin } from "@/lib/site-origin";
 
 export async function generateMetadata({
   params,
@@ -26,11 +29,29 @@ export async function generateMetadata({
   if (!page) return { title: finnish.courtNotFound, robots: { index: false } };
   const place = page.group.city ?? finnish.cityUnknown;
   const facts = cityCourtFacts(page.courts);
-  const intro = finnish.cityCourtsIntro(page.courts.length, facts.lit, facts.closed);
+  const title = finnish.cityCourtsHeading(place);
+  const description = `${title}. ${finnish.cityCourtsIntro(page.courts.length, facts.lit, facts.closed)}`;
+  const caption = finnish.cityOgCaption(page.courts.length);
+  const canonical = page.group.pageHref ?? COURT_INDEX_PATH;
   return {
-    title: finnish.cityCourtsHeading(place),
-    description: `${finnish.cityCourtsHeading(place)}. ${intro}`,
-    alternates: { canonical: page.group.pageHref ?? COURT_INDEX_PATH },
+    metadataBase: new URL(siteOrigin(await headers())),
+    title,
+    description,
+    alternates: { canonical },
+    openGraph: siteOpenGraph({
+      title,
+      description,
+      url: canonical,
+      images: [
+        {
+          url: cityOgHref(page.group.anchor, page.courts.length),
+          width: OG_SIZE.width,
+          height: OG_SIZE.height,
+          alt: `${title} — ${caption}`,
+          type: OG_CONTENT_TYPE,
+        },
+      ],
+    }),
   };
 }
 
