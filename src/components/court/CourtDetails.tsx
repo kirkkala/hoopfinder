@@ -36,7 +36,6 @@ import { AdminStatusButton } from "@/components/admin/AdminStatusButton";
 import { AppFooter } from "@/components/brand/AppFooter";
 import { AppHeader } from "@/components/brand/AppHeader";
 import { AppLink } from "@/components/brand/AppLink";
-import { FirstVisitNote } from "@/components/brand/FirstVisitNote";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { CourtDistance } from "@/components/CourtDistance";
 import { CourtGallery } from "@/components/court/CourtGallery";
@@ -123,7 +122,6 @@ export function CourtDetails({
   return (
     <div className="flex min-h-dvh flex-col bg-asphalt">
       <AppHeader fetchedAtBySource={fetchedAtBySource} />
-      <FirstVisitNote />
 
       <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-6 px-4 py-8 split:grid split:grid-cols-[1.1fr_0.9fr]">
         {/* contents drops these wrappers on a narrow screen so the gallery can sit between the intro and the facts. */}

@@ -1,11 +1,5 @@
 import { afterEach, expect, test } from "vitest";
-import {
-  clearObsoleteStorage,
-  clearVisited,
-  hasVisited,
-  homeEntryTarget,
-  markVisited,
-} from "@/lib/visit";
+import { clearObsoleteStorage, clearVisited, homeEntryTarget, markVisited } from "@/lib/visit";
 
 afterEach(() => {
   localStorage.clear();
@@ -25,9 +19,9 @@ test("clears the old intro flag and leaves other storage alone", () => {
 });
 
 test("remembers a visit in a cookie", () => {
-  expect(hasVisited()).toBe(false);
+  expect(document.cookie).not.toContain("hoopfinder-visited=1");
   markVisited();
-  expect(hasVisited()).toBe(true);
+  expect(document.cookie).toContain("hoopfinder-visited=1");
 });
 
 test("sends a returning visitor to the map and keeps an explicit about visit", () => {
