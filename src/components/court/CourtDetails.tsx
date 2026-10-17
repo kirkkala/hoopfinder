@@ -66,12 +66,7 @@ import { courtSource, OSM_COPYRIGHT_URL, sourceListingUrl } from "@/lib/sources"
 import { formatFetchedAt } from "@/lib/time";
 
 function MiniMapPlaceholder() {
-  return (
-    <section className="px-3 py-4" aria-hidden>
-      <div className="h-5" />
-      <div className="mt-2 h-80 rounded-xl bg-white/5" />
-    </section>
-  );
+  return <div className="mt-2 h-80 rounded-xl bg-white/5" aria-hidden />;
 }
 
 const CourtMiniMap = dynamic(
@@ -402,7 +397,20 @@ export function CourtDetails({
             courtName={courtTitle(court, copy)}
             photos={photos}
           />
-          <CourtMiniMap court={court} />
+          <section className="px-3 py-4">
+            <h2 className="flex items-center gap-1.5 text-sm font-bold uppercase tracking-wide text-gold/80">
+              <MapIcon className="size-4 shrink-0" aria-hidden />
+              {copy.courtLocation}
+            </h2>
+            <CourtMiniMap court={court} />
+            <AppLink
+              href={mapCourtHref(court)}
+              className="mt-2 inline-flex items-center gap-1.5 text-sm font-bold text-gold hover:text-white"
+            >
+              <MapIcon className="size-4 shrink-0" aria-hidden />
+              {copy.backToMap}
+            </AppLink>
+          </section>
           <dl className="grid gap-3 border-t border-white/10 p-5">
             {court.website ? (
               <Fact

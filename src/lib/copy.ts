@@ -313,6 +313,8 @@ const messages = {
   notesFromListing: { fi: "Lisätiedot", en: "Notes" },
   photogallery: { fi: "Kuvagalleria", en: "Photo gallery" },
   courtLocation: { fi: "Sijainti kartalla", en: "Location on the map" },
+  mapZoomIn: { fi: "Lähennä", en: "Zoom in" },
+  mapZoomOut: { fi: "Loitonna", en: "Zoom out" },
   otherCourts: { fi: "Muut kentät tässä osoitteessa", en: "Other courts at this address" },
   noPhotos: { fi: "Ei kuvia.", en: "No photos." },
   databaseUnavailable: {
