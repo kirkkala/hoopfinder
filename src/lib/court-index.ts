@@ -1,5 +1,15 @@
+import { COURT_INDEX_PATH } from "@/lib/constants";
 import { getCopy } from "@/lib/copy";
-import { type Court, courtHref, courtTitle, type ExplorerCourt } from "@/lib/courts";
+import {
+  type Court,
+  cityFromAddress,
+  citySlug,
+  courtHref,
+  courtTitle,
+  type ExplorerCourt,
+  listingCity,
+  publicCourtId,
+} from "@/lib/courts";
 
 export type CourtIndexEntry = {
   href: string;
@@ -14,10 +24,20 @@ export type CourtIndexEntry = {
   amenities: Pick<Court["amenities"], "lighting" | "freeUse">;
 };
 
+/** A city page needs two public courts. One court redirects to that court. */
+export const CITY_PAGE_MIN_COURTS = 2;
+
+/** Address for a city. One public court redirects to that court. */
+export function cityIndexHref(anchor: string): string {
+  return `${COURT_INDEX_PATH}/${anchor}`;
+}
+
 export type CourtIndexGroup = {
   /** Null when the court has no city. */
   city: string | null;
   anchor: string;
+  /** Set when the city has its own page. */
+  pageHref: string | null;
   courts: CourtIndexEntry[];
 };
 
@@ -44,12 +64,27 @@ export function courtIndex(courts: Court[], submitted: ExplorerCourt[] = []): Co
   return [...byCity.values()]
     .map((bucket) => {
       const city = readableCity(mostCommonLabel(bucket.labels));
+      const anchor = cityAnchor(city, usedAnchors);
+      const courts = bucket.courts
+        .map((court) => ({
+          href: courtHref(court, anchor),
+          name: court.name,
+          nameFi: court.nameFi,
+          status: court.status,
+          address: court.address,
+          neighborhood: court.neighborhood,
+          city: court.city,
+          source: court.source,
+          ...(court.emailConfirmed === undefined ? {} : { emailConfirmed: court.emailConfirmed }),
+          amenities: court.amenities,
+        }))
+        .sort((a, b) => compareFi(courtTitle(a, finnish), courtTitle(b, finnish)));
+      const listed = publicCityCourts(courts);
       return {
         city,
-        anchor: cityAnchor(city, usedAnchors),
-        courts: bucket.courts.sort((a, b) =>
-          compareFi(courtTitle(a, finnish), courtTitle(b, finnish)),
-        ),
+        anchor,
+        pageHref: listed.length >= CITY_PAGE_MIN_COURTS ? cityIndexHref(anchor) : null,
+        courts,
       };
     })
     .sort((a, b) => byCityName(a.city, b.city));
@@ -63,7 +98,8 @@ function addCourt(byCity: Map<string | null, CityBucket>, page: IndexCourt, from
   const bucket: CityBucket = byCity.get(key) ?? { labels: new Map(), courts: [] };
   if (city) bucket.labels.set(city, (bucket.labels.get(city) ?? 0) + 1);
   bucket.courts.push({
-    href: courtHref(page),
+    id: page.id,
+    href: "",
     name: page.name,
     nameFi: page.nameFi,
     status: page.status,
@@ -80,27 +116,100 @@ function addCourt(byCity: Map<string | null, CityBucket>, page: IndexCourt, from
   byCity.set(key, bucket);
 }
 
-/**
- * Visitor addresses are one line, "street, 00540 Helsinki" or "street, Helsinki".
- * The city is only the grouping key. The street line keeps the postcode.
- */
-function cityFromAddress(address: string | null): { address: string | null; city: string } | null {
-  if (!address) return null;
-  const comma = address.lastIndexOf(",");
-  if (comma === -1) return null;
-  const street = address.slice(0, comma).trim();
-  const place = address.slice(comma + 1).trim();
-  const posted = /^(?:FI-)?(\d{5})\s+(.+)$/i.exec(place);
-  const city = (posted ? posted[2] : place).trim();
-  if (!city || (posted ? false : /\d/.test(place))) return null;
-  const line = posted ? [street, posted[1]].filter(Boolean).join(", ") : street;
-  return { address: line || null, city };
-}
+type DraftCourt = CourtIndexEntry & {
+  id: string;
+  source: ExplorerCourt["source"];
+};
 
 type CityBucket = {
   labels: Map<string, number>;
-  courts: CourtIndexEntry[];
+  courts: DraftCourt[];
 };
+
+/** Courts a city page lists. Pending rows stay on the national list only. */
+export function publicCityCourts(courts: CourtIndexEntry[]): CourtIndexEntry[] {
+  return courts.filter((court) => court.status !== "pending");
+}
+
+export function cityCourtFacts(courts: Pick<CourtIndexEntry, "amenities" | "status">[]): {
+  lit: number;
+  closed: number;
+} {
+  let lit = 0;
+  let closed = 0;
+  for (const court of courts) {
+    if (court.amenities.lighting === true) lit += 1;
+    if (court.status === "out-of-service-temporarily") closed += 1;
+  }
+  return { lit, closed };
+}
+
+/** Named areas on these courts, in Finnish alphabetical order. */
+export function cityAreas(courts: Pick<CourtIndexEntry, "neighborhood">[]): string[] {
+  const seen = new Map<string, string>();
+  for (const court of courts) {
+    const name = court.neighborhood?.trim();
+    if (!name) continue;
+    const key = name.toLocaleLowerCase("fi");
+    if (!seen.has(key)) seen.set(key, name);
+  }
+  return [...seen.values()].sort((a, b) => a.localeCompare(b, "fi"));
+}
+
+/** Totals for the city list. Places skip courts that have no city. */
+export function indexListFacts(groups: Pick<CourtIndexGroup, "city" | "courts">[]): {
+  courts: number;
+  places: number;
+  lit: number;
+  closed: number;
+} {
+  const courts = groups.flatMap((group) => group.courts);
+  return {
+    courts: courts.length,
+    places: groups.filter((group) => group.city).length,
+    ...cityCourtFacts(courts),
+  };
+}
+
+/** Index group that contains this court page, matched on the public id. */
+export function courtIndexGroup(
+  groups: CourtIndexGroup[],
+  court: Pick<ExplorerCourt, "id" | "source">,
+): CourtIndexGroup | null {
+  const publicId = publicCourtId(court);
+  if (!publicId) return null;
+  return (
+    groups.find((group) => group.courts.some((entry) => hrefPublicId(entry.href) === publicId)) ??
+    null
+  );
+}
+
+/** Canonical public path. The index anchor wins when a slug needed a suffix. */
+export function canonicalCourtHref(
+  court: Pick<Court, "id" | "source" | "city" | "address">,
+  groups: CourtIndexGroup[],
+): string {
+  return courtHref({ ...court, city: listingCity(court) }, courtIndexGroup(groups, court)?.anchor);
+}
+
+export function cityHeading(city: string | null | undefined): string | null {
+  return readableCity(city?.trim() || null);
+}
+
+function hrefPublicId(href: string): string {
+  return href.slice(href.lastIndexOf("/") + 1);
+}
+
+/** City segment, including a mistyped `Helsinki` or `Järvenpää` instead of the slug. */
+export function cityGroupBySegment(
+  groups: CourtIndexGroup[],
+  segment: string,
+): CourtIndexGroup | null {
+  const exact = groups.find((group) => group.anchor === segment);
+  if (exact) return exact;
+  const slug = citySlug(segment);
+  return groups.find((group) => group.anchor === slug) ?? null;
+}
 
 /** Heading for a case-insensitive group. The spelling used most often wins. */
 function mostCommonLabel(labels: Map<string, number>): string | null {
@@ -141,7 +250,7 @@ function compareFi(a: string, b: string): number {
 }
 
 function cityAnchor(city: string | null, used: Set<string>): string {
-  const base = city ? slug(city) : "muu";
+  const base = city ? citySlug(city) : "muu";
   let anchor = base || "muu";
   let suffix = 2;
   while (used.has(anchor)) {
@@ -150,14 +259,4 @@ function cityAnchor(city: string | null, used: Set<string>): string {
   }
   used.add(anchor);
   return anchor;
-}
-
-function slug(value: string): string {
-  return value
-    .trim()
-    .toLocaleLowerCase("fi")
-    .normalize("NFD")
-    .replace(/\p{M}/gu, "")
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-|-$/g, "");
 }

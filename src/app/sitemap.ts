@@ -1,10 +1,10 @@
 import type { MetadataRoute } from "next";
-import { getCourtCatalog } from "@/lib/catalog";
 import { COURT_INDEX_PATH, MAP_PATH, SITE_URL } from "@/lib/constants";
-import { courtHref } from "@/lib/courts";
+import { publicCityCourts } from "@/lib/court-index";
+import { loadCourtIndex } from "@/lib/court-page";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const { courts, fetchedAtBySource } = await getCourtCatalog();
+  const { groups, fetchedAtBySource } = await loadCourtIndex();
   const catalogUpdated = latestTimestamp(Object.values(fetchedAtBySource));
 
   return [
@@ -26,13 +26,25 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "weekly",
       priority: 0.8,
     },
-    ...courts.flatMap((court) =>
-      (court.members ?? [court]).map((page) => ({
-        url: `${SITE_URL}${courtHref(page)}`,
+    ...groups.flatMap((group) =>
+      group.pageHref
+        ? [
+            {
+              url: `${SITE_URL}${group.pageHref}`,
+              lastModified: catalogUpdated,
+              changeFrequency: "weekly" as const,
+              priority: 0.8,
+            },
+          ]
+        : [],
+    ),
+    ...groups.flatMap((group) =>
+      publicCityCourts(group.courts).map((court) => ({
+        url: `${SITE_URL}${court.href}`,
         lastModified:
-          page.source === "submitted"
-            ? catalogUpdated
-            : (fetchedAtBySource[page.source] ?? catalogUpdated),
+          court.source === "lipas" || court.source === "osm"
+            ? (fetchedAtBySource[court.source] ?? catalogUpdated)
+            : catalogUpdated,
         changeFrequency: "weekly" as const,
         priority: 0.7,
       })),

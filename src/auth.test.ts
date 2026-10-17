@@ -6,7 +6,9 @@ afterEach(() => {
 });
 
 test("allows an in-app path and rejects login, api, and off-site redirects", () => {
-  expect(safeCallbackUrl("/courts/lipas/82547")).toBe("/courts/lipas/82547");
+  expect(safeCallbackUrl("/koripallokentat/helsinki/l82547")).toBe(
+    "/koripallokentat/helsinki/l82547",
+  );
   expect(safeCallbackUrl(undefined)).toBe("/admin");
   expect(safeCallbackUrl(["//evil.example", "/courts"])).toBe("/admin");
   expect(safeCallbackUrl("/login")).toBe("/admin");

@@ -1,4 +1,4 @@
-import { MAP_PATH } from "@/lib/constants";
+import { COURT_INDEX_PATH, MAP_PATH } from "@/lib/constants";
 import { type Copy, getCopy } from "@/lib/copy";
 import type { Coordinates } from "@/lib/geo";
 import { haversineKm } from "@/lib/geo";
@@ -538,28 +538,130 @@ export function submittedCourtKey(id: string): string {
   return id.startsWith("submitted-") ? id.slice("submitted-".length) : id;
 }
 
-/** `lipas/82547` or `osm/way/1095396325` — court page path after `/courts/`. */
+/**
+ * Visitor addresses are one line, "street, 00540 Helsinki" or "street, Helsinki".
+ * The city is only the grouping key. The street line keeps the postcode.
+ */
+export function cityFromAddress(
+  address: string | null,
+): { address: string | null; city: string } | null {
+  if (!address) return null;
+  const comma = address.lastIndexOf(",");
+  if (comma === -1) return null;
+  const street = address.slice(0, comma).trim();
+  const place = address.slice(comma + 1).trim();
+  const posted = /^(?:FI-)?(\d{5})\s+(.+)$/i.exec(place);
+  const city = (posted ? posted[2] : place).trim();
+  if (!city || (posted ? false : /\d/.test(place))) return null;
+  const line = posted ? [street, posted[1]].filter(Boolean).join(", ") : street;
+  return { address: line || null, city };
+}
+
+/** City used in the public URL. Submitted courts keep the city in the address line. */
+export function listingCity(court: {
+  city?: string | null;
+  address?: string | null;
+  source: string;
+}): string | null {
+  const direct = court.city?.trim();
+  if (direct) return direct;
+  if (court.source !== "submitted" && court.source !== "pending") return null;
+  return cityFromAddress(court.address ?? null)?.city ?? null;
+}
+
+/** ASCII city segment. Missing cities share `muu`. */
+export function citySlug(city: string | null | undefined): string {
+  const trimmed = city?.trim();
+  if (!trimmed) return "muu";
+  const slug = trimmed
+    .toLocaleLowerCase("fi")
+    .normalize("NFD")
+    .replace(/\p{M}/gu, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-|-$/g, "");
+  return slug || "muu";
+}
+
+/**
+ * Short public id. The letter keeps LIPAS, OSM, and visitor numbers apart.
+ * `l` LIPAS, `n` node, `w` way, `r` relation, `s` submitted.
+ */
+export function publicCourtId(court: Pick<ExplorerCourt, "id" | "source">): string | null {
+  switch (court.source) {
+    case "lipas":
+      return digitId(court.id) ? `l${court.id}` : null;
+    case "osm": {
+      const osm = parseOsmCourtId(court.id);
+      if (!osm) return null;
+      const prefix = osm.type === "node" ? "n" : osm.type === "way" ? "w" : "r";
+      return `${prefix}${osm.osmId}`;
+    }
+    case "pending":
+    case "submitted": {
+      const key = submittedCourtKey(court.id);
+      return digitId(key) ? `s${key}` : null;
+    }
+  }
+}
+
+/** Source id for a public court segment, or null when the segment is not one. */
+export function courtIdFromPublicId(publicId: string): string | null {
+  const match = /^([lnwrs])(\d+)$/.exec(publicId);
+  if (!match) return null;
+  const prefix = match[1];
+  const num = match[2];
+  switch (prefix) {
+    case "l":
+      return num;
+    case "n":
+      return `node-${num}`;
+    case "w":
+      return `way-${num}`;
+    case "r":
+      return `relation-${num}`;
+    case "s":
+      return `submitted-${num}`;
+    default:
+      return null;
+  }
+}
+
+function digitId(value: string): boolean {
+  return /^\d+$/.test(value);
+}
+
+/** `lipas/82547` or `osm/way/1095396325` — photo files stay under this path. */
 export function courtPath(court: Pick<ExplorerCourt, "id" | "source">): string {
   return courtSegments(court).join("/");
 }
 
-/** `lipas-82547` or `osm-way-1095396325` — hyphen form for `?court=` (no `%2F`). */
+/** `l82547` or `w1095396325`. Old `lipas-82547` values still resolve. */
 export function courtParam(court: Pick<ExplorerCourt, "id" | "source">): string {
-  return courtSegments(court).join("-");
+  return publicCourtId(court) ?? courtSegments(court).join("-");
 }
 
-export function courtHref(court: Pick<ExplorerCourt, "id" | "source">): string {
-  return `/courts/${courtPath(court)}`;
+/** Public court page. `citySegment` is the index anchor when a city slug needed a suffix. */
+export function courtHref(
+  court: Pick<ExplorerCourt, "id" | "source"> & {
+    city?: string | null;
+    address?: string | null;
+  },
+  citySegment?: string,
+): string {
+  const id = publicCourtId(court);
+  if (!id) return COURT_INDEX_PATH;
+  const segment = citySegment || citySlug(listingCity(court));
+  return `${COURT_INDEX_PATH}/${segment}/${id}`;
 }
 
 /** Court page opened from a map popup. An alias keeps the pad the visitor asked for. */
 export function focusedCourtHref(
-  court: Pick<ExplorerCourt, "id" | "source" | "aliases">,
+  court: Pick<ExplorerCourt, "id" | "source" | "aliases" | "city">,
   focusId: string | null,
 ): string {
   const id =
     focusId && (focusId === court.id || court.aliases?.includes(focusId)) ? focusId : court.id;
-  return courtHref({ id, source: court.source });
+  return courtHref({ id, source: court.source, city: court.city });
 }
 
 /** Map with that court’s popup open. Works for published and pending pins. */
@@ -582,11 +684,13 @@ export function courtOgHref(
 }
 
 export function courtIdFromParam(value: string): string | null {
+  const direct = courtIdFromPublicId(value);
+  if (direct) return direct;
   const parsed = parseCourtPath(value.split("-"));
   return parsed && parsed !== "index" ? parsed.id : null;
 }
 
-/** `"index"` → the court list; `{ id }` → court; `null` → 404. */
+/** Old `/courts/...` path. `"index"` → the court list; `{ id }` → court; `null` → 404. */
 export function parseCourtPath(segments: string[]): "index" | { id: string } | null {
   if (segments.length === 0) return "index";
   if (segments[0] === "submitted") {

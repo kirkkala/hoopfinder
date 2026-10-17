@@ -5,7 +5,7 @@ import { getCourtCatalog } from "@/lib/catalog";
 import { MAP_PATH } from "@/lib/constants";
 import { getCopy } from "@/lib/copy";
 import { isDatabaseUnavailable } from "@/lib/db";
-import { homeOgHref, OG_CONTENT_TYPE, OG_SIZE } from "@/lib/og";
+import { siteOpenGraph } from "@/lib/og";
 
 export async function generateMetadata(): Promise<Metadata> {
   const finnish = getCopy("fi");
@@ -13,17 +13,11 @@ export async function generateMetadata(): Promise<Metadata> {
     title: finnish.addCourt,
     description: finnish.addCourtLead,
     alternates: { canonical: "/add" },
-    openGraph: {
-      images: [
-        {
-          url: homeOgHref(),
-          width: OG_SIZE.width,
-          height: OG_SIZE.height,
-          alt: finnish.metaOgImageAlt,
-          type: OG_CONTENT_TYPE,
-        },
-      ],
-    },
+    openGraph: siteOpenGraph({
+      title: finnish.addCourt,
+      description: finnish.addCourtLead,
+      url: "/add",
+    }),
   };
 }
 

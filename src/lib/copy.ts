@@ -21,6 +21,10 @@ const messages = {
     fi: "Löydä kenttä, käy heittelemässä.",
     en: "Find a hoop, go out and play.",
   },
+  metaDefaultTitle: {
+    fi: "Kaikki Suomen koripallokentät",
+    en: "All basketball courts in Finland",
+  },
   metaDescription: {
     fi: "Löydä ulkokoripallokentät Suomesta. Etsi kaupungilla, alueella tai sijainnilla ja ota pallo mukaan.",
     en: "Find outdoor basketball courts in Finland. Search by city, neighborhood or your location — then go hoop.",
@@ -45,7 +49,7 @@ const messages = {
     fi: "Koripallokenttä",
     en: "Basketball court",
   },
-  backToMap: { fi: "Katso kenttä kartalla", en: "See hoop on the map" },
+  backToMap: { fi: "Näytä kenttä kartalla", en: "Show hoop on the map" },
   dataFrom: { fi: "Kenttädata päivitetty:", en: "Court data updated:" },
   dataFromSource: { fi: "Rajapintatieto", en: "API information" },
   dataFetchedAt: { fi: "Tiedot haettu", en: "Data fetched" },
@@ -129,17 +133,17 @@ const messages = {
   giveFeedback: { fi: "Anna palautetta", en: "Give feedback" },
   allCourts: { fi: "Kaikki kentät", en: "All courts" },
   allCourtsHeading: { fi: "Kentät kaupungeittain", en: "Courts by city" },
-  courtsAsList: { fi: "Kentät listana", en: "Courts as a list" },
+  courtsAsList: { fi: "Kentät kaupungeittain", en: "Courts by city" },
   courtsOnMap: { fi: "Kentät kartalla", en: "Courts on the map" },
-  allCourtsLead: {
-    fi: "Valitse kaupunki ja selaa sen kenttiä. Avaa kenttä nähdäksesi tiedot ja kartan.",
-    en: "Choose a city and browse its courts. Open a court to see the details and the map.",
+  allCourtsIntro: {
+    fi: (courts: number, places: number, lit: number, closed: number) =>
+      listIntro("fi", courts, places, lit, closed),
+    en: (courts: number, places: number, lit: number, closed: number) =>
+      listIntro("en", courts, places, lit, closed),
   },
-  listedCourtCount: {
-    fi: (count: number) =>
-      `Palvelussa on listattuna ${count} Suomen ulkokoripallo${count === 1 ? "kenttä" : "kenttää"}.`,
-    en: (count: number) =>
-      `The service lists ${count} outdoor basketball ${count === 1 ? "court" : "courts"} in Finland.`,
+  allCourtsLead: {
+    fi: "Etsi tai valitse kaupunki ja tutustu sen kenttiin.",
+    en: "Search or choose a city and browse its courts.",
   },
   allCourtsCities: { fi: "Kaupungit", en: "Cities" },
   citySearchPlaceholder: { fi: "Etsi kaupunkia", en: "Search a city" },
@@ -150,6 +154,26 @@ const messages = {
     fi: (count: number) => `${count} ${count === 1 ? "kenttä" : "kenttää"}`,
     en: (count: number) => `${count} ${count === 1 ? "court" : "courts"}`,
   },
+  cityCourtsHeading: {
+    fi: (city: string) => `Koripallokentät ${city}`,
+    en: (city: string) => `Basketball courts in ${city}`,
+  },
+  cityCourtsIntro: {
+    fi: (count: number, lit: number, closed: number) => cityIntro("fi", count, lit, closed),
+    en: (count: number, lit: number, closed: number) => cityIntro("en", count, lit, closed),
+  },
+  /** Short line under the city name on the share image. */
+  cityOgCaption: {
+    fi: (count: number) =>
+      `${count} ${count === 1 ? "ulkokoripallokenttä" : "ulkokoripallokenttää"}`,
+    en: (count: number) => `${count} outdoor basketball ${count === 1 ? "court" : "courts"}`,
+  },
+  /** Area names for the page source. The city view hides this from sight and screen readers. */
+  cityAreasLine: {
+    fi: (areas: string[]) => areaSentence("fi", areas),
+    en: (areas: string[]) => areaSentence("en", areas),
+  },
+  breadcrumb: { fi: "Murupolku", en: "Breadcrumb" },
   feedbackTitle: { fi: "Anna palautetta", en: "Give feedback" },
   feedbackLead: {
     fi: "Toiveet, bugiraportit ja muu palaute auttaa parantamaan Hoop Finderiä. Kerro vapaasti, mikä toimii ja mikä ei.",
@@ -722,6 +746,76 @@ const messages = {
   toHomepage: { fi: "Etusivulle", en: "To the homepage" },
   courtNotFound: { fi: "Kenttää ei löydy", en: "Court not found" },
 };
+
+function listIntro(
+  locale: "fi" | "en",
+  courts: number,
+  places: number,
+  lit: number,
+  closed: number,
+): string {
+  const facts = countedFacts(locale, lit, closed);
+  if (locale === "fi") {
+    const court = courts === 1 ? "ulkokoripallokenttä" : "ulkokoripallokenttää";
+    const place = places === 1 ? "yhdellä paikkakunnalla" : `${places} paikkakunnalla`;
+    return joinSentences(`Palvelussa on ${courts} ${court} ${place}.`, facts);
+  }
+  const court = courts === 1 ? "outdoor basketball court" : "outdoor basketball courts";
+  const place = places === 1 ? "1 place" : `${places} places`;
+  return joinSentences(`The service lists ${courts} ${court} in ${place} in Finland.`, facts);
+}
+
+function cityIntro(locale: "fi" | "en", count: number, lit: number, closed: number): string {
+  const facts = countedFacts(locale, lit, closed);
+  if (locale === "fi") {
+    const court = count === 1 ? "ulkokoripallokenttä" : "ulkokoripallokenttää";
+    return joinSentences(
+      `Yhteensä ${count} ${court}.`,
+      facts,
+      "Avaa kenttä listalta nähdäksesi lisää tietoja sekä sijainnin kartalla.",
+    );
+  }
+  const court = count === 1 ? "outdoor basketball court" : "outdoor basketball courts";
+  return joinSentences(
+    `The list has ${count} ${court}.`,
+    facts,
+    "Open a court to see the details and the map.",
+  );
+}
+
+/** Lighting and closures we actually know. Unknown lighting is left out. */
+function countedFacts(locale: "fi" | "en", lit: number, closed: number): string {
+  if (locale === "fi") {
+    const parts: string[] = [];
+    if (lit > 0) parts.push(`${lit} on merkitty valaistuksi`);
+    if (closed > 0) parts.push(`${closed} on tilapäisesti kiinni`);
+    return parts.length > 0 ? `Niistä ${parts.join(" ja ")}.` : "";
+  }
+  const parts: string[] = [];
+  if (lit > 0) parts.push(`${lit} ${lit === 1 ? "is" : "are"} marked as lit`);
+  if (closed > 0) parts.push(`${closed} ${closed === 1 ? "is" : "are"} temporarily closed`);
+  return parts.length > 0 ? `Of those, ${parts.join(" and ")}.` : "";
+}
+
+function areaSentence(locale: "fi" | "en", areas: string[]): string {
+  if (areas.length === 0) return "";
+  const names = joinNames(areas, locale);
+  if (locale === "fi") return areas.length === 1 ? `Alue: ${names}.` : `Alueita: ${names}.`;
+  return areas.length === 1 ? `Area: ${names}.` : `Areas: ${names}.`;
+}
+
+function joinNames(names: string[], locale: "fi" | "en"): string {
+  if (names.length < 2) return names[0] ?? "";
+  const last = names.at(-1);
+  const rest = names.slice(0, -1);
+  if (locale === "fi") return `${rest.join(", ")} ja ${last}`;
+  if (names.length === 2) return `${names[0]} and ${names[1]}`;
+  return `${rest.join(", ")}, and ${last}`;
+}
+
+function joinSentences(...parts: string[]): string {
+  return parts.filter(Boolean).join(" ");
+}
 
 type Resolve<T> =
   T extends Pair<infer U> ? U : T extends object ? { [K in keyof T]: Resolve<T[K]> } : T;

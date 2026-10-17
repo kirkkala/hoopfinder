@@ -39,9 +39,35 @@ test("interpolated copy includes the value it is given", () => {
     expect(copy.photoTooLarge).toContain(megabytes);
     expect(copy.padCount(4)).toContain("4");
     expect(copy.addCourtMissing("nimi")).toContain("nimi");
-    expect(copy.listedCourtCount(12)).toContain("12");
+    expect(copy.allCourtsIntro(12, 4, 3, 1)).toContain("12");
+    expect(copy.cityCourtsIntro(2, 1, 0)).toContain("2");
+    expect(copy.cityAreasLine(["Malmi"])).toContain("Malmi");
     expect(copy.cityCourtCount(265)).toContain("265");
+    expect(copy.cityOgCaption(2)).toContain("2");
   }
+});
+
+test("court list text uses the counts and leaves out unknown lighting", () => {
+  expect(getCopy("fi").allCourtsIntro(1, 1, 0, 0)).toBe(
+    "Palvelussa on 1 ulkokoripallokenttä yhdellä paikkakunnalla.",
+  );
+  expect(getCopy("fi").allCourtsIntro(3, 2, 1, 2)).toBe(
+    "Palvelussa on 3 ulkokoripallokenttää 2 paikkakunnalla. Niistä 1 on merkitty valaistuksi ja 2 on tilapäisesti kiinni.",
+  );
+  expect(getCopy("en").cityCourtsIntro(2, 1, 1)).toBe(
+    "The list has 2 outdoor basketball courts. Of those, 1 is marked as lit and 1 is temporarily closed. Open a court to see the details and the map.",
+  );
+  expect(getCopy("fi").cityAreasLine(["Matinkylä", "Tapiola"])).toBe(
+    "Alueita: Matinkylä ja Tapiola.",
+  );
+});
+
+test("the default share title names every court, not only the map", () => {
+  expect(getCopy("fi").metaDefaultTitle).toBe("Kaikki Suomen koripallokentät");
+  expect(getCopy("en").metaDefaultTitle).toBe("All basketball courts in Finland");
+  expect(getCopy("fi").cityOgCaption(1)).toBe("1 ulkokoripallokenttä");
+  expect(getCopy("fi").cityOgCaption(265)).toBe("265 ulkokoripallokenttää");
+  expect(getCopy("en").cityOgCaption(1)).toBe("1 outdoor basketball court");
 });
 
 test("city headings count courts in the active language", () => {

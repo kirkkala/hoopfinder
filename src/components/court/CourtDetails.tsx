@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  ArrowLeft,
   Bath,
   Building2,
   Calendar,
@@ -41,6 +40,7 @@ import { CourtDistance } from "@/components/CourtDistance";
 import { CourtGallery } from "@/components/court/CourtGallery";
 import { LocateMeButton, locationHint } from "@/components/LocateMeButton";
 import type { FetchedAtBySource } from "@/lib/catalog";
+import { COURT_INDEX_PATH } from "@/lib/constants";
 import type { Copy } from "@/lib/copy";
 import type { CourtPhoto } from "@/lib/court-photos";
 import {
@@ -84,6 +84,9 @@ export function CourtDetails({
   photos,
   otherCourts = [],
   visitorEmail = null,
+  cityName = null,
+  cityUnknown = false,
+  cityPageHref = null,
 }: {
   court: Court;
   fetchedAtBySource: FetchedAtBySource;
@@ -92,6 +95,11 @@ export function CourtDetails({
   /** Other hoops at this place. Each one has its own page. */
   otherCourts?: Court[];
   visitorEmail?: string | null;
+  /** Place name. Null with `cityUnknown` shows the "other" label. */
+  cityName?: string | null;
+  cityUnknown?: boolean;
+  /** City page. Absent when the city has fewer than two public courts. */
+  cityPageHref?: string | null;
 }) {
   const copy = useCopy();
   const isAdmin = useIsAdmin();
@@ -123,11 +131,17 @@ export function CourtDetails({
     <div className="flex min-h-dvh flex-col bg-asphalt">
       <AppHeader fetchedAtBySource={fetchedAtBySource} />
 
-      <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-6 px-4 py-8 split:grid split:grid-cols-[1.1fr_0.9fr]">
+      <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-6 px-4 py-8 split:grid split:content-start split:grid-cols-[1.1fr_0.9fr]">
         {/* contents drops these wrappers on a narrow screen so the gallery can sit between the intro and the facts. */}
         <section className="contents split:block split:space-y-5">
           <div className="order-1 space-y-5">
-            <BackToMap court={court} />
+            <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2">
+              <CourtCrumb
+                cityName={cityName}
+                cityUnknown={cityUnknown}
+                cityPageHref={cityPageHref}
+              />
+            </div>
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">
                 {copy.courtKind}
@@ -415,13 +429,7 @@ export function CourtDetails({
                 {copy.courtLocation}
               </h2>
               <CourtMiniMap court={court} />
-              <AppLink
-                href={mapCourtHref(court)}
-                className="mt-2 inline-flex items-center gap-1.5 text-sm font-bold text-gold hover:text-white"
-              >
-                <MapIcon className="size-4 shrink-0" aria-hidden />
-                {copy.backToMap}
-              </AppLink>
+              <CourtOnMapLink court={court} className="mt-2" />
             </section>
             <dl className="grid gap-3 border-t border-white/10 p-5">
               {court.website ? (
@@ -559,17 +567,65 @@ function CourtDistanceBlock({ court }: { court: Court }) {
   );
 }
 
-function BackToMap({ court, className }: { court: Court; className?: string }) {
+function CourtOnMapLink({ court, className }: { court: Court; className?: string }) {
   const copy = useCopy();
   return (
     <AppLink
       href={mapCourtHref(court)}
-      className={`inline-flex shrink-0 items-center gap-1 text-md font-medium text-gold hover:text-white ${className ?? ""}`}
+      className={[
+        "inline-flex items-center gap-1.5 text-sm font-bold text-gold hover:text-white",
+        className,
+      ]
+        .filter(Boolean)
+        .join(" ")}
     >
-      <MapIcon aria-hidden />
-      <ArrowLeft className="size-6" aria-hidden />
+      <MapIcon className="size-4 shrink-0" aria-hidden />
       {copy.backToMap}
     </AppLink>
+  );
+}
+
+function CourtCrumb({
+  cityName,
+  cityUnknown,
+  cityPageHref,
+}: {
+  cityName: string | null;
+  cityUnknown: boolean;
+  cityPageHref: string | null;
+}) {
+  const copy = useCopy();
+  const city = cityName ?? (cityUnknown ? copy.cityUnknown : null);
+  return (
+    <nav aria-label={copy.breadcrumb}>
+      <ol className="flex flex-wrap items-center gap-x-2 gap-y-1 text-sm text-ink-muted">
+        <li>
+          <AppLink
+            href={COURT_INDEX_PATH}
+            trailingPending={false}
+            className="font-medium text-gold hover:text-white"
+          >
+            {copy.allCourts}
+          </AppLink>
+        </li>
+        {city ? (
+          <li className="flex items-center gap-2">
+            <span aria-hidden="true">/</span>
+            {cityPageHref ? (
+              <AppLink
+                href={cityPageHref}
+                trailingPending={false}
+                className="font-medium text-gold hover:text-white"
+              >
+                {city}
+              </AppLink>
+            ) : (
+              <span>{city}</span>
+            )}
+          </li>
+        ) : null}
+      </ol>
+    </nav>
   );
 }
 
