@@ -316,7 +316,10 @@ const messages = {
   mapZoomIn: { fi: "Lähennä", en: "Zoom in" },
   mapZoomOut: { fi: "Loitonna", en: "Zoom out" },
   otherCourts: { fi: "Muut kentät tässä osoitteessa", en: "Other courts at this address" },
-  noPhotos: { fi: "Ei kuvia.", en: "No photos." },
+  noPhotos: {
+    fi: "Ei kuvia vielä. Ota kuva kun käyt kentällä, tai lisää kuva jos sinulla on jo sellainen.",
+    en: "No photos yet. Take one when you play here, or upload a photo if you already have one.",
+  },
   databaseUnavailable: {
     fi: "Tietokantaan ei saada yhteyttä.",
     en: "Can't reach the database.",

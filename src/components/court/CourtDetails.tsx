@@ -69,6 +69,10 @@ function MiniMapPlaceholder() {
   return <div className="mt-2 h-80 rounded-xl bg-white/5" aria-hidden />;
 }
 
+// A card while the page is one column. At the split breakpoint the aside is the card.
+const stackedPanel =
+  "overflow-hidden rounded-3xl border border-white/10 bg-panel split:overflow-visible split:rounded-none split:border-0 split:bg-transparent";
+
 const CourtMiniMap = dynamic(
   () => import("@/components/court/CourtMiniMap").then((mod) => mod.CourtMiniMap),
   { ssr: false, loading: MiniMapPlaceholder },
@@ -121,379 +125,390 @@ export function CourtDetails({
       <AppHeader fetchedAtBySource={fetchedAtBySource} />
       <FirstVisitNote />
 
-      <main className="mx-auto grid w-full max-w-5xl flex-1 gap-6 px-4 py-8 split:grid-cols-[1.1fr_0.9fr]">
-        <section className="space-y-5">
-          <BackToMap court={court} />
-          <div>
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">
-              {copy.courtKind}
-            </p>
-            <h1 className="mt-1 font-display text-4xl tracking-wide text-white md:text-5xl">
-              {courtTitle(court, copy)}
-            </h1>
-            {pending ? (
-              <p className="mt-2 text-sm font-medium text-gold">
-                {sourceFetchedAt ? (
-                  <time dateTime={sourceFetchedAt}>
-                    {copy.pendingAddedOn(formatFetchedAt(sourceFetchedAt, true))}
-                  </time>
-                ) : (
-                  copy.pendingComingSoon
-                )}
+      <main className="mx-auto flex w-full max-w-5xl flex-1 flex-col gap-6 px-4 py-8 split:grid split:grid-cols-[1.1fr_0.9fr]">
+        {/* contents drops these wrappers on a narrow screen so the gallery can sit between the intro and the facts. */}
+        <section className="contents split:block split:space-y-5">
+          <div className="order-1 space-y-5">
+            <BackToMap court={court} />
+            <div>
+              <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">
+                {copy.courtKind}
               </p>
-            ) : null}
-            <CourtDistanceBlock court={court} />
-          </div>
-
-          {thanks ? (
-            <div className="rounded-3xl border border-gold/40 bg-gold/10 p-5">
-              <p className="font-bold text-white">{copy.confirmThanksTitle}</p>
-              <p className="mt-1 text-sm text-ink-muted">{copy.confirmThanksBody}</p>
+              <h1 className="mt-1 font-display text-4xl tracking-wide text-white md:text-5xl">
+                {courtTitle(court, copy)}
+              </h1>
+              {pending ? (
+                <p className="mt-2 text-sm font-medium text-gold">
+                  {sourceFetchedAt ? (
+                    <time dateTime={sourceFetchedAt}>
+                      {copy.pendingAddedOn(formatFetchedAt(sourceFetchedAt, true))}
+                    </time>
+                  ) : (
+                    copy.pendingComingSoon
+                  )}
+                </p>
+              ) : null}
+              <CourtDistanceBlock court={court} />
             </div>
-          ) : null}
 
-          <dl
-            className={`relative grid gap-3 rounded-3xl border border-white/10 bg-panel p-5 ${
-              showAdminStatus ? "pr-40" : ""
-            }`}
-          >
-            {showAdminStatus ? (
-              <div className="absolute top-3 right-3 flex items-start gap-1">
-                <AdminStatusButton compact id={court.id} name={court.name} published={!pending} />
-                {canEdit ? (
-                  <button
-                    type="button"
-                    aria-pressed={editing}
-                    onClick={() => setEditing((open) => !open)}
-                    aria-label={copy.adminEdit}
-                    title={copy.adminEdit}
-                    className={`inline-flex size-8 items-center justify-center rounded-full ${
-                      editing ? "bg-gold text-asphalt" : "bg-white/15 text-white hover:bg-white/25"
-                    }`}
-                  >
-                    <Pencil className="size-4" aria-hidden />
-                  </button>
-                ) : null}
+            {thanks ? (
+              <div className="rounded-3xl border border-gold/40 bg-gold/10 p-5">
+                <p className="font-bold text-white">{copy.confirmThanksTitle}</p>
+                <p className="mt-1 text-sm text-ink-muted">{copy.confirmThanksBody}</p>
               </div>
             ) : null}
-            <Fact
-              icon={court.status === "active" ? CircleCheck : CirclePause}
-              label={copy.status}
-              value={
-                pending ? (
-                  <>
-                    {awaitingEmail ? copy.adminStatusUnconfirmed : copy.statusUnderReview}
-                    {awaitingEmail ? (
-                      <span className="mt-2 block rounded-2xl border border-gold/50 bg-gold/15 px-3 py-2 text-sm font-medium text-white">
-                        {copy.adminUnconfirmedNotice}
-                      </span>
-                    ) : (
-                      <span className="mt-1 block text-sm text-ink-muted">
-                        {copy.pendingPublishAfterReview}
-                      </span>
-                    )}
-                  </>
-                ) : (
-                  formatStatus(court.status, copy)
-                )
-              }
-            />
-            {!hideUnpublishedFacts && (
-              <>
-                <Fact
-                  icon={MapPin}
-                  label={copy.address}
-                  value={
+
+            <dl
+              className={`relative grid gap-3 rounded-3xl border border-white/10 bg-panel p-5 ${
+                showAdminStatus ? "pr-40" : ""
+              }`}
+            >
+              {showAdminStatus ? (
+                <div className="absolute top-3 right-3 flex items-start gap-1">
+                  <AdminStatusButton compact id={court.id} name={court.name} published={!pending} />
+                  {canEdit ? (
+                    <button
+                      type="button"
+                      aria-pressed={editing}
+                      onClick={() => setEditing((open) => !open)}
+                      aria-label={copy.adminEdit}
+                      title={copy.adminEdit}
+                      className={`inline-flex size-8 items-center justify-center rounded-full ${
+                        editing
+                          ? "bg-gold text-asphalt"
+                          : "bg-white/15 text-white hover:bg-white/25"
+                      }`}
+                    >
+                      <Pencil className="size-4" aria-hidden />
+                    </button>
+                  ) : null}
+                </div>
+              ) : null}
+              <Fact
+                icon={court.status === "active" ? CircleCheck : CirclePause}
+                label={copy.status}
+                value={
+                  pending ? (
                     <>
-                      <span className="block">{address || copy.notReported}</span>
-                      {googleMapsDirectionsLink(court.lat, court.lon, copy)}
+                      {awaitingEmail ? copy.adminStatusUnconfirmed : copy.statusUnderReview}
+                      {awaitingEmail ? (
+                        <span className="mt-2 block rounded-2xl border border-gold/50 bg-gold/15 px-3 py-2 text-sm font-medium text-white">
+                          {copy.adminUnconfirmedNotice}
+                        </span>
+                      ) : (
+                        <span className="mt-1 block text-sm text-ink-muted">
+                          {copy.pendingPublishAfterReview}
+                        </span>
+                      )}
                     </>
-                  }
-                />
-                {otherCourts.length > 0 ? (
+                  ) : (
+                    formatStatus(court.status, copy)
+                  )
+                }
+              />
+              {!hideUnpublishedFacts && (
+                <>
                   <Fact
-                    icon={LayoutGrid}
-                    label={copy.otherCourts}
+                    icon={MapPin}
+                    label={copy.address}
                     value={
-                      <ul className="space-y-1">
-                        {otherCourts.map((pad) => (
-                          <li key={pad.id}>
-                            <AppLink
-                              href={courtHref(pad)}
-                              className="font-medium text-gold hover:text-white"
-                            >
-                              {courtPadLabel(pad, copy)}
-                            </AppLink>
-                          </li>
-                        ))}
-                      </ul>
+                      <>
+                        <span className="block">{address || copy.notReported}</span>
+                        {googleMapsDirectionsLink(court.lat, court.lon, copy)}
+                      </>
                     }
                   />
-                ) : null}
-              </>
-            )}
-          </dl>
-
-          {hideUnpublishedFacts ? (
-            <div className="relative overflow-hidden" aria-hidden>
-              <div className="space-y-5">
-                <div className="rounded-3xl border border-white/10 bg-panel p-5">
-                  <div className="space-y-3 blur-md">
-                    <div className="h-3 w-24 rounded bg-gold/40" />
-                    <div className="h-3 w-40 rounded bg-white/20" />
-                    <div className="h-3 w-32 rounded bg-white/20" />
-                  </div>
-                </div>
-                <div className="rounded-3xl border border-white/10 bg-panel p-5">
-                  <div className="space-y-3 blur-md">
-                    <div className="h-5 w-36 rounded bg-white/20" />
-                    <div className="h-3 w-28 rounded bg-gold/40" />
-                    <div className="h-3 w-24 rounded bg-white/20" />
-                  </div>
-                </div>
-              </div>
-              <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent to-asphalt" />
-            </div>
-          ) : (
-            <>
-              <section className="rounded-3xl border border-white/10 bg-panel p-5">
-                <h2 className="font-display text-2xl tracking-wide text-white">
-                  {copy.courtFacts}
-                </h2>
-                <dl className="mt-4 grid grid-cols-[max-content_minmax(0,1fr)] gap-x-6 gap-y-3 max-sm:[&>div]:col-span-2 max-sm:[&>div]:grid max-sm:[&>div]:grid-cols-subgrid max-sm:[&>div]:items-start max-sm:[&>div]:border-b max-sm:[&>div]:border-white/10 max-sm:[&>div]:pb-2 max-sm:[&_dt]:mt-0 max-sm:[&_dt]:translate-y-[3px] max-sm:[&_dd]:mt-0 sm:grid-cols-2 sm:gap-3">
-                  {amenities.hoopHeight ? (
-                    <Fact
-                      icon={Ruler}
-                      label={copy.hoopHeight}
-                      value={copy.hoopHeights[amenities.hoopHeight]}
-                    />
-                  ) : null}
-                  {amenities.heightAdjustable !== null ? (
-                    <Fact
-                      icon={MoveVertical}
-                      label={copy.adjustableRim}
-                      value={formatReportedBoolean(amenities.heightAdjustable, copy)}
-                    />
-                  ) : null}
-                  <Fact
-                    icon={Unlock}
-                    label={copy.freeUse}
-                    value={formatReportedBoolean(amenities.freeUse, copy)}
-                  />
-                  {amenities.schoolUse !== null ? (
-                    <Fact
-                      icon={School}
-                      label={copy.schoolUse}
-                      value={formatReportedBoolean(amenities.schoolUse, copy)}
-                    />
-                  ) : null}
-                  {amenities.fieldType ? (
+                  {otherCourts.length > 0 ? (
                     <Fact
                       icon={LayoutGrid}
-                      label={copy.fieldType}
-                      value={formatFieldType(amenities.fieldType, copy)}
-                    />
-                  ) : null}
-                  {amenities.surfaceMaterial.length ? (
-                    <Fact
-                      icon={Layers}
-                      label={copy.surface}
-                      value={amenities.surfaceMaterial
-                        .map((code) => formatSurface(code, copy))
-                        .join(", ")}
-                    />
-                  ) : null}
-                  {amenities.surfaceMaterialInfo ? (
-                    <Fact
-                      icon={StickyNote}
-                      label={copy.surfaceNotes}
-                      value={amenities.surfaceMaterialInfo}
-                    />
-                  ) : null}
-                  {dimensions ? (
-                    <Fact icon={Ruler} label={copy.dimensions} value={dimensions} />
-                  ) : null}
-                  {amenities.areaM2 ? (
-                    <Fact icon={Square} label={copy.area} value={`${amenities.areaM2} m²`} />
-                  ) : null}
-                  {amenities.toilet !== null ? (
-                    <Fact
-                      icon={Bath}
-                      label={copy.toilet}
-                      value={formatReportedBoolean(amenities.toilet, copy)}
-                    />
-                  ) : null}
-                  <Fact
-                    icon={Lightbulb}
-                    label={copy.lights}
-                    value={formatReportedBoolean(amenities.lighting, copy)}
-                  />
-                  {amenities.lightingInfo ? (
-                    <Fact
-                      icon={Lightbulb}
-                      label={copy.lightingNotes}
-                      value={amenities.lightingInfo}
-                    />
-                  ) : null}
-                  {amenities.waterPoint ? (
-                    <Fact
-                      icon={Droplets}
-                      label={copy.waterPoint}
-                      value={formatWaterPoint(amenities.waterPoint, copy)}
-                    />
-                  ) : null}
-                  {amenities.matchClock !== null ? (
-                    <Fact
-                      icon={Timer}
-                      label={copy.matchClock}
-                      value={formatReportedBoolean(amenities.matchClock, copy)}
-                    />
-                  ) : null}
-                  {amenities.scoreboard !== null ? (
-                    <Fact
-                      icon={ClipboardList}
-                      label={copy.scoreboard}
-                      value={formatReportedBoolean(amenities.scoreboard, copy)}
-                    />
-                  ) : null}
-                  {court.constructionYear ? (
-                    <Fact
-                      icon={Calendar}
-                      label={copy.built}
+                      label={copy.otherCourts}
                       value={
-                        court.constructionYear ? String(court.constructionYear) : copy.notReported
+                        <ul className="space-y-1">
+                          {otherCourts.map((pad) => (
+                            <li key={pad.id}>
+                              <AppLink
+                                href={courtHref(pad)}
+                                className="font-medium text-gold hover:text-white"
+                              >
+                                {courtPadLabel(pad, copy)}
+                              </AppLink>
+                            </li>
+                          ))}
+                        </ul>
                       }
                     />
                   ) : null}
-                </dl>
-              </section>
+                </>
+              )}
+            </dl>
+          </div>
 
-              {court.comment ? (
+          <div className="order-3 space-y-5">
+            {hideUnpublishedFacts ? (
+              <div className="relative overflow-hidden" aria-hidden>
+                <div className="space-y-5">
+                  <div className="rounded-3xl border border-white/10 bg-panel p-5">
+                    <div className="space-y-3 blur-md">
+                      <div className="h-3 w-24 rounded bg-gold/40" />
+                      <div className="h-3 w-40 rounded bg-white/20" />
+                      <div className="h-3 w-32 rounded bg-white/20" />
+                    </div>
+                  </div>
+                  <div className="rounded-3xl border border-white/10 bg-panel p-5">
+                    <div className="space-y-3 blur-md">
+                      <div className="h-5 w-36 rounded bg-white/20" />
+                      <div className="h-3 w-28 rounded bg-gold/40" />
+                      <div className="h-3 w-24 rounded bg-white/20" />
+                    </div>
+                  </div>
+                </div>
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-transparent to-asphalt" />
+              </div>
+            ) : (
+              <>
                 <section className="rounded-3xl border border-white/10 bg-panel p-5">
-                  <h2 className="flex items-center gap-2 font-display text-2xl tracking-wide text-white">
-                    <StickyNote className="size-5 text-gold" aria-hidden />
-                    {source?.label ? copy.notesFrom(source.label) : copy.notesFromListing}
+                  <h2 className="font-display text-2xl tracking-wide text-white">
+                    {copy.courtFacts}
                   </h2>
-                  <p className="mt-2 whitespace-pre-wrap text-md leading-6 text-ink-muted">
-                    {court.comment}
-                  </p>
+                  <dl className="mt-4 grid grid-cols-[max-content_minmax(0,1fr)] gap-x-6 gap-y-3 max-sm:[&>div]:col-span-2 max-sm:[&>div]:grid max-sm:[&>div]:grid-cols-subgrid max-sm:[&>div]:items-start max-sm:[&>div]:border-b max-sm:[&>div]:border-white/10 max-sm:[&>div]:pb-2 max-sm:[&_dt]:mt-0 max-sm:[&_dt]:translate-y-[3px] max-sm:[&_dd]:mt-0 sm:grid-cols-2 sm:gap-3">
+                    {amenities.hoopHeight ? (
+                      <Fact
+                        icon={Ruler}
+                        label={copy.hoopHeight}
+                        value={copy.hoopHeights[amenities.hoopHeight]}
+                      />
+                    ) : null}
+                    {amenities.heightAdjustable !== null ? (
+                      <Fact
+                        icon={MoveVertical}
+                        label={copy.adjustableRim}
+                        value={formatReportedBoolean(amenities.heightAdjustable, copy)}
+                      />
+                    ) : null}
+                    <Fact
+                      icon={Unlock}
+                      label={copy.freeUse}
+                      value={formatReportedBoolean(amenities.freeUse, copy)}
+                    />
+                    {amenities.schoolUse !== null ? (
+                      <Fact
+                        icon={School}
+                        label={copy.schoolUse}
+                        value={formatReportedBoolean(amenities.schoolUse, copy)}
+                      />
+                    ) : null}
+                    {amenities.fieldType ? (
+                      <Fact
+                        icon={LayoutGrid}
+                        label={copy.fieldType}
+                        value={formatFieldType(amenities.fieldType, copy)}
+                      />
+                    ) : null}
+                    {amenities.surfaceMaterial.length ? (
+                      <Fact
+                        icon={Layers}
+                        label={copy.surface}
+                        value={amenities.surfaceMaterial
+                          .map((code) => formatSurface(code, copy))
+                          .join(", ")}
+                      />
+                    ) : null}
+                    {amenities.surfaceMaterialInfo ? (
+                      <Fact
+                        icon={StickyNote}
+                        label={copy.surfaceNotes}
+                        value={amenities.surfaceMaterialInfo}
+                      />
+                    ) : null}
+                    {dimensions ? (
+                      <Fact icon={Ruler} label={copy.dimensions} value={dimensions} />
+                    ) : null}
+                    {amenities.areaM2 ? (
+                      <Fact icon={Square} label={copy.area} value={`${amenities.areaM2} m²`} />
+                    ) : null}
+                    {amenities.toilet !== null ? (
+                      <Fact
+                        icon={Bath}
+                        label={copy.toilet}
+                        value={formatReportedBoolean(amenities.toilet, copy)}
+                      />
+                    ) : null}
+                    <Fact
+                      icon={Lightbulb}
+                      label={copy.lights}
+                      value={formatReportedBoolean(amenities.lighting, copy)}
+                    />
+                    {amenities.lightingInfo ? (
+                      <Fact
+                        icon={Lightbulb}
+                        label={copy.lightingNotes}
+                        value={amenities.lightingInfo}
+                      />
+                    ) : null}
+                    {amenities.waterPoint ? (
+                      <Fact
+                        icon={Droplets}
+                        label={copy.waterPoint}
+                        value={formatWaterPoint(amenities.waterPoint, copy)}
+                      />
+                    ) : null}
+                    {amenities.matchClock !== null ? (
+                      <Fact
+                        icon={Timer}
+                        label={copy.matchClock}
+                        value={formatReportedBoolean(amenities.matchClock, copy)}
+                      />
+                    ) : null}
+                    {amenities.scoreboard !== null ? (
+                      <Fact
+                        icon={ClipboardList}
+                        label={copy.scoreboard}
+                        value={formatReportedBoolean(amenities.scoreboard, copy)}
+                      />
+                    ) : null}
+                    {court.constructionYear ? (
+                      <Fact
+                        icon={Calendar}
+                        label={copy.built}
+                        value={
+                          court.constructionYear ? String(court.constructionYear) : copy.notReported
+                        }
+                      />
+                    ) : null}
+                  </dl>
                 </section>
-              ) : null}
-            </>
-          )}
-          {editing && visitorEmail ? (
-            <AdminCourtEditor
-              court={court}
-              email={visitorEmail}
-              onClose={() => setEditing(false)}
-            />
-          ) : null}
+
+                {court.comment ? (
+                  <section className="rounded-3xl border border-white/10 bg-panel p-5">
+                    <h2 className="flex items-center gap-2 font-display text-2xl tracking-wide text-white">
+                      <StickyNote className="size-5 text-gold" aria-hidden />
+                      {source?.label ? copy.notesFrom(source.label) : copy.notesFromListing}
+                    </h2>
+                    <p className="mt-2 whitespace-pre-wrap text-md leading-6 text-ink-muted">
+                      {court.comment}
+                    </p>
+                  </section>
+                ) : null}
+              </>
+            )}
+            {editing && visitorEmail ? (
+              <AdminCourtEditor
+                court={court}
+                email={visitorEmail}
+                onClose={() => setEditing(false)}
+              />
+            ) : null}
+          </div>
         </section>
 
-        <aside className="overflow-hidden rounded-3xl border border-white/10 bg-panel">
-          <CourtGallery
-            key={court.id}
-            courtId={court.id}
-            courtName={courtTitle(court, copy)}
-            photos={photos}
-          />
-          <section className="px-3 py-4">
-            <h2 className="flex items-center gap-1.5 text-sm font-bold uppercase tracking-wide text-gold/80">
-              <MapIcon className="size-4 shrink-0" aria-hidden />
-              {copy.courtLocation}
-            </h2>
-            <CourtMiniMap court={court} />
-            <AppLink
-              href={mapCourtHref(court)}
-              className="mt-2 inline-flex items-center gap-1.5 text-sm font-bold text-gold hover:text-white"
-            >
-              <MapIcon className="size-4 shrink-0" aria-hidden />
-              {copy.backToMap}
-            </AppLink>
-          </section>
-          <dl className="grid gap-3 border-t border-white/10 p-5">
-            {court.website ? (
-              <Fact
-                icon={Globe}
-                label={copy.website}
-                value={
-                  <a
-                    href={websiteHref(court.website)}
-                    className="inline-flex items-center gap-1 break-all text-gold hover:text-white"
-                    target="_blank"
-                    rel="noreferrer"
-                  >
-                    {websiteLabel(court.website)}
-                    <ExternalLink className="size-3.5 shrink-0" aria-hidden />
-                  </a>
-                }
-              />
-            ) : null}
-            {court.admin ? (
-              <Fact
-                icon={UserCog}
-                label={copy.administrator}
-                value={formatAdmin(court.admin, copy)}
-              />
-            ) : null}
-            {court.owner ? (
-              <Fact icon={Building2} label={copy.owner} value={formatOwner(court.owner, copy)} />
-            ) : null}
-            {court.source === "submitted" || source ? (
-              <Fact
-                icon={Database}
-                label={copy.dataFromSource}
-                value={
-                  <div className="space-y-1">
-                    {court.source === "submitted" ? (
-                      <p>
-                        {copy.sourceSubmitted}
-                        {visitorEmail ? (
-                          <a
-                            href={`mailto:${visitorEmail}`}
-                            className="mt-1 block text-gold hover:text-white"
-                          >
-                            {visitorEmail}
-                          </a>
-                        ) : null}
-                      </p>
-                    ) : null}
-                    {court.source === "osm" || osmSources.length > 0 || listingUrl ? (
-                      <ul>
-                        {court.source === "osm" || osmSources.length > 0 ? (
-                          <li className="text-sm leading-5 text-ink-muted">
-                            <span className="block">© OpenStreetMap {copy.osmContributors}.</span>
-                            <span className="block">
-                              {copy.osmLicenseLead}:{" "}
-                              <a
-                                href={OSM_COPYRIGHT_URL}
-                                className="text-gold hover:text-white"
-                                target="_blank"
-                                rel="noreferrer"
-                              >
-                                {copy.osmLicense}
-                              </a>
-                            </span>
-                          </li>
-                        ) : null}
-                        {listingUrl ? <SourceLink href={listingUrl} /> : null}
-                        {osmSources.map((item) => {
-                          const href = sourceListingUrl(item.source, item.id);
-                          return href ? <SourceLink key={item.id} href={href} /> : null;
-                        })}
-                      </ul>
-                    ) : null}
-                    {sourceFetchedAt ? (
-                      <p className="text-xs text-ink-muted">
-                        {court.source === "submitted" ? copy.addedAt : copy.dataFetchedAt}:{" "}
-                        <time dateTime={sourceFetchedAt}>{formatFetchedAt(sourceFetchedAt)}</time>
-                      </p>
-                    ) : null}
-                  </div>
-                }
-              />
-            ) : null}
-          </dl>
+        <aside className="contents split:block split:overflow-hidden split:rounded-3xl split:border split:border-white/10 split:bg-panel">
+          <div className={`order-2 ${stackedPanel}`}>
+            <CourtGallery
+              key={court.id}
+              courtId={court.id}
+              courtName={courtTitle(court, copy)}
+              photos={photos}
+            />
+          </div>
+          <div className={`order-4 ${stackedPanel}`}>
+            <section className="px-3 py-4">
+              <h2 className="flex items-center gap-1.5 text-sm font-bold uppercase tracking-wide text-gold/80">
+                <MapIcon className="size-4 shrink-0" aria-hidden />
+                {copy.courtLocation}
+              </h2>
+              <CourtMiniMap court={court} />
+              <AppLink
+                href={mapCourtHref(court)}
+                className="mt-2 inline-flex items-center gap-1.5 text-sm font-bold text-gold hover:text-white"
+              >
+                <MapIcon className="size-4 shrink-0" aria-hidden />
+                {copy.backToMap}
+              </AppLink>
+            </section>
+            <dl className="grid gap-3 border-t border-white/10 p-5">
+              {court.website ? (
+                <Fact
+                  icon={Globe}
+                  label={copy.website}
+                  value={
+                    <a
+                      href={websiteHref(court.website)}
+                      className="inline-flex items-center gap-1 break-all text-gold hover:text-white"
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {websiteLabel(court.website)}
+                      <ExternalLink className="size-3.5 shrink-0" aria-hidden />
+                    </a>
+                  }
+                />
+              ) : null}
+              {court.admin ? (
+                <Fact
+                  icon={UserCog}
+                  label={copy.administrator}
+                  value={formatAdmin(court.admin, copy)}
+                />
+              ) : null}
+              {court.owner ? (
+                <Fact icon={Building2} label={copy.owner} value={formatOwner(court.owner, copy)} />
+              ) : null}
+              {court.source === "submitted" || source ? (
+                <Fact
+                  icon={Database}
+                  label={copy.dataFromSource}
+                  value={
+                    <div className="space-y-1">
+                      {court.source === "submitted" ? (
+                        <p>
+                          {copy.sourceSubmitted}
+                          {visitorEmail ? (
+                            <a
+                              href={`mailto:${visitorEmail}`}
+                              className="mt-1 block text-gold hover:text-white"
+                            >
+                              {visitorEmail}
+                            </a>
+                          ) : null}
+                        </p>
+                      ) : null}
+                      {court.source === "osm" || osmSources.length > 0 || listingUrl ? (
+                        <ul>
+                          {court.source === "osm" || osmSources.length > 0 ? (
+                            <li className="text-sm leading-5 text-ink-muted">
+                              <span className="block">© OpenStreetMap {copy.osmContributors}.</span>
+                              <span className="block">
+                                {copy.osmLicenseLead}:{" "}
+                                <a
+                                  href={OSM_COPYRIGHT_URL}
+                                  className="text-gold hover:text-white"
+                                  target="_blank"
+                                  rel="noreferrer"
+                                >
+                                  {copy.osmLicense}
+                                </a>
+                              </span>
+                            </li>
+                          ) : null}
+                          {listingUrl ? <SourceLink href={listingUrl} /> : null}
+                          {osmSources.map((item) => {
+                            const href = sourceListingUrl(item.source, item.id);
+                            return href ? <SourceLink key={item.id} href={href} /> : null;
+                          })}
+                        </ul>
+                      ) : null}
+                      {sourceFetchedAt ? (
+                        <p className="text-xs text-ink-muted">
+                          {court.source === "submitted" ? copy.addedAt : copy.dataFetchedAt}:{" "}
+                          <time dateTime={sourceFetchedAt}>{formatFetchedAt(sourceFetchedAt)}</time>
+                        </p>
+                      ) : null}
+                    </div>
+                  }
+                />
+              ) : null}
+            </dl>
+          </div>
         </aside>
       </main>
 

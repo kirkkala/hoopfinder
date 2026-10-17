@@ -171,7 +171,7 @@ export function CourtGallery({
 
   return (
     <section
-      className="border-b border-white/10 px-3 py-4"
+      className="px-3 py-4 split:border-b split:border-white/10"
       aria-roledescription={copy.photoCarousel}
       aria-labelledby={headingId}
       onKeyDown={onGalleryKeyDown}
@@ -270,7 +270,7 @@ export function CourtGallery({
           ))}
         </ul>
       ) : items.length === 0 ? (
-        <p className="text-ink-muted">{copy.noPhotos}</p>
+        <p className="mt-2 text-sm leading-5 text-ink-muted">{copy.noPhotos}</p>
       ) : null}
       <button
         type="button"
