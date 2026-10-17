@@ -1,9 +1,9 @@
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { afterEach, beforeAll, expect, test, vi } from "vitest";
 import { getCopy } from "@/lib/copy";
 import type { CourtIndexEntry, CourtIndexGroup } from "@/lib/court-index";
-import { CourtIndexView } from "./CourtIndexView";
+import { CourtIndexCard, CourtIndexView } from "./CourtIndexView";
 
 const status = vi.hoisted(() => ({ pending: false }));
 
@@ -82,7 +82,7 @@ const groups: CourtIndexGroup[] = [
   },
 ];
 
-test("each city heading shows how many courts it lists", () => {
+test("lists each city as a link and leaves the courts for the city page", () => {
   status.pending = false;
   render(<CourtIndexView groups={groups} courtCount={3} fetchedAtBySource={{}} />);
 
@@ -92,22 +92,36 @@ test("each city heading shows how many courts it lists", () => {
   expect(home).toHaveAttribute("href", "/?info");
   expect(map).toHaveAttribute("href", "/kartta");
 
-  const helsinki = screen.getByRole("heading", { level: 2, name: "Helsinki (2 kenttää)" });
-  const other = screen.getByRole("heading", { level: 2, name: `${copy.cityUnknown} (1 kenttä)` });
-  expect(helsinki).toHaveTextContent("Helsinki");
-  expect(other).toHaveTextContent(copy.cityCourtCount(1));
-  expect(within(helsinki).getByRole("link")).toHaveAttribute(
-    "href",
-    "/koripallokentat/helsinki",
-  );
+  const helsinki = screen.getByRole("link", { name: "Helsinki (2 kenttää)" });
+  const other = screen.getByRole("link", { name: `${copy.cityUnknown} (1 kenttä)` });
+  expect(helsinki).toHaveAttribute("href", "/koripallokentat/helsinki");
   expect(within(helsinki).getByText("(2 kenttää)")).toHaveClass("text-ink-muted");
-  expect(within(helsinki).getByRole("link").querySelector("svg")).toBeNull();
-  expect(within(other).getByRole("link")).toHaveAttribute("href", "/koripallokentat/muu");
+  expect(other).toHaveAttribute("href", "/koripallokentat/muu");
+  expect(screen.queryByRole("link", { name: /Kallio/ })).not.toBeInTheDocument();
+});
+
+test("the city search hides cities that do not match", () => {
+  render(<CourtIndexView groups={groups} courtCount={3} fetchedAtBySource={{}} />);
+  const search = screen.getByRole("searchbox", { name: copy.allCourtsCities });
+
+  fireEvent.change(search, { target: { value: "hel" } });
+  expect(screen.getByRole("link", { name: /Helsinki/ })).toBeInTheDocument();
+  expect(
+    screen.queryByRole("link", { name: new RegExp(copy.cityUnknown) }),
+  ).not.toBeInTheDocument();
+
+  fireEvent.change(search, { target: { value: "zzz" } });
+  expect(screen.getByText(copy.citySearchEmpty)).toBeInTheDocument();
+  expect(screen.queryByRole("link", { name: /Helsinki/ })).not.toBeInTheDocument();
 });
 
 test("a court card shows the pending spinner after its open label", () => {
   status.pending = true;
-  render(<CourtIndexView groups={groups} courtCount={3} fetchedAtBySource={{}} />);
+  render(
+    <ul>
+      <CourtIndexCard court={entry("Kallio", "/koripallokentat/helsinki/l1")} />
+    </ul>,
+  );
 
   const link = screen.getByRole("link", { name: /Kallio/ });
   const label = [...link.querySelectorAll("span")].find((node) =>

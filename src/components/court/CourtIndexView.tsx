@@ -1,21 +1,24 @@
 "use client";
 
 import { ArrowRight } from "lucide-react";
-import { useLayoutEffect, useRef } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { AppFooter } from "@/components/brand/AppFooter";
 import { AppHeader } from "@/components/brand/AppHeader";
 import { AppLink, AppLinkPending } from "@/components/brand/AppLink";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { ViewJumps } from "@/components/brand/ViewJump";
-import { CITY_SEARCH_HEIGHT, CitySelect, COURT_LIST_ID } from "@/components/court/CitySelect";
+import {
+  CITY_SEARCH_HEIGHT,
+  CitySelect,
+  COURT_LIST_ID,
+  cityMatchesQuery,
+} from "@/components/court/CitySelect";
 import { CourtBadges } from "@/components/explorer/CourtBadges";
 import { CourtHeading } from "@/components/explorer/CourtHeading";
 import type { FetchedAtBySource } from "@/lib/catalog";
 import { type CourtIndexEntry, type CourtIndexGroup, cityIndexHref } from "@/lib/court-index";
 
 const searchHeight = `var(${CITY_SEARCH_HEIGHT}, 0px)`;
-/** Header offset is already in the page scroll padding. Sticky `top` still includes it. */
-const stuckBelowSearch = `calc(var(--app-header-bottom, 3.5rem) + ${searchHeight})`;
 
 export function CourtIndexView({
   groups,
@@ -27,7 +30,11 @@ export function CourtIndexView({
   fetchedAtBySource: FetchedAtBySource;
 }) {
   const copy = useCopy();
+  const [query, setQuery] = useState("");
   const searchRef = useRef<HTMLDivElement>(null);
+  const visibleGroups = groups.filter((group) =>
+    cityMatchesQuery(group.city ?? copy.cityUnknown, query),
+  );
 
   useLayoutEffect(() => {
     const search = searchRef.current;
@@ -59,41 +66,31 @@ export function CourtIndexView({
         <p className="mt-2 max-w-xl text-sm leading-6 text-ink-muted">{copy.allCourtsLead}</p>
         <div
           ref={searchRef}
-          className="sticky top-[var(--app-header-bottom,3.5rem)] z-30 -mx-4 mt-6 border-b border-white/10 bg-asphalt px-4 py-3 sm:-mx-6 sm:px-6"
+          className="sticky top-[var(--app-header-bottom,3.5rem)] z-30 -mx-4 mt-2 border-b border-white/10 bg-asphalt px-4 py-3 sm:-mx-6 sm:px-6"
         >
-          <CitySelect groups={groups} />
+          <CitySelect query={query} onQueryChange={setQuery} />
         </div>
-        <div
-          id={COURT_LIST_ID}
-          className="mt-8 space-y-8"
-          style={{ scrollMarginTop: searchHeight }}
-        >
-          {groups.map((group) => (
-            <section key={group.anchor} id={group.anchor} style={{ scrollMarginTop: searchHeight }}>
-              <h2
-                className="sticky z-20 -mx-4 border-b border-white/10 bg-asphalt font-display text-2xl tracking-wide text-gold sm:-mx-6"
-                style={{ top: stuckBelowSearch }}
-              >
+        {visibleGroups.length > 0 ? (
+          <ul id={COURT_LIST_ID} className="mt-6" style={{ scrollMarginTop: searchHeight }}>
+            {visibleGroups.map((group) => (
+              <li key={group.anchor} id={group.anchor} style={{ scrollMarginTop: searchHeight }}>
                 <AppLink
                   href={cityIndexHref(group.anchor)}
                   prefetch={false}
                   trailingPending={false}
-                  className="block w-full px-4 py-2 outline-none hover:text-white focus-visible:ring-2 focus-visible:ring-gold/60 focus-visible:ring-inset sm:px-6"
+                  className="flex items-baseline gap-2 border-b border-white/10 py-3 font-display text-xl tracking-wide text-gold outline-none hover:text-white focus-visible:ring-2 focus-visible:ring-gold/60"
                 >
                   {group.city ?? copy.cityUnknown}{" "}
                   <span className="inline-block font-sans text-sm font-medium leading-none tracking-normal text-ink-muted">
                     {`(${copy.cityCourtCount(group.courts.length)})`}
                   </span>
                 </AppLink>
-              </h2>
-              <ul className="mt-3 space-y-2">
-                {group.courts.map((court) => (
-                  <CourtIndexCard key={court.href} court={court} />
-                ))}
-              </ul>
-            </section>
-          ))}
-        </div>
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-6 text-sm text-ink-muted">{copy.citySearchEmpty}</p>
+        )}
       </main>
       <AppFooter />
     </div>

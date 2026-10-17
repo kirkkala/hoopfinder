@@ -45,7 +45,7 @@ const messages = {
     fi: "Koripallokenttä",
     en: "Basketball court",
   },
-  backToMap: { fi: "Katso kenttä kartalla", en: "See hoop on the map" },
+  backToMap: { fi: "Näytä kenttä kartalla", en: "Show hoop on the map" },
   dataFrom: { fi: "Kenttädata päivitetty:", en: "Court data updated:" },
   dataFromSource: { fi: "Rajapintatieto", en: "API information" },
   dataFetchedAt: { fi: "Tiedot haettu", en: "Data fetched" },
@@ -131,15 +131,15 @@ const messages = {
   allCourtsHeading: { fi: "Kentät kaupungeittain", en: "Courts by city" },
   courtsAsList: { fi: "Kentät kaupungeittain", en: "Courts by city" },
   courtsOnMap: { fi: "Kentät kartalla", en: "Courts on the map" },
-  allCourtsLead: {
-    fi: "Valitse kaupunki ja selaa sen kenttiä. Avaa kenttä nähdäksesi tiedot ja kartan.",
-    en: "Choose a city and browse its courts. Open a court to see the details and the map.",
-  },
   listedCourtCount: {
     fi: (count: number) =>
-      `Palvelussa on listattuna ${count} Suomen ulkokoripallo${count === 1 ? "kenttä" : "kenttää"}.`,
+      `Palvelusta löytyy ${count} Suomen ulkokoripallokenttää.`,
     en: (count: number) =>
       `The service lists ${count} outdoor basketball ${count === 1 ? "court" : "courts"} in Finland.`,
+  },
+  allCourtsLead: {
+    fi: "Etsi tai valitse kaupunki ja tutustu sen kenttiin.",
+    en: "Search or choose a city and browse its courts.",
   },
   allCourtsCities: { fi: "Kaupungit", en: "Cities" },
   citySearchPlaceholder: { fi: "Etsi kaupunkia", en: "Search a city" },

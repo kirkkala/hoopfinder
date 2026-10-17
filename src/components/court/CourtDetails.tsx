@@ -141,7 +141,6 @@ export function CourtDetails({
                 cityUnknown={cityUnknown}
                 cityPageHref={cityPageHref}
               />
-              <CourtOnMapLink court={court} />
             </div>
             <div>
               <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">
