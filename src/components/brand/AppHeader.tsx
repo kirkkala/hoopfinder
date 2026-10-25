@@ -25,14 +25,6 @@ function setCssPx(root: HTMLElement, name: string, value: number) {
   if (root.style.getPropertyValue(name) !== next) root.style.setProperty(name, next);
 }
 
-function syncHeaderOffset(header: HTMLElement | null) {
-  if (!header) return;
-  const rect = header.getBoundingClientRect();
-  const root = document.documentElement;
-  setCssPx(root, "--app-header-height", rect.height);
-  setCssPx(root, "--app-header-bottom", rect.bottom);
-}
-
 export function AppHeader({
   fetchedAtBySource,
   title,
@@ -54,23 +46,15 @@ export function AppHeader({
     const header = headerRef.current;
     if (!header) return;
 
-    const sync = () => syncHeaderOffset(header);
+    const sync = () => {
+      const height = header.offsetHeight;
+      if (height > 0) setCssPx(document.documentElement, "--app-header-height", height);
+    };
     sync();
     const observer = new ResizeObserver(sync);
     observer.observe(header);
-    window.addEventListener("resize", sync);
-    window.addEventListener("scroll", sync, { passive: true });
-    return () => {
-      observer.disconnect();
-      window.removeEventListener("resize", sync);
-      window.removeEventListener("scroll", sync);
-    };
+    return () => observer.disconnect();
   }, []);
-
-  // Banner show/hide re-renders the header without moving scroll or its own size.
-  useLayoutEffect(() => {
-    syncHeaderOffset(headerRef.current);
-  });
 
   const brandTitleClass =
     "block font-display text-xl leading-none tracking-wide whitespace-nowrap text-white sm:text-2xl";
@@ -183,7 +167,19 @@ function HeaderMenu({
   const feedback = useFeedback();
   const feedbackOpen = feedback?.open ?? false;
   const menuId = useId();
+  const rootRef = useRef<HTMLDivElement>(null);
   const [open, setOpen] = useState(false);
+
+  useLayoutEffect(() => {
+    if (!open) return;
+    const header = rootRef.current?.closest("header");
+    if (!header) return;
+    setCssPx(
+      document.documentElement,
+      "--app-header-bottom",
+      header.getBoundingClientRect().bottom,
+    );
+  }, [open]);
 
   useEffect(() => {
     if (!open) return;
@@ -202,7 +198,7 @@ function HeaderMenu({
   }, [open, feedbackOpen]);
 
   return (
-    <div className="relative flex items-center gap-1">
+    <div ref={rootRef} className="relative flex items-center gap-1">
       <ShowAnnouncementButton />
       <button
         type="button"
