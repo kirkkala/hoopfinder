@@ -1,6 +1,6 @@
 {
   "name": "hoopfinder",
-  "version": "0.1.0-beta.21",
+  "version": "0.1.0-beta.23",
   "private": true,
   "license": "AGPL-3.0-only",
   "scripts": {
@@ -24,7 +24,7 @@
     "embla-carousel-react": "^8.6.0",
     "lucide-react": "^1.45.0",
     "maplibre-gl": "^6.9.0",
-    "next": "16.3.8",
+    "next": "^16.3.8",
     "next-auth": "^4.24.15",
     "postgres": "^3.4.9",
     "react": "19.2.8",
