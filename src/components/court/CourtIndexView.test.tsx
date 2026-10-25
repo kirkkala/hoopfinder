@@ -108,6 +108,7 @@ test("lists each city as a link and leaves the courts for the city page", () => 
 test("the city search hides cities that do not match", () => {
   render(<CourtIndexView groups={groups} fetchedAtBySource={{}} />);
   const search = screen.getByRole("searchbox", { name: copy.allCourtsCities });
+  expect(search.closest(".sticky")).toHaveClass("top-[var(--app-header-height,3.5rem)]");
 
   fireEvent.change(search, { target: { value: "hel" } });
   expect(screen.getByRole("link", { name: /Helsinki/ })).toBeInTheDocument();
