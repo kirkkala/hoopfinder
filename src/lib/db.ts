@@ -20,6 +20,8 @@ export function getSql(): Sql | null {
       idle_timeout: 20,
       connect_timeout: 10,
       prepare: false,
+      // IF NOT EXISTS reports a NOTICE. The driver would print each one.
+      onnotice() {},
     });
   }
   return globalForDb.__hoopfinderSql;
@@ -60,6 +62,12 @@ export async function withDb<T>(fn: (sql: Sql) => Promise<T>): Promise<T | null>
 }
 
 async function ensureSchema(sql: Sql) {
+  const [existing] = await sql<{ ready: string | null }[]>`
+    SELECT to_regclass('public.feedback_limits') AS ready
+  `;
+  // Production already has this table. Leave that database unchanged.
+  if (existing?.ready) return;
+
   await sql`CREATE SEQUENCE IF NOT EXISTS submitted_court_id_seq START WITH 10000`;
   await sql`
     CREATE TABLE IF NOT EXISTS submitted_courts (
@@ -74,15 +82,11 @@ async function ensureSchema(sql: Sql) {
       confirmation_token TEXT
     )
   `;
-  await sql`ALTER TABLE submitted_courts DROP COLUMN IF EXISTS confirmed_at`;
-  await sql`ALTER TABLE submitted_courts DROP COLUMN IF EXISTS confirmation_token_hash`;
   await sql`ALTER TABLE submitted_courts ADD COLUMN IF NOT EXISTS confirmation_token TEXT`;
-  await sql`ALTER TABLE submitted_courts ALTER COLUMN status SET DEFAULT 'unconfirmed'`;
   await sql`
     ALTER TABLE submitted_courts
     ADD COLUMN IF NOT EXISTS details JSONB NOT NULL DEFAULT '{}'::jsonb
   `;
-  await sql`DROP INDEX IF EXISTS submitted_courts_confirmation_token_hash_idx`;
   await sql`
     CREATE UNIQUE INDEX IF NOT EXISTS submitted_courts_confirmation_token_idx
     ON submitted_courts (confirmation_token)
