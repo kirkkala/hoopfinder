@@ -15,6 +15,7 @@ import { AddCourtFormPanel } from "@/components/add-court/AddCourtFormPanel";
 import { useIsAdmin } from "@/components/admin/AdminProvider";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { COURT_PHOTO_MAX_BYTES } from "@/lib/constants";
+import { fileForCourtUpload } from "@/lib/court-photo-file";
 import type { CourtPhoto, CourtPhotoError } from "@/lib/court-photos";
 
 const INPUT_CLASS =
@@ -82,12 +83,17 @@ export function CourtGallery({
     setError(null);
     setUploading(true);
     try {
+      const upload = await fileForCourtUpload(file);
       const body = new FormData();
       body.set("courtId", courtId);
       body.set("email", email);
       body.set("description", description);
-      body.set("file", file);
+      body.set("file", upload);
       const response = await fetch("/api/court-photos", { method: "POST", body });
+      if (response.status === 413) {
+        setError(copy.photoTooLarge);
+        return;
+      }
       if (!response.ok) {
         const payload = (await response.json().catch(() => null)) as {
           error?: CourtPhotoError;

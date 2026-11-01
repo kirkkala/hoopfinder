@@ -20,7 +20,13 @@ export const USER_AGENT = `HoopFinder/0.1 (${GITHUB_URL})`;
 export const COURT_DATA_REVALIDATE = 86400;
 
 /**
- * Largest photo the upload form accepts. The file is sent through the app
- * before it is resized, and Vercel stops a request at about 32 MB.
+ * Largest photo the form will open. A phone picture is often bigger than this
+ * used to allow, and it is shrunk in the browser before upload.
  */
 export const COURT_PHOTO_MAX_BYTES = 32 * 1024 * 1024;
+
+/**
+ * Vercel refuses a function request above 4.5 MB and does not run the route.
+ * The file sent from the form stays under this, with room for the other fields.
+ */
+export const COURT_PHOTO_REQUEST_BYTES = 4 * 1024 * 1024;
