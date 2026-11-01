@@ -10,11 +10,13 @@ import {
   Trash2,
 } from "lucide-react";
 import * as React from "react";
-import { FieldLabel } from "@/components/add-court/AddCourtFields";
+import { FieldLabel, isEmailAddress } from "@/components/add-court/AddCourtFields";
 import { AddCourtFormPanel } from "@/components/add-court/AddCourtFormPanel";
 import { useIsAdmin } from "@/components/admin/AdminProvider";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { COURT_PHOTO_MAX_BYTES } from "@/lib/constants";
+import { readPhotoEmail, rememberPhotoEmail } from "@/lib/court-photo-email";
+import { fileForCourtUpload } from "@/lib/court-photo-file";
 import type { CourtPhoto, CourtPhotoError } from "@/lib/court-photos";
 
 const INPUT_CLASS =
@@ -42,6 +44,7 @@ export function CourtGallery({
   const [email, setEmail] = React.useState("");
   const [description, setDescription] = React.useState("");
   const [file, setFile] = React.useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
   const [uploading, setUploading] = React.useState(false);
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
@@ -52,6 +55,16 @@ export function CourtGallery({
     setError(null);
     setAdding(false);
   }
+
+  React.useEffect(() => {
+    if (!file) {
+      setPreviewUrl(null);
+      return;
+    }
+    const url = URL.createObjectURL(file);
+    setPreviewUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [file]);
 
   React.useEffect(() => {
     if (!adding) return;
@@ -75,19 +88,24 @@ export function CourtGallery({
       setError(copy.photoTooLarge);
       return;
     }
-    if (!emailLooksValid(email)) {
+    if (!isEmailAddress(email)) {
       setError(copy.photoEmailInvalid);
       return;
     }
     setError(null);
     setUploading(true);
     try {
+      const upload = await fileForCourtUpload(file);
       const body = new FormData();
       body.set("courtId", courtId);
       body.set("email", email);
       body.set("description", description);
-      body.set("file", file);
+      body.set("file", upload);
       const response = await fetch("/api/court-photos", { method: "POST", body });
+      if (response.status === 413) {
+        setError(copy.photoTooLarge);
+        return;
+      }
       if (!response.ok) {
         const payload = (await response.json().catch(() => null)) as {
           error?: CourtPhotoError;
@@ -96,6 +114,7 @@ export function CourtGallery({
         return;
       }
       const photo = (await response.json()) as CourtPhoto;
+      rememberPhotoEmail(email);
       pendingIndex.current = items.length;
       setItems((current) => [...current, photo]);
       setFile(null);
@@ -276,6 +295,7 @@ export function CourtGallery({
         type="button"
         onClick={() => {
           setError(null);
+          setEmail((current) => current.trim() || readPhotoEmail());
           setAdding(true);
         }}
         className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-gold px-3 py-1.5 text-xs font-bold text-asphalt hover:bg-white"
@@ -334,9 +354,6 @@ export function CourtGallery({
                   <ImagePlus className="size-4" aria-hidden />
                   {copy.photoChoose}
                 </button>
-                {file ? (
-                  <span className="min-w-0 truncate text-sm text-white/70">{file.name}</span>
-                ) : null}
                 <input
                   ref={fileRef}
                   type="file"
@@ -349,6 +366,18 @@ export function CourtGallery({
                   }}
                 />
               </div>
+              {file && previewUrl ? (
+                <figure className="mt-3">
+                  <img
+                    src={previewUrl}
+                    alt={copy.photoAlt(courtName)}
+                    className="h-48 w-full rounded-xl bg-asphalt object-contain"
+                  />
+                  <figcaption className="mt-1 truncate text-sm text-white/70">
+                    {file.name}
+                  </figcaption>
+                </figure>
+              ) : null}
               <label className="mt-6 block">
                 <FieldLabel>{copy.photoDescription}</FieldLabel>
                 <textarea
@@ -396,10 +425,6 @@ function messageFor(copy: ReturnType<typeof useCopy>, error: CourtPhotoError | u
   if (error === "rate-limited") return copy.photoRateLimit;
   if (error === "email") return copy.photoEmailInvalid;
   return copy.photoError;
-}
-
-function emailLooksValid(value: string): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 }
 
 function StageArrow({
