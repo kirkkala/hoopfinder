@@ -10,11 +10,12 @@ import {
   Trash2,
 } from "lucide-react";
 import * as React from "react";
-import { FieldLabel } from "@/components/add-court/AddCourtFields";
+import { FieldLabel, isEmailAddress } from "@/components/add-court/AddCourtFields";
 import { AddCourtFormPanel } from "@/components/add-court/AddCourtFormPanel";
 import { useIsAdmin } from "@/components/admin/AdminProvider";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { COURT_PHOTO_MAX_BYTES } from "@/lib/constants";
+import { readPhotoEmail, rememberPhotoEmail } from "@/lib/court-photo-email";
 import { fileForCourtUpload } from "@/lib/court-photo-file";
 import type { CourtPhoto, CourtPhotoError } from "@/lib/court-photos";
 
@@ -87,7 +88,7 @@ export function CourtGallery({
       setError(copy.photoTooLarge);
       return;
     }
-    if (!emailLooksValid(email)) {
+    if (!isEmailAddress(email)) {
       setError(copy.photoEmailInvalid);
       return;
     }
@@ -113,6 +114,7 @@ export function CourtGallery({
         return;
       }
       const photo = (await response.json()) as CourtPhoto;
+      rememberPhotoEmail(email);
       pendingIndex.current = items.length;
       setItems((current) => [...current, photo]);
       setFile(null);
@@ -293,6 +295,7 @@ export function CourtGallery({
         type="button"
         onClick={() => {
           setError(null);
+          setEmail((current) => current.trim() || readPhotoEmail());
           setAdding(true);
         }}
         className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-gold px-3 py-1.5 text-xs font-bold text-asphalt hover:bg-white"
@@ -422,10 +425,6 @@ function messageFor(copy: ReturnType<typeof useCopy>, error: CourtPhotoError | u
   if (error === "rate-limited") return copy.photoRateLimit;
   if (error === "email") return copy.photoEmailInvalid;
   return copy.photoError;
-}
-
-function emailLooksValid(value: string): boolean {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
 }
 
 function StageArrow({

@@ -152,11 +152,15 @@ export function addCourtDetailsPayload(
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
+export function isEmailAddress(value: string): boolean {
+  return EMAIL_PATTERN.test(value.trim());
+}
+
 export function requiredFieldIssues(input: { name: string; address: string; email: string }) {
   return {
     name: !input.name.trim(),
     address: !input.address.trim(),
-    email: !EMAIL_PATTERN.test(input.email.trim()),
+    email: !isEmailAddress(input.email),
   };
 }
 

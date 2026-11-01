@@ -9,6 +9,7 @@ const copy = getCopy();
 
 afterEach(() => {
   cleanup();
+  localStorage.clear();
   vi.unstubAllGlobals();
 });
 
@@ -38,4 +39,21 @@ test("shows the chosen photo before the email field", () => {
   const email = document.querySelector('input[type="email"]');
   if (!(email instanceof HTMLInputElement)) throw new Error("missing email field");
   expect(preview.compareDocumentPosition(email)).toBe(Node.DOCUMENT_POSITION_FOLLOWING);
+});
+
+test("prefills the email from a photo this browser already uploaded", () => {
+  localStorage.setItem("hoopfinder-photo-email", "player@example.com");
+
+  render(
+    <LocaleProvider>
+      <AdminProvider isAdmin={false}>
+        <CourtGallery courtId="1" courtName="Kallio" photos={[]} />
+      </AdminProvider>
+    </LocaleProvider>,
+  );
+
+  fireEvent.click(screen.getByRole("button", { name: copy.addPhoto }));
+  const email = document.querySelector('input[type="email"]');
+  if (!(email instanceof HTMLInputElement)) throw new Error("missing email field");
+  expect(email.value).toBe("player@example.com");
 });
