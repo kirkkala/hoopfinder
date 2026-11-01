@@ -43,6 +43,7 @@ export function CourtGallery({
   const [email, setEmail] = React.useState("");
   const [description, setDescription] = React.useState("");
   const [file, setFile] = React.useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = React.useState<string | null>(null);
   const [uploading, setUploading] = React.useState(false);
   const [busy, setBusy] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
@@ -53,6 +54,16 @@ export function CourtGallery({
     setError(null);
     setAdding(false);
   }
+
+  React.useEffect(() => {
+    if (!file) {
+      setPreviewUrl(null);
+      return;
+    }
+    const url = URL.createObjectURL(file);
+    setPreviewUrl(url);
+    return () => URL.revokeObjectURL(url);
+  }, [file]);
 
   React.useEffect(() => {
     if (!adding) return;
@@ -340,9 +351,6 @@ export function CourtGallery({
                   <ImagePlus className="size-4" aria-hidden />
                   {copy.photoChoose}
                 </button>
-                {file ? (
-                  <span className="min-w-0 truncate text-sm text-white/70">{file.name}</span>
-                ) : null}
                 <input
                   ref={fileRef}
                   type="file"
@@ -355,6 +363,18 @@ export function CourtGallery({
                   }}
                 />
               </div>
+              {file && previewUrl ? (
+                <figure className="mt-3">
+                  <img
+                    src={previewUrl}
+                    alt={copy.photoAlt(courtName)}
+                    className="h-48 w-full rounded-xl bg-asphalt object-contain"
+                  />
+                  <figcaption className="mt-1 truncate text-sm text-white/70">
+                    {file.name}
+                  </figcaption>
+                </figure>
+              ) : null}
               <label className="mt-6 block">
                 <FieldLabel>{copy.photoDescription}</FieldLabel>
                 <textarea
