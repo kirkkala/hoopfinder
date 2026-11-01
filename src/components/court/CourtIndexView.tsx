@@ -70,7 +70,7 @@ export function CourtIndexView({
         <p className="mt-2 text-sm leading-6 text-ink-muted">{copy.allCourtsLead}</p>
         <div
           ref={searchRef}
-          className="sticky top-[var(--app-header-bottom,3.5rem)] z-30 -mx-4 mt-2 border-b border-white/10 bg-asphalt px-4 py-3 sm:-mx-6 sm:px-6"
+          className="sticky top-[var(--app-header-height,3.5rem)] z-30 -mx-4 mt-2 border-b border-white/10 bg-asphalt px-4 py-3 sm:-mx-6 sm:px-6"
         >
           <CitySelect query={query} onQueryChange={setQuery} />
         </div>
