@@ -25,6 +25,8 @@ export type LoadedCourt = {
   place: Court;
   sourceFetchedAt: string | null;
   email?: string;
+  /** Set when this row is a correction of another court, not a court of its own. */
+  editOf?: string;
 };
 
 export type CourtIndexData = {
@@ -62,5 +64,6 @@ export async function loadCourtById(id: string): Promise<LoadedCourt | null> {
     place: submitted.court,
     sourceFetchedAt: submitted.createdAt,
     email: submitted.email,
+    ...(submitted.editOf ? { editOf: submitted.editOf } : {}),
   };
 }

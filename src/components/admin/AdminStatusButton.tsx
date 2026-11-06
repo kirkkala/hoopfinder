@@ -10,12 +10,15 @@ export function AdminStatusButton({
   name,
   published,
   compact = false,
+  notifies = true,
   onStatusChange,
 }: {
   id: string;
   name: string;
   published: boolean;
   compact?: boolean;
+  /** A new court tells the visitor by email. A correction does not. */
+  notifies?: boolean;
   onStatusChange?: (status: SubmittedStatus) => void;
 }) {
   const copy = useCopy();
@@ -25,7 +28,11 @@ export function AdminStatusButton({
 
   async function setStatus(status: SubmittedStatus) {
     const message =
-      status === "published" ? copy.adminPublishConfirm(name) : copy.adminUnpublishConfirm(name);
+      status === "published"
+        ? notifies
+          ? copy.adminPublishConfirm(name)
+          : copy.adminPublishEditConfirm(name)
+        : copy.adminUnpublishConfirm(name);
     if (!window.confirm(message)) return;
     setSaving(true);
     setError(false);

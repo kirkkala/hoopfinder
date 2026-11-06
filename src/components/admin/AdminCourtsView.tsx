@@ -12,8 +12,9 @@ import { AppHeader } from "@/components/brand/AppHeader";
 import { AppLink } from "@/components/brand/AppLink";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import type { FetchedAtBySource } from "@/lib/catalog";
+import { editChangeLines } from "@/lib/court-edit-summary";
 import type { AdminCourtWithPhotos } from "@/lib/court-photos";
-import { courtHref, courtTitle } from "@/lib/courts";
+import { courtHref, courtPathFromId, courtTitle } from "@/lib/courts";
 import type { AdminFeedback } from "@/lib/feedback";
 import type { AdminSubmittedCourt } from "@/lib/submitted-courts";
 
@@ -113,7 +114,10 @@ function SubmittedList({ initialCourts }: { initialCourts: AdminSubmittedCourt[]
     }
   }
 
-  if (courts.length === 0) {
+  const submissions = courts.filter((court) => !court.editOf);
+  const suggestionLinks = suggestionCourts(courts);
+
+  if (submissions.length === 0 && suggestionLinks.length === 0) {
     return (
       <div className="mt-10 flex flex-col items-center gap-2 px-6 py-12 text-center">
         <Icon iconNode={basketball} className="size-10 text-gold/70" aria-hidden />
@@ -122,11 +126,23 @@ function SubmittedList({ initialCourts }: { initialCourts: AdminSubmittedCourt[]
     );
   }
 
-  const visible = filter === "all" ? courts : courts.filter((court) => court.status === filter);
+  const visible =
+    filter === "all" ? submissions : submissions.filter((court) => court.status === filter);
   const editing = courts.find((court) => court.id === editingId) ?? null;
 
   return (
     <>
+      {suggestionLinks.length > 0 ? (
+        <EditSuggestionList
+          items={suggestionLinks}
+          onPublished={(id) =>
+            setCourts((current) =>
+              current.map((item) => (item.id === id ? { ...item, status: "published" } : item)),
+            )
+          }
+          onRemove={remove}
+        />
+      ) : null}
       <StatusFilterToggle filter={filter} onChange={setFilter} />
       <p className="mt-3 font-display text-lg tracking-wide text-gold">
         {copy.adminCourtCount(visible.length)}
@@ -218,6 +234,95 @@ function SubmittedList({ initialCourts }: { initialCourts: AdminSubmittedCourt[]
         />
       ) : null}
     </>
+  );
+}
+
+type SuggestionLink = {
+  id: string;
+  href: string;
+  name: string;
+  email: string;
+  status: AdminSubmittedCourt["status"];
+  changes: AdminSubmittedCourt["changes"];
+};
+
+function suggestionCourts(courts: AdminSubmittedCourt[]): SuggestionLink[] {
+  return courts.flatMap((court) => {
+    if (!court.editOf || court.status === "published") return [];
+    const path = courtPathFromId(court.editOf);
+    if (!path) return [];
+    return [
+      {
+        id: court.id,
+        href: `/courts/${path}`,
+        name: court.name,
+        email: court.email,
+        status: court.status,
+        changes: court.changes,
+      },
+    ];
+  });
+}
+
+export function EditSuggestionList({
+  items,
+  onPublished,
+  onRemove,
+}: {
+  items: SuggestionLink[];
+  onPublished?: (id: string) => void;
+  onRemove?: (id: string, name: string) => void;
+}) {
+  const copy = useCopy();
+  return (
+    <section className="mt-6">
+      <h2 className="font-display text-2xl tracking-wide text-white">
+        {copy.adminEditSuggestions}
+      </h2>
+      <ul className="mt-3 space-y-3">
+        {items.map((item) => (
+          <li key={item.id} className="rounded-2xl border border-white/15 bg-white/5 p-4 text-sm">
+            <StatusBadge status={item.status} />
+            <AppLink
+              href={item.href}
+              className="mt-2 block font-semibold text-gold hover:text-white"
+            >
+              {item.name}
+            </AppLink>
+            <dl className="mt-2 space-y-0.5">
+              {editChangeLines(item.changes ?? {}, copy).map((line) => (
+                <div key={line.key}>
+                  <dt className="inline text-ink-muted">{line.label}: </dt>
+                  <dd className="inline font-semibold text-white">{line.value}</dd>
+                </div>
+              ))}
+            </dl>
+            <a href={`mailto:${item.email}`} className="mt-1 block text-gold hover:text-white">
+              {item.email}
+            </a>
+            {item.status === "unconfirmed" ? (
+              <p className="mt-2 text-ink-muted">{copy.adminEditUnconfirmed}</p>
+            ) : null}
+            <div className="mt-3 flex flex-wrap items-center gap-2">
+              <AdminStatusButton
+                id={item.id}
+                name={item.name}
+                published={false}
+                notifies={false}
+                onStatusChange={() => onPublished?.(item.id)}
+              />
+              <button
+                type="button"
+                onClick={() => onRemove?.(item.id, item.name)}
+                className="rounded-full px-2.5 py-0.5 text-xs font-bold text-ink/70 hover:bg-red-500/15 hover:text-red-300"
+              >
+                {copy.adminDelete}
+              </button>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </section>
   );
 }
 

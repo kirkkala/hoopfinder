@@ -445,7 +445,7 @@ const messages = {
   },
   addCourtEmail: { fi: "Sähköpostiosoitteesi", en: "Your email address" },
   addCourtEmailHelp: {
-    fi: "Lähetämme sähköpostiisi vahvistuslinkin.",
+    fi: "Lähetämme sinulle sähköpostiin vahvistuslinkin muokkauksesta.",
     en: "We'll send a confirmation link to your email.",
   },
   addCourtEmailUpdates: {
@@ -528,6 +528,46 @@ const messages = {
   addCourtSuccess: {
     fi: "Sait sähköpostiisi vahvistuslinkin, klikkaa sitä ja kenttä julkaistaan pian!",
     en: "You received a confirmation link in your email, click it and the court will be published soon!",
+  },
+  suggestContribute: { fi: "Muokkaa kentän tietoja", en: "Edit the court details" },
+  suggestEditSubmitted: {
+    fi: "Tämä kenttä on käyttäjän lisäämä, voit muokata tietoja jos havaitsit niissä puutteita.",
+    en: "This court was added by a visitor, edit the information if you noticed any mistakes",
+  },
+  fieldSuggestion: { fi: "Ehdotus", en: "Suggestion" },
+  suggestEditSavedTitle: { fi: "Tallennettu", en: "Saved" },
+  suggestEditSaved: { fi: "Muutos on nyt julkaistu.", en: "The change is published." },
+  adminEditSuggestions: { fi: "Korjausehdotukset", en: "Suggested corrections" },
+  adminEditUnconfirmed: {
+    fi: "Vahvistuslinkkiä ei ole vielä avattu.",
+    en: "The confirmation link has not been opened yet.",
+  },
+  adminEditRemoved: { fi: "Poistettu", en: "Removed" },
+  suggestHoopHeightLead: {
+    fi: "Korin korkeuden voi kuitenkin ilmoittaa Hoop Finderiin, sitä tietoa ei ole lähdepalvelussa.",
+    en: "You can add the hoop height in Hoop Finder. It is not in the source.",
+  },
+  catalogEditBefore: {
+    fi: "Kentän tiedot on haettu",
+    en: "Court details come from the",
+  },
+  catalogEditAfter: {
+    fi: "palvelusta. Siirry palveluun muokkaamaan kentän tietoja:",
+    en: "service. Go there to edit the court details:",
+  },
+  suggestEditSubmit: { fi: "Lähetä ehdotus", en: "Send suggestion" },
+  suggestEditUnchanged: {
+    fi: "Muuta ainakin yhtä tietoa.",
+    en: "Change at least one fact.",
+  },
+  suggestEditSuccessTitle: { fi: "Tarkista sähköpostisi", en: "Check your email" },
+  suggestEditSuccess: {
+    fi: "Sait vahvistuslinkin. Klikkaa sitä, niin ehdotus tulee ylläpidon tarkistettavaksi.",
+    en: "You received a confirmation link. Open it and an admin will check the suggestion.",
+  },
+  suggestEditThanksBody: {
+    fi: "Ylläpito sai ilmoituksen ja tarkistaa korjauksen pian.",
+    en: "An admin was notified and will check the correction soon.",
   },
   confirmThanksTitle: { fi: "Kiitos!", en: "Thank you!" },
   confirmThanksBody: {
@@ -673,6 +713,10 @@ const messages = {
   adminPublishConfirm: {
     fi: (name: string) => `Julkaistaanko “${name}”? Käyttäjälle lähetetään sähköposti.`,
     en: (name: string) => `Publish “${name}”? An email will be sent to the visitor.`,
+  },
+  adminPublishEditConfirm: {
+    fi: (name: string) => `Julkaistaanko korjaus kentälle “${name}”?`,
+    en: (name: string) => `Publish the correction for “${name}”?`,
   },
   adminUnpublish: { fi: "Piilota", en: "Unpublish" },
   adminUnpublishConfirm: {

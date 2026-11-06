@@ -1,8 +1,9 @@
-import { cleanup, render, screen, within } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { afterEach, beforeAll, expect, test, vi } from "vitest";
+import { AdminProvider } from "@/components/admin/AdminProvider";
 import { getCopy } from "@/lib/copy";
-import { type Court, emptyAmenities } from "@/lib/courts";
+import { COURT_THANKS_KEY, type Court, emptyAmenities } from "@/lib/courts";
 import { CourtDetails } from "./CourtDetails";
 
 vi.mock("next/link", () => ({
@@ -100,3 +101,82 @@ test("a court page links to this court on the map under the minimap", () => {
   expect(map).toHaveAttribute("href", "/kartta?court=l1");
   expect(location.compareDocumentPosition(map) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
 });
+
+test("a visitor can open the correction form from the court page", () => {
+  render(<CourtDetails court={court} fetchedAtBySource={{}} sourceFetchedAt={null} photos={[]} />);
+
+  fireEvent.click(screen.getByRole("button", { name: copy.suggestContribute }));
+
+  const dialog = screen.getByRole("dialog", { name: copy.suggestContribute });
+  expect(within(dialog).getByText(copy.suggestHoopHeightLead)).toBeInTheDocument();
+  expect(within(dialog).getByRole("link", { name: "lipas.fi/liikuntapaikat/1" })).toHaveAttribute(
+    "href",
+    "https://www.lipas.fi/liikuntapaikat/1",
+  );
+  expect(screen.getByRole("button", { name: copy.hoopHeights.official })).toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: copy.statusOpen })).not.toBeInTheDocument();
+  expect(screen.getByRole("textbox", { name: field(copy.addCourtEmail) })).toBeInTheDocument();
+});
+
+test("a visitor-added court says so in the form", () => {
+  render(
+    <CourtDetails
+      court={{ ...court, id: "submitted-10014", source: "submitted" }}
+      fetchedAtBySource={{}}
+      sourceFetchedAt={null}
+      photos={[]}
+    />,
+  );
+
+  fireEvent.click(screen.getByRole("button", { name: copy.suggestContribute }));
+
+  const dialog = screen.getByRole("dialog", { name: copy.suggestContribute });
+  expect(within(dialog).getByText(copy.suggestEditSubmitted)).toBeInTheDocument();
+  expect(within(dialog).queryByText(copy.suggestHoopHeightLead)).not.toBeInTheDocument();
+});
+
+test("a confirmation link opened after publish says the change is already live", () => {
+  sessionStorage.setItem(COURT_THANKS_KEY, `edit-live:${court.id}`);
+
+  render(<CourtDetails court={court} fetchedAtBySource={{}} sourceFetchedAt={null} photos={[]} />);
+
+  expect(screen.getByText(copy.confirmThanksTitle)).toBeInTheDocument();
+  expect(screen.getByText(copy.suggestEditSaved)).toBeInTheDocument();
+  expect(screen.queryByText(copy.suggestEditThanksBody)).not.toBeInTheDocument();
+});
+
+test("an admin reviews a suggestion on the court and uses the same form", () => {
+  render(
+    <AdminProvider isAdmin>
+      <CourtDetails
+        court={court}
+        fetchedAtBySource={{}}
+        sourceFetchedAt={null}
+        photos={[]}
+        pendingEdits={[
+          {
+            id: "20",
+            email: "visitor@example.com",
+            status: "pending",
+            changes: { hoopHeight: "official" },
+          },
+        ]}
+      />
+    </AdminProvider>,
+  );
+
+  expect(screen.getByText(`${copy.fieldSuggestion}:`)).toBeInTheDocument();
+  expect(screen.getByText(copy.hoopHeights.official)).toBeInTheDocument();
+  expect(screen.getByRole("button", { name: copy.adminPublish })).toBeInTheDocument();
+  expect(screen.queryByRole("button", { name: copy.adminEdit })).not.toBeInTheDocument();
+
+  fireEvent.click(screen.getByRole("button", { name: copy.suggestContribute }));
+  expect(
+    screen.queryByRole("textbox", { name: field(copy.addCourtEmail) }),
+  ).not.toBeInTheDocument();
+  expect(screen.getByRole("button", { name: copy.hoopHeights.official })).toBeInTheDocument();
+});
+
+function field(label: string) {
+  return new RegExp(label);
+}

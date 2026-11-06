@@ -22,16 +22,23 @@ vi.mock("@/lib/catalog", () => catalog);
 vi.mock("@/lib/email", () => email);
 vi.mock("@/lib/db", () => db);
 
+import { type Court, emptyAmenities } from "./courts";
 import {
+  applyCourtEdit,
   confirmSubmittedCourt,
+  courtAsPublished,
+  courtEditChanges,
   courtSubmissionIp,
+  createCourtEdit,
   createSubmittedCourt,
   deleteSubmittedCourt,
   getSubmittedCourt,
+  listPendingEdits,
   listSubmittedCourts,
   type SubmittedCourtInput,
   SubmittedCourtSchema,
   setSubmittedCourtStatus,
+  storedEditChanges,
   updateSubmittedCourt,
 } from "./submitted-courts";
 
@@ -150,6 +157,7 @@ test("maps published, confirmed, and unconfirmed rows onto the map list", async 
         row({ id: 10015, status: "pending", details: { freeUse: "no" } }),
         row({ id: 10016, status: "unconfirmed" }),
         row({ id: 10017, status: "anything-else" }),
+        row({ id: 10018, status: "published", details: { editOf: "1", lighting: "no" } }),
       ],
     ]),
   );
@@ -261,6 +269,21 @@ test("confirms a court once, tells the admins, and undoes it when that mail fail
     }),
   );
   expect(undone.queries[0]).toContain("unconfirmed");
+});
+
+test("a confirmation link opened after publish leaves the correction published", async () => {
+  scripts.push(
+    fakeSql([
+      () => [
+        { id: 10014, name: "Kallio", email: "visitor@example.com", previous_status: "published" },
+      ],
+    ]),
+  );
+
+  await expect(confirmSubmittedCourt("c".repeat(32), "https://www.hoopfinder.fi")).resolves.toBe(
+    "submitted-10014",
+  );
+  expect(email.sendTemplateEmail).not.toHaveBeenCalled();
 });
 
 test("does not send another admin mail when the link was already opened", async () => {
@@ -380,6 +403,307 @@ test("reports the database as down when the connection is missing", async () => 
   scripts.push(null);
   await expect(deleteSubmittedCourt("10014")).resolves.toEqual({ error: "unavailable" });
 });
+
+test("a catalog court can only change hoop height, whatever else is sent", () => {
+  const court = sampleCourt({ amenities: { ...emptyAmenities(), lighting: true } });
+  expect(
+    courtEditChanges(court, {
+      name: "Something else",
+      details: { lighting: "no", website: "https://nope.fi", hoopHeight: "lower" },
+    }),
+  ).toEqual({ hoopHeight: "lower" });
+  expect(courtEditChanges(court, { details: { lighting: "no" } })).toBeNull();
+  expect(
+    courtEditChanges(sampleCourt({ amenities: { ...emptyAmenities(), hoopHeight: "lower" } }), {
+      details: { hoopHeight: "lower" },
+    }),
+  ).toBeNull();
+});
+
+test("a stored hoop-height correction keeps only that fact", () => {
+  expect(
+    storedEditChanges({
+      editOf: "82621",
+      hoopHeight: "official",
+      publishedAt: "2026-11-06T00:00:00.000Z",
+    }),
+  ).toEqual({ hoopHeight: "official" });
+  expect(storedEditChanges({ editOf: "82621", hoopHeight: "" })).toEqual({ hoopHeight: null });
+});
+
+test("a visitor court keeps only the facts that changed, including the name", () => {
+  const court = sampleCourt({
+    id: "submitted-10014",
+    source: "submitted",
+    status: "active",
+    website: "https://example.fi",
+    comment: "Two hoops",
+    amenities: { ...emptyAmenities(), lighting: true, freeUse: true },
+  });
+  const same = {
+    courtStatus: "active",
+    lighting: "yes",
+    freeUse: "yes",
+    website: "https://example.fi",
+    comment: "Two hoops",
+  };
+
+  expect(
+    courtEditChanges(court, { name: "Kallio", address: "Testikatu 1", details: same }),
+  ).toBeNull();
+  expect(
+    courtEditChanges(court, {
+      name: "Uusi nimi",
+      details: { ...same, lighting: "no", website: "", comment: "One hoop" },
+    }),
+  ).toEqual({
+    name: "Uusi nimi",
+    lighting: "no",
+    website: null,
+    comment: "One hoop",
+  });
+  expect(court.lat).toBe(helsinki.lat);
+});
+
+test("a published correction changes only the facts it names", () => {
+  const court = sampleCourt({
+    comment: "Two hoops",
+    website: "https://example.fi",
+    amenities: { ...emptyAmenities(), lighting: true },
+  });
+
+  const shown = applyCourtEdit(court, {
+    editOf: "1",
+    lighting: "no",
+    website: null,
+    hoopHeight: "lower",
+    name: "Uusi nimi",
+  });
+  expect(shown.amenities.lighting).toBe(false);
+  expect(shown.amenities.hoopHeight).toBe("lower");
+  expect(shown.website).toBeNull();
+  expect(shown.comment).toBe("Two hoops");
+  expect(shown.name).toBe("Uusi nimi");
+  expect(shown.lat).toBe(court.lat);
+  expect(shown.status).toBe("active");
+});
+
+test("later published corrections win, and a submission underneath stays", async () => {
+  const court = sampleCourt();
+  scripts.push(
+    fakeSql([
+      () => [
+        row({ status: "published", details: { comment: "From a submission", lighting: "yes" } }),
+      ],
+    ]),
+  );
+  scripts.push(
+    fakeSql([
+      () => [
+        row({
+          id: 3,
+          created_at: "2026-01-01T00:00:00.000Z",
+          details: { editOf: "1", lighting: "yes", publishedAt: "2026-02-01T00:00:00.000Z" },
+        }),
+        row({
+          id: 4,
+          created_at: "2026-01-02T00:00:00.000Z",
+          details: { editOf: "1", lighting: "no", publishedAt: "2026-03-01T00:00:00.000Z" },
+        }),
+      ],
+    ]),
+  );
+
+  const shown = await courtAsPublished(court);
+  expect(shown.comment).toBe("From a submission");
+  expect(shown.amenities.lighting).toBe(false);
+});
+
+test("sends the edit link and replaces an unconfirmed suggestion from the same email", async () => {
+  const court = sampleCourt();
+  const replaced = fakeSql([
+    () => [{ id: 9, confirmation_token: "old-token", details: { editOf: "1", lighting: "yes" } }],
+    (values) => {
+      expect(values).toContainEqual(expect.objectContaining({ editOf: "1", freeUse: "no" }));
+      return [{ id: 9 }];
+    },
+  ]);
+  scripts.push(replaced);
+
+  await expect(
+    createCourtEdit(court, "visitor@example.com", { freeUse: "no" }, "https://www.hoopfinder.fi"),
+  ).resolves.toEqual({ ok: true });
+  expect(email.sendTemplateEmail).toHaveBeenCalledWith(
+    expect.objectContaining({
+      to: "visitor@example.com",
+      template: "hoop-edit-confirmation-link",
+      variables: expect.objectContaining({
+        COURT_NAME: "Kallio",
+        COURT_EDIT_CONFIRMATION_LINK: expect.stringMatching(
+          /^https:\/\/www\.hoopfinder\.fi\/edit\/confirm\/[\w-]{20,128}$/,
+        ),
+      }),
+    }),
+  );
+  expect(replaced.queries[1]).toContain("UPDATE");
+});
+
+test("drops a new suggestion when the edit mail does not go out, and restores a replaced one", async () => {
+  const court = sampleCourt();
+  scripts.push(fakeSql([() => [], () => [{ id: 10 }]]));
+  const removed = fakeSql([() => []]);
+  scripts.push(removed);
+  email.sendTemplateEmail.mockResolvedValueOnce({ error: "failed" });
+
+  await expect(
+    createCourtEdit(court, "visitor@example.com", { lighting: "yes" }, "https://www.hoopfinder.fi"),
+  ).resolves.toEqual({ error: "email" });
+  expect(removed.queries[0]).toContain("DELETE");
+
+  const previous = { editOf: "1", lighting: "yes" };
+  scripts.push(
+    fakeSql([
+      () => [{ id: 9, confirmation_token: "old-token", details: previous }],
+      () => [{ id: 9 }],
+    ]),
+  );
+  const restored = fakeSql([() => []]);
+  scripts.push(restored);
+  email.sendTemplateEmail.mockResolvedValueOnce({ error: "failed" });
+
+  await expect(
+    createCourtEdit(court, "visitor@example.com", { lighting: "no" }, "https://www.hoopfinder.fi"),
+  ).resolves.toEqual({ error: "email" });
+  expect(restored.queries[0]).toContain("UPDATE");
+  expect(restored.bound[0]).toContain("old-token");
+  expect(restored.bound[0]).toContain(previous);
+});
+
+test("an admin correction is stored as published without a confirmation email", async () => {
+  const court = sampleCourt();
+  scripts.push(fakeSql([() => [{ id: 21 }]]));
+  scripts.push(
+    fakeSql([
+      () => [
+        {
+          ...row({ status: "published", details: { editOf: "1", hoopHeight: "official" } }),
+          email: "admin@example.com",
+          previous_status: "pending",
+        },
+      ],
+      () => [],
+    ]),
+  );
+
+  await expect(
+    createCourtEdit(
+      court,
+      "admin@example.com",
+      { hoopHeight: "official" },
+      "https://www.hoopfinder.fi",
+      { publish: true },
+    ),
+  ).resolves.toEqual({ ok: true });
+  expect(email.sendTemplateEmail).not.toHaveBeenCalled();
+});
+
+test("publishing a correction skips the new-court mail and stamps the publish time", async () => {
+  const published = fakeSql([
+    () => [
+      {
+        ...row({ status: "published", details: { editOf: "1", lighting: "no" } }),
+        email: "visitor@example.com",
+        previous_status: "pending",
+      },
+    ],
+    () => [],
+  ]);
+  scripts.push(published);
+
+  await expect(
+    setSubmittedCourtStatus("9", "published", "https://www.hoopfinder.fi"),
+  ).resolves.toMatchObject({ court: { id: "submitted-10014" } });
+  expect(email.sendTemplateEmail).not.toHaveBeenCalled();
+  expect(published.bound[1]?.[0]).toEqual(
+    expect.objectContaining({ publishedAt: expect.any(String) }),
+  );
+  expect(published.queries).toHaveLength(2);
+});
+
+test("publishing a visitor-court correction writes the name onto that court and leaves the pin", async () => {
+  const published = fakeSql([
+    () => [
+      {
+        ...row({
+          status: "published",
+          details: { editOf: "submitted-10014", name: "Uusi nimi", lighting: "no" },
+        }),
+        email: "visitor@example.com",
+        previous_status: "pending",
+      },
+    ],
+    () => [],
+    (values) => {
+      expect(values).toContain("Uusi nimi");
+      expect(values).toContainEqual({ lighting: "no" });
+      return [];
+    },
+  ]);
+  scripts.push(published);
+
+  await expect(
+    setSubmittedCourtStatus("9", "published", "https://www.hoopfinder.fi"),
+  ).resolves.toMatchObject({ court: { id: "submitted-10014" } });
+  expect(published.queries[2]).toContain("UPDATE");
+  expect(published.queries[2]).not.toContain("lat");
+});
+
+test("an unconfirmed correction is listed for the admin to publish", async () => {
+  const listed = fakeSql([
+    () => [
+      {
+        id: 21,
+        email: "visitor@example.com",
+        status: "unconfirmed",
+        details: { hoopHeight: "official", editOf: "l82621" },
+      },
+    ],
+  ]);
+  scripts.push(listed);
+
+  await expect(listPendingEdits("l82621")).resolves.toEqual([
+    {
+      id: "21",
+      email: "visitor@example.com",
+      status: "unconfirmed",
+      changes: { hoopHeight: "official" },
+    },
+  ]);
+  expect(listed.queries[0]).toContain("unconfirmed");
+});
+
+function sampleCourt(overrides: Partial<Court> = {}): Court {
+  return {
+    id: "1",
+    source: "lipas",
+    name: "Kallio",
+    nameFi: "Kallio",
+    status: "active",
+    address: "Testikatu 1",
+    postalCode: null,
+    city: "Helsinki",
+    neighborhood: null,
+    lat: helsinki.lat,
+    lon: helsinki.lon,
+    comment: null,
+    website: null,
+    constructionYear: null,
+    owner: null,
+    admin: null,
+    amenities: emptyAmenities(),
+    ...overrides,
+  };
+}
 
 function shift(latDelta: number) {
   return { lat: helsinki.lat + latDelta, lon: helsinki.lon };
