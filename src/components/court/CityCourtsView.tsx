@@ -1,14 +1,21 @@
 "use client";
 
+import { useState } from "react";
 import { AppFooter } from "@/components/brand/AppFooter";
 import { AppHeader } from "@/components/brand/AppHeader";
 import { AppLink } from "@/components/brand/AppLink";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { ViewJumps } from "@/components/brand/ViewJump";
+import { SearchBox } from "@/components/court/CitySelect";
 import { CourtIndexCard } from "@/components/court/CourtIndexView";
 import type { FetchedAtBySource } from "@/lib/catalog";
 import { COURT_INDEX_PATH } from "@/lib/constants";
-import { type CourtIndexEntry, cityAreas } from "@/lib/court-index";
+import {
+  CITY_COURT_SEARCH_MIN,
+  type CourtIndexEntry,
+  cityAreas,
+  courtMatchesQuery,
+} from "@/lib/court-index";
 
 export function CityCourtsView({
   cityName,
@@ -27,6 +34,9 @@ export function CityCourtsView({
   const place = cityName ?? copy.cityUnknown;
   const heading = copy.cityCourtsHeading(place);
   const areas = cityAreas(courts);
+  const [query, setQuery] = useState("");
+  const showSearch = courts.length > CITY_COURT_SEARCH_MIN;
+  const visible = showSearch ? courts.filter((court) => courtMatchesQuery(court, query)) : courts;
 
   return (
     <div className="flex min-h-dvh flex-col bg-asphalt">
@@ -52,11 +62,26 @@ export function CityCourtsView({
             {copy.cityAreasLine(areas)}
           </p>
         ) : null}
-        <ul className="mt-6 space-y-2">
-          {courts.map((court) => (
-            <CourtIndexCard key={court.href} court={court} />
-          ))}
-        </ul>
+        {showSearch ? (
+          <div className="mt-6">
+            <SearchBox
+              id="city-court-search"
+              label={copy.cityCourtSearch}
+              placeholder={copy.cityCourtSearch}
+              query={query}
+              onQueryChange={setQuery}
+            />
+          </div>
+        ) : null}
+        {visible.length > 0 ? (
+          <ul className={`${showSearch ? "mt-4" : "mt-6"} space-y-2`}>
+            {visible.map((court) => (
+              <CourtIndexCard key={court.href} court={court} />
+            ))}
+          </ul>
+        ) : (
+          <p className="mt-4 text-sm text-ink-muted">{copy.citySearchEmpty}</p>
+        )}
       </main>
       <AppFooter />
     </div>

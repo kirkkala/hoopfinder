@@ -1,4 +1,4 @@
-import { cleanup, render, screen } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { afterEach, beforeAll, expect, test, vi } from "vitest";
 import { getCopy } from "@/lib/copy";
@@ -104,4 +104,46 @@ test("a city page names the city and counts its own courts", () => {
     "/koripallokentat/espoo/l1",
   );
   expect(screen.getByRole("link", { name: copy.courtsOnMap })).toHaveAttribute("href", "/kartta");
+  expect(screen.queryByRole("searchbox")).not.toBeInTheDocument();
+});
+
+test("search appears only after 10 courts and filters the list", () => {
+  const courts = Array.from({ length: 10 }, (_, index) =>
+    entry(`Kenttä ${index + 1}`, `/koripallokentat/espoo/l${index + 1}`, null, null),
+  );
+  const { rerender } = render(
+    <CityCourtsView cityName="Espoo" lit={0} closed={0} fetchedAtBySource={{}} courts={courts} />,
+  );
+  expect(screen.queryByRole("searchbox", { name: copy.cityCourtSearch })).not.toBeInTheDocument();
+
+  const searchable = [
+    {
+      ...entry("Järvenpään kenttä", "/koripallokentat/espoo/l20", null, null),
+      neighborhood: "Järvenpää",
+      address: "Rantatie 1",
+    },
+    ...courts,
+  ];
+  rerender(
+    <CityCourtsView
+      cityName="Espoo"
+      lit={0}
+      closed={0}
+      fetchedAtBySource={{}}
+      courts={searchable}
+    />,
+  );
+
+  const search = screen.getByRole("searchbox", { name: copy.cityCourtSearch });
+  fireEvent.change(search, { target: { value: "jarven" } });
+  expect(screen.getByRole("link", { name: /Järvenpään kenttä/ })).toBeInTheDocument();
+  expect(screen.queryByRole("link", { name: /Kenttä 1/ })).not.toBeInTheDocument();
+
+  fireEvent.change(search, { target: { value: "puuttuu" } });
+  expect(screen.getByText(copy.citySearchEmpty)).toBeInTheDocument();
+
+  fireEvent.click(screen.getByRole("button", { name: copy.citySearchClear }));
+  expect(screen.queryByText(copy.citySearchEmpty)).not.toBeInTheDocument();
+  expect(document.querySelector('a[href="/koripallokentat/espoo/l1"]')).toBeTruthy();
+  expect(document.querySelector('a[href="/koripallokentat/espoo/l20"]')).toBeTruthy();
 });
