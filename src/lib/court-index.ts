@@ -9,6 +9,7 @@ import {
   type ExplorerCourt,
   listingCity,
   publicCourtId,
+  searchText,
 } from "@/lib/courts";
 
 export type CourtIndexEntry = {
@@ -26,6 +27,9 @@ export type CourtIndexEntry = {
 
 /** A city page needs two public courts. One court redirects to that court. */
 export const CITY_PAGE_MIN_COURTS = 2;
+
+/** Search appears once a city lists more courts than this. */
+export const CITY_COURT_SEARCH_MIN = 10;
 
 /** Address for a city. One public court redirects to that court. */
 export function cityIndexHref(anchor: string): string {
@@ -142,6 +146,18 @@ export function cityCourtFacts(courts: Pick<CourtIndexEntry, "amenities" | "stat
     if (court.status === "out-of-service-temporarily") closed += 1;
   }
   return { lit, closed };
+}
+
+/** Name, Finnish name, street, or neighborhood. An empty query keeps every court. */
+export function courtMatchesQuery(
+  court: Pick<CourtIndexEntry, "name" | "nameFi" | "address" | "neighborhood">,
+  query: string,
+): boolean {
+  const needle = searchText(query);
+  if (!needle) return true;
+  return [court.name, court.nameFi, court.address, court.neighborhood].some(
+    (value) => value && searchText(value).includes(needle),
+  );
 }
 
 /** Named areas on these courts, in Finnish alphabetical order. */

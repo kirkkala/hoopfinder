@@ -1,4 +1,4 @@
-# Hoop Finder beta 23
+# Hoop Finder beta 25
 
 Outdoor basketball courts across Finland — find a hoop, go out and play.
 
@@ -65,13 +65,21 @@ Visitors open `/add`, drop a pin in Finland (not next to an existing court), and
 
 The pin shows on the map immediately. The visitor confirms by email, then an admin publishes it from `/admin`.
 
-One IP address can add five courts per hour. After that, the form asks them to try again later. `npm run dev` does not apply the limit.
+One IP address can add five courts per hour. After that, the form asks them to try again later. `npm run dev` does not apply the limit. Corrections share that limit.
+
+## Suggest a correction
+
+On a court page, **Muokkaa kentän tietoja**. The visitor confirms by email. An admin can publish before that link is opened.
+
+LIPAS and OSM facts are corrected in that service. Hoop height is the exception, so it can be suggested here. A visitor-added court can also change its name, address, and other facts. The map pin stays.
+
+A published correction stays in Postgres, so `refresh-courts` does not remove it. The same email replaces its own unconfirmed suggestion for that court.
 
 ## Admin
 
-`/admin` reviews visitor-submitted courts. Sign-in is with Google, NextAuth, a JWT session, and admin access from an environment variable.
+`/admin` counts feedback, photos, visitor courts, and corrections, and links to each list. Sign-in is Google, NextAuth, and a JWT session.
 
-Only `ADMIN_EMAILS` can access the admin panel.
+Only `ADMIN_EMAILS` can open it.
 
 Generate `AUTH_SECRET` with `npx auth secret`.
 

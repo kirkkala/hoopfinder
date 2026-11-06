@@ -12,7 +12,6 @@ import { breadcrumbJsonLd, loadCourtById, loadCourtIndex } from "@/lib/court-pag
 import type { CourtPhoto } from "@/lib/court-photos";
 import { listCourtPhotos } from "@/lib/court-photos";
 import {
-  applyVisitorCourt,
   type Court,
   courtIdFromPublicId,
   courtOgHref,
@@ -24,7 +23,7 @@ import {
 } from "@/lib/courts";
 import { OG_CONTENT_TYPE, OG_SIZE, siteOpenGraph } from "@/lib/og";
 import { siteOrigin } from "@/lib/site-origin";
-import { listPublishedCourtsNear } from "@/lib/submitted-courts";
+import { courtAsPublished, listPendingEdits } from "@/lib/submitted-courts";
 
 export const dynamic = "force-dynamic";
 
@@ -85,11 +84,12 @@ export default async function CourtPage({
   if (!resolved.matches) permanentRedirect(resolved.canonical);
 
   const finnish = getCopy("fi");
-  const court = await withVisitorFacts(resolved.court);
+  const court = await courtAsPublished(resolved.court);
   const otherCourts = (resolved.place.members ?? []).filter((member) => member.id !== court.id);
-  const [{ fetchedAtBySource }, photos] = await Promise.all([
+  const [{ fetchedAtBySource }, photos, pendingEdits] = await Promise.all([
     getCourtCatalog(),
     listPlacePhotos(resolved.place),
+    isAdmin ? listPendingEdits(court.id) : Promise.resolve([]),
   ]);
   const cityName = resolved.group?.city ?? cityHeading(listingCity(court));
   const jsonLd = breadcrumbJsonLd([
@@ -115,6 +115,7 @@ export default async function CourtPage({
         sourceFetchedAt={resolved.sourceFetchedAt}
         photos={photos}
         visitorEmail={isAdmin && resolved.email ? resolved.email : null}
+        pendingEdits={pendingEdits}
         cityName={cityName}
         cityUnknown={cityName === null}
         cityPageHref={resolved.group?.pageHref ?? null}
@@ -129,6 +130,11 @@ async function resolveCourt(params: Promise<{ city: string; id: string }>) {
   if (!id) return null;
   const [loaded, index] = await Promise.all([loadCourtById(id), loadCourtIndex()]);
   if (!loaded) return null;
+  if (loaded.editOf) {
+    const target = await loadCourtById(loaded.editOf);
+    if (!target || target.editOf) return null;
+    permanentRedirect(canonicalCourtHref(target.court, index.groups));
+  }
   const canonical = canonicalCourtHref(loaded.court, index.groups);
   return {
     court: loaded.court,
@@ -144,12 +150,6 @@ async function resolveCourt(params: Promise<{ city: string; id: string }>) {
 async function viewerIsAdmin() {
   const session = await getAuthSession();
   return session?.user?.isAdmin === true;
-}
-
-async function withVisitorFacts(court: Court): Promise<Court> {
-  if (court.source === "submitted") return court;
-  const visitors = await listPublishedCourtsNear(court.members ?? [court]);
-  return visitors.reduce((current, visitor) => applyVisitorCourt(current, visitor), court);
 }
 
 async function listPlacePhotos(court: Court): Promise<CourtPhoto[]> {

@@ -533,6 +533,17 @@ function courtSegments(court: Pick<ExplorerCourt, "id" | "source">): string[] {
   }
 }
 
+/** Old `/courts/...` path for a source id, used when the city slug is not at hand. */
+export function courtPathFromId(id: string): string | null {
+  if (/^\d+$/.test(id)) return `lipas/${id}`;
+  if (id.startsWith("submitted-")) {
+    const key = id.slice("submitted-".length);
+    return /^\d+$/.test(key) ? `submitted/${key}` : null;
+  }
+  const osm = parseOsmCourtId(id);
+  return osm ? `osm/${osm.type}/${osm.osmId}` : null;
+}
+
 /** Numeric id in `submitted_courts`; `submitted-` is only for the merged map list. */
 export function submittedCourtKey(id: string): string {
   return id.startsWith("submitted-") ? id.slice("submitted-".length) : id;
@@ -567,6 +578,11 @@ export function listingCity(court: {
   if (direct) return direct;
   if (court.source !== "submitted" && court.source !== "pending") return null;
   return cityFromAddress(court.address ?? null)?.city ?? null;
+}
+
+/** Lowercase search text without accents, so "jar" matches "Järvenpää". */
+export function searchText(value: string) {
+  return value.trim().toLocaleLowerCase("fi").normalize("NFD").replace(/\p{M}/gu, "");
 }
 
 /** ASCII city segment. Missing cities share `muu`. */

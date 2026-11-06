@@ -13,6 +13,7 @@ import {
   courtOgHref,
   courtParam,
   courtPath,
+  courtPathFromId,
   courtPlacementBlocked,
   courtTitle,
   type ExplorerCourt,
@@ -195,6 +196,7 @@ test("round-trips court ids through the page path and the map query", () => {
   };
 
   expect(courtPath(lipas)).toBe("lipas/82547");
+  expect(courtPathFromId(lipas.id)).toBe("lipas/82547");
   expect(publicCourtId(lipas)).toBe("l82547");
   expect(courtParam(lipas)).toBe("l82547");
   expect(courtIdFromParam(courtParam(lipas))).toBe("82547");
@@ -205,6 +207,7 @@ test("round-trips court ids through the page path and the map query", () => {
   expect(courtHref({ id: "1", source: "lipas", city: null })).toBe("/koripallokentat/muu/l1");
 
   expect(courtPath(osm)).toBe("osm/way/1095396325");
+  expect(courtPathFromId(osm.id)).toBe("osm/way/1095396325");
   expect(courtHref(osm)).toBe("/koripallokentat/espoo/w1095396325");
   expect(courtIdFromParam(courtParam(osm))).toBe("way-1095396325");
   expect(courtIdFromParam("osm-way-1095396325")).toBe("way-1095396325");
@@ -212,6 +215,7 @@ test("round-trips court ids through the page path and the map query", () => {
   expect(courtIdFromPublicId("r9")).toBe("relation-9");
 
   expect(courtPath(pending)).toBe("submitted/10014");
+  expect(courtPathFromId(pending.id)).toBe("submitted/10014");
   expect(submittedCourtKey(pending.id)).toBe("10014");
   expect(courtHref(pending)).toBe("/koripallokentat/tampere/s10014");
   expect(courtIdFromParam(courtParam(pending))).toBe("submitted-10014");
