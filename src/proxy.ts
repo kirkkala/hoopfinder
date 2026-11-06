@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 import { adminLoginPath, isAdminEmail } from "@/lib/admin";
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const token = process.env.AUTH_SECRET
     ? await getToken({ req: request, secret: process.env.AUTH_SECRET })
     : null;
