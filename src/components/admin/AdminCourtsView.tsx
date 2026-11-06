@@ -281,7 +281,7 @@ export function EditSuggestionList({
   onRemove,
 }: {
   items: SuggestionLink[];
-  onStatusChange?: (id: string, status: StatusFilter) => void;
+  onStatusChange?: (id: string, status: AdminSubmittedCourt["status"]) => void;
   onRemove?: (id: string, name: string) => void;
 }) {
   const copy = useCopy();

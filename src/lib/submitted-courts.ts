@@ -420,7 +420,7 @@ export async function setSubmittedCourtStatus(
         SET
           name = CASE WHEN ${name}::text IS NULL THEN name ELSE ${name} END,
           address = CASE WHEN ${address}::text IS NULL THEN address ELSE ${address} END,
-          details = COALESCE(details, '{}'::jsonb) || ${sql.json(patch)}
+          details = COALESCE(details, '{}'::jsonb) || ${sql.json(jsonValue(patch))}
         WHERE id = ${target}
       `;
     }
@@ -786,8 +786,7 @@ export async function createCourtEdit(
       `;
       return rows[0] ? { id: String(rows[0].id) } : { error: "unavailable" as const };
     });
-    if (!saved) return { error: "unavailable" };
-    if ("error" in saved) return saved;
+    if (!saved || "error" in saved) return { error: "unavailable" };
     const published = await setSubmittedCourtStatus(saved.id, "published", origin);
     return "error" in published ? { error: "unavailable" } : { ok: true };
   }
@@ -843,8 +842,7 @@ export async function createCourtEdit(
     return rows[0] ? { id: String(rows[0].id), replaced: null } : { error: "unavailable" as const };
   });
 
-  if (!saved) return { error: "unavailable" };
-  if ("error" in saved) return saved;
+  if (!saved || "error" in saved) return { error: "unavailable" };
 
   const sent = await sendTemplateEmail({
     to: email,
@@ -862,7 +860,7 @@ export async function createCourtEdit(
         UPDATE submitted_courts
         SET
           confirmation_token = ${saved.replaced.confirmation_token},
-          details = ${sql.json(saved.replaced.details)}
+          details = ${sql.json(jsonValue(saved.replaced.details))}
         WHERE id = ${saved.id} AND status = 'unconfirmed'
       `;
       return;
@@ -873,6 +871,10 @@ export async function createCourtEdit(
     `;
   });
   return { error: "email" };
+}
+
+function jsonValue(value: unknown) {
+  return value as never;
 }
 
 function textOrNull(value: unknown): string | null {

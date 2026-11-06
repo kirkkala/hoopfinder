@@ -11,7 +11,9 @@ const pages = vi.hoisted(() => ({
   loadCourtById: vi.fn(),
 }));
 const auth = vi.hoisted(() => ({
-  getAuthSession: vi.fn(async () => null),
+  getAuthSession: vi.fn(
+    async (): Promise<{ user: { isAdmin: boolean; email: string } } | null> => null,
+  ),
 }));
 
 vi.mock("@/lib/submitted-courts", async (importOriginal) => {
