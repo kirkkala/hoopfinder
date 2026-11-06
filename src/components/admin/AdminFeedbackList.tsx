@@ -11,8 +11,8 @@ export function AdminFeedbackList({ items }: { items: AdminFeedback[] | null }) 
   const copy = useCopy();
 
   return (
-    <section className="mt-8">
-      <h2 className="font-display text-2xl tracking-wide text-white">{copy.adminFeedbackTitle}</h2>
+    <>
+      <h1 className="font-display text-4xl tracking-wide text-white">{copy.adminFeedbackTitle}</h1>
       {items === null ? (
         <p className="mt-3 text-sm text-ink-muted">{copy.adminUnavailable}</p>
       ) : items.length === 0 ? (
@@ -27,7 +27,7 @@ export function AdminFeedbackList({ items }: { items: AdminFeedback[] | null }) 
           </ul>
         </>
       )}
-    </section>
+    </>
   );
 }
 

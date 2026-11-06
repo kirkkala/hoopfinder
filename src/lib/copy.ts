@@ -445,7 +445,7 @@ const messages = {
   },
   addCourtEmail: { fi: "Sähköpostiosoitteesi", en: "Your email address" },
   addCourtEmailHelp: {
-    fi: "Lähetämme sähköpostiisi vahvistuslinkin.",
+    fi: "Lähetämme sinulle sähköpostiin vahvistuslinkin muokkauksesta.",
     en: "We'll send a confirmation link to your email.",
   },
   addCourtEmailUpdates: {
@@ -528,6 +528,46 @@ const messages = {
   addCourtSuccess: {
     fi: "Sait sähköpostiisi vahvistuslinkin, klikkaa sitä ja kenttä julkaistaan pian!",
     en: "You received a confirmation link in your email, click it and the court will be published soon!",
+  },
+  suggestContribute: { fi: "Muokkaa kentän tietoja", en: "Edit the court details" },
+  suggestEditSubmitted: {
+    fi: "Tämä kenttä on käyttäjän lisäämä, voit muokata tietoja jos havaitsit niissä puutteita.",
+    en: "This court was added by a visitor, edit the information if you noticed any mistakes",
+  },
+  fieldSuggestion: { fi: "Ehdotus", en: "Suggestion" },
+  suggestEditSavedTitle: { fi: "Tallennettu", en: "Saved" },
+  suggestEditSaved: { fi: "Muutos on nyt julkaistu.", en: "The change is published." },
+  adminEditSuggestions: { fi: "Korjausehdotukset", en: "Suggested corrections" },
+  adminEditUnconfirmed: {
+    fi: "Vahvistuslinkkiä ei ole vielä avattu.",
+    en: "The confirmation link has not been opened yet.",
+  },
+  adminEditRemoved: { fi: "Poistettu", en: "Removed" },
+  suggestHoopHeightLead: {
+    fi: "Korin korkeuden voi kuitenkin ilmoittaa Hoop Finderiin, sitä tietoa ei ole lähdepalvelussa.",
+    en: "You can add the hoop height in Hoop Finder. It is not in the source.",
+  },
+  catalogEditBefore: {
+    fi: "Kentän tiedot on haettu",
+    en: "Court details come from the",
+  },
+  catalogEditAfter: {
+    fi: "palvelusta. Siirry palveluun muokkaamaan kentän tietoja:",
+    en: "service. Go there to edit the court details:",
+  },
+  suggestEditSubmit: { fi: "Lähetä ehdotus", en: "Send suggestion" },
+  suggestEditUnchanged: {
+    fi: "Muuta ainakin yhtä tietoa.",
+    en: "Change at least one fact.",
+  },
+  suggestEditSuccessTitle: { fi: "Tarkista sähköpostisi", en: "Check your email" },
+  suggestEditSuccess: {
+    fi: "Sait vahvistuslinkin. Klikkaa sitä, niin ehdotus tulee ylläpidon tarkistettavaksi.",
+    en: "You received a confirmation link. Open it and an admin will check the suggestion.",
+  },
+  suggestEditThanksBody: {
+    fi: "Ylläpito sai ilmoituksen ja tarkistaa korjauksen pian.",
+    en: "An admin was notified and will check the correction soon.",
   },
   confirmThanksTitle: { fi: "Kiitos!", en: "Thank you!" },
   confirmThanksBody: {
@@ -619,6 +659,11 @@ const messages = {
   sentBy: { fi: "Lähettäjä", en: "Sender" },
   adminFeedbackNoEmail: { fi: "Anonyymi", en: "Anonymous" },
   adminNav: { fi: "Hallinta", en: "Admin" },
+  adminTabHome: { fi: "Hallinta", en: "Admin" },
+  adminTabFeedback: { fi: "Palaute", en: "Feedback" },
+  adminTabPhotos: { fi: "Kuvat", en: "Photos" },
+  adminTabCourts: { fi: "Kentät", en: "Courts" },
+  adminTabEdits: { fi: "Korjaus", en: "Edits" },
   adminTitle: { fi: "Hallintapaneeli", en: "Admin panel" },
   adminEmpty: {
     fi: "Ei käyttäjien lisäämiä kenttiä.",
@@ -627,6 +672,11 @@ const messages = {
   adminUnavailable: {
     fi: "Hallintapaneeli ei ole juuri nyt käytössä.",
     en: "Admin panel is not available right now.",
+  },
+  adminCourtsTitle: { fi: "Käyttäjien lisäämät kentät", en: "Courts added by visitors" },
+  adminEditsEmpty: {
+    fi: "Ei tarkistettavia korjausehdotuksia.",
+    en: "No suggestions to review.",
   },
   adminPhotosTitle: { fi: "Kentät, joihin lisätty kuvia", en: "Courts with photos" },
   adminPhotosEmpty: {
@@ -646,6 +696,14 @@ const messages = {
       const noun = count === 1 ? "court" : "courts";
       return `${count} ${noun}`;
     },
+  },
+  adminEditCount: {
+    fi: (count: number) => (count === 1 ? "1 ehdotus" : `${count} ehdotusta`),
+    en: (count: number) => (count === 1 ? "1 suggestion" : `${count} suggestions`),
+  },
+  adminEditFilterEmpty: {
+    fi: "Ei ehdotuksia tässä näkymässä.",
+    en: "No suggestions in this view.",
   },
   adminFilter: { fi: "Suodatus", en: "Filter" },
   adminFilterAll: { fi: "Kaikki", en: "All" },
@@ -674,6 +732,10 @@ const messages = {
     fi: (name: string) => `Julkaistaanko “${name}”? Käyttäjälle lähetetään sähköposti.`,
     en: (name: string) => `Publish “${name}”? An email will be sent to the visitor.`,
   },
+  adminPublishEditConfirm: {
+    fi: (name: string) => `Julkaistaanko korjaus kentälle “${name}”?`,
+    en: (name: string) => `Publish the correction for “${name}”?`,
+  },
   adminUnpublish: { fi: "Piilota", en: "Unpublish" },
   adminUnpublishConfirm: {
     fi: (name: string) => `Piilotetaanko “${name}”?`,
@@ -689,6 +751,16 @@ const messages = {
   adminDeleteConfirm: {
     fi: (name: string) => `Poistetaanko “${name}” pysyvästi? Tätä ei voi perua.`,
     en: (name: string) => `Delete “${name}” permanently? This cannot be undone.`,
+  },
+  adminEditDelete: { fi: "Poista ehdotus", en: "Remove suggestion" },
+  adminEditDeleteConfirm: {
+    fi: (name: string) =>
+      `Poistetaanko vain korjausehdotus kentälle “${name}”? Kenttä jää paikalleen.`,
+    en: (name: string) => `Remove only the suggestion for “${name}”? The court stays.`,
+  },
+  adminEditDeleteError: {
+    fi: "Ehdotuksen poisto epäonnistui. Kokeile uudelleen.",
+    en: "Could not remove the suggestion. Try again.",
   },
   adminDeleteError: {
     fi: "Poisto epäonnistui. Kokeile uudelleen.",

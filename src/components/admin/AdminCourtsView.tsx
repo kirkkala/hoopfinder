@@ -1,59 +1,25 @@
 "use client";
 
 import { basketball } from "@lucide/lab";
-import { Camera, Icon, Pencil, Trash2 } from "lucide-react";
+import { Camera, Icon, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
-import { AdminCourtEditor } from "@/components/admin/AdminCourtEditor";
-import { AdminFeedbackList } from "@/components/admin/AdminFeedbackList";
+import { type ReactNode, useEffect, useState } from "react";
 import { AdminStatusButton } from "@/components/admin/AdminStatusButton";
-import { AppFooter } from "@/components/brand/AppFooter";
-import { AppHeader } from "@/components/brand/AppHeader";
 import { AppLink } from "@/components/brand/AppLink";
 import { useCopy } from "@/components/brand/LocaleProvider";
-import type { FetchedAtBySource } from "@/lib/catalog";
+import { editChangeLines } from "@/lib/court-edit-summary";
 import type { AdminCourtWithPhotos } from "@/lib/court-photos";
-import { courtHref, courtTitle } from "@/lib/courts";
-import type { AdminFeedback } from "@/lib/feedback";
+import { courtHref, courtPathFromId, courtTitle } from "@/lib/courts";
 import type { AdminSubmittedCourt } from "@/lib/submitted-courts";
 
-export function AdminCourtsView({
-  fetchedAtBySource,
-  courts,
-  photoCourts,
-  feedback,
-}: {
-  fetchedAtBySource: FetchedAtBySource;
-  courts: AdminSubmittedCourt[] | null;
-  photoCourts: AdminCourtWithPhotos[] | null;
-  feedback: AdminFeedback[] | null;
-}) {
+const PAGE_TITLE = "font-display text-4xl tracking-wide text-white";
+
+export function AdminPhotoList({ courts }: { courts: AdminCourtWithPhotos[] | null }) {
   const copy = useCopy();
 
   return (
-    <div className="flex min-h-dvh flex-col bg-asphalt">
-      <AppHeader fetchedAtBySource={fetchedAtBySource} />
-      <main className="mx-auto w-full max-w-2xl flex-1 px-4 py-8 sm:px-6">
-        <h1 className="font-display text-4xl tracking-wide text-white">{copy.adminTitle}</h1>
-        <AdminFeedbackList items={feedback} />
-        <PhotoCourts courts={photoCourts} />
-        {courts === null ? (
-          <p className="mt-6 text-sm text-ink-muted">{copy.adminUnavailable}</p>
-        ) : (
-          <SubmittedList initialCourts={courts} />
-        )}
-      </main>
-      <AppFooter />
-    </div>
-  );
-}
-
-function PhotoCourts({ courts }: { courts: AdminCourtWithPhotos[] | null }) {
-  const copy = useCopy();
-
-  return (
-    <section className="mt-8">
-      <h2 className="font-display text-2xl tracking-wide text-white">{copy.adminPhotosTitle}</h2>
+    <>
+      <h1 className={PAGE_TITLE}>{copy.adminPhotosTitle}</h1>
       {courts === null ? (
         <p className="mt-3 text-sm text-ink-muted">{copy.adminUnavailable}</p>
       ) : courts.length === 0 ? (
@@ -78,7 +44,89 @@ function PhotoCourts({ courts }: { courts: AdminCourtWithPhotos[] | null }) {
           ))}
         </ul>
       )}
-    </section>
+    </>
+  );
+}
+
+export function AdminSubmittedCourts({ courts }: { courts: AdminSubmittedCourt[] | null }) {
+  const copy = useCopy();
+  if (courts === null) {
+    return (
+      <>
+        <h1 className={PAGE_TITLE}>{copy.adminCourtsTitle}</h1>
+        <p className="mt-6 text-sm text-ink-muted">{copy.adminUnavailable}</p>
+      </>
+    );
+  }
+  return <SubmittedList initialCourts={courts} />;
+}
+
+export function AdminEditsView({ courts }: { courts: AdminSubmittedCourt[] | null }) {
+  const copy = useCopy();
+  const router = useRouter();
+  const [items, setItems] = useState(courts);
+  const [filter, setFilter] = useState<StatusFilter>("all");
+  const [removeFailed, setRemoveFailed] = useState(false);
+
+  useEffect(() => {
+    setItems(courts);
+  }, [courts]);
+
+  async function remove(id: string, name: string) {
+    if (!window.confirm(copy.adminEditDeleteConfirm(name))) return;
+    setRemoveFailed(false);
+    const response = await fetch(`/api/admin/courts/${encodeURIComponent(id)}`, {
+      method: "DELETE",
+    });
+    if (!response.ok) {
+      setRemoveFailed(true);
+      return;
+    }
+    setItems((current) => current?.filter((court) => court.id !== id) ?? null);
+    router.refresh();
+  }
+
+  const suggestions = items ? suggestionCourts(items) : null;
+  const visible =
+    suggestions === null
+      ? null
+      : filter === "all"
+        ? suggestions
+        : suggestions.filter((item) => item.status === filter);
+
+  return (
+    <>
+      <h1 className={PAGE_TITLE}>{copy.adminEditSuggestions}</h1>
+      {visible === null ? (
+        <p className="mt-6 text-sm text-ink-muted">{copy.adminUnavailable}</p>
+      ) : suggestions?.length === 0 ? (
+        <p className="mt-6 text-sm text-ink-muted">{copy.adminEditsEmpty}</p>
+      ) : (
+        <>
+          <StatusFilterToggle filter={filter} onChange={setFilter} />
+          <p className="mt-3 font-display text-lg tracking-wide text-gold">
+            {copy.adminEditCount(visible.length)}
+          </p>
+          {visible.length === 0 ? (
+            <p className="mt-8 text-sm text-ink-muted">{copy.adminEditFilterEmpty}</p>
+          ) : (
+            <EditSuggestionList
+              items={visible}
+              onStatusChange={(id, status) =>
+                setItems(
+                  (current) =>
+                    current?.map((item) => (item.id === id ? { ...item, status } : item)) ?? null,
+                )
+              }
+              onRemove={remove}
+            />
+          )}
+        </>
+      )}
+      {removeFailed ? (
+        <p className="mt-3 text-sm text-red-400">{copy.adminEditDeleteError}</p>
+      ) : null}
+    </>
   );
 }
 
@@ -89,7 +137,6 @@ function SubmittedList({ initialCourts }: { initialCourts: AdminSubmittedCourt[]
   const [filter, setFilter] = useState<StatusFilter>("all");
   const [savingId, setSavingId] = useState<string | null>(null);
   const [errorId, setErrorId] = useState<string | null>(null);
-  const [editingId, setEditingId] = useState<string | null>(null);
 
   useEffect(() => {
     setCourts(initialCourts);
@@ -113,20 +160,26 @@ function SubmittedList({ initialCourts }: { initialCourts: AdminSubmittedCourt[]
     }
   }
 
-  if (courts.length === 0) {
+  const submissions = courts.filter((court) => !court.editOf);
+
+  if (submissions.length === 0) {
     return (
-      <div className="mt-10 flex flex-col items-center gap-2 px-6 py-12 text-center">
-        <Icon iconNode={basketball} className="size-10 text-gold/70" aria-hidden />
-        <p className="font-display text-2xl tracking-wide text-white">{copy.adminEmpty}</p>
-      </div>
+      <>
+        <h1 className={PAGE_TITLE}>{copy.adminCourtsTitle}</h1>
+        <div className="mt-10 flex flex-col items-center gap-2 px-6 py-12 text-center">
+          <Icon iconNode={basketball} className="size-10 text-gold/70" aria-hidden />
+          <p className="font-display text-2xl tracking-wide text-white">{copy.adminEmpty}</p>
+        </div>
+      </>
     );
   }
 
-  const visible = filter === "all" ? courts : courts.filter((court) => court.status === filter);
-  const editing = courts.find((court) => court.id === editingId) ?? null;
+  const visible =
+    filter === "all" ? submissions : submissions.filter((court) => court.status === filter);
 
   return (
     <>
+      <h1 className={PAGE_TITLE}>{copy.adminCourtsTitle}</h1>
       <StatusFilterToggle filter={filter} onChange={setFilter} />
       <p className="mt-3 font-display text-lg tracking-wide text-gold">
         {copy.adminCourtCount(visible.length)}
@@ -150,42 +203,23 @@ function SubmittedList({ initialCourts }: { initialCourts: AdminSubmittedCourt[]
                       : "border-white/15 bg-white/5"
                 }`}
               >
-                <div className="flex items-start justify-between gap-3">
-                  <div className="flex flex-wrap items-center gap-2">
-                    <StatusBadge status={court.status} />
-                    <AdminStatusButton
-                      id={court.id}
-                      name={court.name}
-                      published={published}
-                      onStatusChange={(status) => {
-                        setCourts((current) =>
-                          current.map((item) =>
-                            item.id === court.id ? { ...item, status } : item,
-                          ),
-                        );
-                      }}
-                    />
-                  </div>
-                  <div className="flex shrink-0 items-center gap-1">
-                    <button
-                      type="button"
-                      onClick={() => setEditingId(court.id)}
-                      className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium text-ink/70 hover:bg-white/10 hover:text-white"
-                    >
-                      <Pencil className="size-3.5" aria-hidden />
-                      {copy.adminEdit}
-                    </button>
-                    <button
-                      type="button"
-                      disabled={saving}
-                      onClick={() => void remove(court.id, court.name)}
-                      className="inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium text-ink/70 hover:bg-red-500/15 hover:text-red-300 disabled:cursor-wait disabled:opacity-70"
-                    >
-                      <Trash2 className="size-3.5" aria-hidden />
-                      {copy.adminDelete}
-                    </button>
-                  </div>
-                </div>
+                <AdminCardToolbar status={court.status}>
+                  <AdminStatusButton
+                    id={court.id}
+                    name={court.name}
+                    published={published}
+                    onStatusChange={(status) => {
+                      setCourts((current) =>
+                        current.map((item) => (item.id === court.id ? { ...item, status } : item)),
+                      );
+                    }}
+                  />
+                  <AdminDeleteButton
+                    label={copy.adminDelete}
+                    disabled={saving}
+                    onClick={() => void remove(court.id, court.name)}
+                  />
+                </AdminCardToolbar>
                 <AppLink
                   href={courtHref(court.court)}
                   className="mt-2 inline-flex items-center gap-1 font-semibold text-gold hover:text-white"
@@ -210,14 +244,102 @@ function SubmittedList({ initialCourts }: { initialCourts: AdminSubmittedCourt[]
           })}
         </ul>
       )}
-      {editing ? (
-        <AdminCourtEditor
-          court={editing.court}
-          email={editing.email}
-          onClose={() => setEditingId(null)}
-        />
-      ) : null}
     </>
+  );
+}
+
+type SuggestionLink = {
+  id: string;
+  href: string;
+  name: string;
+  email: string;
+  status: AdminSubmittedCourt["status"];
+  changes: AdminSubmittedCourt["changes"];
+};
+
+function suggestionCourts(courts: AdminSubmittedCourt[]): SuggestionLink[] {
+  return courts.flatMap((court) => {
+    if (!court.editOf) return [];
+    const path = courtPathFromId(court.editOf);
+    if (!path) return [];
+    return [
+      {
+        id: court.id,
+        href: `/courts/${path}`,
+        name: court.name,
+        email: court.email,
+        status: court.status,
+        changes: court.changes,
+      },
+    ];
+  });
+}
+
+export function EditSuggestionList({
+  items,
+  onStatusChange,
+  onRemove,
+}: {
+  items: SuggestionLink[];
+  onStatusChange?: (id: string, status: AdminSubmittedCourt["status"]) => void;
+  onRemove?: (id: string, name: string) => void;
+}) {
+  const copy = useCopy();
+  return (
+    <ul className="mt-5 space-y-3">
+      {items.map((item) => {
+        const published = item.status === "published";
+        const confirmed = item.status === "pending";
+        return (
+          <li
+            key={item.id}
+            className={`rounded-2xl border p-4 text-sm ${
+              published
+                ? "border-emerald-400/40 bg-emerald-400/10"
+                : confirmed
+                  ? "border-yellow-400/40 bg-yellow-400/10"
+                  : "border-white/15 bg-white/5"
+            }`}
+          >
+            <AdminCardToolbar status={item.status}>
+              {published ? null : (
+                <AdminStatusButton
+                  id={item.id}
+                  name={item.name}
+                  published={false}
+                  notifies={false}
+                  onStatusChange={(status) => onStatusChange?.(item.id, status)}
+                />
+              )}
+              <AdminDeleteButton
+                label={copy.adminEditDelete}
+                onClick={() => onRemove?.(item.id, item.name)}
+              />
+            </AdminCardToolbar>
+            <AppLink
+              href={item.href}
+              className="mt-2 block font-semibold text-gold hover:text-white"
+            >
+              {item.name}
+            </AppLink>
+            <dl className="mt-2 space-y-0.5">
+              {editChangeLines(item.changes ?? {}, copy).map((line) => (
+                <div key={line.key}>
+                  <dt className="inline text-ink-muted">{line.label}: </dt>
+                  <dd className="inline font-semibold text-white">{line.value}</dd>
+                </div>
+              ))}
+            </dl>
+            <a href={`mailto:${item.email}`} className="mt-1 block text-gold hover:text-white">
+              {item.email}
+            </a>
+            {item.status === "unconfirmed" ? (
+              <p className="mt-2 text-ink-muted">{copy.adminEditUnconfirmed}</p>
+            ) : null}
+          </li>
+        );
+      })}
+    </ul>
   );
 }
 
@@ -259,6 +381,43 @@ function StatusFilterToggle({
         </button>
       ))}
     </div>
+  );
+}
+
+function AdminCardToolbar({
+  status,
+  children,
+}: {
+  status: "unconfirmed" | "pending" | "published";
+  children: ReactNode;
+}) {
+  return (
+    <div className="flex items-start justify-between gap-3">
+      <StatusBadge status={status} />
+      <div className="flex shrink-0 flex-wrap items-center justify-end gap-1">{children}</div>
+    </div>
+  );
+}
+
+function AdminDeleteButton({
+  label,
+  disabled = false,
+  onClick,
+}: {
+  label: string;
+  disabled?: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      disabled={disabled}
+      onClick={onClick}
+      className="inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium text-ink/70 hover:bg-red-500/15 hover:text-red-300 disabled:cursor-wait disabled:opacity-70"
+    >
+      <Trash2 className="size-3.5" aria-hidden />
+      {label}
+    </button>
   );
 }
 

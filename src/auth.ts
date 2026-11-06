@@ -1,3 +1,4 @@
+import { redirect } from "next/navigation";
 import type { NextAuthOptions } from "next-auth";
 import { getServerSession } from "next-auth";
 import Google from "next-auth/providers/google";
@@ -58,6 +59,14 @@ export const getAuthSession = cache(async () => {
   if (!process.env.AUTH_SECRET) return null;
   return getServerSession(authOptions);
 });
+
+/** Stop a page before it reads admin data. Sends others to the login page. */
+export async function requireAdminPage(path: string): Promise<void> {
+  const session = await getAuthSession();
+  if (!session?.user?.isAdmin) {
+    redirect(`/login?callbackUrl=${encodeURIComponent(safeCallbackUrl(path))}`);
+  }
+}
 
 export async function requireAdmin(): Promise<Response | null> {
   const session = await getAuthSession();

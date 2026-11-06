@@ -222,6 +222,7 @@ export function AddCourtFields({
   hint,
   title,
   headingRef,
+  variant = "full",
 }: {
   details: AddCourtDetails;
   onChange: (next: AddCourtDetails) => void;
@@ -230,6 +231,8 @@ export function AddCourtFields({
   hint?: string;
   title?: string;
   headingRef?: Ref<HTMLParagraphElement>;
+  /** Hoop height only. Catalog courts have no other fact a visitor can correct. */
+  variant?: "full" | "hoop";
 }) {
   const copy = useCopy();
   function patch(partial: Partial<AddCourtDetails>) {
@@ -241,6 +244,22 @@ export function AddCourtFields({
     ["out-of-service-temporarily", copy.statusTemporarilyClosed],
     ["out-of-service-permanently", copy.statusPermanentlyClosed],
   ] as const;
+
+  if (variant === "hoop") {
+    return (
+      <ChipChoices
+        label={copy.hoopHeight}
+        value={details.hoopHeight}
+        options={HOOP_HEIGHT_CODES.map((code) => ({
+          value: code,
+          label: copy.hoopHeights[code],
+        }))}
+        onChange={(hoopHeight) =>
+          patch({ hoopHeight: hoopHeight as AddCourtDetails["hoopHeight"] })
+        }
+      />
+    );
+  }
 
   return (
     <div className={flush ? "mt-4" : "mt-5 border-t border-white/10 pt-4"}>

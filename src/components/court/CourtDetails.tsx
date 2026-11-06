@@ -28,8 +28,8 @@ import {
   UserCog,
 } from "lucide-react";
 import dynamic from "next/dynamic";
+import { useRouter } from "next/navigation";
 import { type ReactNode, useEffect, useState } from "react";
-import { AdminCourtEditor } from "@/components/admin/AdminCourtEditor";
 import { useIsAdmin } from "@/components/admin/AdminProvider";
 import { AdminStatusButton } from "@/components/admin/AdminStatusButton";
 import { AppFooter } from "@/components/brand/AppFooter";
@@ -37,11 +37,12 @@ import { AppHeader } from "@/components/brand/AppHeader";
 import { AppLink } from "@/components/brand/AppLink";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { CourtDistance } from "@/components/CourtDistance";
-import { CourtGallery } from "@/components/court/CourtGallery";
-import { LocateMeButton, locationHint } from "@/components/LocateMeButton";
+import { CourtEditForm } from "@/components/court/CourtEditForm";
+import { AddPhotoButton, CourtGallery } from "@/components/court/CourtGallery";
 import type { FetchedAtBySource } from "@/lib/catalog";
 import { COURT_INDEX_PATH } from "@/lib/constants";
 import type { Copy } from "@/lib/copy";
+import { editChangeLines } from "@/lib/court-edit-summary";
 import type { CourtPhoto } from "@/lib/court-photos";
 import {
   COURT_THANKS_KEY,
@@ -60,8 +61,9 @@ import {
   mapCourtHref,
 } from "@/lib/courts";
 import { haversineKm } from "@/lib/geo";
-import { useLocationStatus } from "@/lib/origin";
+import { useOrigin } from "@/lib/origin";
 import { courtSource, OSM_COPYRIGHT_URL, sourceListingUrl } from "@/lib/sources";
+import type { CourtEditChanges, PendingCourtEdit } from "@/lib/submitted-courts";
 import { formatFetchedAt } from "@/lib/time";
 
 function MiniMapPlaceholder() {
@@ -84,6 +86,7 @@ export function CourtDetails({
   photos,
   otherCourts = [],
   visitorEmail = null,
+  pendingEdits = [],
   cityName = null,
   cityUnknown = false,
   cityPageHref = null,
@@ -95,6 +98,8 @@ export function CourtDetails({
   /** Other hoops at this place. Each one has its own page. */
   otherCourts?: Court[];
   visitorEmail?: string | null;
+  /** Corrections waiting for an admin, including ones whose email link is still unopened. */
+  pendingEdits?: PendingCourtEdit[];
   /** Place name. Null with `cityUnknown` shows the "other" label. */
   cityName?: string | null;
   cityUnknown?: boolean;
@@ -103,7 +108,8 @@ export function CourtDetails({
 }) {
   const copy = useCopy();
   const isAdmin = useIsAdmin();
-  const [editing, setEditing] = useState(false);
+  const [suggesting, setSuggesting] = useState(false);
+  const [addPhotoRequest, setAddPhotoRequest] = useState(0);
   const address = formatAddress([
     court.address,
     court.neighborhood,
@@ -113,16 +119,23 @@ export function CourtDetails({
   const listingUrl = sourceListingUrl(court.source, court.id);
   const { amenities } = court;
   const pending = court.status === "pending";
-  const [thanks, setThanks] = useState(false);
+  const [thanks, setThanks] = useState<"court" | "edit" | "edit-live" | null>(null);
   useEffect(() => {
-    if (sessionStorage.getItem(COURT_THANKS_KEY) !== court.id) return;
+    const flag = sessionStorage.getItem(COURT_THANKS_KEY);
+    const editThanks = flag === `edit:${court.id}`;
+    const editLive = flag === `edit-live:${court.id}`;
+    if (flag !== court.id && !editThanks && !editLive) return;
     sessionStorage.removeItem(COURT_THANKS_KEY);
-    setThanks(true);
+    setThanks(editLive ? "edit-live" : editThanks ? "edit" : "court");
   }, [court.id]);
   const awaitingEmail = isAdmin && court.emailConfirmed === false;
   const hideUnpublishedFacts = pending && !isAdmin;
   const showAdminStatus = isAdmin && court.source === "submitted";
-  const canEdit = showAdminStatus && visitorEmail !== null;
+  const suggested = (field: keyof CourtEditChanges) =>
+    pendingEdits.some((edit) => Object.hasOwn(edit.changes, field));
+  const suggestion = (field: keyof CourtEditChanges) => (
+    <FieldSuggestions courtName={court.name} edits={pendingEdits} field={field} />
+  );
   const dimensions =
     amenities.lengthM && amenities.widthM ? `${amenities.lengthM} × ${amenities.widthM} m` : null;
   const osmSources = (court.hidden ?? []).filter((item) => item.source === "osm");
@@ -149,6 +162,7 @@ export function CourtDetails({
               <h1 className="mt-1 font-display text-4xl tracking-wide text-white md:text-5xl">
                 {courtTitle(court, copy)}
               </h1>
+              {suggestion("name")}
               {pending ? (
                 <p className="mt-2 text-sm font-medium text-gold">
                   {sourceFetchedAt ? (
@@ -166,9 +180,27 @@ export function CourtDetails({
             {thanks ? (
               <div className="rounded-3xl border border-gold/40 bg-gold/10 p-5">
                 <p className="font-bold text-white">{copy.confirmThanksTitle}</p>
-                <p className="mt-1 text-sm text-ink-muted">{copy.confirmThanksBody}</p>
+                <p className="mt-1 text-sm text-ink-muted">
+                  {thanks === "edit-live"
+                    ? copy.suggestEditSaved
+                    : thanks === "edit"
+                      ? copy.suggestEditThanksBody
+                      : copy.confirmThanksBody}
+                </p>
               </div>
             ) : null}
+
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setSuggesting(true)}
+                className="inline-flex items-center gap-1.5 rounded-full border border-white/15 px-3 py-1.5 text-sm font-bold text-ink/80 outline-none hover:border-gold/40 hover:text-white focus-visible:ring-2 focus-visible:ring-gold/60"
+              >
+                <Pencil className="size-3.5" aria-hidden />
+                {copy.suggestContribute}
+              </button>
+              <AddPhotoButton onClick={() => setAddPhotoRequest((current) => current + 1)} />
+            </div>
 
             <dl
               className={`relative grid gap-3 rounded-3xl border border-white/10 bg-panel p-5 ${
@@ -178,22 +210,6 @@ export function CourtDetails({
               {showAdminStatus ? (
                 <div className="absolute top-3 right-3 flex items-start gap-1">
                   <AdminStatusButton compact id={court.id} name={court.name} published={!pending} />
-                  {canEdit ? (
-                    <button
-                      type="button"
-                      aria-pressed={editing}
-                      onClick={() => setEditing((open) => !open)}
-                      aria-label={copy.adminEdit}
-                      title={copy.adminEdit}
-                      className={`inline-flex size-8 items-center justify-center rounded-full ${
-                        editing
-                          ? "bg-gold text-asphalt"
-                          : "bg-white/15 text-white hover:bg-white/25"
-                      }`}
-                    >
-                      <Pencil className="size-4" aria-hidden />
-                    </button>
-                  ) : null}
                 </div>
               ) : null}
               <Fact
@@ -212,9 +228,13 @@ export function CourtDetails({
                           {copy.pendingPublishAfterReview}
                         </span>
                       )}
+                      {suggestion("status")}
                     </>
                   ) : (
-                    formatStatus(court.status, copy)
+                    <>
+                      {formatStatus(court.status, copy)}
+                      {suggestion("status")}
+                    </>
                   )
                 }
               />
@@ -227,6 +247,7 @@ export function CourtDetails({
                       <>
                         <span className="block">{address || copy.notReported}</span>
                         {googleMapsDirectionsLink(court.lat, court.lon, copy)}
+                        {suggestion("address")}
                       </>
                     }
                   />
@@ -283,46 +304,82 @@ export function CourtDetails({
                     {copy.courtFacts}
                   </h2>
                   <dl className="mt-4 grid grid-cols-[max-content_minmax(0,1fr)] gap-x-6 gap-y-3 max-sm:[&>div]:col-span-2 max-sm:[&>div]:grid max-sm:[&>div]:grid-cols-subgrid max-sm:[&>div]:items-start max-sm:[&>div]:border-b max-sm:[&>div]:border-white/10 max-sm:[&>div]:pb-2 max-sm:[&_dt]:mt-0 max-sm:[&_dt]:translate-y-[3px] max-sm:[&_dd]:mt-0 sm:grid-cols-2 sm:gap-3">
-                    {amenities.hoopHeight ? (
+                    {amenities.hoopHeight || suggested("hoopHeight") ? (
                       <Fact
                         icon={Ruler}
                         label={copy.hoopHeight}
-                        value={copy.hoopHeights[amenities.hoopHeight]}
+                        value={
+                          <>
+                            {amenities.hoopHeight
+                              ? copy.hoopHeights[amenities.hoopHeight]
+                              : copy.notReported}
+                            {suggestion("hoopHeight")}
+                          </>
+                        }
                       />
                     ) : null}
-                    {amenities.heightAdjustable !== null ? (
+                    {amenities.heightAdjustable !== null || suggested("heightAdjustable") ? (
                       <Fact
                         icon={MoveVertical}
                         label={copy.adjustableRim}
-                        value={formatReportedBoolean(amenities.heightAdjustable, copy)}
+                        value={
+                          <>
+                            {formatReportedBoolean(amenities.heightAdjustable, copy)}
+                            {suggestion("heightAdjustable")}
+                          </>
+                        }
                       />
                     ) : null}
                     <Fact
                       icon={Unlock}
                       label={copy.freeUse}
-                      value={formatReportedBoolean(amenities.freeUse, copy)}
+                      value={
+                        <>
+                          {formatReportedBoolean(amenities.freeUse, copy)}
+                          {suggestion("freeUse")}
+                        </>
+                      }
                     />
-                    {amenities.schoolUse !== null ? (
+                    {amenities.schoolUse !== null || suggested("schoolUse") ? (
                       <Fact
                         icon={School}
                         label={copy.schoolUse}
-                        value={formatReportedBoolean(amenities.schoolUse, copy)}
+                        value={
+                          <>
+                            {formatReportedBoolean(amenities.schoolUse, copy)}
+                            {suggestion("schoolUse")}
+                          </>
+                        }
                       />
                     ) : null}
-                    {amenities.fieldType ? (
+                    {amenities.fieldType || suggested("fieldType") ? (
                       <Fact
                         icon={LayoutGrid}
                         label={copy.fieldType}
-                        value={formatFieldType(amenities.fieldType, copy)}
+                        value={
+                          <>
+                            {amenities.fieldType
+                              ? formatFieldType(amenities.fieldType, copy)
+                              : copy.notReported}
+                            {suggestion("fieldType")}
+                          </>
+                        }
                       />
                     ) : null}
-                    {amenities.surfaceMaterial.length ? (
+                    {amenities.surfaceMaterial.length || suggested("surfaceMaterial") ? (
                       <Fact
                         icon={Layers}
                         label={copy.surface}
-                        value={amenities.surfaceMaterial
-                          .map((code) => formatSurface(code, copy))
-                          .join(", ")}
+                        value={
+                          <>
+                            {amenities.surfaceMaterial.length
+                              ? amenities.surfaceMaterial
+                                  .map((code) => formatSurface(code, copy))
+                                  .join(", ")
+                              : copy.notReported}
+                            {suggestion("surfaceMaterial")}
+                          </>
+                        }
                       />
                     ) : null}
                     {amenities.surfaceMaterialInfo ? (
@@ -332,50 +389,101 @@ export function CourtDetails({
                         value={amenities.surfaceMaterialInfo}
                       />
                     ) : null}
-                    {dimensions ? (
-                      <Fact icon={Ruler} label={copy.dimensions} value={dimensions} />
+                    {dimensions || suggested("lengthM") || suggested("widthM") ? (
+                      <Fact
+                        icon={Ruler}
+                        label={copy.dimensions}
+                        value={
+                          <>
+                            {dimensions ?? copy.notReported}
+                            {suggestion("lengthM")}
+                            {suggestion("widthM")}
+                          </>
+                        }
+                      />
                     ) : null}
-                    {amenities.areaM2 ? (
-                      <Fact icon={Square} label={copy.area} value={`${amenities.areaM2} m²`} />
+                    {amenities.areaM2 || suggested("areaM2") ? (
+                      <Fact
+                        icon={Square}
+                        label={copy.area}
+                        value={
+                          <>
+                            {amenities.areaM2 ? `${amenities.areaM2} m²` : copy.notReported}
+                            {suggestion("areaM2")}
+                          </>
+                        }
+                      />
                     ) : null}
-                    {amenities.toilet !== null ? (
+                    {amenities.toilet !== null || suggested("toilet") ? (
                       <Fact
                         icon={Bath}
                         label={copy.toilet}
-                        value={formatReportedBoolean(amenities.toilet, copy)}
+                        value={
+                          <>
+                            {formatReportedBoolean(amenities.toilet, copy)}
+                            {suggestion("toilet")}
+                          </>
+                        }
                       />
                     ) : null}
                     <Fact
                       icon={Lightbulb}
                       label={copy.lights}
-                      value={formatReportedBoolean(amenities.lighting, copy)}
+                      value={
+                        <>
+                          {formatReportedBoolean(amenities.lighting, copy)}
+                          {suggestion("lighting")}
+                        </>
+                      }
                     />
-                    {amenities.lightingInfo ? (
+                    {amenities.lightingInfo || suggested("lightingInfo") ? (
                       <Fact
                         icon={Lightbulb}
                         label={copy.lightingNotes}
-                        value={amenities.lightingInfo}
+                        value={
+                          <>
+                            {amenities.lightingInfo ?? copy.notReported}
+                            {suggestion("lightingInfo")}
+                          </>
+                        }
                       />
                     ) : null}
-                    {amenities.waterPoint ? (
+                    {amenities.waterPoint || suggested("waterPoint") ? (
                       <Fact
                         icon={Droplets}
                         label={copy.waterPoint}
-                        value={formatWaterPoint(amenities.waterPoint, copy)}
+                        value={
+                          <>
+                            {amenities.waterPoint
+                              ? formatWaterPoint(amenities.waterPoint, copy)
+                              : copy.notReported}
+                            {suggestion("waterPoint")}
+                          </>
+                        }
                       />
                     ) : null}
-                    {amenities.matchClock !== null ? (
+                    {amenities.matchClock !== null || suggested("matchClock") ? (
                       <Fact
                         icon={Timer}
                         label={copy.matchClock}
-                        value={formatReportedBoolean(amenities.matchClock, copy)}
+                        value={
+                          <>
+                            {formatReportedBoolean(amenities.matchClock, copy)}
+                            {suggestion("matchClock")}
+                          </>
+                        }
                       />
                     ) : null}
-                    {amenities.scoreboard !== null ? (
+                    {amenities.scoreboard !== null || suggested("scoreboard") ? (
                       <Fact
                         icon={ClipboardList}
                         label={copy.scoreboard}
-                        value={formatReportedBoolean(amenities.scoreboard, copy)}
+                        value={
+                          <>
+                            {formatReportedBoolean(amenities.scoreboard, copy)}
+                            {suggestion("scoreboard")}
+                          </>
+                        }
                       />
                     ) : null}
                     {court.constructionYear ? (
@@ -390,25 +498,22 @@ export function CourtDetails({
                   </dl>
                 </section>
 
-                {court.comment ? (
+                {court.comment || suggested("comment") ? (
                   <section className="rounded-3xl border border-white/10 bg-panel p-5">
                     <h2 className="flex items-center gap-2 font-display text-2xl tracking-wide text-white">
                       <StickyNote className="size-5 text-gold" aria-hidden />
                       {source?.label ? copy.notesFrom(source.label) : copy.notesFromListing}
                     </h2>
                     <p className="mt-2 whitespace-pre-wrap text-md leading-6 text-ink-muted">
-                      {court.comment}
+                      {court.comment || copy.notReported}
                     </p>
+                    {suggestion("comment")}
                   </section>
                 ) : null}
               </>
             )}
-            {editing && visitorEmail ? (
-              <AdminCourtEditor
-                court={court}
-                email={visitorEmail}
-                onClose={() => setEditing(false)}
-              />
+            {suggesting ? (
+              <CourtEditForm court={court} onClose={() => setSuggesting(false)} />
             ) : null}
           </div>
         </section>
@@ -420,6 +525,7 @@ export function CourtDetails({
               courtId={court.id}
               courtName={courtTitle(court, copy)}
               photos={photos}
+              addRequest={addPhotoRequest}
             />
           </div>
           <div className={`order-4 ${stackedPanel}`}>
@@ -432,32 +538,53 @@ export function CourtDetails({
               <CourtOnMapLink court={court} className="mt-2" />
             </section>
             <dl className="grid gap-3 border-t border-white/10 p-5">
-              {court.website ? (
+              {court.website || suggested("website") ? (
                 <Fact
                   icon={Globe}
                   label={copy.website}
                   value={
-                    <a
-                      href={websiteHref(court.website)}
-                      className="inline-flex items-center gap-1 break-all text-gold hover:text-white"
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {websiteLabel(court.website)}
-                      <ExternalLink className="size-3.5 shrink-0" aria-hidden />
-                    </a>
+                    <>
+                      {court.website ? (
+                        <a
+                          href={websiteHref(court.website)}
+                          className="inline-flex items-center gap-1 break-all text-gold hover:text-white"
+                          target="_blank"
+                          rel="noreferrer"
+                        >
+                          {websiteLabel(court.website)}
+                          <ExternalLink className="size-3.5 shrink-0" aria-hidden />
+                        </a>
+                      ) : (
+                        copy.notReported
+                      )}
+                      {suggestion("website")}
+                    </>
                   }
                 />
               ) : null}
-              {court.admin ? (
+              {court.admin || suggested("admin") ? (
                 <Fact
                   icon={UserCog}
                   label={copy.administrator}
-                  value={formatAdmin(court.admin, copy)}
+                  value={
+                    <>
+                      {court.admin ? formatAdmin(court.admin, copy) : copy.notReported}
+                      {suggestion("admin")}
+                    </>
+                  }
                 />
               ) : null}
-              {court.owner ? (
-                <Fact icon={Building2} label={copy.owner} value={formatOwner(court.owner, copy)} />
+              {court.owner || suggested("owner") ? (
+                <Fact
+                  icon={Building2}
+                  label={copy.owner}
+                  value={
+                    <>
+                      {court.owner ? formatOwner(court.owner, copy) : copy.notReported}
+                      {suggestion("owner")}
+                    </>
+                  }
+                />
               ) : null}
               {court.source === "submitted" || source ? (
                 <Fact
@@ -539,31 +666,21 @@ function googleMapsDirectionsLink(lat: number, lon: number, copy: Copy) {
 
 function CourtDistanceBlock({ court }: { court: Court }) {
   const copy = useCopy();
-  const { origin, status, request } = useLocationStatus();
+  const origin = useOrigin();
   const [ready, setReady] = useState(false);
   const distanceKm = origin ? haversineKm(origin, { lat: court.lat, lon: court.lon }) : null;
-  const hint = locationHint(copy, status);
 
   useEffect(() => {
     setReady(true);
   }, []);
 
-  if (!ready) return null;
-
-  if (distanceKm !== null) {
-    return (
-      <p className="mt-2 inline-flex items-baseline gap-1.5">
-        <span className="text-sm font-semibold text-gold">{copy.distanceAway}:</span>
-        <CourtDistance km={distanceKm} />
-      </p>
-    );
-  }
+  if (!ready || distanceKm === null) return null;
 
   return (
-    <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
-      <LocateMeButton status={status} onClick={request} />
-      {hint ? <p className="text-sm text-ink-muted">{hint}</p> : null}
-    </div>
+    <p className="mt-2 inline-flex items-baseline gap-1.5">
+      <span className="text-sm font-semibold text-gold">{copy.distanceAway}:</span>
+      <CourtDistance km={distanceKm} />
+    </p>
   );
 }
 
@@ -651,6 +768,77 @@ function websiteHref(url: string) {
 
 function websiteLabel(url: string) {
   return url.replace(/^https?:\/\//i, "").replace(/^www\./i, "");
+}
+
+function FieldSuggestions({
+  edits,
+  field,
+  courtName,
+}: {
+  edits: PendingCourtEdit[];
+  field: keyof CourtEditChanges;
+  courtName: string;
+}) {
+  const copy = useCopy();
+  const isAdmin = useIsAdmin();
+  if (!isAdmin) return null;
+  const rows = edits.filter((edit) => Object.hasOwn(edit.changes, field));
+  if (rows.length === 0) return null;
+  return (
+    <ul className="mt-2 space-y-2">
+      {rows.map((edit) => {
+        const line = editChangeLines(edit.changes, copy).find((item) => item.key === field);
+        if (!line) return null;
+        return (
+          <li key={edit.id} className="rounded-2xl border border-gold/40 bg-gold/10 px-3 py-2">
+            <p className="text-sm text-white">
+              <span className="text-ink-muted">{copy.fieldSuggestion}: </span>
+              <span className="font-semibold">{line.value}</span>
+            </p>
+            <p className="text-xs text-ink-muted">{edit.email}</p>
+            {edit.status === "unconfirmed" ? (
+              <p className="text-xs text-ink-muted">{copy.adminEditUnconfirmed}</p>
+            ) : null}
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              <AdminStatusButton id={edit.id} name={courtName} published={false} notifies={false} />
+              <RejectSuggestion id={edit.id} name={courtName} />
+            </div>
+          </li>
+        );
+      })}
+    </ul>
+  );
+}
+
+function RejectSuggestion({ id, name }: { id: string; name: string }) {
+  const copy = useCopy();
+  const router = useRouter();
+  const [saving, setSaving] = useState(false);
+
+  async function remove() {
+    if (!window.confirm(copy.adminEditDeleteConfirm(name))) return;
+    setSaving(true);
+    try {
+      const response = await fetch(`/api/admin/courts/${encodeURIComponent(id)}`, {
+        method: "DELETE",
+      });
+      if (!response.ok) throw new Error("delete failed");
+      router.refresh();
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  return (
+    <button
+      type="button"
+      disabled={saving}
+      onClick={() => void remove()}
+      className="rounded-full px-2.5 py-0.5 text-xs font-bold text-ink/70 hover:bg-red-500/15 hover:text-red-300 disabled:cursor-wait disabled:opacity-70"
+    >
+      {copy.adminEditDelete}
+    </button>
+  );
 }
 
 function Fact({

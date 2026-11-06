@@ -332,7 +332,8 @@ function HamburgerIcon({ open }: { open: boolean }) {
 
 function AdminNavLink() {
   const copy = useCopy();
-  const onAdminPage = usePathname() === "/admin";
+  const pathname = usePathname();
+  const onAdminPage = pathname === "/admin" || pathname.startsWith("/admin/");
 
   return (
     <AppLink
