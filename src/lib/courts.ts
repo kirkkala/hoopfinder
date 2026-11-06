@@ -580,6 +580,11 @@ export function listingCity(court: {
   return cityFromAddress(court.address ?? null)?.city ?? null;
 }
 
+/** Lowercase search text without accents, so "jar" matches "Järvenpää". */
+export function searchText(value: string) {
+  return value.trim().toLocaleLowerCase("fi").normalize("NFD").replace(/\p{M}/gu, "");
+}
+
 /** ASCII city segment. Missing cities share `muu`. */
 export function citySlug(city: string | null | undefined): string {
   const trimmed = city?.trim();

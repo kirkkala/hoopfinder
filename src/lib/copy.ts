@@ -147,6 +147,7 @@ const messages = {
   },
   allCourtsCities: { fi: "Kaupungit", en: "Cities" },
   citySearchPlaceholder: { fi: "Etsi kaupunkia", en: "Search a city" },
+  cityCourtSearch: { fi: "Etsi nimellä tai alueella", en: "Search by name or area" },
   citySearchEmpty: { fi: "Ei osumia", en: "No matches" },
   citySearchClear: { fi: "Tyhjennä", en: "Clear" },
   cityUnknown: { fi: "Muu", en: "Other" },
