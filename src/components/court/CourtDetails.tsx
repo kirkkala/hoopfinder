@@ -822,7 +822,7 @@ function RejectSuggestion({ id, name }: { id: string; name: string }) {
   const [saving, setSaving] = useState(false);
 
   async function remove() {
-    if (!window.confirm(copy.adminDeleteConfirm(name))) return;
+    if (!window.confirm(copy.adminEditDeleteConfirm(name))) return;
     setSaving(true);
     try {
       const response = await fetch(`/api/admin/courts/${encodeURIComponent(id)}`, {
@@ -842,7 +842,7 @@ function RejectSuggestion({ id, name }: { id: string; name: string }) {
       onClick={() => void remove()}
       className="rounded-full px-2.5 py-0.5 text-xs font-bold text-ink/70 hover:bg-red-500/15 hover:text-red-300 disabled:cursor-wait disabled:opacity-70"
     >
-      {copy.adminDelete}
+      {copy.adminEditDelete}
     </button>
   );
 }

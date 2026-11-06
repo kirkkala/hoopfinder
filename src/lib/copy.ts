@@ -659,6 +659,11 @@ const messages = {
   sentBy: { fi: "Lähettäjä", en: "Sender" },
   adminFeedbackNoEmail: { fi: "Anonyymi", en: "Anonymous" },
   adminNav: { fi: "Hallinta", en: "Admin" },
+  adminTabHome: { fi: "Hallinta", en: "Admin" },
+  adminTabFeedback: { fi: "Palaute", en: "Feedback" },
+  adminTabPhotos: { fi: "Kuvat", en: "Photos" },
+  adminTabCourts: { fi: "Kentät", en: "Courts" },
+  adminTabEdits: { fi: "Korjaus", en: "Edits" },
   adminTitle: { fi: "Hallintapaneeli", en: "Admin panel" },
   adminEmpty: {
     fi: "Ei käyttäjien lisäämiä kenttiä.",
@@ -667,6 +672,11 @@ const messages = {
   adminUnavailable: {
     fi: "Hallintapaneeli ei ole juuri nyt käytössä.",
     en: "Admin panel is not available right now.",
+  },
+  adminCourtsTitle: { fi: "Käyttäjien lisäämät kentät", en: "Courts added by visitors" },
+  adminEditsEmpty: {
+    fi: "Ei tarkistettavia korjausehdotuksia.",
+    en: "No suggestions to review.",
   },
   adminPhotosTitle: { fi: "Kentät, joihin lisätty kuvia", en: "Courts with photos" },
   adminPhotosEmpty: {
@@ -686,6 +696,14 @@ const messages = {
       const noun = count === 1 ? "court" : "courts";
       return `${count} ${noun}`;
     },
+  },
+  adminEditCount: {
+    fi: (count: number) => (count === 1 ? "1 ehdotus" : `${count} ehdotusta`),
+    en: (count: number) => (count === 1 ? "1 suggestion" : `${count} suggestions`),
+  },
+  adminEditFilterEmpty: {
+    fi: "Ei ehdotuksia tässä näkymässä.",
+    en: "No suggestions in this view.",
   },
   adminFilter: { fi: "Suodatus", en: "Filter" },
   adminFilterAll: { fi: "Kaikki", en: "All" },
@@ -733,6 +751,16 @@ const messages = {
   adminDeleteConfirm: {
     fi: (name: string) => `Poistetaanko “${name}” pysyvästi? Tätä ei voi perua.`,
     en: (name: string) => `Delete “${name}” permanently? This cannot be undone.`,
+  },
+  adminEditDelete: { fi: "Poista ehdotus", en: "Remove suggestion" },
+  adminEditDeleteConfirm: {
+    fi: (name: string) =>
+      `Poistetaanko vain korjausehdotus kentälle “${name}”? Kenttä jää paikalleen.`,
+    en: (name: string) => `Remove only the suggestion for “${name}”? The court stays.`,
+  },
+  adminEditDeleteError: {
+    fi: "Ehdotuksen poisto epäonnistui. Kokeile uudelleen.",
+    en: "Could not remove the suggestion. Try again.",
   },
   adminDeleteError: {
     fi: "Poisto epäonnistui. Kokeile uudelleen.",

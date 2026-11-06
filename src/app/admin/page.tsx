@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
-import { redirect } from "next/navigation";
-import { getAuthSession } from "@/auth";
-import { AdminCourtsView } from "@/components/admin/AdminCourtsView";
+import { requireAdminPage } from "@/auth";
+import { AdminDashboard } from "@/components/admin/AdminDashboard";
+import { AdminShell } from "@/components/admin/AdminShell";
+import { adminMetadata } from "@/lib/admin-metadata";
+import { adminOverview } from "@/lib/admin-overview";
 import { getCourtCatalog } from "@/lib/catalog";
 import { getCopy } from "@/lib/copy";
 import { listAdminCourtsWithPhotos } from "@/lib/court-photos";
@@ -10,19 +11,12 @@ import { listAdminSubmittedCourts } from "@/lib/submitted-courts";
 
 export const dynamic = "force-dynamic";
 
-export async function generateMetadata(): Promise<Metadata> {
-  const finnish = getCopy("fi");
-  return {
-    title: finnish.adminTitle,
-    robots: { index: false, follow: false },
-  };
+export async function generateMetadata() {
+  return adminMetadata(getCopy("fi").adminTitle);
 }
 
 export default async function AdminPage() {
-  const session = await getAuthSession();
-  if (!session?.user?.isAdmin) {
-    redirect("/login?callbackUrl=/admin");
-  }
+  await requireAdminPage("/admin");
 
   const [{ fetchedAtBySource }, submitted, photoCourts, feedback] = await Promise.all([
     getCourtCatalog(),
@@ -32,11 +26,14 @@ export default async function AdminPage() {
   ]);
 
   return (
-    <AdminCourtsView
-      fetchedAtBySource={fetchedAtBySource}
-      courts={submitted}
-      photoCourts={photoCourts}
-      feedback={feedback}
-    />
+    <AdminShell fetchedAtBySource={fetchedAtBySource}>
+      <AdminDashboard
+        overview={adminOverview({
+          feedback,
+          photos: photoCourts,
+          courts: submitted,
+        })}
+      />
+    </AdminShell>
   );
 }

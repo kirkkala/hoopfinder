@@ -1,5 +1,5 @@
 import { afterEach, expect, test, vi } from "vitest";
-import { adminEmails, isAdminEmail } from "./admin";
+import { adminEmails, adminLoginPath, isAdminEmail } from "./admin";
 
 afterEach(() => {
   vi.unstubAllEnvs();
@@ -11,4 +11,14 @@ test("reads admin addresses as a unique lowercase list and ignores stray text", 
   expect(isAdminEmail("C@D.fi")).toBe(true);
   expect(isAdminEmail("  ")).toBe(false);
   expect(isAdminEmail(null)).toBe(false);
+});
+
+test("sends a signed-out visitor to login and keeps the admin page as the return path", () => {
+  expect(adminLoginPath("/admin/photos")).toBe("/login?callbackUrl=%2Fadmin%2Fphotos");
+  expect(adminLoginPath("/admin/edits", "?x=1")).toBe(
+    "/login?callbackUrl=%2Fadmin%2Fedits%3Fx%3D1",
+  );
+  expect(adminLoginPath("/admin")).toBe("/login?callbackUrl=%2Fadmin");
+  expect(adminLoginPath("//evil.example")).toBe("/login?callbackUrl=%2Fadmin");
+  expect(adminLoginPath("/login")).toBe("/login?callbackUrl=%2Fadmin");
 });
