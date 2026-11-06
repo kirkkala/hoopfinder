@@ -38,8 +38,7 @@ import { AppLink } from "@/components/brand/AppLink";
 import { useCopy } from "@/components/brand/LocaleProvider";
 import { CourtDistance } from "@/components/CourtDistance";
 import { CourtEditForm } from "@/components/court/CourtEditForm";
-import { CourtGallery } from "@/components/court/CourtGallery";
-import { LocateMeButton, locationHint } from "@/components/LocateMeButton";
+import { AddPhotoButton, CourtGallery } from "@/components/court/CourtGallery";
 import type { FetchedAtBySource } from "@/lib/catalog";
 import { COURT_INDEX_PATH } from "@/lib/constants";
 import type { Copy } from "@/lib/copy";
@@ -62,7 +61,7 @@ import {
   mapCourtHref,
 } from "@/lib/courts";
 import { haversineKm } from "@/lib/geo";
-import { useLocationStatus } from "@/lib/origin";
+import { useOrigin } from "@/lib/origin";
 import { courtSource, OSM_COPYRIGHT_URL, sourceListingUrl } from "@/lib/sources";
 import type { CourtEditChanges, PendingCourtEdit } from "@/lib/submitted-courts";
 import { formatFetchedAt } from "@/lib/time";
@@ -110,6 +109,7 @@ export function CourtDetails({
   const copy = useCopy();
   const isAdmin = useIsAdmin();
   const [suggesting, setSuggesting] = useState(false);
+  const [addPhotoRequest, setAddPhotoRequest] = useState(0);
   const address = formatAddress([
     court.address,
     court.neighborhood,
@@ -190,14 +190,17 @@ export function CourtDetails({
               </div>
             ) : null}
 
-            <button
-              type="button"
-              onClick={() => setSuggesting(true)}
-              className="inline-flex items-center gap-1.5 rounded-full border border-white/15 px-3 py-1.5 text-sm font-bold text-ink/80 outline-none hover:border-gold/40 hover:text-white focus-visible:ring-2 focus-visible:ring-gold/60"
-            >
-              <Pencil className="size-3.5" aria-hidden />
-              {copy.suggestContribute}
-            </button>
+            <div className="flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setSuggesting(true)}
+                className="inline-flex items-center gap-1.5 rounded-full border border-white/15 px-3 py-1.5 text-sm font-bold text-ink/80 outline-none hover:border-gold/40 hover:text-white focus-visible:ring-2 focus-visible:ring-gold/60"
+              >
+                <Pencil className="size-3.5" aria-hidden />
+                {copy.suggestContribute}
+              </button>
+              <AddPhotoButton onClick={() => setAddPhotoRequest((current) => current + 1)} />
+            </div>
 
             <dl
               className={`relative grid gap-3 rounded-3xl border border-white/10 bg-panel p-5 ${
@@ -522,6 +525,7 @@ export function CourtDetails({
               courtId={court.id}
               courtName={courtTitle(court, copy)}
               photos={photos}
+              addRequest={addPhotoRequest}
             />
           </div>
           <div className={`order-4 ${stackedPanel}`}>
@@ -662,31 +666,21 @@ function googleMapsDirectionsLink(lat: number, lon: number, copy: Copy) {
 
 function CourtDistanceBlock({ court }: { court: Court }) {
   const copy = useCopy();
-  const { origin, status, request } = useLocationStatus();
+  const origin = useOrigin();
   const [ready, setReady] = useState(false);
   const distanceKm = origin ? haversineKm(origin, { lat: court.lat, lon: court.lon }) : null;
-  const hint = locationHint(copy, status);
 
   useEffect(() => {
     setReady(true);
   }, []);
 
-  if (!ready) return null;
-
-  if (distanceKm !== null) {
-    return (
-      <p className="mt-2 inline-flex items-baseline gap-1.5">
-        <span className="text-sm font-semibold text-gold">{copy.distanceAway}:</span>
-        <CourtDistance km={distanceKm} />
-      </p>
-    );
-  }
+  if (!ready || distanceKm === null) return null;
 
   return (
-    <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-2">
-      <LocateMeButton status={status} onClick={request} />
-      {hint ? <p className="text-sm text-ink-muted">{hint}</p> : null}
-    </div>
+    <p className="mt-2 inline-flex items-baseline gap-1.5">
+      <span className="text-sm font-semibold text-gold">{copy.distanceAway}:</span>
+      <CourtDistance km={distanceKm} />
+    </p>
   );
 }
 

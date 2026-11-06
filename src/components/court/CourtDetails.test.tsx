@@ -53,7 +53,10 @@ beforeAll(() => {
   }
 });
 
-afterEach(cleanup);
+afterEach(() => {
+  sessionStorage.clear();
+  cleanup();
+});
 
 const copy = getCopy();
 
@@ -96,10 +99,28 @@ test("a court page links to this court on the map under the minimap", () => {
   expect(within(main).queryByRole("link", { name: copy.homepage })).not.toBeInTheDocument();
   expect(within(main).queryByRole("link", { name: copy.courtsOnMap })).not.toBeInTheDocument();
 
+  expect(within(main).queryByRole("button", { name: copy.nearMe.idle })).not.toBeInTheDocument();
+  expect(within(main).queryByText(copy.distanceAway)).not.toBeInTheDocument();
+
   const map = within(main).getByRole("link", { name: copy.backToMap });
   const location = within(main).getByRole("heading", { name: copy.courtLocation });
   expect(map).toHaveAttribute("href", "/kartta?court=l1");
   expect(location.compareDocumentPosition(map) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+});
+
+test("add photo sits with edit and opens the gallery form", () => {
+  render(<CourtDetails court={court} fetchedAtBySource={{}} sourceFetchedAt={null} photos={[]} />);
+
+  const edit = screen.getByRole("button", { name: copy.suggestContribute });
+  const [addPhoto, galleryAdd] = screen.getAllByRole("button", { name: copy.addPhoto });
+  expect(addPhoto).toBeTruthy();
+  expect(galleryAdd).toBeTruthy();
+  expect(edit.compareDocumentPosition(addPhoto) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy();
+  expect(addPhoto.className).toContain("border-white/15");
+  expect(addPhoto.className).not.toContain("bg-gold");
+
+  fireEvent.click(addPhoto);
+  expect(screen.getByRole("dialog", { name: copy.addPhoto })).toBeInTheDocument();
 });
 
 test("a visitor can open the correction form from the court page", () => {

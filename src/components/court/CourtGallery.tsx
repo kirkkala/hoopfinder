@@ -22,14 +22,40 @@ import type { CourtPhoto, CourtPhotoError } from "@/lib/court-photos";
 const INPUT_CLASS =
   "h-11 w-full rounded-xl border border-white/25 bg-asphalt px-3 text-base text-white outline-none placeholder:text-white/55 focus:border-gold/50 focus:ring-2 focus:ring-gold/60 sm:text-sm";
 
+const QUIET_ACTION =
+  "inline-flex items-center gap-1.5 rounded-full border border-white/15 px-3 py-1.5 text-sm font-bold text-ink/80 outline-none hover:border-gold/40 hover:text-white focus-visible:ring-2 focus-visible:ring-gold/60";
+
+export function AddPhotoButton({
+  onClick,
+  className,
+}: {
+  onClick: () => void;
+  className?: string;
+}) {
+  const copy = useCopy();
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className={[QUIET_ACTION, className].filter(Boolean).join(" ")}
+    >
+      <ImagePlus className="size-3.5" aria-hidden />
+      {copy.addPhoto}
+    </button>
+  );
+}
+
 export function CourtGallery({
   courtId,
   courtName,
   photos,
+  addRequest = 0,
 }: {
   courtId: string;
   courtName: string;
   photos: CourtPhoto[];
+  /** Bumps when the court page asks to open the same add-photo form. */
+  addRequest?: number;
 }) {
   const copy = useCopy();
   const isAdmin = useIsAdmin();
@@ -54,6 +80,18 @@ export function CourtGallery({
     if (uploading) return;
     setError(null);
     setAdding(false);
+  }
+
+  function startAdd() {
+    setError(null);
+    setEmail((current) => current.trim() || readPhotoEmail());
+    setAdding(true);
+  }
+
+  const seenAdd = React.useRef(addRequest);
+  if (addRequest !== seenAdd.current) {
+    seenAdd.current = addRequest;
+    startAdd();
   }
 
   React.useEffect(() => {
@@ -291,18 +329,7 @@ export function CourtGallery({
       ) : items.length === 0 ? (
         <p className="mt-2 text-sm leading-5 text-ink-muted">{copy.noPhotos}</p>
       ) : null}
-      <button
-        type="button"
-        onClick={() => {
-          setError(null);
-          setEmail((current) => current.trim() || readPhotoEmail());
-          setAdding(true);
-        }}
-        className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-gold px-3 py-1.5 text-xs font-bold text-asphalt hover:bg-white"
-      >
-        <ImagePlus className="size-4" aria-hidden />
-        {copy.addPhoto}
-      </button>
+      <AddPhotoButton className="mt-3" onClick={startAdd} />
       {error && !adding ? (
         <p role="status" className="mt-3 text-sm text-red-300">
           {error}
