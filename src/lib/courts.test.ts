@@ -20,6 +20,7 @@ import {
   emptyAmenities,
   focusedCourtHref,
   formatAddress,
+  formatFieldType,
   formatReportedBoolean,
   formatStatus,
   formatSurface,
@@ -34,6 +35,7 @@ import {
   withDistance,
 } from "@/lib/courts";
 import { haversineKm } from "@/lib/geo";
+import bundled from "../../data/courts.json";
 
 const here = { lat: 60.17, lon: 24.94 };
 const withinPad = { lat: here.lat + 0.0004, lon: here.lon };
@@ -289,11 +291,43 @@ test("map label names a single hoop, and adds the count when one pin covers seve
 test("labels known codes, title-cases an unknown hyphenated code, and joins an address", () => {
   const copy = getCopy("fi");
   expect(formatSurface("asphalt", copy)).toBe(copy.surfaces.asphalt);
+  expect(formatSurface("grass_paver", copy)).toBe("Nurmikivi");
+  expect(formatSurface("grass_paver", getCopy("en"))).toBe("Grass paver");
   expect(formatSurface("brand-new-surface", copy)).toBe("Brand New Surface");
+  expect(formatSurface("brand_new_surface", copy)).toBe("Brand New Surface");
+  expect(formatFieldType("1 hoop", copy)).toBe("1 kori");
+  expect(formatFieldType("2 hoops", copy)).toBe("2 koria");
+  expect(formatFieldType("2 hoops", getCopy("en"))).toBe("2 hoops");
+  expect(formatFieldType("full", copy)).toBe(copy.fieldTypes.full);
   expect(formatStatus("pending", copy)).toBe(copy.statusPending);
   expect(formatStatus("mystery", copy)).toBe(copy.statusUnknown);
   expect(formatReportedBoolean(null, copy)).toBe(copy.notReported);
   expect(formatAddress(["Helsinginkatu 1", null, "Helsinki"])).toBe("Helsinginkatu 1, Helsinki");
+});
+
+test("translates every surface and hoop count stored from OpenStreetMap", () => {
+  const finnish = getCopy("fi");
+  const english = getCopy("en");
+  const surfaces = new Set<string>();
+  const fieldTypes = new Set<string>();
+  for (const court of bundled.osm.courts) {
+    for (const surface of court.amenities.surfaceMaterial) surfaces.add(surface);
+    if (court.amenities.fieldType) fieldTypes.add(court.amenities.fieldType);
+  }
+
+  expect(surfaces.has("grass_paver")).toBe(true);
+  for (const surface of surfaces) {
+    expect(surface in finnish.surfaces, surface).toBe(true);
+    expect(formatSurface(surface, finnish), surface).toBe(
+      finnish.surfaces[surface as keyof typeof finnish.surfaces],
+    );
+    expect(formatSurface(surface, finnish), surface).not.toBe(surface);
+    expect(formatSurface(surface, english), surface).not.toBe(surface);
+  }
+  for (const fieldType of fieldTypes) {
+    expect(formatFieldType(fieldType, finnish), fieldType).not.toBe(fieldType);
+    expect(formatFieldType(fieldType, english), fieldType).toBe(fieldType);
+  }
 });
 
 test("treats a court as awaiting email only before the link is opened", () => {
