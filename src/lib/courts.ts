@@ -448,7 +448,11 @@ export function formatSurface(code: string, copy: Copy = getCopy()): string {
   return formatCodedLabel(code, copy.surfaces as Record<string, string>);
 }
 
+const HOOP_COUNT = /^(\d+) hoops?$/;
+
 export function formatFieldType(code: string, copy: Copy = getCopy()): string {
+  const hoops = HOOP_COUNT.exec(code);
+  if (hoops) return copy.hoopCount(Number(hoops[1]));
   return formatCodedLabel(code, copy.fieldTypes as Record<string, string>);
 }
 
@@ -505,8 +509,9 @@ function compareText(a: string, b: string) {
 
 function formatCodedLabel(code: string, labels: Record<string, string>): string {
   if (labels[code]) return labels[code];
-  if (/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(code)) {
-    return titleCase(code.replaceAll("-", " "));
+  const words = code.replaceAll("_", "-");
+  if (/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(words)) {
+    return titleCase(words.replaceAll("-", " "));
   }
   return code;
 }

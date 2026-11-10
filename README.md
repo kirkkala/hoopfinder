@@ -1,4 +1,4 @@
-# Hoop Finder beta 25
+# Hoop Finder beta 26
 
 Outdoor basketball courts across Finland — find a hoop, go out and play.
 
@@ -12,7 +12,7 @@ Banners are the list in [`src/lib/site-announcements.ts`](src/lib/site-announcem
 
 Courts are the committed snapshot in [`data/courts.json`](data/courts.json). Runtime does not call the source APIs.
 
-- [LIPAS](https://www.lipas.fi) type **1310** outdoor basketball sites
+- [Jyväskylän yliopisto, Lipas.fi](https://www.lipas.fi) type **1310** outdoor basketball sites
 - [OpenStreetMap](https://www.openstreetmap.org/about) `leisure=pitch` + `sport=basketball`, via Overpass (three Finland tiles)
 - [Nominatim](https://nominatim.org/) lookup fills missing OSM city, neighborhood, and street (most OSM pitches have no `addr:*` or a useful name)
 
