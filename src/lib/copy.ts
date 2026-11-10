@@ -111,8 +111,17 @@ const messages = {
   madeWith: { fi: "Made with", en: "Made with" },
   love: { fi: "love", en: "love" },
   courtDataFrom: {
-    fi: "Lähdedata:",
-    en: "Sources:",
+    fi: "Kohdetiedot:",
+    en: "Facility data:",
+  },
+  lipasFooterName: { fi: "LIPAS", en: "LIPAS" },
+  lipasFooterPublisher: {
+    fi: "Jyväskylän yliopisto",
+    en: "University of Jyväskylä",
+  },
+  lipasCredit: {
+    fi: "Jyväskylän yliopisto, Lipas.fi",
+    en: "University of Jyväskylä, Lipas.fi",
   },
   footerHide: { fi: "Piilota alapalkki", en: "Hide footer" },
   footerShow: { fi: "Näytä alapalkki", en: "Show footer" },
@@ -552,13 +561,17 @@ const messages = {
     fi: "Korin korkeuden voi kuitenkin ilmoittaa Hoop Finderiin, sitä tietoa ei ole lähdepalvelussa.",
     en: "You can add the hoop height in Hoop Finder. It is not in the source.",
   },
+  lipasEditSource: {
+    fi: "Jyväskylän yliopiston Lipas.fi",
+    en: "University of Jyväskylä, Lipas.fi",
+  },
   catalogEditBefore: {
     fi: "Kentän tiedot on haettu",
     en: "Court details come from the",
   },
   catalogEditAfter: {
-    fi: "palvelusta. Siirry palveluun muokkaamaan kentän tietoja:",
-    en: "service. Go there to edit the court details:",
+    fi: "palvelusta. Tietojen päivitys tai muokkaus tulee tehdä lähdepalvelussa:",
+    en: "service. Go there to update or edit the court details in the source service:",
   },
   suggestEditSubmit: { fi: "Lähetä ehdotus", en: "Send suggestion" },
   suggestEditUnchanged: {

@@ -165,9 +165,28 @@ function CreditLinks() {
   return DATA_CREDITS.map((source, index) => (
     <span key={source.id}>
       {sourceSeparator(index, DATA_CREDITS.length, copy.sourceListAnd)}
-      <a href={source.href} className="text-gold hover:text-white" target="_blank" rel="noreferrer">
-        {source.label}
-      </a>
+      {source.id === "lipas" ? (
+        <>
+          <a
+            href={source.href}
+            className="text-gold hover:text-white"
+            target="_blank"
+            rel="noreferrer"
+          >
+            {copy.lipasFooterName}
+          </a>
+          {` / ${copy.lipasFooterPublisher}`}
+        </>
+      ) : (
+        <a
+          href={source.href}
+          className="text-gold hover:text-white"
+          target="_blank"
+          rel="noreferrer"
+        >
+          {source.label}
+        </a>
+      )}
     </span>
   ));
 }

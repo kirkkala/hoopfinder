@@ -190,7 +190,9 @@ export function CourtEditForm({ court, onClose }: { court: Court; onClose: () =>
           <form id="court-edit" onSubmit={(event) => void submit(event)}>
             {catalog && source ? (
               <p className="text-sm text-ink-muted">
-                {copy.catalogEditBefore} {source.label} {copy.catalogEditAfter}
+                {copy.catalogEditBefore}{" "}
+                {source.id === "lipas" ? copy.lipasEditSource : source.label}{" "}
+                {copy.catalogEditAfter}
                 {listingUrl ? (
                   <>
                     {" "}
