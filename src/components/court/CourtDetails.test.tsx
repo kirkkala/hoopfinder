@@ -80,6 +80,19 @@ const court: Court = {
   amenities: emptyAmenities(),
 };
 
+test("a Lipas court cites Jyväskylän yliopisto, Lipas.fi", () => {
+  render(<CourtDetails court={court} fetchedAtBySource={{}} sourceFetchedAt={null} photos={[]} />);
+
+  const main = screen.getByRole("heading", { level: 1 }).closest("main");
+  expect(main).not.toBeNull();
+  if (!main) return;
+
+  expect(within(main).getByRole("link", { name: copy.lipasCredit })).toHaveAttribute(
+    "href",
+    "https://www.lipas.fi",
+  );
+});
+
 test("a court page links to this court on the map under the minimap", () => {
   render(
     <CourtDetails
@@ -130,6 +143,7 @@ test("a visitor can open the correction form from the court page", () => {
 
   const dialog = screen.getByRole("dialog", { name: copy.suggestContribute });
   expect(within(dialog).getByText(copy.suggestHoopHeightLead)).toBeInTheDocument();
+  expect(within(dialog).getByText(copy.lipasEditSource, { exact: false })).toBeInTheDocument();
   expect(within(dialog).getByRole("link", { name: "lipas.fi/liikuntapaikat/1" })).toHaveAttribute(
     "href",
     "https://www.lipas.fi/liikuntapaikat/1",

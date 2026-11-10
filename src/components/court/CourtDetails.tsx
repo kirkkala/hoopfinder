@@ -623,6 +623,18 @@ export function CourtDetails({
                               </span>
                             </li>
                           ) : null}
+                          {court.source === "lipas" && source ? (
+                            <li className="text-sm leading-5 text-ink-muted">
+                              <a
+                                href={source.href}
+                                className="text-gold hover:text-white"
+                                target="_blank"
+                                rel="noreferrer"
+                              >
+                                {copy.lipasCredit}
+                              </a>
+                            </li>
+                          ) : null}
                           {listingUrl ? <SourceLink href={listingUrl} /> : null}
                           {osmSources.map((item) => {
                             const href = sourceListingUrl(item.source, item.id);
