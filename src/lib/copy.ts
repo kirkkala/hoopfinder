@@ -114,7 +114,6 @@ const messages = {
     fi: "Kohdetiedot:",
     en: "Facility data:",
   },
-  lipasFooterName: { fi: "LIPAS", en: "LIPAS" },
   lipasFooterPublisher: {
     fi: "Jyväskylän yliopisto",
     en: "University of Jyväskylä",

@@ -20,19 +20,17 @@ afterEach(() => {
   for (const dialog of document.querySelectorAll("dialog")) dialog.remove();
 });
 
-test("the footer credits Lipas as Kohdetiedot: LIPAS / Jyväskylän yliopisto", () => {
+test("the footer credits Lipas as Kohdetiedot: Jyväskylän yliopisto Lipas.fi", () => {
   render(
     <FeedbackProvider>
       <AppFooter />
     </FeedbackProvider>,
   );
 
-  const credit = screen.getAllByRole("link", { name: copy.lipasFooterName })[0];
+  const credit = screen.getAllByRole("link", { name: "Lipas.fi" })[0];
   expect(credit).toHaveAttribute("href", "https://www.lipas.fi");
   expect(screen.getAllByText(new RegExp(copy.courtDataFrom)).length).toBeGreaterThan(0);
-  expect(screen.getAllByText(new RegExp(`/ ${copy.lipasFooterPublisher}`)).length).toBeGreaterThan(
-    0,
-  );
+  expect(screen.getAllByText(new RegExp(copy.lipasFooterPublisher)).length).toBeGreaterThan(0);
   expect(screen.queryByRole("link", { name: copy.lipasFooterPublisher })).not.toBeInTheDocument();
 });
 

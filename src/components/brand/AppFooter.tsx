@@ -167,15 +167,15 @@ function CreditLinks() {
       {sourceSeparator(index, DATA_CREDITS.length, copy.sourceListAnd)}
       {source.id === "lipas" ? (
         <>
+          {`${copy.lipasFooterPublisher} `}
           <a
             href={source.href}
             className="text-gold hover:text-white"
             target="_blank"
             rel="noreferrer"
           >
-            {copy.lipasFooterName}
+            Lipas.fi
           </a>
-          {` / ${copy.lipasFooterPublisher}`}
         </>
       ) : (
         <a
