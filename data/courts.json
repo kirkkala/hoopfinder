@@ -1,6 +1,6 @@
 {
   "lipas": {
-    "fetchedAt": "2026-11-09T12:43:55.596Z",
+    "fetchedAt": "2026-11-16T12:36:17.970Z",
     "courts": [
       {
         "id": "101160",
@@ -12833,7 +12833,7 @@
         "lon": 25.58034010391449,
         "comment": "Katukoriskenttä",
         "website": null,
-        "constructionYear": null,
+        "constructionYear": 2023,
         "owner": "city",
         "admin": "city-technical-services",
         "amenities": {
